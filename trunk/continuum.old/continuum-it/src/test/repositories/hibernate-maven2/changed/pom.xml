@@ -1,0 +1,20 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>continuum</groupId>
+  <artifactId>it-normal</artifactId>
+  <version>1.0</version>
+  <name>Hibernate And Maven 2 Test Project - Changed</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+  </dependencies>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:local:target/repositories:hibernate-maven2</connection>
+  </scm>
+</project>
