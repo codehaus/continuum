@@ -1,0 +1,12 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>continuum</groupId>
+  <artifactId>console-notifier</artifactId>
+  <version>1.0</version>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:local:src/test/repository:console-notifier</connection>
+  </scm>
+</project>

@@ -1,0 +1,22 @@
+<application>
+
+  <load-on-start>
+    <component>
+      <role>org.codehaus.continuum.Continuum</role>
+    </component>
+  </load-on-start>
+
+  <resources>
+    <jar-repository>${plexus.home}/lib</jar-repository>
+  </resources>
+
+  <services>
+    <service>
+      <id>servlet-container</id>
+      <configuration>
+        <webapps>${plexus.home}/lib</webapps>
+      </configuration>
+      </service>
+  </services>
+
+</application>
