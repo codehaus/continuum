@@ -35,7 +35,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpc.java,v 1.3 2005-03-28 11:45:11 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpc.java,v 1.4 2005-03-28 16:06:15 trygvis Exp $
  */
 public class DefaultContinuumXmlRpc
     extends AbstractLogEnabled
@@ -127,6 +127,20 @@ public class DefaultContinuumXmlRpc
         catch ( Throwable e )
         {
             return handleException( "ContinuumXmlRpc.getProject(): project id: '" + projectId + "'.", e );
+        }
+    }
+
+    public Hashtable updateProjectFromScm( String projectId )
+    {
+        try
+        {
+            continuum.updateProjectFromScm( projectId );
+
+            return makeHashtable();
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.updateProjectFromScm(): Project id: '" + projectId + "'.", e );
         }
     }
 

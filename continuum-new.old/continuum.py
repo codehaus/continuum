@@ -63,6 +63,9 @@ def getProject( projectId ):
 
     return Project( result[ "project" ] )
 
+def updateProjectFromScm( projectId ):
+    checkResult( server.continuum.updateProjectFromScm( projectId ) )
+
 def updateProjectConfiguration( projectId, configuration ):
     checkResult( server.continuum.updateProjectConfiguration( projectId, configuration ) )
 
@@ -152,7 +155,7 @@ class Build:
         map[ "state" ] = decodeState( self.state )
 
         return  \
-"""id: %(id)s
+"""Id: %(id)s
 State: %(state)s
 Start time: %(startTime)s
 End time: %(endTime)s
@@ -167,7 +170,13 @@ class BuildResult:
         self.standardError = map[ "standardError" ]
 
     def __str__( self ):
-        return "success: " + self.success + os.linesep +\
-               "exitCode: " + str( self.exitCode ) + os.linesep +\
-               "standardOutput: " + self.standardOutput + os.linesep +\
-               "standardError: " + self.standardError + os.linesep
+        value = "Success: " + self.success + os.linesep +\
+              "Exit code: " + str( self.exitCode ) + os.linesep
+
+        if ( len( self.standardOutput ) > 0 ):
+              value += "Standard output: " + self.standardOutput + os.linesep
+
+        if ( len( self.standardError ) > 0 ):
+               value += "Standard error: " + self.standardError + os.linesep
+
+        return value
