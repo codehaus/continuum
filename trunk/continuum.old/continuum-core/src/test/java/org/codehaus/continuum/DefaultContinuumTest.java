@@ -23,6 +23,6 @@ public class DefaultContinuumTest
 
         assertNotNull( continuum );
 
-        //while( true ){}
+        while( true ){}
     }
 }
