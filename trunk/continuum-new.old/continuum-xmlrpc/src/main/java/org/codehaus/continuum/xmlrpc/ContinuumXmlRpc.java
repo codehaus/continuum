@@ -21,7 +21,7 @@ import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumXmlRpc.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
+ * @version $Id: ContinuumXmlRpc.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
  */
 public interface ContinuumXmlRpc
 {
@@ -31,28 +31,24 @@ public interface ContinuumXmlRpc
     //
     // ----------------------------------------------------------------------
 
-    String addProjectFromUrl( String url, String builderType )
-        throws Exception;
+    Hashtable addProjectFromUrl( String url, String builderType );
 
-    String addProjectFromUrl( String scmUrl, String builderType, String projectName, String nagEmailAddress,
-                              String version, Hashtable configuration )
-        throws Exception;
+    Hashtable addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
+                              String version, Hashtable configuration );
 
-    Hashtable getProject( String projectId )
-        throws Exception;
+    Hashtable getProject( String projectId );
 
-    Vector getAllProjects()
-        throws Exception;
+    Hashtable getAllProjects();
+
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    String buildProject( String projectId )
-        throws Exception;
+    Hashtable buildProject( String projectId );
 
-    Vector getBuildsForProject( String projectId, int start, int end )
-        throws Exception;
+    Hashtable getBuildsForProject( String projectId, int start, int end );
 
-    Hashtable getBuild( String buildId )
-        throws Exception;
+    Hashtable getBuild( String buildId );
+
+    Hashtable getBuildResult( String buildId );
 }

@@ -22,16 +22,20 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.utils.ContinuumUtils;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpc.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpc.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
  */
 public class DefaultContinuumXmlRpc
     extends AbstractLogEnabled
@@ -54,24 +58,22 @@ public class DefaultContinuumXmlRpc
     // Projects
     // ----------------------------------------------------------------------
 
-    public String addProjectFromUrl( String url, String builderType )
-        throws Exception
+    public Hashtable addProjectFromUrl( String url, String builderType )
     {
         try
         {
-            return continuum.addProjectFromUrl( new URL( url ), builderType );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "ContinuumXmlRpc.addProjectFromUrl(): url: '" + url + "'.", e );
+            String projectId = continuum.addProjectFromUrl( new URL( url ), builderType );
 
-            throw e;
+            return makeHashtable( "projectId", projectId );
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.addProjectFromScm(): url: '" + url + "'.", e );
         }
     }
 
-    public String addProjectFromUrl( String scmUrl, String builderType, String projectName, String nagEmailAddress,
+    public Hashtable addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
                                      String version, Hashtable configuration )
-        throws Exception
     {
         try
         {
@@ -84,34 +86,32 @@ public class DefaultContinuumXmlRpc
                 configurationProperties.put( entry.getKey().toString(), entry.getValue().toString() );
             }
 
-            return continuum.addProjectFromScm( scmUrl, builderType, projectName, nagEmailAddress, version,
-                                                configurationProperties );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "ContinuumXmlRpc.addProjectFromUrl().", e );
+            String projectId = continuum.addProjectFromScm( scmUrl, builderType, projectName, nagEmailAddress, version,
+                                                            configurationProperties );
 
-            throw e;
+            return makeHashtable( "projectId", projectId );
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.addProjectFromScm().", e );
         }
     }
 
     public Hashtable getProject( String projectId )
-        throws Exception
     {
         try
         {
-            return xmlRpcHelper.objectToHashtable( store.getProject( projectId ) );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "ContinuumXmlRpc.getProject(): project id: '" + projectId + "'.", e );
+            Hashtable project = xmlRpcHelper.objectToHashtable( store.getProject( projectId ) );
 
-            throw e;
+            return makeHashtable( "project", project );
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.getProject(): project id: '" + projectId + "'.", e );
         }
     }
 
-    public Vector getAllProjects()
-        throws Exception
+    public Hashtable getAllProjects()
     {
         try
         {
@@ -121,16 +121,14 @@ public class DefaultContinuumXmlRpc
             {
                 ContinuumProject project = (ContinuumProject) it.next();
 
-                projects.add( projectToHashtable( project ) );
+                projects.add( xmlRpcHelper.objectToHashtable( project ) );
             }
 
-            return projects;
+            return makeHashtable( "projects", projects );
         }
-        catch ( Exception e )
+        catch ( Throwable e )
         {
-            getLogger().error( "ContinuumXmlRpc.getAllProjects().", e );
-
-            throw e;
+            return handleException( "ContinuumXmlRpc.getAllProjects().", e );
         }
     }
 
@@ -138,23 +136,19 @@ public class DefaultContinuumXmlRpc
     // Builds
     // ----------------------------------------------------------------------
 
-    public String buildProject( String projectId )
-        throws Exception
+    public Hashtable buildProject( String projectId )
     {
         try
         {
-            return continuum.buildProject( projectId );
+            return makeHashtable( "buildId", continuum.buildProject( projectId ) );
         }
-        catch ( Exception e )
+        catch ( Throwable e )
         {
-            getLogger().error( "ContinuumXmlRpc.buildProject(): project id: '" + projectId + "'.", e );
-
-            throw e;
+            return handleException( "ContinuumXmlRpc.buildProject(): project id: '" + projectId + "'.", e );
         }
     }
 
-    public Vector getBuildsForProject( String projectId, int start, int end )
-        throws Exception
+    public Hashtable getBuildsForProject( String projectId, int start, int end )
     {
         try
         {
@@ -162,37 +156,60 @@ public class DefaultContinuumXmlRpc
 
             Vector builds = new Vector();
 
+            Set excludedProperties = new HashSet();
+
+            excludedProperties.add( "project" );
+
             while ( it.hasNext() )
             {
                 ContinuumBuild continuumBuild = (ContinuumBuild) it.next();
 
-                builds.add( buildToHashtable( continuumBuild ) );
+                builds.add( xmlRpcHelper.objectToHashtable( continuumBuild, excludedProperties ) );
             }
 
-            return builds;
+            return makeHashtable( "builds", builds );
         }
-        catch ( Exception e )
+        catch ( Throwable e )
         {
-            getLogger().error( "ContinuumXmlRpc.getBuildsForProject(): id: '" + projectId + "'.", e );
-
-            throw e;
+            return handleException( "ContinuumXmlRpc.getBuildsForProject(): id: '" + projectId + "'.", e );
         }
     }
 
     public Hashtable getBuild( String buildId )
-        throws Exception
     {
         try
         {
             ContinuumBuild build = store.getBuild( buildId );
 
-            return buildToHashtable( build );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "ContinuumXmlRpc.getBuild(): id: '" + buildId + "'.", e );
+            Set excludedProperties = new HashSet();
 
-            throw e;
+            excludedProperties.add( "project" );
+
+            excludedProperties.add( "builds" );
+
+            return makeHashtable( "build", xmlRpcHelper.objectToHashtable( build, excludedProperties ) );
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.getBuild(): id: '" + buildId + "'.", e );
+        }
+    }
+
+    public Hashtable getBuildResult( String buildId )
+    {
+        try
+        {
+            ContinuumBuildResult result = store.getBuildResultForBuild( buildId );
+
+            Set excludedProperties = new HashSet();
+
+            excludedProperties.add( "build" );
+
+            return makeHashtable( "buildResult", xmlRpcHelper.objectToHashtable( result, excludedProperties ) );
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.getBuildResult(): id: '" + buildId + "'.", e );
         }
     }
 
@@ -200,105 +217,29 @@ public class DefaultContinuumXmlRpc
     //
     // ----------------------------------------------------------------------
 
-    private Hashtable projectToHashtable( ContinuumProject continuumProject )
-        throws Exception
+    private Hashtable makeHashtable( String property, Object object )
     {
-/*
-        Hashtable project = new Hashtable();
+        Hashtable hashtable = new Hashtable();
 
-        project.put( "id", continuumProject.getId() );
+        hashtable.put( property, object );
 
-        project.put( "name", continuumProject.getName() );
+        hashtable.put( "result", "ok" );
 
-        project.put( "scmUrl", continuumProject.getScmUrl() );
-
-        project.put( "nagEmailAddress", continuumProject.getNagEmailAddress() );
-
-        project.put( "version", continuumProject.getVersion() );
-
-        project.put( "workingDirectory", continuumProject.getWorkingDirectory() );
-
-        project.put( "state", Integer.toString( continuumProject.getState() ) );
-
-        project.put( "builderId", continuumProject.getBuilderId() );
-
-        return project;
-*/
-        return xmlRpcHelper.objectToHashtable( continuumProject );
+        return hashtable;
     }
 
-    private Hashtable buildToHashtable( ContinuumBuild continuumBuild )
-        throws Exception
+    private Hashtable handleException( String method, Throwable throwable )
     {
-/*
-        Hashtable build = new Hashtable();
+        Hashtable hashtable = new Hashtable();
 
-        build.put( "id", continuumBuild.getId() );
+        hashtable.put( "result", "failure" );
 
-        build.put( "state", Integer.toString( continuumBuild.getState() ) );
+        hashtable.put( "message", throwable.getMessage() );
 
-        build.put( "startTime", Long.toString( continuumBuild.getStartTime() ) );
+        hashtable.put( "method", method );
 
-        build.put( "endTime", Long.toString( continuumBuild.getEndTime() ) );
+        hashtable.put( "stackTrace", ContinuumUtils.getExceptionStackTrace( throwable ) );
 
-        build.put( "error", StringUtils.clean( continuumBuild.getError() ) );
-
-        build.put( "buildResult", buildResultToHashtable( continuumBuild.getBuildResult() ) );
-
-        return build;
-*/
-        return xmlRpcHelper.objectToHashtable( continuumBuild );
+        return hashtable;
     }
-/*
-    private Hashtable buildResultToHashtable( ContinuumBuildResult continuumBuildResult )
-    {
-        Hashtable buildResult = new Hashtable();
-
-        if ( continuumBuildResult == null )
-        {
-            getLogger().warn( "Build result was null." );
-
-            return buildResult;
-        }
-
-        buildResult.put( "success", Boolean.toString( continuumBuildResult.isSuccess() ) );
-
-        if ( continuumBuildResult instanceof Maven1BuildResult )
-        {
-            Maven1BuildResult maven1BuildResult = (Maven1BuildResult) continuumBuildResult;
-
-            buildResult.put( "standardOutput", maven1BuildResult.getStandardOutput() );
-
-            buildResult.put( "standardError", maven1BuildResult.getStandardError() );
-
-            buildResult.put( "exitCode", Integer.toString( maven1BuildResult.getExitCode() ) );
-        }
-        else if ( continuumBuildResult instanceof AntBuildResult )
-        {
-            AntBuildResult antBuildResult = (AntBuildResult) continuumBuildResult;
-
-            buildResult.put( "standardOutput", antBuildResult.getStandardOutput() );
-
-            buildResult.put( "standardError", antBuildResult.getStandardError() );
-
-            buildResult.put( "exitCode", Integer.toString( antBuildResult.getExitCode() ) );
-        }
-        else if ( continuumBuildResult instanceof ShellBuildResult )
-        {
-            ShellBuildResult shellBuildResult = (ShellBuildResult) continuumBuildResult;
-
-            buildResult.put( "standardOutput", shellBuildResult.getStandardOutput() );
-
-            buildResult.put( "standardError", shellBuildResult.getStandardError() );
-
-            buildResult.put( "exitCode", Integer.toString( shellBuildResult.getExitCode() ) );
-        }
-        else
-        {
-            getLogger().warn( "Unknown build result: '" + continuumBuildResult.getClass().getName() + "'." );
-        }
-
-        return buildResult;
-    }
-*/
 }

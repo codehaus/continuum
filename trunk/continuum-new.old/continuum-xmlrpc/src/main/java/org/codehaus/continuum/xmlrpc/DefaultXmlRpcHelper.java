@@ -22,21 +22,24 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.Collections;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultXmlRpcHelper.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
+ * @version $Id: DefaultXmlRpcHelper.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
  */
 public class DefaultXmlRpcHelper
     extends AbstractLogEnabled
     implements XmlRpcHelper
 {
-    private Set EXCLUDED_METHODS = new HashSet( Arrays.asList( new String[] {
-        "getClass"
+    private final Set alwaysExcludedProperties = new HashSet( Arrays.asList( new String[] {
+        "class",
     } ) );
+
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[ 0 ];
 
     // ----------------------------------------------------------------------
     // XmlRpcHelper Implementation
@@ -45,7 +48,18 @@ public class DefaultXmlRpcHelper
     public Hashtable objectToHashtable( Object object )
         throws IllegalAccessException, InvocationTargetException
     {
+        return objectToHashtable( object, Collections.EMPTY_SET );
+    }
+
+    public Hashtable objectToHashtable( Object object, Set excludedProperties )
+        throws IllegalAccessException, InvocationTargetException
+    {
         Hashtable hashtable = new Hashtable();
+
+        if ( object == null )
+        {
+            return hashtable;
+        }
 
         Method[] methods = object.getClass().getMethods();
 
@@ -73,7 +87,15 @@ public class DefaultXmlRpcHelper
                 continue;
             }
 
-            if ( EXCLUDED_METHODS.contains( name ) )
+            // ----------------------------------------------------------------------
+            // Rewrite the name from the form 'getFoo' to 'foo'.
+            // ----------------------------------------------------------------------
+
+            String propertyName = name.substring( 3 );
+
+            propertyName = StringUtils.uncapitalise( propertyName );
+
+            if ( excludedProperties.contains( propertyName ) || alwaysExcludedProperties.contains( propertyName ) )
             {
                 continue;
             }
@@ -82,7 +104,7 @@ public class DefaultXmlRpcHelper
             // Get the value
             // ----------------------------------------------------------------------
 
-            Object value = method.invoke( object, new Object[ 0 ] );
+            Object value = method.invoke( object, EMPTY_OBJECT_ARRAY );
 
             // ----------------------------------------------------------------------
             // Convert the value to a String
@@ -105,18 +127,10 @@ public class DefaultXmlRpcHelper
             }
 
             // ----------------------------------------------------------------------
-            // Rewrite the name from the form 'getFoo' to 'foo'.
-            // ----------------------------------------------------------------------
-
-            name = name.substring( 3 );
-
-            name = StringUtils.uncapitalise( name );
-
-            // ----------------------------------------------------------------------
             //
             // ----------------------------------------------------------------------
 
-            hashtable.put( name, value );
+            hashtable.put( propertyName, value );
         }
 
         return hashtable;
