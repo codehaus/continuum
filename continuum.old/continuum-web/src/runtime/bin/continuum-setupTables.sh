@@ -11,6 +11,6 @@ CP=src/main/resources:apps/continuum/resources:target/classes
 #  CP=$CP:$jar
 #done
 
-CP=$CP:`find $basedir -printf "%p:" -path '*/apps/*/lib/*.jar' -or -path '*/core/*.jar'`
+CP=$CP:`find $basedir -name '*.jar' -printf "%p:"`
 
 java -classpath $CP org.codehaus.continuum.standalone.SetupTables "$@"
