@@ -54,7 +54,7 @@
       <implementation>org.codehaus.continuum.web.action.AddProjectScm</implementation>
     </component>
 
-    <!-- addProjectPomUrl -->
+    <!-- addShellProjectPomUrl -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addShellProjectPomUrl</role-hint>
