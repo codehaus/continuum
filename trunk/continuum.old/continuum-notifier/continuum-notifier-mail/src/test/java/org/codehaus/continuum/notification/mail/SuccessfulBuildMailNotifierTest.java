@@ -22,15 +22,29 @@ package org.codehaus.continuum.notification.mail;
  * SOFTWARE.
  */
 
+import org.apache.maven.MavenTestUtils;
+
 import org.codehaus.continuum.notification.AbstractSuccessfulBuildNotifierTest;
+import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.2 2004-07-29 04:22:28 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.3 2004-08-29 21:01:50 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
+    protected void customizeContext()
+        throws Exception
+    {
+        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ) );
+    }
+
+    protected PlexusContainer getContainerInstance()
+    {
+        return MavenTestUtils.getContainerInstance();
+    }
+
     protected String getProjectScmUrl()
     {
         return "scm:test:foo";

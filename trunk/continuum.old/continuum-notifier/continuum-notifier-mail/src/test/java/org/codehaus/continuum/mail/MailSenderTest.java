@@ -22,14 +22,14 @@ package org.codehaus.continuum.mail;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MailSenderTest.java,v 1.2 2004-07-29 04:22:28 trygvis Exp $
+ * @version $Id: MailSenderTest.java,v 1.3 2004-08-29 21:01:50 trygvis Exp $
  */
 public class MailSenderTest
-    extends PlexusTestCase
+    extends ArtifactEnabledPlexusTestCase
 {
     public void setUp()
         throws Exception
