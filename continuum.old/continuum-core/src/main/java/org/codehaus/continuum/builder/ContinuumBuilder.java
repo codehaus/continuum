@@ -1,14 +1,12 @@
-package org.codehaus.continuum;
+package org.codehaus.continuum.builder;
 
 /*
  * LICENSE
  */
 
-import org.codehaus.continuum.project.ContinuumProject;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.3 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
  */
 public interface ContinuumBuilder
 {

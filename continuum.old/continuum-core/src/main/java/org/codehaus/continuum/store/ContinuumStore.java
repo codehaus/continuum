@@ -6,19 +6,33 @@ package org.codehaus.continuum.projectstorage;
 
 import java.util.Iterator;
 
+import org.apache.maven.project.MavenProject;
+
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.4 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
  */
-public interface ProjectStorage {
-    String storeProject( ContinuumProject project )
-        throws ProjectStorageException;
+public interface ContinuumProjectStorage {
+
+    // ----------------------------------------------------------------------
+    // ContinuumProject
+    // ----------------------------------------------------------------------
+
+    String storeProject( MavenProject project )
+        throws ContinuumProjectStorageException;
 
     Iterator getAllProjects()
-        throws ProjectStorageException;
+        throws ContinuumProjectStorageException;
 
     ContinuumProject getProject( String projectId )
-        throws ProjectStorageException;
+        throws ContinuumProjectStorageException;
+
+    // ----------------------------------------------------------------------
+    // Build
+    // ----------------------------------------------------------------------
+
+    String createBuild( ContinuumProject project )
+        throws ContinuumProjectStorageException;
 }

@@ -6,16 +6,16 @@ package org.codehaus.continuum.projectstorage;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStoreException.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: ContinuumStoreException.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
  */
-public class ProjectStorageException extends Exception
+public class ContinuumProjectStorageException extends Exception
 {
-    public ProjectStorageException( String msg )
+    public ContinuumProjectStorageException( String msg )
     {
         super( msg );
     }
 
-    public ProjectStorageException( String msg, Exception ex )
+    public ContinuumProjectStorageException( String msg, Exception ex )
     {
         super( msg, ex );
     }

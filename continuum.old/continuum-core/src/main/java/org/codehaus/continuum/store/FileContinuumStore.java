@@ -5,9 +5,9 @@ package org.codehaus.continuum.projectstorage;
  */
 
 import java.io.File;
-import java.io.Reader;
 import java.util.Iterator;
 
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 
 import org.codehaus.continuum.project.ContinuumProject;
@@ -17,15 +17,12 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FileContinuumStore.java,v 1.4 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: FileContinuumStore.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
  */
-public class FileProjectStorage
+public class ContinuumFileProjectStorage
     extends AbstractLogEnabled
-    implements ProjectStorage, Initializable
+    implements ContinuumProjectStorage, Initializable
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Configuration
-
     private String storageDirectory;
 
     private MavenProjectBuilder projectBuilder;
@@ -33,8 +30,9 @@ public class FileProjectStorage
     // member variables
     private File storage;
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Lifecycle
+    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
@@ -54,11 +52,16 @@ public class FileProjectStorage
 
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // ProjectStore implementation
+    // ----------------------------------------------------------------------
+    // ContinuumProjectStore implementation
+    // ----------------------------------------------------------------------
 
-    public String storeProject( ContinuumProject project )
-        throws ProjectStorageException
+    // ----------------------------------------------------------------------
+    // ContinuumProject part
+    // ----------------------------------------------------------------------
+
+    public String storeProject( MavenProject project )
+        throws ContinuumProjectStorageException
     {
 /*
         File file;
@@ -80,7 +83,7 @@ public class FileProjectStorage
     }
 
     public Iterator getAllProjects()
-        throws ProjectStorageException
+        throws ContinuumProjectStorageException
     {
 /*
         List projects = new ArrayList();
@@ -116,7 +119,7 @@ public class FileProjectStorage
     }
 
     public ContinuumProject getProject( String id )
-        throws ProjectStorageException
+        throws ContinuumProjectStorageException
     {
 /*
         try
@@ -128,6 +131,15 @@ public class FileProjectStorage
             throw new ProjectStorageException( "The projectdatabase is corrupted, could not read the project.", ex );
         }
 */
+        return null;
+    }
+
+    // ----------------------------------------------------------------------
+    // Build part
+    // ----------------------------------------------------------------------
+
+    public String createBuild( ContinuumProject project )
+    {
         return null;
     }
 }

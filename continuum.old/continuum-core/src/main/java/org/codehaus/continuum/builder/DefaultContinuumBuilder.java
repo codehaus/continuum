@@ -1,4 +1,4 @@
-package org.codehaus.continuum;
+package org.codehaus.continuum.builder;
 
 /*
  * LICENSE
@@ -14,13 +14,14 @@ import org.apache.maven.MavenCore;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.scm.Scm;
 
+import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.notification.NotifierWrapper;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.projectstorage.ProjectStorage;
-import org.codehaus.continuum.projectstorage.ProjectStorageException;
+import org.codehaus.continuum.projectstorage.ContinuumProjectStorage;
+import org.codehaus.continuum.projectstorage.ContinuumProjectStorageException;
+import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -29,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumBuilder.java,v 1.5 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: DefaultContinuumBuilder.java,v 1.6 2004-06-27 23:21:03 trygvis Exp $
  */
 public class DefaultContinuumBuilder
     extends AbstractLogEnabled
@@ -45,7 +46,7 @@ public class DefaultContinuumBuilder
 
     private ContinuumNotifier notifier;
 
-    private ProjectStorage projectStorage;
+    private ContinuumProjectStorage projectStorage;
 
     // configuration
 
@@ -62,12 +63,9 @@ public class DefaultContinuumBuilder
         throws Exception
     {
         assertRequirement( maven, MavenCore.class );
-        assertRequirement( scm, Scm.class );
+        assertRequirement( scm, ContinuumScm.class );
         assertRequirement( projectBuilder, MavenProjectBuilder.class );
         assertRequirement( notifier, ContinuumNotifier.class );
-
-        // TODO: create this another way
-//        scm = new CvsScm();
 
         observer = new NotifierWrapper( notifier, getLogger() );
     }
@@ -91,7 +89,7 @@ public class DefaultContinuumBuilder
         {
             project = projectStorage.getProject( projectId );
         }
-        catch( ProjectStorageException ex )
+        catch( ContinuumProjectStorageException ex )
         {
             return;
         }
