@@ -8,13 +8,13 @@
   </parent>
   <artifactId>continuum-test</artifactId>
   <groupId>continuum</groupId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Test Utils</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-api</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

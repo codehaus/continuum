@@ -8,25 +8,25 @@
   </parent>
   <artifactId>continuum-alarm-trigger</artifactId>
   <groupId>continuum</groupId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Alarm Trigger</name>
 
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-api</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-test</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <!-- testing -->
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

@@ -8,23 +8,23 @@
   </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-hibernate-store</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Hibernate Store</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-api</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-test</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>maven</groupId>

@@ -9,17 +9,17 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-mail-notifier</artifactId>
   <name>Continuum Mail Notifier</name>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-test</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>maven</groupId>

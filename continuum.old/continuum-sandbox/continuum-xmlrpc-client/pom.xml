@@ -8,23 +8,23 @@
   </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-xmlrpc-client</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum XML-RPC Client</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-api</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-xmlrpc-server</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>xmlrpc</groupId>
       <artifactId>xmlrpc</artifactId>
       <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>continuum</groupId>
-      <artifactId>continuum-xmlrpc-server</artifactId>
-      <version>0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
