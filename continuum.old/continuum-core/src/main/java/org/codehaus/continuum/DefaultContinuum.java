@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.43 2004-10-08 09:13:46 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.44 2004-10-09 13:01:52 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -69,9 +69,6 @@ public class DefaultContinuum
 
     /** @requirement */
     private StoreTransactionManager txManager;
-
-    /** @configuration */
-    private String checkoutDirectory;
 
     private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
 

@@ -22,19 +22,18 @@ package org.codehaus.continuum.standalone;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.Continuum;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultStandaloneContinuum.java,v 1.2 2004-07-29 04:31:58 trygvis Exp $
+ * @version $Id: DefaultStandaloneContinuum.java,v 1.3 2004-10-09 13:04:53 trygvis Exp $
  */
 public class DefaultStandaloneContinuum
     extends AbstractLogEnabled
     implements Startable
 {
-    private Continuum continuum;
+//    private Continuum continuum;
 
     public void start()
         throws Exception

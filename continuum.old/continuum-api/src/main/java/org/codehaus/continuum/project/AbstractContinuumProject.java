@@ -24,7 +24,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumProject.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: AbstractContinuumProject.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
  */
 public abstract class AbstractContinuumProject
     implements ContinuumProject
@@ -107,7 +107,7 @@ public abstract class AbstractContinuumProject
     }
 
     /**
-     * @param ccmConnection The ccmConnection to set.
+     * @param scmConnection The ccmConnection to set.
      */
     public void setScmConnection( String scmConnection)
     {

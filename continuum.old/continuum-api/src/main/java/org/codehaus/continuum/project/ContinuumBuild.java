@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuild.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: ContinuumBuild.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
  */
 public interface ContinuumBuild
     extends Serializable
@@ -86,9 +86,9 @@ public interface ContinuumBuild
      */
     public Throwable getError();
 
-    /**
-     * @param error The error to set.
-     */
+//    /**
+//     * @param error The error to set.
+//     */
 //    public void setError( Throwable Error );
 /*
     public ExecutionResponse getMaven2Result();

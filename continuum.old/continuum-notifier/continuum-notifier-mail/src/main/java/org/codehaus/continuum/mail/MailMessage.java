@@ -215,6 +215,7 @@ public class MailMessage
      * Sets the from address.  Also sets the "From" header.  This method should
      * be called only once.
      *
+     * @param from The value of the <code>From:</code> field
      * @exception IOException if there's any problem reported by the mail server
      */
     public void from( String from ) throws IOException

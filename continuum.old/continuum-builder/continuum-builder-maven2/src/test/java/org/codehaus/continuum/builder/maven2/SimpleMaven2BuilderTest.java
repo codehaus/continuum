@@ -37,20 +37,15 @@ import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
-import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.4 2004-10-08 09:59:10 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.5 2004-10-09 13:03:19 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
 {
-    private File mavenHome = PlexusTestCase.getTestFile( "target/maven-home" );
-
-    private File mavenHomeLocal = PlexusTestCase.getTestFile( "target/maven-home-local" );
-
     public void testContinuum()
         throws Exception
     {

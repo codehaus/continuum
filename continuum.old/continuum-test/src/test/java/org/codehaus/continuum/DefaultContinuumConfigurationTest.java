@@ -26,19 +26,19 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumConfigurationTest.java,v 1.7 2004-07-29 04:27:42 trygvis Exp $
+ * @version $Id: DefaultContinuumConfigurationTest.java,v 1.8 2004-10-09 13:00:47 trygvis Exp $
  */
 public class DefaultContinuumConfigurationTest
     extends PlexusTestCase
 {
-    private final static String NEWLINE = System.getProperty( "line.separator" );
+//    private final static String NEWLINE = System.getProperty( "line.separator" );
 
-    private String host = "127.0.0.1";
-    private int triggerPort = 10000;
-    private int registrarPort = 10001;
+//    private String host = "127.0.0.1";
+//    private int triggerPort = 10000;
+//    private int registrarPort = 10001;
 
-    private String project1Url = "http://cvs.plexus.codehaus.org/viewcvs.cgi/*checkout*/plexus/plexus-components/native/continuum/src/test-projects/project1/project.xml?root=codehaus";
-    private String project2Url = "http://cvs.plexus.codehaus.org/viewcvs.cgi/*checkout*/plexus/plexus-components/native/continuum/src/test-projects/project2/project.xml?root=codehaus";
+//    private String project1Url = "http://cvs.plexus.codehaus.org/viewcvs.cgi/*checkout*/plexus/plexus-components/native/continuum/src/test-projects/project1/project.xml?root=codehaus";
+//    private String project2Url = "http://cvs.plexus.codehaus.org/viewcvs.cgi/*checkout*/plexus/plexus-components/native/continuum/src/test-projects/project2/project.xml?root=codehaus";
 
     /**
      * This test tests the default configuration of the continuum server.

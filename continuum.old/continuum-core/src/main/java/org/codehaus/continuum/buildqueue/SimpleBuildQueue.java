@@ -25,11 +25,9 @@ package org.codehaus.continuum.buildqueue;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.codehaus.continuum.ContinuumException;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleBuildQueue.java,v 1.4 2004-07-27 05:42:13 trygvis Exp $
+ * @version $Id: SimpleBuildQueue.java,v 1.5 2004-10-09 13:01:52 trygvis Exp $
  */
 public class SimpleBuildQueue extends AbstractBuildQueue
 {
@@ -61,7 +59,6 @@ public class SimpleBuildQueue extends AbstractBuildQueue
      * Returns the length of the queue.
      *
      * @return Returns the length of the queue.
-     * @throws ContinuumException
      */
     public int getLength()
     {

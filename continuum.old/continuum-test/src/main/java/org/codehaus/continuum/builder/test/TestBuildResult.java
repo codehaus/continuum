@@ -27,7 +27,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestBuildResult.java,v 1.2 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: TestBuildResult.java,v 1.3 2004-10-09 13:00:47 trygvis Exp $
  */
 public class TestBuildResult
     extends AbstractContinuumBuildResult
@@ -48,10 +48,5 @@ public class TestBuildResult
     public boolean isSuccess()
     {
         return success;
-    }
-
-    private void setSuccess( boolean success )
-    {
-        this.success = success;
     }
 }
