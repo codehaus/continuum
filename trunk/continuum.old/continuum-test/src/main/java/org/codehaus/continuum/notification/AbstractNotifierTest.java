@@ -24,12 +24,12 @@ package org.codehaus.continuum.notification;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.TestUtils;
 import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifierTest.java,v 1.5 2004-10-15 13:01:08 trygvis Exp $
+ * @version $Id: AbstractNotifierTest.java,v 1.6 2004-10-20 19:29:35 trygvis Exp $
  */
 public abstract class AbstractNotifierTest
     extends AbstractContinuumTest
@@ -57,45 +57,6 @@ public abstract class AbstractNotifierTest
     protected abstract String getProjectType();
 
     // ----------------------------------------------------------------------
-    // Override these to assert the notifier.
-    // ----------------------------------------------------------------------
-
-    protected void preBuildStarted()
-        throws Exception
-    {
-    }
-
-    protected void postBuildStarted()
-        throws Exception
-    {
-    }
-
-    protected void postCheckoutStarted()
-        throws Exception
-    {
-    }
-
-    protected void postCheckoutComplete()
-        throws Exception
-    {
-    }
-
-    protected void postRunningGoals()
-        throws Exception
-    {
-    }
-
-    protected void postGoalsCompleted()
-        throws Exception
-    {
-    }
-
-    protected void postBuildComplete()
-        throws Exception
-    {
-    }
-
-    // ----------------------------------------------------------------------
     // Implementation of the test
     // ----------------------------------------------------------------------
 
@@ -120,26 +81,19 @@ public abstract class AbstractNotifierTest
     protected ContinuumBuild build()
         throws Exception
     {
-        ContinuumStore store = getContinuumStore();
-
         String projectName = "Notifier Test Project";
 
         Continuum continuum = getContinuum();
 
         getStoreTransactionManager().begin();
 
-        System.err.println(getProjectNagEmailAddress());
         String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectNagEmailAddress(), getProjectVersion(), getProjectType() );
 
         getStoreTransactionManager().commit();
 
         String buildId = continuum.buildProject( projectId );
 
-        getStoreTransactionManager().begin();
-
-        ContinuumBuild build = store.getBuild( buildId );
-
-        getStoreTransactionManager().commit();
+        ContinuumBuild build = TestUtils.waitForBuild( buildId );
 
         return build;
     }

@@ -23,86 +23,29 @@ package org.codehaus.continuum.notification;
  */
 
 import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractSuccessfulBuildNotifierTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
+ * @version $Id: AbstractSuccessfulBuildNotifierTest.java,v 1.5 2004-10-20 19:29:35 trygvis Exp $
  */
 public abstract class AbstractSuccessfulBuildNotifierTest
     extends AbstractNotifierTest
 {
     protected abstract String getNotifierRoleHint();
 
+    protected abstract void assertPreBuildState()
+    	throws Exception;
+
+    protected abstract void assertPostBuildState( ContinuumBuild buildResult )
+    	throws Exception;
+
     public void testSuccessfulBuild()
         throws Exception
     {
-        StoreTransactionManager txManager = getStoreTransactionManager();
-
-        ContinuumNotifier notifier = getContinuumNotifier( getNotifierRoleHint() );
-
-        // --- -- -
-
-        preBuildStarted();
+        assertPreBuildState();
 
         ContinuumBuild buildResult = build();
 
-        txManager.begin();
-
-        notifier.buildStarted( buildResult );
-
-        txManager.commit();
-
-        postBuildStarted();
-
-        // --- -- -
-
-        txManager.begin();
-
-        notifier.checkoutStarted( buildResult );
-
-        txManager.commit();
-
-        postCheckoutStarted();
-
-        // --- -- -
-
-        txManager.begin();
-
-        notifier.checkoutComplete( buildResult );
-
-        txManager.commit();
-
-        postCheckoutComplete();
-
-        // --- -- -
-
-        txManager.begin();
-
-        notifier.runningGoals( buildResult );
-
-        txManager.commit();
-
-        postRunningGoals();
-
-        // --- -- -
-
-        txManager.begin();
-
-        notifier.goalsCompleted( buildResult );
-
-        txManager.commit();
-
-        postGoalsCompleted();
-
-        // --- -- -
-
-        txManager.begin();
-
-        notifier.buildComplete( buildResult );
-
-        txManager.commit();
-
-        postBuildComplete();
+        assertPostBuildState( buildResult );
     }
 }
