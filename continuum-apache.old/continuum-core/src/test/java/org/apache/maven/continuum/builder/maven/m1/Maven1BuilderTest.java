@@ -16,8 +16,8 @@ package org.apache.maven.continuum.builder.maven.m1;
  * limitations under the License.
  */
 
-import java.util.Properties;
 import java.io.File;
+import java.util.Properties;
 
 import org.apache.maven.continuum.builder.manager.BuilderManager;
 import org.apache.maven.continuum.project.ContinuumProject;
@@ -27,7 +27,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1BuilderTest.java,v 1.2 2005-04-03 21:27:17 trygvis Exp $
+ * @version $Id: Maven1BuilderTest.java,v 1.3 2005-04-06 13:57:20 trygvis Exp $
  */
 public class Maven1BuilderTest
     extends PlexusTestCase
