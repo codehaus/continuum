@@ -49,7 +49,10 @@ public interface Continuum
     void removeProject( String projectId )
         throws ContinuumException;
 
-    void updateProject( String projectId )
+    void updateProjectFromScm( String projectId )
+        throws ContinuumException;
+
+    void updateProjectConfiguration( String projectId, Properties configuration )
         throws ContinuumException;
 
     ContinuumProject getProject( String projectId )
