@@ -30,7 +30,7 @@ import org.codehaus.continuum.AbstractContinuumTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.7 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.8 2004-10-06 13:37:14 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends AbstractContinuumTest
@@ -54,9 +54,7 @@ public class SimpleServerSocketConnectionFactoryTest
 
         factory = (ConnectionFactory)lookup( ConnectionFactory.ROLE );
 
-        System.err.println( "Connecting..." );
         socket = new Socket( "127.0.0.1", port );
-        System.err.println( "Connected" );
 
         output = socket.getOutputStream();
         input = socket.getInputStream();
@@ -76,8 +74,6 @@ public class SimpleServerSocketConnectionFactoryTest
             {
                 fail( "Unexpected end of stream." );
             }
-
-            System.err.println( "Read " + Integer.toHexString( data ) );
 
             readData[ i ] = (byte)data;
         }

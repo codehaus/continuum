@@ -24,11 +24,22 @@ package org.codehaus.continuum;
 
 import java.util.Iterator;
 
+import org.codehaus.continuum.project.ContinuumProject;
+
 public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
     String addProject( String name, String scmConnection, String type )
+        throws ContinuumException;
+
+    void removeProject( String projectId )
+        throws ContinuumException;
+
+    void updateProject( String projectId )
+        throws ContinuumException;
+
+    ContinuumProject getProject( String projectId )
         throws ContinuumException;
 
     Iterator getAllProjects( int start, int end )

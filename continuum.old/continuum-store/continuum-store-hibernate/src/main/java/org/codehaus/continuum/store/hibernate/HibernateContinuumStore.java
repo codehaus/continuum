@@ -29,7 +29,6 @@ import java.util.List;
 import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -40,6 +39,7 @@ import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.AbstractContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.hibernate.HibernateSessionService;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -47,7 +47,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.9 2004-08-26 10:13:29 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.10 2004-10-06 13:40:48 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -56,7 +56,8 @@ public class HibernateContinuumStore
     /** @requirement */
     private HibernateSessionService hibernate;
 
-    private ThreadLocal tx = new ThreadLocal();
+    /** @requirement */
+    private StoreTransactionManager txManager;
 
     private final static String HIBERNATE_CONFIGURATION = "hibernate.cfg.xml";
 
@@ -68,6 +69,7 @@ public class HibernateContinuumStore
         throws Exception
     {
         PlexusUtils.assertRequirement( hibernate, HibernateSessionService.ROLE );
+        PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
     }
 
     public void start()
@@ -86,90 +88,6 @@ public class HibernateContinuumStore
         getLogger().info( "Stopping the hibernate store." );
 
         hibernate.closeSession();
-    }
-
-    // ----------------------------------------------------------------------
-    // Transaction handling
-    // ----------------------------------------------------------------------
-
-    public void beginTransaction()
-        throws ContinuumStoreException
-    {
-        if ( tx.get() != null )
-        {
-            throw new ContinuumStoreException( "A transaction is already in progress." );
-        }
-
-        try
-        {
-            Session session = getHibernateSession();
-
-            tx.set( session.beginTransaction() );
-
-            getLogger().warn( "Started transaction: " + tx.get() );
-        }
-        catch( HibernateException ex )
-        {
-            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
-        }
-    }
-
-    public void commitTransaction()
-        throws ContinuumStoreException
-    {
-        if ( tx.get() == null )
-        {
-            throw new ContinuumStoreException( "No transaction has been started." );
-        }
-
-        try
-        {
-//            Session session = getHibernateSession();
-
-//            Transaction tx = session.beginTransaction();
-
-            ((Transaction) tx.get()).commit();
-
-//            getLogger().warn( "Committed transaction " + tx, new Exception() );
-        }
-        catch( HibernateException ex )
-        {
-            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
-        }
-        finally
-        {
-            tx.set( null );
-
-            closeSession();
-        }
-    }
-
-    public void rollbackTransaction()
-        throws ContinuumStoreException
-    {
-        if ( tx.get() == null )
-        {
-            throw new ContinuumStoreException( "No transaction has been started." );
-        }
-
-        try
-        {
-//            Session session = getHibernateSession();
-
-//            Transaction tx = session.beginTransaction();
-
-            ((Transaction) tx.get()).rollback();
-        }
-        catch( HibernateException ex )
-        {
-            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
-        }
-        finally
-        {
-            tx.set( null );
-
-            closeSession();
-        }
     }
 
     // ----------------------------------------------------------------------
@@ -225,28 +143,34 @@ public class HibernateContinuumStore
     public String addProject( String name, String scmConnection, String type )
         throws ContinuumStoreException
     {
-        ContinuumProject project = new GenericContinuumProject();
-
-        project.setName( name );
-
-        project.setScmConnection( scmConnection );
-
-        project.setState( ContinuumProjectState.NEW );
-
-        project.setType( type );
-
         try
         {
+            txManager.enter();
+
             Session session = getHibernateSession();
 
+            ContinuumProject project = new GenericContinuumProject();
+
+            project.setName( name );
+
+            project.setScmConnection( scmConnection );
+
+            project.setState( ContinuumProjectState.NEW );
+
+            project.setType( type );
+
             session.save( project );
+
+            txManager.leave();
+
+            return project.getId();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while adding project.", ex );
         }
-
-        return project.getId();
     }
 
     public void removeProject( String projectId )
@@ -255,6 +179,8 @@ public class HibernateContinuumStore
         try
         {
             Session session = getHibernateSession();
+
+            txManager.enter();
 
             session.delete( "from GenericContinuumBuild where projectId=?", projectId, Hibernate.STRING );
 
@@ -269,9 +195,13 @@ public class HibernateContinuumStore
             }
 
             session.delete( project );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while adding project.", ex );
         }
     }
@@ -282,6 +212,8 @@ public class HibernateContinuumStore
         try
         {
             Session session = hibernate.getSession();
+
+            txManager.enter();
 
             ContinuumProject project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
 
@@ -294,31 +226,99 @@ public class HibernateContinuumStore
             session.save( descriptor );
 
             session.update( project );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while setting the project descriptor.", ex );
+        }
+    }
+
+    public void updateProjectDescriptor( String projectId, ProjectDescriptor descriptor )
+        throws ContinuumStoreException
+    {
+        if ( descriptor == null )
+        {
+            throw new ContinuumStoreException( "Invalid parameters: The project descriptor cannot be null." );
+        }
+
+        try
+        {
+            Session session = hibernate.getSession();
+
+            txManager.enter();
+
+            ContinuumProject project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+
+            ProjectDescriptor originalDescriptor = project.getDescriptor();
+
+            if ( originalDescriptor != null )
+            {
+                project.setDescriptor( null );
+
+                session.update( project );
+
+                session.delete( originalDescriptor );
+
+                // This flush && evict trick is required because hibernate 
+                // caches the removed descriptor
+                session.flush();
+
+                session.evict( originalDescriptor );
+            }
+
+            project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+
+            descriptor.setProjectId( projectId );
+
+            descriptor.setProject( project );
+
+            project.setDescriptor( descriptor );
+
+            session.save( descriptor );
+
+            session.update( project );
+
+            txManager.leave();
+        }
+        catch( HibernateException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumStoreException( "Error while updating the project descriptor.", ex );
         }
     }
 
     public void updateProject( String projectId, String name, String scmUrl )
         throws ContinuumStoreException
     {
-        GenericContinuumProject project = getGenericProject( projectId );
-
-        if ( name == null || name.trim().length() == 0 )
+        try
         {
-            throw new ContinuumStoreException( "The name must be set." );
-        }
+            txManager.enter();
 
-        if ( scmUrl == null || scmUrl.trim().length() == 0 )
+            GenericContinuumProject project = getGenericProject( projectId );
+
+            if ( name == null || name.trim().length() == 0 )
+            {
+                throw new ContinuumStoreException( "The name must be set." );
+            }
+
+            if ( scmUrl == null || scmUrl.trim().length() == 0 )
+            {
+                throw new ContinuumStoreException( "The scm url must be set." );
+            }
+
+            project.setName( name );
+
+            project.setScmConnection( scmUrl );
+        }
+        finally
         {
-            throw new ContinuumStoreException( "The scm url must be set." );
+            txManager.leave();
         }
-
-        project.setName( name );
-
-        project.setScmConnection( scmUrl );
     }
 
     public Iterator getAllProjects()
@@ -330,14 +330,45 @@ public class HibernateContinuumStore
 
         try
         {
-            it = session.find( "from " + ContinuumProject.class.getName() ).iterator();
+            txManager.enter();
+
+            it = session.find( "from " + ContinuumProject.class.getName() + " order by name" ).iterator();
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while loading all projects.", ex );
         }
 
         return it;
+    }
+
+    public Iterator findProjectsByName( String nameSearchPattern )
+        throws ContinuumStoreException
+    {
+        Session session = getHibernateSession();
+
+        List list;
+
+        try
+        {
+            txManager.enter();
+
+            list = session.find( "from GenericContinuumProject where name=? order by name", nameSearchPattern, Hibernate.STRING );
+
+            txManager.leave();
+        }
+        catch( HibernateException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumStoreException( "Error while loading project.", ex );
+        }
+
+        return list.iterator();
     }
 
     public ContinuumProject getProject( String projectId )
@@ -349,10 +380,16 @@ public class HibernateContinuumStore
 
         try
         {
+            txManager.enter();
+
             continuumProject = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while loading project.", ex );
         }
 
@@ -366,6 +403,8 @@ public class HibernateContinuumStore
     public String createBuild( String projectId )
         throws ContinuumStoreException
     {
+        txManager.enter();
+
         GenericContinuumProject project = getGenericProject( projectId );
 
         GenericContinuumBuild build = new GenericContinuumBuild();
@@ -385,9 +424,13 @@ public class HibernateContinuumStore
             session.update( project );
 
             session.save( build );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while creating build result.", ex );
         }
 
@@ -407,6 +450,8 @@ public class HibernateContinuumStore
         try
         {
             Session session = getHibernateSession();
+
+            txManager.enter();
 
             GenericContinuumBuild build = getGenericBuild( id );
 
@@ -433,9 +478,13 @@ public class HibernateContinuumStore
             session.update( build );
 
             session.update( project );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while setting the build result.", ex );
         }
     }
@@ -449,10 +498,16 @@ public class HibernateContinuumStore
         {
             Session session = getHibernateSession();
 
+            txManager.enter();
+
             buildResult = (ContinuumBuild) session.load( GenericContinuumBuild.class, id );
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while loading build.", ex );
         }
 
@@ -469,12 +524,18 @@ public class HibernateContinuumStore
         {
             Session session = getHibernateSession();
 
-            List list = session.find( "from GenericContinuumBuild where projectId=?", projectId, Hibernate.STRING );
+            txManager.enter();
+
+            List list = session.find( "from GenericContinuumBuild where projectId=? order by startTime", projectId, Hibernate.STRING );
 
             it = list.iterator();
+
+            txManager.leave();
         }
         catch( HibernateException ex )
         {
+            txManager.rollback();
+
             throw new ContinuumStoreException( "Error while loading the builds for the project.", ex );
         }
 

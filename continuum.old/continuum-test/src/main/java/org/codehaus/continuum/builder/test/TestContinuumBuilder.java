@@ -34,7 +34,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestContinuumBuilder.java,v 1.2 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: TestContinuumBuilder.java,v 1.3 2004-10-06 13:33:49 trygvis Exp $
  */
 public class TestContinuumBuilder
     extends AbstractLogEnabled
@@ -44,6 +44,8 @@ public class TestContinuumBuilder
     private int buildCount = 0;
 
     private int buildSleepInterval = 0;
+
+    private boolean failOnNextBuild;
 
     // ----------------------------------------------------------------------
     // ContinuumBuilder Implementation
@@ -77,6 +79,13 @@ public class TestContinuumBuilder
             // ignore
         }
 
+        if ( failOnNextBuild )
+        {
+            failOnNextBuild = false;
+
+            return new TestBuildResult( build, false );
+        }
+
         return new TestBuildResult( build, true );
     }
 
@@ -87,6 +96,11 @@ public class TestContinuumBuilder
     public void setBuildSleepInterval( int buildSleepInterval )
     {
         this.buildSleepInterval = buildSleepInterval;
+    }
+
+    public void setFailOnNextBuild( boolean failOnNextBuild )
+    {
+        this.failOnNextBuild = failOnNextBuild;
     }
 
     public int getBuildCount()

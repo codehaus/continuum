@@ -35,11 +35,12 @@ import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.6 2004-07-29 03:45:08 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.7 2004-10-06 13:37:13 trygvis Exp $
  */
 class BuilderThread
     implements Runnable
@@ -52,6 +53,9 @@ class BuilderThread
 
     /** */
     private ContinuumStore store;
+
+    /** */
+    private StoreTransactionManager txManager;
 
     /** */
     private NotifierManager notifier;
@@ -69,13 +73,15 @@ class BuilderThread
     private boolean done;
 
     public BuilderThread( BuilderManager builderManager, BuildQueue buildQueue, ContinuumStore store,
-        NotifierManager notifier, ContinuumScm scm, Logger logger )
+        StoreTransactionManager txManager, NotifierManager notifier, ContinuumScm scm, Logger logger )
     {
         this.builderManager = builderManager;
 
         this.buildQueue = buildQueue;
 
         this.store = store;
+
+        this.txManager = txManager;
 
         this.notifier = notifier;
 
@@ -99,34 +105,34 @@ class BuilderThread
 
             try
             {
-                store.beginTransaction();
+                txManager.begin();
 
                 store.setBuildResult( buildId, ContinuumProjectState.BUILDING, null, null );
 
-                store.commitTransaction();
+                txManager.commit();
             }
             catch( ContinuumStoreException ex )
             {
                 getLogger().error( "Exception while setting the state flag.", ex );
 
-                rollback();
+                txManager.rollback();
 
                 continue;
             }
 
             try
             {
-                store.beginTransaction();
+                txManager.begin();
 
                 buildProject( buildId );
 
-                store.commitTransaction();
+                txManager.commit();
             }
             catch( Exception ex )
             {
                 getLogger().error( "Internal error while building the project.", ex );
 
-                rollback();
+                txManager.rollback();
 
                 continue;
             }
@@ -272,21 +278,5 @@ class BuilderThread
         }
 
         return result;
-    }
-
-    // ----------------------------------------------------------------------
-    // Database helpers
-    // ----------------------------------------------------------------------
-
-    private void rollback()
-    {
-        try
-        {
-            store.rollbackTransaction();
-        }
-        catch( Exception ex )
-        {
-            getLogger().error( "Exception while rolling back transaction, ignored.", ex );
-        }
     }
 }

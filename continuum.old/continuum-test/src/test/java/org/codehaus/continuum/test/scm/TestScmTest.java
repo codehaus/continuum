@@ -33,7 +33,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestScmTest.java,v 1.4 2004-09-07 16:22:20 trygvis Exp $
+ * @version $Id: TestScmTest.java,v 1.5 2004-10-06 13:33:51 trygvis Exp $
  */
 public class TestScmTest
     extends ArtifactEnabledPlexusTestCase
@@ -59,12 +59,22 @@ public class TestScmTest
         }
     }
 
-    public void testTestScm()
+    public void testTestScmWithRelativePath()
+        throws Exception
+    {
+        coTest( "scm:test:src/test/repositories:test-repo" );
+    }
+
+    public void testTestScmWithAbsolutePath()
+        throws Exception
+    {
+        coTest( "scm:test:" + getTestPath( "src/test/repositories" ) + ":test-repo" );
+    }
+
+    private void coTest( String scmUrl )
         throws Exception
     {
         ScmManager scmManager = (ScmManager) lookup( ScmManager.ROLE );
-
-        String scmUrl = "scm:test:src/test/repositories:test-repo";
 
         scmManager.setRepositoryInfo( scmUrl );
 
@@ -82,13 +92,9 @@ public class TestScmTest
 
         File coDir = new File( workingDirectory, "test-repo" );
 
-        assertTrue( coDir.exists() );
-
         assertTrue( coDir.isDirectory() );
 
         File testFile = new File( coDir, "Test.java" );
-
-        assertTrue( testFile.exists() );
 
         assertTrue( testFile.isFile() );
     }

@@ -33,6 +33,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
@@ -41,10 +42,11 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.40 2004-09-07 16:22:16 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.41 2004-10-06 13:37:13 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -65,8 +67,13 @@ public class DefaultContinuum
     /** @requirement */
     private ContinuumStore store;
 
+    /** @requirement */
+    private StoreTransactionManager txManager;
+
     /** @configuration */
     private String checkoutDirectory;
+
+    private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
 
     private BuilderThread builderThread;
 
@@ -93,10 +100,13 @@ public class DefaultContinuum
         PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
+        PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
         PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
         PlexusUtils.assertRequirement( notifierManager, NotifierManager.ROLE );
 
-        getLogger().info( "Showing all projects:" );
+        getLogger().info( "Showing all projects: " );
+
+        txManager.begin();
 
         for ( Iterator it = store.getAllProjects(); it.hasNext(); )
         {
@@ -104,13 +114,15 @@ public class DefaultContinuum
 
             getLogger().info( " " + project.getId() + ":" + project.getName() + ":" + project.getType() );
         }
+
+        txManager.commit();
     }
 
     public void start()
         throws Exception
     {
         getLogger().info( "Starting continuum." );
-
+/*
         if ( container.hasComponent( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" ) )
         {
             getLogger().warn( "Has m2 builder, booting" );
@@ -121,31 +133,9 @@ public class DefaultContinuum
         {
             getLogger().warn( "Missing m2 builder" );
         }
-/*
-        if ( !started )
-        {
-            File jarRepo = new File( plexusHome, "/apps/continuumweb/plugins" );
-
-            if ( !jarRepo.exists() )
-            {
-                getLogger().warn( "JAR REPOSITORY DOESN'T EXIST: " + jarRepo.getAbsolutePath() );
-            }
-            else
-            {
-                getLogger().warn( "JAR REPOSITORY: " + jarRepo.getAbsolutePath() );
-
-                // this initializes maven
-                container.lookup( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" );
-
-                container.addJarRepository( jarRepo );
-
-                container.discoverComponents();
-            }
-            started = true;
-        }
 */
         // start the builder thread
-        builderThread = new BuilderThread( builderManager, buildQueue, store, notifierManager, scm, getLogger() );
+        builderThread = new BuilderThread( builderManager, buildQueue, store, txManager, notifierManager, scm, getLogger() );
 
         Thread thread = new Thread( builderThread );
 
@@ -153,7 +143,19 @@ public class DefaultContinuum
 
         thread.start();
 
-        getLogger().info( "Continuum started." );
+        String banner = StringUtils.repeat( "-", continuumVersion.length() );
+
+        getLogger().info( "" );
+        getLogger().info( "" );
+        getLogger().info( "< Continuum " + continuumVersion + " started! >" );
+        getLogger().info( "-----------------------" + banner );
+        getLogger().info( "       \\   ^__^" );
+        getLogger().info( "        \\  (oo)\\_______" );
+        getLogger().info( "           (__)\\       )\\/\\" );
+        getLogger().info( "               ||----w |" );
+        getLogger().info( "               ||     ||" );
+        getLogger().info( "" );
+        getLogger().info( "" );
     }
 
     public void stop()
@@ -193,13 +195,59 @@ public class DefaultContinuum
     public String addProject( String name, String scmConnection, String type )
         throws ContinuumException
     {
-        String projectId;
-
         try
         {
-            store.beginTransaction();
+            txManager.enter();
 
-            projectId = store.addProject( name, scmConnection, type );
+            Iterator it = store.findProjectsByName( name );
+
+            txManager.leave();
+
+            if ( it.hasNext() )
+            {
+                ContinuumProject project = (ContinuumProject) it.next();
+
+                updateProject( project.getId() );
+
+                return project.getId();
+            }
+            else
+            {
+                txManager.enter();
+
+                String projectId = store.addProject( name, scmConnection, type );
+
+                ContinuumProject project = store.getProject( projectId );
+
+                ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
+
+                ProjectDescriptor descriptor = builder.createDescriptor( project );
+
+                store.setProjectDescriptor( projectId, descriptor );
+
+                txManager.leave();
+
+                getLogger().info( "Added project: " + name );
+
+                return projectId;
+            }
+        }
+        catch ( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Exception while adding project.", ex );
+
+            throw new ContinuumException( "Exception while adding project.", ex );
+        }
+    }
+
+    public void updateProject( String projectId )
+        throws ContinuumException
+    {
+        try
+        {
+            txManager.enter();
 
             ContinuumProject project = store.getProject( projectId );
 
@@ -207,22 +255,66 @@ public class DefaultContinuum
 
             ProjectDescriptor descriptor = builder.createDescriptor( project );
 
-            store.setProjectDescriptor( projectId, descriptor );
+            store.updateProject( projectId, project.getName(), project.getScmConnection() );
 
-            store.commitTransaction();
+            store.updateProjectDescriptor( projectId, descriptor );
 
-            getLogger().info( "Added project: " + name );
+            txManager.leave();
+
+            getLogger().info( "Updated project: " + project.getName() );
         }
-        catch ( Exception ex )
+        catch ( ContinuumStoreException ex )
         {
-            rollback();
+            txManager.rollback();
 
-            getLogger().error( "Exception while building project.", ex );
+            getLogger().error( "Error while updating project.", ex );
 
-            throw new ContinuumException( "Exception while building project.", ex );
+            throw new ContinuumException( "Error while updating project.", ex );
         }
+    }
 
-        return projectId;
+    public void removeProject( String projectId )
+        throws ContinuumException
+    {
+        try
+        {
+            txManager.enter();
+
+            store.removeProject( projectId );
+
+            txManager.leave();
+        }
+        catch ( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Error while updating project.", ex );
+
+            throw new ContinuumException( "Error while removing project.", ex );
+        }
+    }
+
+    public ContinuumProject getProject( String projectId )
+        throws ContinuumException
+    {
+        try
+        {
+            txManager.enter();
+
+            ContinuumProject project = store.getProject( projectId );
+
+            txManager.leave();
+
+            return project;
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Error while finding all projects.", ex );
+
+            throw new ContinuumException( "Exception while getting all projects.", ex );
+        }
     }
 
     public Iterator getAllProjects( int start, int end )
@@ -230,70 +322,55 @@ public class DefaultContinuum
     {
         try
         {
-            return store.getAllProjects();
+            txManager.enter();
+
+            Iterator it = store.getAllProjects();
+
+            txManager.leave();
+
+            return it;
         }
         catch( ContinuumStoreException ex )
         {
+            txManager.rollback();
+
+            getLogger().error( "Error while finding all projects.", ex );
+
             throw new ContinuumException( "Exception while getting all projects.", ex );
         }
     }
 
+    // This method cannot be run inside another transaction
+    // because the tx has to be committed before it's put on the build queue
     public String buildProject( String id )
         throws ContinuumException
     {
-        String buildId;
-
-        ContinuumProject project = getProject( id );
-
         try
         {
-            store.beginTransaction();
+            txManager.begin();
 
-            buildId = store.createBuild( project.getId() );
+            ContinuumProject project = store.getProject( id );
+
+            String buildId = store.createBuild( project.getId() );
+
+            txManager.commit();
 
             getLogger().info( "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId + "..." );
 
-            store.commitTransaction();
-
             buildQueue.enqueue( buildId );
+
+            return buildId;
         }
         catch( ContinuumStoreException ex )
         {
-            rollback();
+            txManager.rollback();
 
             getLogger().error( "Exception while building project.", ex );
 
             throw new ContinuumException( "Exception while creating build object.", ex );
         }
-
-        return buildId;
     }
-/*
-    public List buildProjects()
-        throws ContinuumException
-    {
-        getLogger().info( "Building all projects ..." );
 
-        List ids = new ArrayList();
-
-        for ( Iterator i = builds.values().iterator(); i.hasNext(); )
-        {
-            MavenProject project = (MavenProject) i.next();
-
-            ids.add( buildQueue.enqueue( project ) );
-        }
-
-        return ids;
-    }
-/*
-    public int getState()
-    {
-        if ( building || addingProject )
-            return ContinuumConstants.WORKING;
-
-        return ContinuumConstants.IDLE;
-    }
-*/
     /**
      * Returns the current length of the build queue.
      *
@@ -303,45 +380,5 @@ public class DefaultContinuum
         throws ContinuumException
     {
         return buildQueue.getLength();
-    }
-
-    // ----------------------------------------------------------------------
-    // Private
-    // ----------------------------------------------------------------------
-
-/*
-    private boolean hasProject( String groupId, String artifactId )
-    {
-        return builds.containsKey( createId( groupId, artifactId ) );
-    }
-*/
-    private ContinuumProject getProject( String id )
-        throws ContinuumException
-    {
-        try
-        {
-            ContinuumProject project = store.getProject( id );
-
-            if ( project == null )
-                throw new ContinuumException( "No such project: " + id + "." );
-
-            return project;
-        }
-        catch( ContinuumStoreException ex )
-        {
-            throw new ContinuumException( "Could not retrieve project #" + id, ex );
-        }
-    }
-
-    private void rollback()
-    {
-        try
-        {
-            store.rollbackTransaction();
-        }
-        catch( Exception ex )
-        {
-            getLogger().warn( "Exception while rolling back transaction, ignored.", ex );
-        }
     }
 }

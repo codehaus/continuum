@@ -29,7 +29,7 @@ import org.apache.maven.scm.repository.AbstractRepository;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestRepository.java,v 1.4 2004-09-07 16:22:19 trygvis Exp $
+ * @version $Id: TestRepository.java,v 1.5 2004-10-06 13:33:50 trygvis Exp $
  */
 public class TestRepository
     extends AbstractRepository
@@ -70,9 +70,12 @@ public class TestRepository
 
         base = connection.substring( 0, index );
 
-        String basedir = System.getProperty( "basedir", new File( "" ).getAbsolutePath() );
+        if ( !new File( base ).isAbsolute() )
+        {
+            String basedir = System.getProperty( "basedir", new File( "" ).getAbsolutePath() );
 
-        base = new File( basedir, base.substring( base.indexOf( ":" ) + 1 ) ).getAbsolutePath();
+            base = new File( basedir, base ).getAbsolutePath();
+        }
 
         dir = connection.substring( index + 1 );
     }

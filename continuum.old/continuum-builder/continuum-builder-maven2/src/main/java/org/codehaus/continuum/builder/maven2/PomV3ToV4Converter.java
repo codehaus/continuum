@@ -51,19 +51,19 @@ import org.apache.maven.model.Site;
 import org.apache.maven.model.SourceModification;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.apache.maven.model.v300.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.v3_0_0.io.xpp3.MavenXpp3Reader;
 
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PomV3ToV4Converter.java,v 1.1 2004-08-29 18:45:15 trygvis Exp $
+ * @version $Id: PomV3ToV4Converter.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
  */
 public class PomV3ToV4Converter
 {
     private File currentFile;
 
-    private org.apache.maven.model.v300.Model v3ParentModel;
+    private org.apache.maven.model.v3_0_0.Model v3ParentModel;
 
     public static void main( String[] args )
     {
@@ -141,7 +141,7 @@ public class PomV3ToV4Converter
     private void convert( )
         throws Exception
     {
-        org.apache.maven.model.v300.Model v3Model = loadV3Pom( currentFile );
+        org.apache.maven.model.v3_0_0.Model v3Model = loadV3Pom( currentFile );
 
         Model v4Model = populateModel( v3Model );
 
@@ -166,7 +166,7 @@ public class PomV3ToV4Converter
         output.close();
     }
 
-    private  Model populateModel( org.apache.maven.model.v300.Model v3Model )
+    private  Model populateModel( org.apache.maven.model.v3_0_0.Model v3Model )
         throws Exception
     {
         Model v4Model = new Model();
@@ -265,7 +265,7 @@ public class PomV3ToV4Converter
         return v4Model;
     }
 
-    private Parent getParent( org.apache.maven.model.v300.Model v3Model )
+    private Parent getParent( org.apache.maven.model.v3_0_0.Model v3Model )
         throws Exception
     {
         Parent parent = new Parent();
@@ -333,7 +333,7 @@ public class PomV3ToV4Converter
         return parent;
     }
 
-    private Organization getOrganization( org.apache.maven.model.v300.Model v3Model )
+    private Organization getOrganization( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         Organization organization = new Organization();
 
@@ -351,7 +351,7 @@ public class PomV3ToV4Converter
         return organization;
     }
 
-    private IssueManagement getIssueManagement( org.apache.maven.model.v300.Model v3Model )
+    private IssueManagement getIssueManagement( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         String issueTrackingUrl = v3Model.getIssueTrackingUrl();
 
@@ -367,7 +367,7 @@ public class PomV3ToV4Converter
         return issueManagement;
     }
 
-    private CiManagement getCiManagement( org.apache.maven.model.v300.Model v3Model )
+    private CiManagement getCiManagement( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         if ( v3Model.getBuild() == null )
         {
@@ -390,7 +390,7 @@ public class PomV3ToV4Converter
 
     // TODO:
     // note: these are not SCM repositories but rather artifact repositories
-    private List getRepositories( org.apache.maven.model.v300.Model v3Model )
+    private List getRepositories( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         List repositories = new ArrayList( 1 );
 
@@ -400,7 +400,7 @@ public class PomV3ToV4Converter
     }
 
     // TODO:
-    private List getMailingLists( org.apache.maven.model.v300.Model v3Model )
+    private List getMailingLists( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         List mailingLists = new ArrayList();
 
@@ -413,8 +413,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3MailingLists.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.MailingList v3MailingList =
-                (org.apache.maven.model.v300.MailingList) it.next();
+            org.apache.maven.model.v3_0_0.MailingList v3MailingList =
+                (org.apache.maven.model.v3_0_0.MailingList) it.next();
 
             MailingList mailingList = new MailingList();
 
@@ -432,7 +432,7 @@ public class PomV3ToV4Converter
         return mailingLists;
     }
 
-    private List getDevelopers( org.apache.maven.model.v300.Model v3Model )
+    private List getDevelopers( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         List developers = new ArrayList();
 
@@ -445,8 +445,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Developers.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Developer v3Developer =
-                (org.apache.maven.model.v300.Developer) it.next();
+            org.apache.maven.model.v3_0_0.Developer v3Developer =
+                (org.apache.maven.model.v3_0_0.Developer) it.next();
 
             Developer developer = new Developer();
 
@@ -470,7 +470,7 @@ public class PomV3ToV4Converter
         return developers;
     }
 
-    private List getContributors( org.apache.maven.model.v300.Model v3Model )
+    private List getContributors( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         List contributors = new ArrayList();
 
@@ -483,8 +483,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Contributors.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Contributor v3Contributor =
-                (org.apache.maven.model.v300.Contributor) it.next();
+            org.apache.maven.model.v3_0_0.Contributor v3Contributor =
+                (org.apache.maven.model.v3_0_0.Contributor) it.next();
 
             Contributor contributor = new Contributor();
 
@@ -506,7 +506,7 @@ public class PomV3ToV4Converter
         return contributors;
     }
 
-    private List getDependencies( org.apache.maven.model.v300.Model v3Model )
+    private List getDependencies( org.apache.maven.model.v3_0_0.Model v3Model )
         throws Exception
     {
         List dependencies = new ArrayList();
@@ -520,8 +520,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Dependencies.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Dependency v3Dependency =
-                (org.apache.maven.model.v300.Dependency) it.next();
+            org.apache.maven.model.v3_0_0.Dependency v3Dependency =
+                (org.apache.maven.model.v3_0_0.Dependency) it.next();
 
             Dependency dependency = new Dependency();
 
@@ -580,7 +580,7 @@ public class PomV3ToV4Converter
         return dependencies;
     }
 
-    private List getLicenses( org.apache.maven.model.v300.Model v3Model )
+    private List getLicenses( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         List licenses = new ArrayList();
 
@@ -593,8 +593,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Licenses.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.License v3License =
-                (org.apache.maven.model.v300.License) it.next();
+            org.apache.maven.model.v3_0_0.License v3License =
+                (org.apache.maven.model.v3_0_0.License) it.next();
 
             License license = new License();
 
@@ -610,7 +610,7 @@ public class PomV3ToV4Converter
         return licenses;
     }
 
-    private Scm getScm( org.apache.maven.model.v300.Model v3Model )
+    private Scm getScm( org.apache.maven.model.v3_0_0.Model v3Model )
     {
         if ( v3Model.getRepository() == null )
         {
@@ -634,9 +634,9 @@ public class PomV3ToV4Converter
         return scm;
     }
 
-    private Build getBuild( org.apache.maven.model.v300.Model v3Model )
+    private Build getBuild( org.apache.maven.model.v3_0_0.Model v3Model )
     {
-        org.apache.maven.model.v300.Build v3Build = v3Model.getBuild();
+        org.apache.maven.model.v3_0_0.Build v3Build = v3Model.getBuild();
 
         if ( v3Build == null )
         {
@@ -655,8 +655,8 @@ public class PomV3ToV4Converter
 
             for ( Iterator it = v3SourceModifications.iterator(); it.hasNext(); )
             {
-                org.apache.maven.model.v300.SourceModification v3SourceModification =
-                    (org.apache.maven.model.v300.SourceModification) it.next();
+                org.apache.maven.model.v3_0_0.SourceModification v3SourceModification =
+                    (org.apache.maven.model.v3_0_0.SourceModification) it.next();
 
                 SourceModification sourceModification = new SourceModification();
 
@@ -676,7 +676,7 @@ public class PomV3ToV4Converter
 
         build.setAspectSourceDirectory( v3Build.getAspectSourceDirectory() );
 
-        org.apache.maven.model.v300.UnitTest v3UnitTest = v3Build.getUnitTest();
+        org.apache.maven.model.v3_0_0.UnitTest v3UnitTest = v3Build.getUnitTest();
 
         if ( v3UnitTest != null )
         {
@@ -696,7 +696,7 @@ public class PomV3ToV4Converter
         return build;
     }
 
-    private DistributionManagement getDistributionManagement( org.apache.maven.model.v300.Model v3Model )
+    private DistributionManagement getDistributionManagement( org.apache.maven.model.v3_0_0.Model v3Model )
         throws Exception
     {
         DistributionManagement distributionManagement = new DistributionManagement();
@@ -784,12 +784,12 @@ public class PomV3ToV4Converter
         return distributionManagement;
     }
 
-    private org.apache.maven.model.v300.Model loadV3Pom( File inputFile )
+    private org.apache.maven.model.v3_0_0.Model loadV3Pom( File inputFile )
         throws Exception
     {
         MavenXpp3Reader v3Reader = new MavenXpp3Reader();
 
-        org.apache.maven.model.v300.Model model;
+        org.apache.maven.model.v3_0_0.Model model;
 
         model = v3Reader.read( new FileReader( inputFile ) );
 /*
@@ -873,8 +873,8 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Resources.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Resource v3Resource =
-                (org.apache.maven.model.v300.Resource) it.next();
+            org.apache.maven.model.v3_0_0.Resource v3Resource =
+                (org.apache.maven.model.v3_0_0.Resource) it.next();
 
             Resource resource = new Resource();
 

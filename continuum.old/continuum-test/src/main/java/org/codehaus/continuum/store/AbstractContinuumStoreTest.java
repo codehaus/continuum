@@ -3,7 +3,7 @@ package org.codehaus.continuum.store;
 import java.util.Iterator;
 import java.util.List;
 
-import org.codehaus.continuum.TestUtils;
+import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.builder.test.TestBuildResult;
 import org.codehaus.continuum.builder.test.TestProjectDescriptor;
 import org.codehaus.continuum.project.ContinuumBuild;
@@ -11,27 +11,23 @@ import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ProjectDescriptor;
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.3 2004-07-29 04:24:14 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
-    extends PlexusTestCase
+    extends AbstractContinuumTest
 {
+    // TODO: Add tests for the ordering of builds
+
     private ContinuumStore store;
 
+    private StoreTransactionManager txManager;
+
     protected abstract String getRoleHint();
-
-    protected abstract void beginTx()
-        throws Exception;
-
-    protected abstract void commitTx()
-        throws Exception;
-
-    protected abstract void rollbackTx()
-        throws Exception;
 
     public void setUp()
         throws Exception
@@ -39,6 +35,8 @@ public abstract class AbstractContinuumStoreTest
         super.setUp();
 
         store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
+
+        txManager = (StoreTransactionManager) lookup( StoreTransactionManager.ROLE, getRoleHint() );
     }
 
     // ----------------------------------------------------------------------
@@ -54,13 +52,19 @@ public abstract class AbstractContinuumStoreTest
 
         String type = "mock";
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         String id = store.addProject( projectName, scmConnection, type );
 
-        commitTx();
+        assertNotNull( id );
 
-        beginTx();
+        txManager.commit();
+
+        // --- -- -
+
+        txManager.begin();
 
         ContinuumProject project = store.getProject( id );
 
@@ -80,11 +84,12 @@ public abstract class AbstractContinuumStoreTest
 
         assertNull( project.getDescriptor() );
 
-        commitTx();
+        txManager.commit();
 
+        // --- -- -
         // Check the descriptor
 
-        beginTx();
+        txManager.begin();
 
         project = store.getProject( id );
 
@@ -98,9 +103,11 @@ public abstract class AbstractContinuumStoreTest
 
         store.setProjectDescriptor( id, descriptor );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         project = store.getProject( id );
 
@@ -118,13 +125,43 @@ public abstract class AbstractContinuumStoreTest
 
         assertEquals( 666, descriptor.getAttribute() );
 
-        commitTx();
+        txManager.commit();
+    }
+
+    public void testFindProjectsByName()
+        throws Exception
+    {
+        txManager.begin();
+
+        store.addProject( "aaa", "scm:test:foo", "test" );
+
+        store.addProject( "aab", "scm:test:foo", "test" );
+
+        store.addProject( "baa", "scm:test:foo", "test" );
+
+        txManager.commit();
+
+        txManager.begin();
+
+        Iterator it = store.findProjectsByName( "aaa" );
+
+        assertNotNull( it );
+
+        assertTrue( it.hasNext() );
+
+        ContinuumProject project = (ContinuumProject) it.next();
+
+        assertEquals( "aaa", project.getName() );
+
+        assertFalse( it.hasNext() );
+
+        txManager.commit();
     }
 
     public void testRemoveProject()
         throws Exception
     {
-        beginTx();
+        txManager.begin();
 
         String projectId1 = store.addProject( "p1", "scm:test:", "test" );
 
@@ -142,19 +179,29 @@ public abstract class AbstractContinuumStoreTest
 
         store.setBuildResult( buildId1, ContinuumProjectState.OK, result, null );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         store.removeProject( projectId1 );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         store.getBuild( buildId2 );
 
         store.getProject( projectId2 );
+
+        txManager.commit();
+
+        // --- -- -
+
+        txManager.begin();
 
         try
         {
@@ -167,6 +214,10 @@ public abstract class AbstractContinuumStoreTest
             // expected
         }
 
+        // --- -- -
+
+        txManager.begin();
+
         try
         {
             store.getProject( projectId1 );
@@ -178,6 +229,10 @@ public abstract class AbstractContinuumStoreTest
             // expected
         }
 
+        // --- -- -
+
+        txManager.begin();
+
         Iterator it = store.getAllProjects();
 
         assertTrue( it.hasNext() );
@@ -186,7 +241,7 @@ public abstract class AbstractContinuumStoreTest
 
         assertFalse( it.hasNext() );
 
-        commitTx();
+        txManager.commit();
     }
 
     public void testUpdateProjectWithValidParameters()
@@ -198,13 +253,17 @@ public abstract class AbstractContinuumStoreTest
 
         String type = "maven2";
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         String projectId = store.addProject( name1, scmConnection1, type );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         ContinuumProject project = store.getProject( projectId );
 
@@ -220,17 +279,17 @@ public abstract class AbstractContinuumStoreTest
 
         assertProject( projectId, name2, scmConnection2, type, project );
 
-        commitTx();
+        txManager.commit();
     }
 
     public void testUpdateProjectWithInvalidParameters()
         throws Exception
     {
-        beginTx();
+        txManager.begin();
 
         String projectId = store.addProject( "Foo Project", "scm", "maven2" );
 
-        commitTx();
+        txManager.commit();
 
         assertProjectUpdateFails( projectId, null, null );
 
@@ -246,27 +305,33 @@ public abstract class AbstractContinuumStoreTest
     public void testBuild()
         throws Exception
     {
-        beginTx();
+        txManager.begin();
 
         String projectId = store.addProject( "Foo Project", "scm", "maven2" );
 
         String buildId = store.createBuild( projectId );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         ContinuumProject project = store.getProject( projectId );
 
-        ContinuumBuild build = store.getBuild( buildId );
+        assertNotNull( project );
 
         assertEquals( ContinuumProjectState.BUILD_SIGNALED, project.getState() );
+
+        ContinuumBuild build = store.getBuild( buildId );
+
+        assertNotNull( build );
 
         assertEquals( ContinuumProjectState.BUILD_SIGNALED, build.getState() );
 
         Iterator it = store.getBuildsForProject( projectId, 0, 0 );
 
-        List list = TestUtils.iteratorToList( it );
+        List list = CollectionUtils.iteratorToList( it );
 
         assertEquals( 1, list.size() );
 
@@ -274,21 +339,25 @@ public abstract class AbstractContinuumStoreTest
 
         assertBuildResult( projectId, buildId, ContinuumProjectState.BUILD_SIGNALED, build );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         store.setBuildResult( buildId, ContinuumProjectState.OK, null, null );
 
-        commitTx();
+        txManager.commit();
 
-        beginTx();
+        // --- -- -
+
+        txManager.begin();
 
         build = store.getBuild( buildId );
 
         assertEquals( ContinuumProjectState.OK, build.getState() );
 
-        commitTx();
+        txManager.commit();
     }
 
     // ----------------------------------------------------------------------

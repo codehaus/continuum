@@ -23,11 +23,13 @@ package org.codehaus.continuum.store.memory;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -38,44 +40,114 @@ import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.AbstractContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.4 2004-09-07 16:22:17 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.5 2004-10-06 13:37:14 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
+    implements Initializable
 {
-    private int projectSerial = Math.abs( "projectSerial".hashCode() );
+    /** @requirement */
+    private StoreTransactionManager txManager;
 
-    private int buildSerial = Math.abs( "buildSerial".hashCode() );
+    private int projectSerial;
 
-    private Map projects = new HashMap();
+    private int buildSerial;
 
-    private Map builds = new HashMap();
+    private Map projectIdIndex;
+
+    private List projectList;
+
+    private Map buildIdIndex;
+
+    private List buildList;
 
     /** */
     public MemoryContinuumStore()
     {
     }
 
-    // ----------------------------------------------------------------------
-    // Transaction handling
-    // ----------------------------------------------------------------------
-
-    public void beginTransaction()
+    private static class NotNullIterator
+        implements Iterator
     {
-        // ignored
+        private Iterator it;
+
+        private boolean hasNext;
+
+        private Object next;
+
+        public NotNullIterator ( Iterator it )
+        {
+            this.it = it;
+        }
+
+        public void remove()
+        {
+            it.remove();
+        }
+
+        public Object next()
+        {
+            if ( !hasNext )
+            {
+                if ( !setNext() )
+                {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            hasNext = false;
+
+            return next;
+        }
+
+        public boolean hasNext()
+        {
+            if ( hasNext )
+            {
+                return true;
+            }
+            else
+            {
+                return setNext();
+            }
+        }
+
+        private boolean setNext()
+        {
+            while ( it.hasNext() )
+            {
+                Object object = it.next();
+
+                if ( object != null )
+                {
+                    next = object;
+
+                    hasNext = true;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
-    public void commitTransaction()
-    {
-        // ignored
-    }
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
 
-    public void rollbackTransaction()
+    public void initialize()
+        throws Exception
     {
-        // ignored
+        PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
+
+        createDatabase();
     }
 
     // ----------------------------------------------------------------------
@@ -85,7 +157,17 @@ public class MemoryContinuumStore
     public void createDatabase()
         throws ContinuumStoreException
     {
-        // ignored
+        projectSerial = Math.abs( "projectSerial".hashCode() );
+
+        buildSerial = Math.abs( "buildSerial".hashCode() );
+
+        projectIdIndex = new HashMap();
+
+        projectList = new ArrayList();
+
+        buildIdIndex = new HashMap();
+
+        buildList = new ArrayList();
     }
 
     public void deleteDatabase()
@@ -116,118 +198,272 @@ public class MemoryContinuumStore
             throw new ContinuumStoreException( "type cannot be null." );
         }
 
-        ContinuumProject project = findProjectByName( name );
+        try
+        {
+            txManager.enter();
 
-        if ( project != null )
-            throw new ContinuumStoreException( "The specified project already exists in the store." );
+            ContinuumProject project = findProjectByName( name );
 
-        String projectId = Integer.toString( projectSerial++ );
+            if ( project != null )
+            {
+                throw new ContinuumStoreException( "The specified project already exists in the store." );
+            }
 
-        project = new GenericContinuumProject( projectId );
+            String projectId = Integer.toString( projectSerial++ );
 
-        project.setName( name );
+            project = new GenericContinuumProject( projectId );
 
-        project.setScmConnection( scmConnection );
+            project.setName( name );
 
-        project.setState( ContinuumProjectState.NEW );
+            project.setScmConnection( scmConnection );
 
-        project.setType( type );
+            project.setState( ContinuumProjectState.NEW );
 
-        projects.put( projectId, project );
+            project.setType( type );
 
-        return projectId;
+            projectList.add( project );
+
+            projectIdIndex.put( projectId, new Integer( projectList.size() - 1 ) );
+
+            txManager.leave();
+
+            return projectId;
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     public void removeProject( String projectId )
         throws ContinuumStoreException
     {
-        ContinuumProject project = (ContinuumProject) projects.remove( projectId );
-
-        if ( project == null )
+        try
         {
-            throw new ContinuumStoreException( "No such project (" + projectId + ")." );
-        }
+            txManager.enter();
 
-        for( Iterator it = builds.values().iterator(); it.hasNext(); )
-        {
-            ContinuumBuild build = (ContinuumBuild) it.next();
+            Integer index = (Integer)projectIdIndex.remove( projectId );
 
-            if ( projectId.equals( build.getProject().getId() ) )
+            if ( index == null )
             {
-                it.remove();
+                throw new ContinuumStoreException( "No such project (" + projectId + ")." );
             }
+
+            projectList.set( index.intValue(), null );
+
+            for( Iterator it = buildIdIndex.values().iterator(); it.hasNext(); )
+            {
+                index = (Integer) it.next();
+
+                ContinuumBuild build = (ContinuumBuild) buildList.get( index.intValue() );
+
+                if ( projectId.equals( build.getProject().getId() ) )
+                {
+                    it.remove();
+
+                    buildIdIndex.remove( build.getId() );
+                }
+            }
+
+            txManager.leave();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
         }
     }
 
     public void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
         throws ContinuumStoreException
     {
-        ContinuumProject project = getProject( projectId );
+        try
+        {
+            txManager.enter();
 
-        project.setDescriptor( descriptor );
+            ContinuumProject project = getProject( projectId );
+
+            ProjectDescriptor originalDescriptor = project.getDescriptor();
+
+            if ( originalDescriptor != null )
+            {
+                throw new ContinuumStoreException( "The descriptor is already set." );
+            }
+
+            project.setDescriptor( descriptor );
+
+            txManager.leave();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
+    }
+
+    public void updateProjectDescriptor( String projectId, ProjectDescriptor descriptor )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            txManager.enter();
+
+            ContinuumProject project = getProject( projectId );
+
+            project.setDescriptor( descriptor );
+
+            txManager.leave();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     public void updateProject( String projectId, String name, String scmUrl )
         throws ContinuumStoreException
     {
-        GenericContinuumProject project = getGenericProject( projectId );
-
-        if ( name == null || name.trim().length() == 0 )
+        try
         {
-            throw new ContinuumStoreException( "The name must be set." );
-        }
+            txManager.enter();
 
-        if ( scmUrl == null || scmUrl.trim().length() == 0 )
+            GenericContinuumProject project = getGenericProject( projectId );
+
+            if ( name == null || name.trim().length() == 0 )
+            {
+                throw new ContinuumStoreException( "The name must be set." );
+            }
+
+            if ( scmUrl == null || scmUrl.trim().length() == 0 )
+            {
+                throw new ContinuumStoreException( "The scm url must be set." );
+            }
+
+            project.setName( name );
+
+            project.setScmConnection( scmUrl );
+
+            txManager.leave();
+        }
+        catch( ContinuumStoreException ex )
         {
-            throw new ContinuumStoreException( "The scm url must be set." );
+            txManager.rollback();
+
+            throw ex;
         }
-
-        project.setName( name );
-
-        project.setScmConnection( scmUrl );
     }
 
     public Iterator getAllProjects()
         throws ContinuumStoreException
     {
-        return projects.values().iterator();
+        return new NotNullIterator( projectList.iterator() );
+    }
+
+    public Iterator findProjectsByName( String nameSearchPattern )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            txManager.enter();
+
+            List list = new ArrayList();
+
+            for ( Iterator it = projectList.iterator(); it.hasNext(); )
+            {
+                ContinuumProject project = (ContinuumProject) it.next();
+
+                if ( project.getName().indexOf( nameSearchPattern ) >= 0 )
+                {
+                    list.add( project );
+                }
+            }
+
+            Iterator it = Collections.unmodifiableList( list ).iterator();
+
+            txManager.leave();
+
+            return it;
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     public ContinuumProject getProject( String projectId )
         throws ContinuumStoreException
     {
-        ContinuumProject project;
-
-        if ( projectId == null )
+        try
         {
-            throw new IllegalArgumentException( "projectId cannot be null." );
+            txManager.enter();
+
+            if ( projectId == null )
+            {
+                throw new IllegalArgumentException( "projectId cannot be null." );
+            }
+
+            Integer index = (Integer) projectIdIndex.get( projectId );
+
+            if ( index == null )
+            {
+                throw new ContinuumStoreException( "No such project: " + projectId );
+            }
+
+            ContinuumProject project = (ContinuumProject) projectList.get( index.intValue() );
+
+            txManager.leave();
+
+            return project;
         }
-
-        project = (ContinuumProject) projects.get( projectId );
-
-        if ( project == null )
+        catch( ContinuumStoreException ex )
         {
-            throw new ContinuumStoreException( "No such project: " + projectId );
-        }
+            txManager.rollback();
 
-        return project;
+            throw ex;
+        }
     }
 
-    private ContinuumProject findProjectByName( String name)
+    private ContinuumProject findProjectByName( String name )
+        throws ContinuumStoreException
     {
-        for ( Iterator it = projects.values().iterator(); it.hasNext(); )
+        try
         {
-            ContinuumProject project = (ContinuumProject) it.next();
+            txManager.enter();
 
-            String candidate = project.getName();
+            ContinuumProject found = null;
 
-            if ( candidate.equals( name ) )
+            for ( Iterator it = projectList.iterator(); it.hasNext(); )
             {
-                return project;
-            }
-        }
+                ContinuumProject project = (ContinuumProject) it.next();
 
-        return null;
+                String candidate = project.getName();
+
+                if ( candidate.equals( name ) )
+                {
+                    found = project;
+
+                    break;
+                }
+            }
+
+            txManager.leave();
+
+            return found;
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -237,74 +473,128 @@ public class MemoryContinuumStore
     public String createBuild( String projectId )
         throws ContinuumStoreException
     {
-        ContinuumProject project = getProject( projectId );
+        try
+        {
+            txManager.enter();
 
-        String buildId = Integer.toString( buildSerial++ );
+            ContinuumProject project = getProject( projectId );
 
-        GenericContinuumBuild build = new GenericContinuumBuild( buildId );
+            String buildId = Integer.toString( buildSerial++ );
 
-        build.setProject( project );
+            GenericContinuumBuild build = new GenericContinuumBuild( buildId );
 
-        project.setState( ContinuumProjectState.BUILD_SIGNALED );
+            build.setProject( project );
 
-        build.setState( ContinuumProjectState.BUILD_SIGNALED );
+            project.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        build.setStartTime( new Date().getTime() );
+            build.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        builds.put( buildId, build );
+            build.setStartTime( new Date().getTime() );
 
-        return buildId;
+            buildList.add( build );
+
+            buildIdIndex.put( buildId, new Integer( buildList.size() - 1 ) );
+
+            txManager.leave();
+
+            return buildId;
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )
         throws ContinuumStoreException
     {
-        GenericContinuumBuild build = getGenericBuild( id );
+        try
+        {
+            txManager.enter();
 
-        GenericContinuumProject project = (GenericContinuumProject)build.getProject();
+            GenericContinuumBuild build = getGenericBuild( id );
 
-        project.setState( state );
+            GenericContinuumProject project = (GenericContinuumProject)build.getProject();
 
-        build.setState( state );
+            project.setState( state );
 
-        build.setEndTime( new Date().getTime() );
+            build.setState( state );
 
-        build.setBuildResult( buildResult );
+            build.setEndTime( new Date().getTime() );
 
-        build.setError( error );
+            build.setBuildResult( buildResult );
+
+            build.setError( error );
+
+            txManager.leave();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     public ContinuumBuild getBuild( String id )
         throws ContinuumStoreException
     {
-        ContinuumBuild result = (ContinuumBuild) builds.get( id );
-
-        if ( result == null )
+        try
         {
-            throw new ContinuumStoreException( "No such build result: " + id );
-        }
+            txManager.enter();
 
-        return result;
+            Integer index = (Integer) buildIdIndex.get( id );
+
+            if ( index == null )
+            {
+                throw new ContinuumStoreException( "No such build result: " + id );
+            }
+
+            txManager.leave();
+
+            return (ContinuumBuild) buildList.get( index.intValue() );
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 
     // TODO: Implement start and end
     public Iterator getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
     {
-        ContinuumProject project = getProject( projectId );
-
-        List result = new ArrayList();
-
-        for ( Iterator it = builds.values().iterator(); it.hasNext(); )
+        try
         {
-            ContinuumBuild buildResult = (ContinuumBuild) it.next();
+            txManager.enter();
 
-            if ( buildResult.getProject() == project )
+            ContinuumProject project = getProject( projectId );
+
+            List result = new ArrayList();
+
+            for ( Iterator it = buildList.iterator(); it.hasNext(); )
             {
-                result.add( buildResult );
-            }
-        }
+                ContinuumBuild buildResult = (ContinuumBuild) it.next();
 
-        return result.iterator();
+                if ( buildResult.getProject() == project )
+                {
+                    result.add( buildResult );
+                }
+            }
+
+            txManager.leave();
+
+            return result.iterator();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw ex;
+        }
     }
 }

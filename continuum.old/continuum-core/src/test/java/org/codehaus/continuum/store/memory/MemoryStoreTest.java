@@ -26,7 +26,7 @@ import org.codehaus.continuum.store.AbstractContinuumStoreTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryStoreTest.java,v 1.1 2004-07-29 04:30:42 trygvis Exp $
+ * @version $Id: MemoryStoreTest.java,v 1.2 2004-10-06 13:37:14 trygvis Exp $
  */
 public class MemoryStoreTest
     extends AbstractContinuumStoreTest
@@ -36,15 +36,15 @@ public class MemoryStoreTest
         return "memory";
     }
 
-    protected void beginTx()
+    public void setUpStore()
+        throws Exception
     {
+        getContinuumStore( getRoleHint() ).createDatabase();
     }
 
-    protected void commitTx()
+    public void testRemoveProject()
     {
-    }
-
-    protected void rollbackTx()
-    {
+        // overridden to disable the test.
+        // The pure memory store doesn't handle transactions
     }
 }

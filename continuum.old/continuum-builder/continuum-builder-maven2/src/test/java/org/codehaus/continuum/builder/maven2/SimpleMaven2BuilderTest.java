@@ -25,90 +25,31 @@ package org.codehaus.continuum.builder.maven2;
 import java.io.File;
 
 import org.apache.maven.Maven;
-import org.apache.maven.MavenTestUtils;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.TestUtils;
+import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.2 2004-09-07 16:22:16 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.3 2004-10-06 13:39:15 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
 {
-//    private File repository;
+    private File mavenHome = PlexusTestCase.getTestFile( "target/maven-home" );
 
-//    private File mavenRepository;
-/*
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-
-        repository = getTestFile( "target/repository" );
-
-        FileUtils.deleteDirectory( repository );
-
-        File userHome = new File( System.getProperty( "user.home" ) );
-
-        mavenRepository = new File( userHome, ".maven/repository" );
-
-        if ( !mavenRepository.exists() )
-        {
-            mavenRepository = new File( userHome, ".m2/repository" );
-
-            if ( !mavenRepository.exists() )
-            {
-                fail( "Can't find a maven repository." );
-            }
-        }
-
-        copyArtifact( "maven/plugins/maven-clean-plugin-1.0-SNAPSHOT.jar" );
-
-        copyArtifact( "maven/plugins/maven-jar-plugin-1.0-SNAPSHOT.jar" );
-
-        copyArtifact( "maven/plugins/maven-pom-plugin-1.0-SNAPSHOT.jar" );
-
-        copyArtifact( "maven/poms/maven-model-2.0-SNAPSHOT.pom" );
-
-        copyArtifact( "maven/poms/maven-core-2.0-SNAPSHOT.pom" );
-
-        copyArtifact( "maven/poms/maven-plugin-2.0-SNAPSHOT.pom" );
-    }
-
-    private void copyArtifact( String artifact )
-        throws Exception
-    {
-        assertTrue( mavenRepository.exists() );
-
-        File file = new File( mavenRepository, artifact );
-
-        assertTrue( "Can't find artifact: " + file.getAbsolutePath(), file.exists() );
-
-        File directory = new File( repository, new File( artifact ).getParentFile().getPath() );
-
-        FileUtils.copyFileToDirectory( file, directory );
-    }
-*/
-    public PlexusContainer getContainerInstance()
-    {
-        return MavenTestUtils.getContainerInstance();
-    }
-
-    protected void customizeContext()
-        throws Exception
-    {
-        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ) );
-    }
+    private File mavenHomeLocal = PlexusTestCase.getTestFile( "target/maven-home-local" );
 
     public void testContinuum()
         throws Exception
@@ -121,7 +62,11 @@ public class SimpleMaven2BuilderTest
 
         ContinuumStore store = getContinuumStore();
 
+        StoreTransactionManager txManager = getStoreTransactionManager();
+
         String repo = "scm:cvs:local:ignored:" + getTestFile( "src/test/repository/" ) + ":project1";
+
+        txManager.begin();
 
         String projectId = continuum.addProject( "Continuum Test Project 1", repo, "maven2" );
 
@@ -131,38 +76,15 @@ public class SimpleMaven2BuilderTest
 
         assertEquals( 0, queue.getLength() );
 
+        txManager.commit();
+
         String buildId = continuum.buildProject( projectId );
 
         // NOTE: this test might fail if you have a slow system
         // because the builder thread might start before the return of the call.
         assertEquals( 1, queue.getLength() );
 
-        int time = 30 * 1000;
-
-        int interval = 100;
-
-        ContinuumBuild result = null;
-
-        while( time > 0 )
-        {
-            Thread.sleep( interval );
-
-            time -= interval;
-
-            result = store.getBuild( buildId );
-
-            assertNotNull( result );
-
-            if ( result.getState() != ContinuumProjectState.BUILDING )
-            {
-                break;
-            }
-        }
-
-        if ( time <= 0 )
-        {
-            fail( "Timeout while waiting for the build to finnish." );
-        }
+        ContinuumBuild result = TestUtils.waitForBuild( buildId );
 
         ContinuumBuildResult buildResult = result.getBuildResult();
 
@@ -170,23 +92,26 @@ public class SimpleMaven2BuilderTest
 
         assertTrue( buildResult instanceof ExternalMaven2BuildResult );
 
-        ExternalMaven2BuildResult m2Result = (ExternalMaven2BuildResult) buildResult;
+        if ( !project.getState().equals( ContinuumProjectState.OK ) )
+        {
+            ExternalMaven2BuildResult m2Result = (ExternalMaven2BuildResult) buildResult;
 
-        System.err.println( "************************" );
+            System.err.println( "************************" );
 
-        System.err.println( m2Result.getOutput() );
+            System.err.println( m2Result.getStandardOutput() );
 
-        System.err.println( "************************" );
+            System.err.println( "************************" );
 
-        System.err.println( m2Result.getError() );
+            System.err.println( m2Result.getStandardError() );
 
-        System.err.println( "************************" );
+            System.err.println( "************************" );
+        }
 
         assertEquals( ContinuumProjectState.OK, project.getState() );
 
         assertEquals( 0, queue.getLength() );
 
-        String repository = ((Maven) lookup( Maven.ROLE ) ).getMavenHomeLocal();
+        String repository = ( (Maven2ContinuumBuilder) lookup( ContinuumBuilder.ROLE, "maven2" ) ).getMavenRepository();
 
         File project1Jar = new File( repository, "plexus/jars/continuum-project1-1.0.jar" );
 

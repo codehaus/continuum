@@ -17,6 +17,9 @@
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+        </requirement>
+        <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
       </requirements>
@@ -112,26 +115,46 @@
         <checkout-directory>/tmp/continuum</checkout-directory>
       </configuration>
     </component>
+
     <component>
       <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
       <implementation>org.codehaus.continuum.buildqueue.SimpleBuildQueue</implementation>
     </component>
+
     <component>
       <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
       <role-hint>console</role-hint>
       <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
     </component>
+
     <component>
       <role>org.codehaus.continuum.store.ContinuumStore</role>
-<!--
-      <role-hint>memory</role-hint>
--->
       <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+      <implementation>org.codehaus.continuum.store.memory.tx.MemoryStoreTransactionManager</implementation>
     </component>
     <component>
       <role>org.codehaus.continuum.store.ContinuumStore</role>
       <role-hint>memory</role-hint>
       <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+          <role-hint>memory</role-hint>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+      <role-hint>memory</role-hint>
+      <implementation>org.codehaus.continuum.store.memory.tx.MemoryStoreTransactionManager</implementation>
     </component>
   </components>
 </component-set>

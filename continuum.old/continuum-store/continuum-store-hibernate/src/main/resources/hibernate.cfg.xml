@@ -6,7 +6,7 @@
 
 <hibernate-configuration>
   <session-factory>
-    <property name="show_sql">true</property>
+    <property name="show_sql">false</property>
 <!-- PostgreSQL configuration -->
 <!--
     <property name="dialect">net.sf.hibernate.dialect.PostgreSQLDialect</property>

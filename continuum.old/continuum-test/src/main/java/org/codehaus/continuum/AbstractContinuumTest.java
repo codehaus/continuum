@@ -22,78 +22,118 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
+import junit.framework.Assert;
+
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.continuum.trigger.ContinuumTrigger;
 import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
+import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.5 2004-09-07 16:22:19 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.6 2004-10-06 13:33:49 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends ArtifactEnabledPlexusTestCase
 {
-    protected Continuum getContinuum()
+    private static AbstractContinuumTest instance;
+
+    public void setUp()
+        throws Exception
+    {
+        super.setUp();
+
+        instance = this;
+    }
+
+    public static PlexusContainer getPlexusContainer()
+    {
+        assertNotNull( "super.setUp() must be called first.", instance );
+
+        return instance.getContainer();
+    }
+
+    public static Continuum getContinuum()
         throws Exception
     {
         return (Continuum) lookupComponent( Continuum.ROLE );
     }
 
-    protected ContinuumBuilder getContinuumBuilder()
+    public static ContinuumBuilder getContinuumBuilder( String type )
         throws Exception
     {
-        return (ContinuumBuilder) lookupComponent( ContinuumBuilder.ROLE );
+        return (ContinuumBuilder) lookupComponent( ContinuumBuilder.ROLE, type );
     }
 
-    protected ContinuumStore getContinuumStore( String role )
+    public static ContinuumStore getContinuumStore( String role )
         throws Exception
     {
         return (ContinuumStore) lookupComponent( ContinuumStore.ROLE, role );
     }
 
-    protected BuildQueue getBuildQueue()
+    public static StoreTransactionManager getStoreTransactionManager()
+        throws Exception
+    {
+        return (StoreTransactionManager) lookupComponent( StoreTransactionManager.ROLE );
+    }
+
+    public static StoreTransactionManager getStoreTransactionManager( String role )
+        throws Exception
+    {
+        return (StoreTransactionManager) lookupComponent( StoreTransactionManager.ROLE, role );
+    }
+
+    public static BuildQueue getBuildQueue()
         throws Exception
     {
         return (BuildQueue) lookupComponent( BuildQueue.ROLE );
     }
 
-    protected ContinuumNotifier getContinuumNotifier( String roleHint )
+    public static ContinuumNotifier getContinuumNotifier( String roleHint )
         throws Exception
     {
         return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE, roleHint );
     }
 
-    protected ContinuumScm getContinuumScm()
+    public static ContinuumTrigger getContinuumTrigger( String roleHint )
+        throws Exception
+    {
+        return (ContinuumTrigger) lookupComponent( ContinuumTrigger.ROLE, roleHint );
+    }
+
+    public static ContinuumScm getContinuumScm()
         throws Exception
     {
         return (ContinuumScm) lookupComponent( ContinuumScm.ROLE );
     }
 
-    protected ContinuumStore getContinuumStore()
+    public static ContinuumStore getContinuumStore()
         throws Exception
     {
         return (ContinuumStore) lookupComponent( ContinuumStore.ROLE );
     }
 
-    private Object lookupComponent( String role )
+    public static Object lookupComponent( String role )
         throws Exception
     {
-        Object component = lookup( role );
+        Object component = instance.lookup( role );
 
-        assertNotNull( "Missing component: role " + role + ".", component );
+        Assert.assertNotNull( "Missing component: role " + role + ".", component );
 
         return component;
     }
 
-    private Object lookupComponent( String role, String roleHint )
+    public static Object lookupComponent( String role, String roleHint )
         throws Exception
     {
-        Object component = lookup( role, roleHint );
+        Object component = instance.lookup( role, roleHint );
 
-        assertNotNull( "Missing component: role: " + role + ", hint: " + roleHint + ".", component );
+        Assert.assertNotNull( "Missing component: role: " + role + ", hint: " + roleHint + ".", component );
 
         return component;
     }

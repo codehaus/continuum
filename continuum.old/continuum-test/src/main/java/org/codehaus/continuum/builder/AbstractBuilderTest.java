@@ -30,7 +30,7 @@ import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuilderTest.java,v 1.2 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: AbstractBuilderTest.java,v 1.3 2004-10-06 13:33:49 trygvis Exp $
  */
 public abstract class AbstractBuilderTest
     extends AbstractContinuumTest
@@ -53,23 +53,5 @@ public abstract class AbstractBuilderTest
         ContinuumBuild buildResult = store.getBuild( buildId );
 
         assertEquals( ContinuumProjectState.OK, buildResult.getState() );
-    }
-
-    private void waitForBuild()
-        throws Exception
-    {
-        Continuum continuum = getContinuum();
-
-        int count = 10;
-
-        while ( continuum.getBuildQueueLength() > 0 )
-        {
-            Thread.sleep( 100 );
-
-            if ( count-- == 0 )
-            {
-                fail( "Timeout while waiting for build." );
-            }
-        }
     }
 }

@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProjectState.java,v 1.4 2004-07-29 03:43:48 trygvis Exp $
+ * @version $Id: ContinuumProjectState.java,v 1.5 2004-10-06 13:33:29 trygvis Exp $
  */
 public class ContinuumProjectState
     implements Serializable
@@ -78,6 +78,23 @@ public class ContinuumProjectState
     public String getI18nKey()
     {
         return "org.codehaus.continuum.project.state." + name;
+    }
+
+    public boolean equals( Object object )
+    {
+        if ( !( object instanceof ContinuumProjectState ) )
+        {
+            return false;
+        }
+
+        ContinuumProjectState other = (ContinuumProjectState) object;
+
+        return this.name.equals( other.name );
+    }
+
+    public int hashCode()
+    {
+        return name.hashCode();
     }
 
     public String toString()
