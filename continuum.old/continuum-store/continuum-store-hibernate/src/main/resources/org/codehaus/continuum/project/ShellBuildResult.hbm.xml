@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class
+    name="org.codehaus.continuum.builder.shell.ShellBuildResult"
+    table="ShellBuildResult">
+    <id name="buildId" type="java.lang.String">
+      <generator class="assigned"/>
+    </id>
+    <property
+      name="success"
+      type="boolean"/>
+    <property
+      name="exitCode"
+      type="int"/>
+    <property
+      name="standardOutput"
+      type="java.lang.String"/>
+    <property
+      name="standardError"
+      type="java.lang.String"/>
+  </class>
+</hibernate-mapping>
