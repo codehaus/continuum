@@ -3,6 +3,10 @@
     <component>
       <role>org.codehaus.plexus.continuum.Continuum</role>
       <implementation>org.codehaus.plexus.continuum.DefaultContinuum</implementation>
+      <requirements>
+        <requirement>org.codehaus.plexus.compiler.Compiler</requirement>
+        <requirement>org.apache.maven.project.ProjectBuilder</requirement>
+      </requirements>
       <configuration>
         <work-directory>${plexus.home}/continuum</work-directory>
         <build-interval>1</build-interval>
@@ -18,17 +22,14 @@
     <component>
       <role>org.apache.maven.project.ProjectBuilder</role>
       <implementation>org.apache.maven.project.DefaultProjectBuilder</implementation>
-      <configuration/>
     </component>
     <component>
       <role>org.apache.maven.project.ModelUnmarshaller</role>
       <implementation>org.apache.maven.project.DefaultModelUnmarshaller</implementation>
-      <configuration/>
     </component>
     <component>
       <role>org.apache.maven.project.ModelMarshaller</role>
       <implementation>org.apache.maven.project.DefaultModelMarshaller</implementation>
-      <configuration/>
     </component>
   </components>
 </plexus>

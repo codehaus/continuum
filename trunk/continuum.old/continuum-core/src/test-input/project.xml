@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
 
-  <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
   <groupId>maven</groupId>
   <artifactId>maven-ajc-plugin</artifactId>
@@ -14,18 +13,11 @@
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus</artifactId>
-      <version>0.6</version>
-    </dependency>
-
-    <dependency>
-      <groupId>avalon</groupId>
-      <artifactId>avalon-framework-api</artifactId>
-      <version>4.1.4</version>
+      <version>0.14-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
 
-  <!-- build information for the project -->
   <build>
     <sourceDirectory>${basedir}/src/main</sourceDirectory>
   </build>
