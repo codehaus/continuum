@@ -70,5 +70,7 @@
   </p>
 -->
 </div>
+#if( $latestBuild && ( $latestBuild.state == "ok" || $latestBuild.state == "failed" || $latestBuild.state == "error" ) )
 #set ( $build = $latestBuild )
 #parse ( "screens/ExternalMaven2BuildResult.vm" ) 
+#end
