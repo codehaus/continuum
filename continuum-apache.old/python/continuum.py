@@ -164,19 +164,28 @@ Build time: %(totalTime)ss""" % map
 
 class BuildResult:
     def __init__( self, map ):
-        self.success = map[ "success" ]
-        self.exitCode = int( map[ "exitCode" ] )
-        self.standardOutput = map[ "standardOutput" ]
-        self.standardError = map[ "standardError" ]
+        # This is the common stuff between all ContinuumBuildResult objects
+        self.success = map[ "success" ] == "true"
+        self.buildExecuted = map[ "buildExecuted" ] == "true"
+        self.changedFiles = map[ "changedFiles" ]
+
+        # These fields just happen to be the same for all the build results
+        if ( self.buildExecuted ):
+            self.exitCode = int( map[ "exitCode" ] )
+            self.standardOutput = map[ "standardOutput" ]
+            self.standardError = map[ "standardError" ]
 
     def __str__( self ):
-        value = "Success: " + self.success + os.linesep +\
-                "Exit code: " + str( self.exitCode ) + os.linesep
+        value = "Success: " + str( self.success ) + os.linesep +\
+                "Build executed: " + str( self.buildExecuted )
 
-        if ( len( self.standardOutput ) > 0 ):
-              value += "Standard output: " + self.standardOutput + os.linesep
+        if ( self.buildExecuted ):
+            value += os.linesep + "Exit code: " + str( self.exitCode )
 
-        if ( len( self.standardError ) > 0 ):
-               value += "Standard error: " + self.standardError + os.linesep
+            if ( len( self.standardOutput ) > 0 ):
+                  value += os.linesep + "Standard output: " + self.standardOutput
+
+            if ( len( self.standardError ) > 0 ):
+                   value += os.linesep + "Standard error: " + self.standardError
 
         return value
