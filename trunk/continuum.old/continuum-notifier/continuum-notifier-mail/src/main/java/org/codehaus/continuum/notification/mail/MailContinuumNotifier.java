@@ -3,7 +3,10 @@ package org.codehaus.continuum.notification.mail;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.util.Date;
 
+import org.apache.maven.ExecutionResponse;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 
@@ -21,7 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.2 2004-07-08 01:12:47 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.3 2004-07-11 20:05:30 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -127,30 +130,45 @@ public class MailContinuumNotifier
 
         PrintWriter output = new PrintWriter( message );
 
-        if ( ex == null )
+        ExecutionResponse response = build.getMaven2Result();
+
+        if ( response == null )
         {
-            output.println( "Build successfull." );
+            throw new ContinuumException( "The maven 2 execution response cannot be null." );
+        }
+
+        if ( !response.isExecutionFailure() )
+        {
+            output.println( "BUILD SUCCESSFUL" );
+
+            writeStats( output, build );
         }
         else
         {
-            output.println( "Build failed." );
-            output.println();
-            ex.printStackTrace( output );
+            output.println( "BUILD FAILURE" );
+
+            output.println( "Reason: " + response.getFailureResponse().shortMessage() );
+
+            output.println( response.getFailureResponse().longMessage() );
+
+            writeStats( output, build );
         }
 
         output.close();
 
-        sendMessage( build.getProject(), message.toString() );
+        sendMessage( build, message.toString() );
     }
 
     // ----------------------------------------------------------------------
     // Private
     // ----------------------------------------------------------------------
 
-    private void sendMessage( ContinuumProject project, String message )
+    private void sendMessage( BuildResult build, String message )
         throws ContinuumException
     {
         getLogger().info( "Sending message to: " + smtpServer + ":" + port );
+
+        ContinuumProject project = build.getProject();
 
         MavenProject mavenProject = getMavenProject( project );
 
@@ -162,7 +180,7 @@ public class MailContinuumNotifier
 
             if ( from == null )
             {
-                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing." );
+                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing, not sending mail." );
 
                 return;
             }
@@ -173,14 +191,21 @@ public class MailContinuumNotifier
 
             if ( to == null )
             {
-                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing." );
+                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing, not sending mail." );
 
                 return;
             }
 
             mailMessage.to( to );
 
-            mailMessage.setSubject( "[continuum] " + project.getName() );
+            if ( build.getMaven2Result().isExecutionFailure() )
+            {
+                mailMessage.setSubject( "[continuum] BUILD UNSUCCESSFUL: " + project.getName() );
+            }
+            else
+            {
+                mailMessage.setSubject( "[continuum] BUILD SUCCESSFUL: " + project.getName() );
+            }
 
             mailMessage.getPrintStream().print( message );
 
@@ -253,5 +278,66 @@ public class MailContinuumNotifier
         Maven2ProjectDescriptor descriptor = (Maven2ProjectDescriptor) project.getDescriptor();
 
         return descriptor.getMavenProject();
+    }
+
+    private void writeStats( PrintWriter output, BuildResult build )
+    {
+        long fullDiff = build.getEndTime() - build.getStartTime();
+
+        line( output );
+
+        output.println( "Build statistics" );
+
+        line( output );
+
+        output.println( "Started at: " + formatTime( build.getStartTime() ) );
+
+        output.println( "Finished at: " + formatTime( build.getEndTime() ) );
+
+        output.println( "Total time: " + formatTimeInterval( fullDiff ) );
+
+        line( output );
+    }
+
+    private void line( PrintWriter output )
+    {
+        output.println( "----------------------------------------------------------------------------" );
+    }
+
+    private String formatTime( long time )
+    {
+        return getDateFormat().format( new Date( time ) );
+    }
+
+    private static String formatTimeInterval( long ms )
+    {
+        long secs = ms / 1000;
+        long min = secs / 60;
+        secs = secs % 60;
+
+        if ( min > 0 )
+        {
+            return min + " minutes " + secs + " seconds";
+        }
+        else
+        {
+            return secs + " seconds";
+        }
+    }
+
+    private ThreadLocal dateFormatter = new ThreadLocal();
+
+    private DateFormat getDateFormat()
+    {
+        DateFormat dateFormatter = (DateFormat) this.dateFormatter.get();
+
+        if ( dateFormatter == null )
+        {
+            dateFormatter = DateFormat.getDateTimeInstance( DateFormat.FULL, DateFormat.FULL );
+
+            this.dateFormatter.set( dateFormatter );
+        }
+
+        return dateFormatter;
     }
 }
