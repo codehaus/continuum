@@ -5,22 +5,19 @@
       <implementation>org.codehaus.continuum.DefaultContinuum</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
-        </requirement>
-        <requirement>
           <role>org.codehaus.continuum.builder.BuilderManager</role>
         </requirement>
         <requirement>
-          <role>org.codehaus.continuum.notification.NotifierManager</role>
+          <role>org.codehaus.continuum.buildcontroller.BuildController</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
       </requirements>
     </component>
@@ -35,6 +32,28 @@
         <requirement>
           <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
           <field-name>builders</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.buildcontroller.BuildController</role>
+      <implementation>org.codehaus.continuum.buildcontroller.DefaultBuildController</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.builder.BuilderManager</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.notification.NotifierManager</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
       </requirements>
     </component>

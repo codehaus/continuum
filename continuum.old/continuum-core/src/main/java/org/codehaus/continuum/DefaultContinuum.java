@@ -24,13 +24,12 @@ package org.codehaus.continuum;
 
 import java.util.Iterator;
 
+import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
-import org.codehaus.continuum.notification.NotifierManager;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
-import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
@@ -46,7 +45,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.45 2004-10-15 13:01:02 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.46 2004-10-24 14:18:47 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -56,13 +55,10 @@ public class DefaultContinuum
     private BuilderManager builderManager;
 
     /** @requirement */
+    private BuildController buildController;
+
+    /** @requirement */
     private BuildQueue buildQueue;
-
-    /** @requirement */
-    private ContinuumScm scm;
-
-    /** @requirement */
-    private NotifierManager notifierManager;
 
     /** @requirement */
     private ContinuumStore store;
@@ -99,8 +95,6 @@ public class DefaultContinuum
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
         PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
-        PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
-        PlexusUtils.assertRequirement( notifierManager, NotifierManager.ROLE );
 
         getLogger().info( "Showing all projects: " );
 
@@ -121,8 +115,7 @@ public class DefaultContinuum
         getLogger().info( "Starting continuum." );
 
         // start the builder thread
-        builderThread = new BuilderThread( builderManager, buildQueue, store, txManager, notifierManager, scm,
-            getLogger() );
+        builderThread = new BuilderThread( buildController, buildQueue, getLogger() );
 
         builderThreadThread = new Thread( builderThread );
 
