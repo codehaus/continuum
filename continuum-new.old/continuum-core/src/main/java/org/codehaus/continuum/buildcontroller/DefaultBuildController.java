@@ -31,7 +31,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.6 2005-03-10 00:05:30 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.7 2005-03-17 14:27:27 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -107,7 +107,9 @@ public class DefaultBuildController
 
         ContinuumBuild build = store.getBuild( buildId );
 
-        ContinuumBuilder builder = builderManager.getBuilder( build.getProject().getBuilderId() );
+        ContinuumProject project = store.getProjectByBuild( buildId );
+
+        ContinuumBuilder builder = builderManager.getBuilder( project.getId() );
 
         try
         {

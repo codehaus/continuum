@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -35,7 +36,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.4 2005-03-10 00:05:53 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.5 2005-03-17 14:27:27 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -192,6 +193,27 @@ public class ModelloJPoxContinuumStore
         }
     }
 
+    public ContinuumProject getProjectByBuild( String buildId )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            store.begin();
+
+            ContinuumBuild build = store.getContinuumBuild( buildId, false );
+
+            Object id = JDOHelper.getObjectId( build.getProject() );
+
+            store.commit();
+
+            return store.getContinuumProjectByJdoId( id, true );
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumStoreException( "Error while loading project.", e );
+        }
+    }
+
     // ----------------------------------------------------------------------
     // Build
     // ----------------------------------------------------------------------
@@ -199,6 +221,7 @@ public class ModelloJPoxContinuumStore
     public String createBuild( String projectId )
         throws ContinuumStoreException
     {
+        String buildId;
         try
         {
             store.begin();
@@ -209,9 +232,9 @@ public class ModelloJPoxContinuumStore
 
             ContinuumBuild build = new ContinuumBuild();
 
-            build.setState( ContinuumProjectState.BUILD_SIGNALED );
+            build.setStartTime( System.currentTimeMillis() );
 
-            build.setStartTime( new Date().getTime() );
+            build.setState( ContinuumProjectState.BUILD_SIGNALED );
 
             build.setProject( project );
 
@@ -274,20 +297,7 @@ public class ModelloJPoxContinuumStore
     {
         try
         {
-            store.begin();
-
-            ContinuumBuild build = store.getContinuumBuild( buildId, false );
-
-            Object projectOId = JDOHelper.getObjectId( build.getProject() );
-
-            // TODO: This loading of the project is a bit of a hack, there has to be a better way of doing his.
-            ContinuumProject project = store.getContinuumProjectByJdoId( projectOId, true );
-
-            store.commit();
-
-            build.setProject( null );
-            project.getBuilds().clear();
-            build.setProject( project );
+            ContinuumBuild build = store.getContinuumBuild( buildId, true );
 
             return build;
         }

@@ -28,7 +28,7 @@ import org.codehaus.plexus.notification.NotificationException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumNotificationDispatcher.java,v 1.2 2005-03-10 00:05:51 trygvis Exp $
+ * @version $Id: DefaultContinuumNotificationDispatcher.java,v 1.3 2005-03-17 14:27:27 trygvis Exp $
  */
 public class DefaultContinuumNotificationDispatcher
     extends AbstractLogEnabled
@@ -86,7 +86,7 @@ public class DefaultContinuumNotificationDispatcher
 
         try
         {
-            context.put( CONTEXT_PROJECT, store.getProject( build.getProject().getId() ) );
+            context.put( CONTEXT_PROJECT, store.getProjectByBuild( build.getId() ) );
         }
         catch ( ContinuumStoreException e )
         {
