@@ -51,35 +51,6 @@
     </component>
 
     <component>
-      <role>org.codehaus.continuum.network.ConnectionFactory</role>
-      <role-hint>simple-network-registrar-server</role-hint>
-      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
-          <role-hint>simple-network-registrar</role-hint>
-        </requirement>
-      </requirements>
-      <configuration>
-        <port>6789</port>
-      </configuration>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
-      <role-hint>simple-network-registrar</role-hint>
-      <implementation>org.codehaus.continuum.registration.network.SimpleNetworkRegistrar</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.Continuum</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
-        </requirement>
-      </requirements>
-    </component>
-
-    <component>
       <role>org.codehaus.continuum.scm.ContinuumScm</role>
       <implementation>org.codehaus.continuum.scm.DefaultContinuumScm</implementation>
       <requirements>
