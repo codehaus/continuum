@@ -9,7 +9,10 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-api</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Continuum APIs</name>
+  <name>Continuum API</name>
+  <scm>
+    <connection>scm:cvs:pserver:anoncvs@cvs.continuum.codehaus.org:/scm/continuum:continuum/continuum-api</connection>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>plexus</groupId>
