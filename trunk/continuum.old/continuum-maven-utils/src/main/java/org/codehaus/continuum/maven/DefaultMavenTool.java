@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.1.1.1 2004-10-28 16:08:17 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.2 2004-10-28 18:27:04 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -55,7 +55,7 @@ public class DefaultMavenTool
     // Maven has a bit of a odd name just because getMaven() should be used
     // as it's required that the instance is lazily initialized.
     /** @requirement */
-    private Maven mavenInstance;
+    private Maven maven;
 
     /** @configuration default ${maven.home} */
     private String mavenHome;
@@ -66,8 +66,6 @@ public class DefaultMavenTool
     /** @configuration default ${maven.home}/repository */
     private String mavenRepository;
 
-    private boolean mavenInitialized;
-
     private File classWorldsJar;
 
     // ----------------------------------------------------------------------
@@ -77,7 +75,7 @@ public class DefaultMavenTool
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( mavenInstance, Maven.ROLE );
+        PlexusUtils.assertRequirement( maven, Maven.ROLE );
 
         PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
         PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
@@ -85,7 +83,27 @@ public class DefaultMavenTool
 
         // TODO: assert that mavenHome, mavenHomelocal and mavenRepository exists.
 
-        getMaven();
+        getLogger().info( "Using " + mavenHome + " as maven.home." );
+        getLogger().info( "Using " + mavenHomeLocal + " as maven.home.local." );
+        getLogger().info( "Using " + mavenRepository + " as maven.repo.local." );
+
+        File mavenHomeFile = new File( mavenHome );
+        File mavenHomeLocalFile = new File( mavenHomeLocal );
+        File mavenRepositoryFile = new File( mavenRepository );
+
+        if ( !mavenHomeFile.isDirectory()  )
+        {
+            throw new ContinuumException( "Maven home isn't properly set: it's not a directory (" + mavenHome + ")." );
+        }
+
+        if ( !mavenHomeLocalFile.isDirectory() )
+        {
+            throw new ContinuumException( "Maven home local isn't properly set: it's not a directory (" + mavenHomeLocal + ")." );
+        }
+
+        maven.setMavenHome( mavenHomeFile );
+
+        maven.setMavenHomeLocal( mavenHomeLocalFile );
 
         // ----------------------------------------------------------------------
         // Component Lifecycle
@@ -110,7 +128,7 @@ public class DefaultMavenTool
 
         try
         {
-            project = getMaven().getProject( file );
+            project = maven.getProject( file );
         }
         catch( ProjectBuildingException ex )
         {
@@ -190,7 +208,7 @@ public class DefaultMavenTool
     {
         try
         {
-            return getMaven().execute( project, goals );
+            return maven.execute( project, goals );
         }
         catch ( GoalNotFoundException ex )
         {
@@ -280,7 +298,7 @@ public class DefaultMavenTool
 
         return cl;
     }
-
+/*
     private Maven getMaven()
     {
         if ( mavenInitialized )
@@ -312,7 +330,7 @@ public class DefaultMavenTool
             }
         }
     }
-
+*/
     // ----------------------------------------------------------------------
     // Getters
     // ----------------------------------------------------------------------
