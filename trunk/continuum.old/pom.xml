@@ -26,7 +26,7 @@
   </distributionManagement>
   <scm>
     <connection>scm:cvs:pserver:anonymous@cvs.continuum.codehaus.org:/scm/continuum:continuum</connection>
-    <url>http://cvs.continuum.codehaus.org/</url>
+    <url>http://cvs.continuum.codehaus.org/continuum</url>
   </scm>
 
   <mailingLists>
