@@ -70,4 +70,5 @@
   </p>
 -->
 </div>
-
+#set ( $build = $latestBuild )
+#parse ( "screens/ExternalMaven2BuildResult.vm" ) 
