@@ -13,10 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -68,9 +72,62 @@ public class DefaultContinuum
     {
     }
 
-    public void addProject( String url )
+    public void addProject( String projectUrl )
     {
-        // Now we will need to retrieve the project from its home first.
+        // We will simply deal with POMs that can be retrieved from
+        // the local file system or over http.
+
+        Project project = null;
+
+        if ( projectUrl.startsWith( "http://" ) )
+        {
+            try
+            {
+                URL url = new URL( projectUrl );
+
+                InputStream is = url.openStream();
+
+                byte[] buffer = new byte[1024];
+
+                int read = 0;
+
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+                while( is.available() > 0 )
+                {
+                    read = is.read( buffer, 0, buffer.length );
+
+                    if ( read < 0 )
+                    {
+                        break;
+                    }
+
+                    os.write( buffer, 0, read );
+                }
+
+                String pomContents = os.toString().trim();
+
+                // Now we need to write this out to a temp file so that we
+                // can read it because the project builder can only deal with
+                // files because of configuration stuff.
+
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "Can't read POM from url: " + projectUrl, e );
+            }
+        }
+        else
+        {
+            try
+            {
+                project = projectBuilder.build( new File( projectUrl ) );
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "Can't read POM from file system: " + projectUrl, e );
+            }
+        }
     }
 
     public void addProject( Project project )
