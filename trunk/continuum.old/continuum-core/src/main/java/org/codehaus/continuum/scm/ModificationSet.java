@@ -37,15 +37,14 @@
 
 package org.codehaus.plexus.continuum.scm;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.jdom.Element;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.jdom.Element;
 
 /**
  * Set of modifications collected from included SourceControls

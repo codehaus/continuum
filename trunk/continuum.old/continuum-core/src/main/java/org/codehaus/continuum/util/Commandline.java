@@ -89,12 +89,11 @@
  */
 package org.codehaus.plexus.continuum.util;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import org.codehaus.plexus.continuum.ContinuumException;
 
 /**
  * Commandline objects help handling command lines specifying processes to

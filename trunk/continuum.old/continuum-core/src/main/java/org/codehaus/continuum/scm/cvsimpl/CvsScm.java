@@ -36,12 +36,6 @@
  ********************************************************************************/
 package org.codehaus.plexus.continuum.scm.cvsimpl;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.continuum.scm.AbstractScm;
-import org.codehaus.plexus.continuum.scm.Modification;
-import org.codehaus.plexus.continuum.util.Commandline;
-import org.codehaus.plexus.continuum.util.StreamPumper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +49,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.plexus.continuum.scm.AbstractScm;
+import org.codehaus.plexus.continuum.scm.Modification;
+import org.codehaus.plexus.continuum.util.Commandline;
+import org.codehaus.plexus.continuum.util.StreamPumper;
 
 /**
  * This class implements the SourceControlElement methods for a CVS repository.

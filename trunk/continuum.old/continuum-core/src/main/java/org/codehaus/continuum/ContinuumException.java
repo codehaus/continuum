@@ -39,7 +39,6 @@ package org.codehaus.plexus.continuum;
 
 public class ContinuumException extends Exception
 {
-
     public ContinuumException()
     {
         super();
@@ -59,5 +58,4 @@ public class ContinuumException extends Exception
     {
         super( message + " : " + cause.getMessage() );
     }
-
 }
