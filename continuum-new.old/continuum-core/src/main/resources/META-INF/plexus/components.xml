@@ -206,7 +206,8 @@
         </requirement>
       </requirements>
       <configuration>
-        <administrator>nobody@localhost</administrator>
+        <fromAddress>continuum@localhost</fromAddress>
+        <fromName>Continuum</fromName>
       </configuration>
     </component>
 

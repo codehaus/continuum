@@ -34,7 +34,6 @@ import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
-import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.mailsender.MailMessage;
 import org.codehaus.plexus.mailsender.MailSender;
@@ -47,14 +46,14 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.5 2005-03-21 12:53:31 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.6 2005-03-22 11:32:00 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
     implements Initializable, Notifier
 {
     // ----------------------------------------------------------------------
-    //
+    // Requirements
     // ----------------------------------------------------------------------
 
     /** @requirement */
@@ -66,19 +65,27 @@ public class MailContinuumNotifier
     /** @configuration */
     private MailSender mailSender;
 
-    /** @configuration */
-    private String from;
+    // ----------------------------------------------------------------------
+    // Configuration
+    // ----------------------------------------------------------------------
 
     /** @configuration */
-    private String administrator;
+    private String fromAddress;
+
+    /** @configuration */
+    private String fromName;
 
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    private String fromName;
-
     private String localHostName;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private static final String FALLBACK_FROM_ADDRESS = "continuum@localhost";
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
@@ -87,32 +94,19 @@ public class MailContinuumNotifier
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( store, "store" );
-
-        PlexusUtils.assertRequirement( mailSender, "mail-sender" );
-
-        // ----------------------------------------------------------------------
-        // Administrator
-        // ----------------------------------------------------------------------
-
-        if ( StringUtils.isEmpty( administrator ) )
-        {
-            getLogger().warn( "No administrator email address configured." );
-
-            administrator = null;
-        }
-
         // ----------------------------------------------------------------------
         // From address
         // ----------------------------------------------------------------------
 
-        if ( StringUtils.isEmpty( from ) )
+        if ( StringUtils.isEmpty( fromAddress ) )
         {
-            getLogger().info( "From address is not configured, will use the nag email address from the project." );
+            getLogger().info( "The from address is not configured, will use the nag email address from the project." );
+
+            fromAddress = null;
         }
         else
         {
-            getLogger().info( "Using '" + from + "' as the from address for all emails." );
+            getLogger().info( "Using '" + fromAddress + "' as the default from address for all emails." );
         }
 
         try
@@ -123,10 +117,13 @@ public class MailContinuumNotifier
         }
         catch ( UnknownHostException ex )
         {
-            fromName = "continuum";
+            fromName = "Continuum";
         }
 
-        fromName = "continuum@" + localHostName;
+        if ( StringUtils.isEmpty( fromName ) )
+        {
+            fromName = "Continuum@" + localHostName;
+        }
 
         getLogger().info( "From name: " + fromName );
     }
@@ -173,7 +170,7 @@ public class MailContinuumNotifier
         // Generate the mail contents
         // ----------------------------------------------------------------------
 
-        String packageName = this.getClass().getPackage().getName().replace( '.', '/' );
+        String packageName = getClass().getPackage().getName().replace( '.', '/' );
 
         String templateName = "/" + packageName + "/templates/" + project.getBuilderId() + "/" + source + ".vm";
 
@@ -213,7 +210,7 @@ public class MailContinuumNotifier
     //
     // ----------------------------------------------------------------------
 
-    private String generateSubject( ContinuumProject project, ContinuumBuild build )
+    private static String generateSubject( ContinuumProject project, ContinuumBuild build )
     {
         ContinuumBuildResult result = build.getBuildResult();
 
@@ -252,8 +249,6 @@ public class MailContinuumNotifier
             return;
         }
 
-        getLogger().info( "Sending message: From '" + from + "'." );
-
         MailMessage message = new MailMessage();
 
         message.addHeader( "X-Continuum-Host", localHostName );
@@ -268,12 +263,16 @@ public class MailContinuumNotifier
 
             message.setFromName( fromName );
 
+            getLogger().info( "Sending message: From '" + fromName + " <" + fromAddress + ">'." );
+
             for ( Iterator it = recipients.iterator(); it.hasNext(); )
             {
                 String recipient = (String) it.next();
 
                 // TODO: set a proper name
                 String name = recipient;
+
+                getLogger().info( "Sending message: To '" + recipient + "'." );
 
                 message.addTo( name, recipient );
             }
@@ -288,14 +287,14 @@ public class MailContinuumNotifier
 
     private String getFromAddress( ContinuumProject project )
     {
-        if ( from != null )
+        if ( fromAddress != null )
         {
-            return from;
+            return fromAddress;
         }
 
         if ( StringUtils.isEmpty( project.getNagEmailAddress() ) )
         {
-            return "Continuum Internal Mail Service <continuum>";
+            return FALLBACK_FROM_ADDRESS;
         }
 
         return project.getNagEmailAddress();
@@ -332,8 +331,6 @@ public class MailContinuumNotifier
         throws ContinuumException
     {
         Iterator it;
-
-        getLogger().info( "Current build: " + currentBuild.getId() );
 
         try
         {
