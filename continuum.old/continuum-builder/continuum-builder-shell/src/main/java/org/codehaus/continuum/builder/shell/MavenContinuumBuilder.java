@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.3 2004-10-28 16:00:18 jvanzyl Exp $
+ * @version $Id: MavenContinuumBuilder.java,v 1.4 2004-10-28 16:14:34 jvanzyl Exp $
  */
 public class MavenContinuumBuilder
     extends ShellContinuumBuilder
@@ -88,21 +88,6 @@ public class MavenContinuumBuilder
                 }
             }
         }
-
-        List goals = new ArrayList();
-
-        if ( isPom )
-        {
-            goals.add( "pom:install" );
-        }
-        else
-        {
-            goals.add( "clean:clean" );
-
-            goals.add( "jar:install" );
-        }
-
-        descriptor.getOptions().put( "goals", goals );
 
         descriptor.setName( mavenProject.getName() );
 
@@ -183,26 +168,15 @@ public class MavenContinuumBuilder
     {
         Commandline cl = new Commandline();
 
-        cl.setExecutable( shellCommand );
+        String[] s = StringUtils.split( shellCommand );
+
+        cl.setExecutable( s[0] );
 
         cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
 
-        List goals = (List) projectDescriptor.getOptions().get( "goals" );
-
-        for ( Iterator it = goals.iterator(); it.hasNext(); )
+        for ( int i = 1; i < s.length; i++ )
         {
-            String goal = (String) it.next();
-
-            cl.createArgument().setValue( goal );
-        }
-
-        String[] args = cl.getCommandline();
-
-        String cmd = args[0];
-
-        for ( int i = 1; i < args.length; i++ )
-        {
-            cmd += " " + args[i];
+            cl.createArgument().setValue( s[i] );
         }
 
         return cl;

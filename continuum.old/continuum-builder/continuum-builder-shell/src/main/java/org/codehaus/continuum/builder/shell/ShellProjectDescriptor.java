@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellProjectDescriptor.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
+ * @version $Id: ShellProjectDescriptor.java,v 1.2 2004-10-28 16:14:34 jvanzyl Exp $
  */
 public class ShellProjectDescriptor
     extends AbstractProjectDescriptor
@@ -37,7 +37,6 @@ public class ShellProjectDescriptor
     // ----------------------------------------------------------------------
     // o we need to know where tests go so we can look at the output
     // o we need developers lists for the blame mechanism
-    // o we need general parameters for the command line creation
     // ----------------------------------------------------------------------
 
     private String name;
@@ -47,8 +46,6 @@ public class ShellProjectDescriptor
     private String nagEmailAddress;
 
     private String version;
-
-    private Map options = new HashMap();
 
     public String getName()
     {
@@ -88,10 +85,5 @@ public class ShellProjectDescriptor
     public void setVersion( String version )
     {
         this.version = version;
-    }
-
-    public Map getOptions()
-    {
-        return options;
     }
 }
