@@ -8,13 +8,13 @@
   </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-it</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Intergration Test</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-web</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>maven</groupId>
