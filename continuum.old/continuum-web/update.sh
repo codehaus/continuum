@@ -22,7 +22,7 @@ rm -rf $runtime/application
 mkdir -p $runtime/apps/maven2
 cp -r $M2_HOME/* $runtime/apps/maven2
 cp ~/.maven/repository/classworlds/jars/classworlds-1.1-SNAPSHOT.jar $runtime/apps/maven2/core/
-cp ~/.maven/repository/plexus/jars/plexus-0.17-SNAPSHOT.jar $runtime/apps/maven2/core
+#cp ~/.maven/repository/plexus/jars/plexus-0.17-SNAPSHOT.jar $runtime/apps/maven2/core
 cp ~/.maven/repository/xpp3/jars/xpp3-1.1.3.3.jar $runtime/apps/maven2/core
 cp ~/.maven/repository/xstream/jars/xstream-1.0-SNAPSHOT.jar $runtime/apps/maven2/core
 
@@ -38,7 +38,9 @@ cp ~/.maven/repository/maven/jars/wagon-http-lightweight-1.0-alpha-1-SNAPSHOT.ja
 cp ~/.maven/repository/plexus/jars/plexus-artifact-container-1.0-alpha-1-SNAPSHOT.jar $runtime/apps/maven2/lib
 cp ~/.maven/repository/plexus/jars/plexus-i18n-1.0-beta-3.jar $runtime/apps/maven2/lib
 
+# The runtime core
 cp ~/.maven/repository/classworlds/jars/classworlds-1.1-SNAPSHOT.jar $runtime/core/boot/
+cp ~/.maven/repository/plexus/jars/plexus-container-default-1.0-alpha-1-SNAPSHOT.jar $runtime/core
 
 cp ~/.maven/repository/plexus/jars/plexus-compiler-api-1.0.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-compiler-javac-1.0.jar $runtime/apps/continuumweb/lib
@@ -49,6 +51,7 @@ cp ~/.maven/repository/plexus/jars/plexus-jetty-1.0-beta-1.jar $runtime/apps/con
 #cp ~/.maven/repository/plexus/jars/plexus-jetty-httpd-1.0-beta-1.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-servlet-1.0-beta-2-SNAPSHOT.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-velocity-1.0-beta-3.jar $runtime/apps/continuumweb/lib
+cp ~/.maven/repository/plexus/jars/plexus-utils-1.0-alpha-1-SNAPSHOT.jar $runtime/apps/continuumweb/lib
 
 # Web tools
 cp ~/.maven/repository/plexus/jars/plexus-formica-1.0-beta-2.jar $runtime/apps/continuumweb/lib
