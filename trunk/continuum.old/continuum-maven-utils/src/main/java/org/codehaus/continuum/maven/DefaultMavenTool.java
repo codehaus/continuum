@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.2 2004-10-28 18:27:04 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.3 2004-10-28 18:38:30 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -85,11 +85,10 @@ public class DefaultMavenTool
 
         getLogger().info( "Using " + mavenHome + " as maven.home." );
         getLogger().info( "Using " + mavenHomeLocal + " as maven.home.local." );
-        getLogger().info( "Using " + mavenRepository + " as maven.repo.local." );
+        getLogger().info( "Using " + mavenRepository + " as maven.repo." );
 
         File mavenHomeFile = new File( mavenHome );
         File mavenHomeLocalFile = new File( mavenHomeLocal );
-        File mavenRepositoryFile = new File( mavenRepository );
 
         if ( !mavenHomeFile.isDirectory()  )
         {

@@ -38,7 +38,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenToolTest.java,v 1.2 2004-10-28 18:27:04 trygvis Exp $
+ * @version $Id: MavenToolTest.java,v 1.3 2004-10-28 18:38:40 trygvis Exp $
  */
 public class MavenToolTest
     extends TestCase
@@ -75,10 +75,12 @@ public class MavenToolTest
         container.getContext().put( "maven.home", mavenHome );
         container.getContext().put( "maven.home.local", mavenHomeLocal );
 
-        if ( mavenRepo != null )
+        if ( mavenRepo == null )
         {
-            container.getContext().put( "maven.repo", mavenRepo );
+            mavenRepo = "/tmp/repository";
         }
+
+        container.getContext().put( "maven.repo", mavenRepo );
 
         container.initialize();
         container.start();
