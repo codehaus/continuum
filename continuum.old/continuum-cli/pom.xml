@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>continuum-parent</artifactId>
+    <groupId>continuum</groupId>
+    <version>0.1</version>
+  </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-cli</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>Continuum Command Line Interface</name>
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-xmlrpc-client</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
