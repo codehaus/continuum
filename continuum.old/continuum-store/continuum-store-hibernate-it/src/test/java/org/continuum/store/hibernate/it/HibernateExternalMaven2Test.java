@@ -4,6 +4,7 @@ package org.continuum.store.hibernate.it;
  * LICENSE
  */
 
+import java.io.File;
 import java.net.URL;
 
 import org.codehaus.continuum.AbstractContinuumTest;
@@ -25,18 +26,12 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateExternalMaven2Test.java,v 1.3 2004-10-24 20:39:09 trygvis Exp $
+ * @version $Id: HibernateExternalMaven2Test.java,v 1.4 2004-10-28 21:25:10 trygvis Exp $
  */
 public class HibernateExternalMaven2Test
     extends AbstractContinuumTest
 {
-    private String name = "Test Project";
-
     private String scmUrl = "scm:local:src/test/repository:maven2";
-
-    private String nagEmailAddress = "given nag email address";
-
-    private String version = "given version";
 
     private String builderType;
 
@@ -83,7 +78,7 @@ public class HibernateExternalMaven2Test
 
         txManager.begin();
 
-        String projectId = store.addProject( name, scmUrl, nagEmailAddress, version, builderType );
+        String projectId = continuum.addProjectFromScm( scmUrl, builderType );
 
         txManager.commit();
 
@@ -95,7 +90,11 @@ public class HibernateExternalMaven2Test
 
         ContinuumProject project = store.getProject( projectId );
 
-        ProjectDescriptor desc = builder.createDescriptor( project );
+        project = builder.createProject( new File( project.getWorkingDirectory() ) );
+
+        ProjectDescriptor desc = project.getDescriptor();
+
+        txManager.commit();
 
         assertNotNull( desc );
 
@@ -113,31 +112,27 @@ public class HibernateExternalMaven2Test
         assertEquals( "jar:install", descriptor.getGoals().get( 1 ) );
 
         // Name
-        assertEquals( "IT Test Foo", descriptor.getName() );
+//        assertEquals( "IT Test Foo", descriptor.getName() );
 
         assertEquals( "IT Test Foo", project.getName() );
 
         // Nag email address
-        assertEquals( "foo@bar", descriptor.getNagEmailAddress() );
+//        assertEquals( "foo@bar", descriptor.getNagEmailAddress() );
 
         assertEquals( "foo@bar", project.getNagEmailAddress() );
 
         // Scm Url
-        assertEquals( "scm:local:src/test/repository:maven2", descriptor.getScmUrl() );
+//        assertEquals( "scm:local:src/test/repository:maven2", descriptor.getScmUrl() );
 
         assertEquals( "scm:local:src/test/repository:maven2", project.getScmUrl() );
 
         // Version
-        assertEquals( "1.0", descriptor.getVersion() );
+//        assertEquals( "1.0", descriptor.getVersion() );
 
         assertEquals( "1.0", project.getVersion() );
 
         // MavenProject
 //        assertNotNull( maven2ProjectDescriptor.getMavenProject() );
-
-        store.setProjectDescriptor( projectId, descriptor );
-
-        txManager.commit();
 
         // ----------------------------------------------------------------------
         // Build it

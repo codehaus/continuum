@@ -1,5 +1,6 @@
 package org.codehaus.continuum.notification;
 
+import org.codehaus.continuum.builder.test.TestContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuild;
 
 /*
@@ -26,7 +27,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.6 2004-10-28 17:28:42 trygvis Exp $
+ * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.7 2004-10-28 21:20:50 trygvis Exp $
  */
 public class SuccessfulBuildConsoleNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
@@ -48,6 +49,12 @@ public class SuccessfulBuildConsoleNotifierTest
     protected String getNotifierRoleHint()
     {
         return "console";
+    }
+
+    public void setUpNotifier()
+    	throws Exception
+    {
+        ((TestContinuumBuilder) getContinuumBuilder( "test" )).setScmUrl( getProjectScmUrl() );
     }
 
     protected void assertPreBuildState()

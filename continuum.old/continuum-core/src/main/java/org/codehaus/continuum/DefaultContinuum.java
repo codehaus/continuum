@@ -55,7 +55,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.48 2004-10-28 17:28:39 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.49 2004-10-28 21:20:50 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -228,7 +228,7 @@ public class DefaultContinuum
     // Continuum Implementation
     // ----------------------------------------------------------------------
 
-    public String addProjectFromScm( String scmUrl, String builder )
+    public String addProjectFromScm( String scmUrl, String builderType )
         throws ContinuumException
     {
         File coDir = new File( workingDirectory, "temp-project" );
@@ -261,23 +261,23 @@ public class DefaultContinuum
             throw new ContinuumException( "Error while checking out the project.", ex );
         }
 
-        File pom = new File( coDir, "pom.xml" );
+//        File pom = new File( coDir, "pom.xml" );
+//
+//        if ( !pom.exists() )
+//        {
+//            throw new ContinuumException( "Could not find a pom.xml in the working directory (" + pom.getAbsolutePath() + ")." );
+//        }
 
-        if ( !pom.exists() )
+        ContinuumBuilder builder = builderManager.getBuilder( builderType );
+
+        ContinuumProject project = builder.createProject( coDir );
+
+        if ( project.getScmUrl() == null )
         {
-            throw new ContinuumException( "Could not find a pom.xml in the working directory (" + pom.getAbsolutePath() + ")." );
+            project.setScmUrl( scmUrl );
         }
 
-        // TODO: delegate to the builders?
-        // TODO: add support for the other types of projects (maven 1, ant, shell);
-
-        MavenProject project = mavenTool.getProject( pom );
-
-        String projectId = addProject( mavenTool.getProjectName( project ),
-                                       mavenTool.getScmUrl( project ),
-                                       mavenTool.getNagEmailAddress( project ),
-                                       mavenTool.getVersion( project ),
-                                       builder );
+        String projectId = addProject( project, builderType );
 
         return projectId;
     }
@@ -315,11 +315,11 @@ public class DefaultContinuum
 
             ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
 
-            ProjectDescriptor descriptor = builder.createDescriptor( project );
+            project = builder.createProject( new File( project.getWorkingDirectory() ) );
 
             store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
 
-            store.updateProjectDescriptor( projectId, descriptor );
+            store.updateProjectDescriptor( projectId, project.getDescriptor() );
 
             txManager.leave();
 
@@ -480,32 +480,40 @@ public class DefaultContinuum
     //
     // ----------------------------------------------------------------------
 
-    private String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
+    private String addProject( ContinuumProject project, String builderType )
         throws ContinuumException
     {
         try
         {
             txManager.enter();
 
-            Iterator it = store.findProjectsByName( name );
+            Iterator it = store.findProjectsByName( project.getName() );
 
             txManager.leave();
 
             if ( it.hasNext() )
             {
-                ContinuumProject project = (ContinuumProject) it.next();
+                ContinuumProject tmpProject = (ContinuumProject) it.next();
 
-                updateProject( project.getId() );
+                updateProject( tmpProject.getId() );
 
-                return project.getId();
+                return tmpProject.getId();
             }
             else
             {
                 txManager.enter();
 
-                String projectId = store.addProject( name, scmUrl, nagEmailAddress, version, type );
+                // ----------------------------------------------------------------------
+                // Store the project
+                // ----------------------------------------------------------------------
 
-                File projectWorkingDirectory = new File( workingDirectory, name );
+                String projectId = store.addProject( project.getName(), 
+                                                     project.getScmUrl(),
+                                                     project.getNagEmailAddress(),
+                                                     project.getVersion(),
+                                                     builderType );
+
+                File projectWorkingDirectory = new File( workingDirectory, project.getName() );
 
                 if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
                 {
@@ -514,13 +522,9 @@ public class DefaultContinuum
 
                 store.setWorkingDirectory( projectId, projectWorkingDirectory.getAbsolutePath() );
 
-                ContinuumProject project = store.getProject( projectId );
+                ProjectDescriptor descriptor = project.getDescriptor();
 
-                ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
-
-                ProjectDescriptor descriptor = builder.createDescriptor( project );
-
-                store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
+                project = store.getProject( projectId );
 
                 store.setProjectDescriptor( projectId, descriptor );
 

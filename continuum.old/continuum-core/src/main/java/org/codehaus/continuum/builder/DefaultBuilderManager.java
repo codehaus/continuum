@@ -37,7 +37,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuilderManager.java,v 1.4 2004-08-29 21:03:06 trygvis Exp $
+ * @version $Id: DefaultBuilderManager.java,v 1.5 2004-10-28 21:20:50 trygvis Exp $
  */
 public class DefaultBuilderManager
     extends AbstractLogEnabled
@@ -82,6 +82,19 @@ public class DefaultBuilderManager
     // BuilderManager Implementation
     // ----------------------------------------------------------------------
 
+    public ContinuumBuilder getBuilder( String builderType )
+    	throws ContinuumException
+    {
+        ContinuumBuilder builder = (ContinuumBuilder) builders.get( builderType );
+
+        if ( builder == null )
+        {
+            throw new ContinuumException( "No such builder: '" + builderType + "'." );
+        }
+
+        return builder;
+    }
+
     public ContinuumBuilder getBuilderForProject( String projectId )
         throws ContinuumException
     {
@@ -89,16 +102,9 @@ public class DefaultBuilderManager
         {
             ContinuumProject project = store.getProject( projectId );
 
-            String type = project.getType();
+            String builderType = project.getType();
 
-            ContinuumBuilder builder = (ContinuumBuilder) builders.get( type );
-
-            if ( builder == null )
-            {
-                throw new ContinuumException( "No such builder: '" + type + "'." );
-            }
-
-            return builder;
+            return getBuilder( builderType );
         }
         catch( ContinuumStoreException ex )
         {
@@ -113,16 +119,9 @@ public class DefaultBuilderManager
         {
             ContinuumBuild build = store.getBuild( buildId );
 
-            String type = build.getProject().getType();
+            String builderType = build.getProject().getType();
 
-            ContinuumBuilder builder = (ContinuumBuilder) builders.get( type );
-
-            if ( builder == null )
-            {
-                throw new ContinuumException( "No such builder: '" + type + "'." );
-            }
-
-            return builder;
+            return getBuilder( builderType );
         }
         catch( ContinuumStoreException ex )
         {

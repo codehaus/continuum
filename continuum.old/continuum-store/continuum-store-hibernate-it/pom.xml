@@ -7,7 +7,7 @@
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-hibernate-store-it</artifactId>
+  <artifactId>continuum-store-hibernate-it</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Hibernate Store Itergration Test</name>
   <dependencies>
