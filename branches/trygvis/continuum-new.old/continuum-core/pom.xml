@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
+    <version>1.0-alpha-1-SNAPSHOT</version>
+  </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-core</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
+  <name>Continuum Core</name>
+  <dependencies>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-provider-local</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <!-- Maven builder -->
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <!-- Mail sender -->
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-mail-sender-api</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-mail-sender-simple</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-mail-sender-test</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <!-- Maven SCM -->
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-api</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <!-- Store -->
+    <dependency>
+      <groupId>obie</groupId>
+      <artifactId>stash</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>    
+  </dependencies>
+  <plugins>
+    <plugin>
+      <id>modello</id>
+      <configuration>
+        <version>1.0</version>
+        <model>src/main/resources/continuum.mdo</model>
+        <packageWithVersion>false</packageWithVersion>
+      </configuration>
+    </plugin>
+  </plugins>
+</project>
