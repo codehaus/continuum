@@ -1,11 +1,9 @@
 <application>
 
   <load-on-start>
-    <!--
     <component>
       <role>org.codehaus.continuum.Continuum</role>
     </component>
-    -->
   </load-on-start>
 
   <resources>
