@@ -48,7 +48,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.17 2004-10-28 19:37:18 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.18 2004-10-30 11:55:56 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -490,8 +490,6 @@ public class HibernateContinuumStore
         {
             throw new NullPointerException( "'state' cannot be null." );
         }
-
-        getLogger().warn( "Setting build " + id + " state to " + state );
 
         try
         {
