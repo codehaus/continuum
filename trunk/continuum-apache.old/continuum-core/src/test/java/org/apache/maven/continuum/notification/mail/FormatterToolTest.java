@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FormatterToolTest.java,v 1.2 2005-04-03 21:53:22 trygvis Exp $
+ * @version $Id: FormatterToolTest.java,v 1.3 2005-04-04 15:23:50 trygvis Exp $
  */
 public class FormatterToolTest
     extends TestCase
@@ -42,7 +42,7 @@ public class FormatterToolTest
 
         assertEquals( "1h 1m 10s", tool.formatInterval( 0, makeTime( 1, 1, 10 ) ) );
 
-        assertEquals( "1h 1m 10s", tool.formatInterval( 1112561981137L, 1112561990023L ) );
+        assertEquals( "8s", tool.formatInterval( 1112561981137L, 1112561990023L ) );
     }
 
     // ----------------------------------------------------------------------
