@@ -7,17 +7,19 @@
 <hibernate-configuration>
     <session-factory>
         <property name="show_sql">true</property>
+<!--
         <property name="dialect">net.sf.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.url">jdbc:postgresql:trygvis</property>
-        <property name="hibernate.connection.username">trygvis</property>
-<!--
+        <property name="hibernate.connection.username">username</property>
+        <property name="hibernate.connection.password">password</property>
+-->
         <property name="dialect">net.sf.hibernate.dialect.HSQLDialect</property>
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
-        <property name="hibernate.connection.url">jdbc:hsqldb:continuumdatabase</property>
+        <property name="hibernate.connection.url">jdbc:hsqldb:continuumdb</property>
         <property name="hibernate.connection.username">sa</property>
--->
         <property name="hibernate.connection.password"></property>
+
         <property name="hibernate.connection.pool_size">10</property>
 
         <mapping resource="org/codehaus/continuum/project/ContinuumProject.hbm.xml"/>
