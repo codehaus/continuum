@@ -1,21 +1,21 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.maven.genericscm.manager.DefaultScmManager;
-import org.apache.maven.genericscm.manager.ScmManager;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.scm.manager.DefaultScmManager;
 
 /**
  *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MavenProjectScm.java,v 1.3 2004-01-17 23:16:51 jvanzyl Exp $
+ * @version $Id: MavenProjectScm.java,v 1.4 2004-02-02 20:15:59 jvanzyl Exp $
  */
 public class MavenProjectScm
 {
     private ScmManager scmManager;
 
-    public MavenProjectScm( Project project )
+    public MavenProjectScm( MavenProject project )
         throws Exception
     {
         scmManager = new DefaultScmManager( project.getRepository().getConnection() );

@@ -1,21 +1,21 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 /**
  *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MavenProjectBuild.java,v 1.2 2004-01-16 21:25:16 jvanzyl Exp $
+ * @version $Id: MavenProjectBuild.java,v 1.3 2004-02-02 20:15:59 jvanzyl Exp $
  */
 public class MavenProjectBuild
 {
-    private Project project;
+    private MavenProject project;
 
     private MavenProjectScm projectScm;
 
-    public MavenProjectBuild( Project project )
+    public MavenProjectBuild( MavenProject project )
         throws Exception
     {
         this.project = project;
@@ -23,7 +23,7 @@ public class MavenProjectBuild
         projectScm = new MavenProjectScm( project );
     }
 
-    public Project getProject()
+    public MavenProject getProject()
     {
         return project;
     }
