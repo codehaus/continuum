@@ -1,24 +1,37 @@
 package org.codehaus.continuum.trigger.alarmclock;
 
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.trigger.AbstractContinuumTrigger;
+import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.4 2004-07-07 02:34:33 trygvis Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.5 2004-07-14 05:30:56 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger
     implements Initializable, Startable
 {
+    /**
+     * The default value is one hour. 
+     * 
+     * @default 60000
+     */
     private int interval;
 
+    /**
+     * The default value is 5 minutes.
+     * 
+     * @default 3000
+     */
     private int delay;
 
     private Timer timer;
@@ -31,13 +44,16 @@ public class AlarmClockTrigger
         throws Exception
     {
         if ( interval <= 0 )
+        {
             throw new ContinuumException( "Invalid value for 'interval': the interval must be bigger that 0." );
+        }
 
         if ( delay <= 0 )
+        {
             throw new ContinuumException( "Invalid value for 'delay': the delay must be bigger that 0." );
+        }
 
-        if ( getContinuum() == null )
-            throw new ContinuumException( "Missing requirement: 'continuum'." );
+        PlexusUtils.assertRequirement( getContinuum(), "continuum" );
 
         timer = new Timer();
     }
@@ -54,8 +70,8 @@ public class AlarmClockTrigger
     }
 
     public void stop()
-        throws Exception
     {
+        timer.cancel();
     }
 
     // ----------------------------------------------------------------------
@@ -67,13 +83,33 @@ public class AlarmClockTrigger
     {
         public void run()
         {
+            Iterator it;
+
             try
             {
-                getContinuum().buildProjects();
+                it = getContinuum().getAllProjects( 0, 0 );
             }
             catch ( Exception e )
             {
-                getLogger().error( "Can't build projects!", e );
+                getLogger().error( "Error while getting the project list.", e );
+
+                return;
+            }
+
+            while ( it.hasNext() )
+            {
+                ContinuumProject project = (ContinuumProject) it.next();
+
+                try
+                {
+                    getContinuum().buildProject( project.getId() );
+                }
+                catch( ContinuumException ex )
+                {
+                    getLogger().error( "Could not build project: " + project.getId() + " (" + project.getName() + ").", ex);
+
+                    return;
+                }
             }
         }
     }

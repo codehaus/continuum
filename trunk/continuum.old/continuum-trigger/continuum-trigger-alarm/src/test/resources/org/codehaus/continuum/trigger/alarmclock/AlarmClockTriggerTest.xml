@@ -1,29 +1,18 @@
 <configuration>
-
   <components>
-
     <component>
-      <role>org.codehaus.continuum.Continuum</role>
-      <implementation>org.codehaus.continuum.MockContinuum</implementation>
-    </component>
-
-    <component>
-      <instantiation-strategy>per-lookup</instantiation-strategy>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
-      <role-hint>normal</role-hint>
+      <role-hint>alarm-clock-test</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>1</interval>
-        <delay>1</delay>
+        <delay>0</delay>
       </configuration>
-
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
         </requirement>
       </requirements>
-
     </component>
 
     <!-- Interval -->
@@ -31,29 +20,24 @@
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
       <role-hint>zero-interval</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>0</interval>
         <delay>1</delay>
       </configuration>
     </component>
-
     <component>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
       <role-hint>negative-interval</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>-1</interval>
         <delay>1</delay>
       </configuration>
     </component>
-
     <component>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
       <role-hint>string-interval</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>foo</interval>
         <delay>1</delay>
@@ -65,35 +49,28 @@
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
       <role-hint>zero-delay</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>1</interval>
         <delay>0</delay>
       </configuration>
     </component>
-
     <component>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
       <role-hint>negative-delay</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>1</interval>
         <delay>-1</delay>
       </configuration>
     </component>
-
     <component>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
-      <role-hint>string-interval</role-hint>
+      <role-hint>string-delay</role-hint>
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
-
       <configuration>
         <interval>1</interval>
         <delay>foo</delay>
       </configuration>
     </component>
-
   </components>
-
 </configuration>
