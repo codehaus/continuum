@@ -17,20 +17,22 @@ package org.apache.maven.continuum.builder.maven.m1;
  */
 
 import java.util.Properties;
+import java.io.File;
 
 import org.apache.maven.continuum.builder.manager.BuilderManager;
 import org.apache.maven.continuum.project.ContinuumProject;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1BuilderTest.java,v 1.1.1.1 2005-03-29 20:42:04 trygvis Exp $
+ * @version $Id: Maven1BuilderTest.java,v 1.2 2005-04-03 21:27:17 trygvis Exp $
  */
 public class Maven1BuilderTest
     extends PlexusTestCase
 {
-    public void testBasic()
+    public void testBuildingAProjectFromMetadataWithACompleteMaven1Pom()
         throws Exception
     {
         BuilderManager builderManager = (BuilderManager) lookup( BuilderManager.ROLE );
@@ -38,6 +40,75 @@ public class Maven1BuilderTest
         Maven1Builder builder = (Maven1Builder) builderManager.getBuilder( "maven-1" );
 
         ContinuumProject project = builder.createProjectFromMetadata( getTestFile( "src/test/resources/projects/maven-1.pom.xml" ).toURL() );
+
+        assertNotNull( project );
+
+        assertEquals( "Maven", project.getName() );
+
+        assertEquals( "scm:svn:http://svn.apache.org/repos/asf:maven/maven-1/core/trunk/", project.getScmUrl() );
+
+        assertEquals( "dev@maven.apache.org", project.getNagEmailAddress() );
+
+        assertEquals( "1.1-SNAPSHOT", project.getVersion() );
+
+        Properties configuration = project.getConfiguration();
+
+        assertNotNull( configuration );
+
+        assertEquals( 1, configuration.size() );
+
+        assertEquals( "clean:clean, jar:install", configuration.getProperty( Maven1Builder.CONFIGURATION_GOALS ) );
+    }
+
+    public void testUpdatingAProjectFromScmWithAExistingProjectAndAEmptyMaven1Pom()
+        throws Exception
+    {
+        BuilderManager builderManager = (BuilderManager) lookup( BuilderManager.ROLE );
+
+        Maven1Builder builder = (Maven1Builder) builderManager.getBuilder( "maven-1" );
+
+        // ----------------------------------------------------------------------
+        // Make a checkout
+        // ----------------------------------------------------------------------
+
+        File checkOut = getTestFile( "target/test-checkout" );
+
+        if ( !checkOut.exists() )
+        {
+            assertTrue( checkOut.mkdirs() );
+        }
+
+        FileUtils.cleanDirectory( checkOut );
+
+        FileUtils.fileWrite( new File( checkOut, "project.xml" ).getAbsolutePath(), "<project/>" );
+
+        // ----------------------------------------------------------------------
+        // Make the "existing" project
+        // ----------------------------------------------------------------------
+
+        ContinuumProject project = new ContinuumProject();
+
+        project.setName( "Maven" );
+
+        project.setScmUrl( "scm:svn:http://svn.apache.org/repos/asf:maven/maven-1/core/trunk/" );
+
+        project.setNagEmailAddress( "dev@maven.apache.org" );
+
+        project.setVersion( "1.1-SNAPSHOT" );
+
+        Properties expectedConfiguration = new Properties();
+
+        expectedConfiguration.put( Maven1Builder.CONFIGURATION_GOALS, "clean:clean, jar:install" );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        builder.updateProjectFromCheckOut( checkOut, project );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
 
         assertNotNull( project );
 
