@@ -9,7 +9,7 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-maven-utils</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Continuum Core</name>
+  <name>Continuum Maven Utils</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
