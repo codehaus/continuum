@@ -22,14 +22,22 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
+
+import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.maven.MavenTool;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
+import org.codehaus.continuum.scm.ContinuumScm;
+import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
@@ -41,11 +49,13 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.47 2004-10-24 20:39:07 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.48 2004-10-28 17:28:39 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -66,6 +76,15 @@ public class DefaultContinuum
     /** @requirement */
     private StoreTransactionManager txManager;
 
+    /** @requirement */
+    private ContinuumScm scm;
+
+    /** @requirement */
+    private MavenTool mavenTool;
+
+    /** @configuration */
+    private String workingDirectory;
+
     private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
 
     private BuilderThread builderThread;
@@ -80,14 +99,16 @@ public class DefaultContinuum
 
     DefaultPlexusContainer container;
 
-    public void contextualize( Context context ) throws Exception
+    public void contextualize( Context context )
+    	throws Exception
     {
         plexusHome = (String) context.get( "plexus.home" );
 
         container = (DefaultPlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
-    public void initialize() throws Exception
+    public void initialize()
+    	throws Exception
     {
         getLogger().info( "Initializing continuum." );
 
@@ -95,6 +116,26 @@ public class DefaultContinuum
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
         PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
+        PlexusUtils.assertRequirement( mavenTool, MavenTool.ROLE );
+
+        PlexusUtils.assertConfiguration( workingDirectory, "working-directory" );
+
+        File wdFile = new File( workingDirectory );
+
+        if ( wdFile.exists() )
+        {
+            if ( !wdFile.isDirectory() )
+            {
+                throw new ContinuumException( "The specified working directory isn't a directory: " + wdFile.getAbsolutePath() );
+            }
+        }
+        else
+        {
+            if ( !wdFile.mkdirs() )
+            {
+                throw new ContinuumException( "Could not making the working directory: " + wdFile.getAbsolutePath() );
+            }
+        }
 
         getLogger().info( "Showing all projects: " );
 
@@ -110,7 +151,8 @@ public class DefaultContinuum
         txManager.commit();
     }
 
-    public void start() throws Exception
+    public void start()
+    	throws Exception
     {
         getLogger().info( "Starting continuum." );
 
@@ -138,7 +180,8 @@ public class DefaultContinuum
         getLogger().info( "" );
     }
 
-    public void stop() throws Exception
+    public void stop()
+    	throws Exception
     {
         int maxSleep = 10 * 1000; // 10 seconds
         int interval = 1000;
@@ -185,55 +228,81 @@ public class DefaultContinuum
     // Continuum Implementation
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type ) throws ContinuumException
+    public String addProjectFromScm( String scmUrl, String builder )
+        throws ContinuumException
     {
+        File coDir = new File( workingDirectory, "temp-project" );
+
+        if ( coDir.exists() )
+        {
+            try
+            {
+                FileUtils.cleanDirectory( coDir );
+            }
+            catch( IOException ex )
+            {
+                throw new ContinuumException( "Error while cleaning out " + coDir.getAbsolutePath() );
+            }
+        }
+        else
+        {
+            if ( !coDir.mkdirs() )
+            {
+                throw new ContinuumException( "Could not make the check out directory (" + coDir.getAbsolutePath() + ")." );
+            }
+        }
+
         try
         {
-            txManager.enter();
-
-            Iterator it = store.findProjectsByName( name );
-
-            txManager.leave();
-
-            if ( it.hasNext() )
-            {
-                ContinuumProject project = (ContinuumProject) it.next();
-
-                updateProject( project.getId() );
-
-                return project.getId();
-            }
-            else
-            {
-                txManager.enter();
-
-                String projectId = store.addProject( name, scmUrl, nagEmailAddress, version, type );
-
-                ContinuumProject project = store.getProject( projectId );
-
-                ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
-
-                ProjectDescriptor descriptor = builder.createDescriptor( project );
-
-                store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
-
-                store.setProjectDescriptor( projectId, descriptor );
-
-                txManager.leave();
-
-                getLogger().info( "Added project: " + project.getName() );
-
-                return projectId;
-            }
+            scm.checkOut( coDir, scmUrl );
         }
-        catch ( ContinuumStoreException ex )
+        catch( ContinuumScmException ex )
         {
-            txManager.rollback();
-
-            getLogger().error( "Exception while adding project.", ex );
-
-            throw new ContinuumException( "Exception while adding project.", ex );
+            throw new ContinuumException( "Error while checking out the project.", ex );
         }
+
+        File pom = new File( coDir, "pom.xml" );
+
+        if ( !pom.exists() )
+        {
+            throw new ContinuumException( "Could not find a pom.xml in the working directory (" + pom.getAbsolutePath() + ")." );
+        }
+
+        // TODO: delegate to the builders?
+        // TODO: add support for the other types of projects (maven 1, ant, shell);
+
+        MavenProject project = mavenTool.getProject( pom );
+
+        String projectId = addProject( mavenTool.getProjectName( project ),
+                                       mavenTool.getScmUrl( project ),
+                                       mavenTool.getNagEmailAddress( project ),
+                                       mavenTool.getVersion( project ),
+                                       builder );
+
+        return projectId;
+    }
+
+    public String addProjectFromUrl( URL url, String builder )
+        throws ContinuumException
+    {
+        File pomFile;
+
+        try
+        {
+            String pom = IOUtil.toString( url.openStream() );
+
+            pomFile = File.createTempFile( "continuum-", "-pom-download" );
+
+            FileUtils.fileWrite( pomFile.getAbsolutePath(), pom );
+        }
+        catch( IOException ex )
+        {
+            throw new ContinuumException( "Error while downloading the pom.", ex );
+        }
+
+        MavenProject project = mavenTool.getProject( pomFile );
+
+        return addProjectFromScm( mavenTool.getScmUrl( project ), builder );
     }
 
     public void updateProject( String projectId ) throws ContinuumException
@@ -344,10 +413,7 @@ public class DefaultContinuum
 
             txManager.commit();
 
-            getLogger()
-                .info(
-                    "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId
-                        + "..." );
+            getLogger().info( "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId + "..." );
 
             buildQueue.enqueue( buildId );
 
@@ -363,14 +429,126 @@ public class DefaultContinuum
         }
     }
 
+    public boolean checkIfProjectNeedsToBeBuilt( String projectId )
+        throws ContinuumException
+    {
+        try
+        {
+            txManager.enter();
+
+            ContinuumProject project = store.getProject( projectId );
+
+            txManager.leave();
+
+            boolean needsBuild = scm.updateProject( project );
+
+            if ( needsBuild )
+            {
+                getLogger().info( "Project needs to be built: " + project.getName() );
+
+                buildProject( projectId );
+            }
+
+            return needsBuild;
+        }
+        catch ( ContinuumScmException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumException( "Exception while checking the project.", ex );
+        }
+        catch ( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumException( "Exception while checking the project.", ex );
+        }
+    }
+
     /**
      * Returns the current length of the build queue.
-     * 
+     *
      * @return Returns the current length of the build queue.
      */
     public int getBuildQueueLength()
     	throws ContinuumException
     {
         return buildQueue.getLength();
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
+        throws ContinuumException
+    {
+        try
+        {
+            txManager.enter();
+
+            Iterator it = store.findProjectsByName( name );
+
+            txManager.leave();
+
+            if ( it.hasNext() )
+            {
+                ContinuumProject project = (ContinuumProject) it.next();
+
+                updateProject( project.getId() );
+
+                return project.getId();
+            }
+            else
+            {
+                txManager.enter();
+
+                String projectId = store.addProject( name, scmUrl, nagEmailAddress, version, type );
+
+                File projectWorkingDirectory = new File( workingDirectory, name );
+
+                if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
+                {
+                    throw new ContinuumException( "Could not make the working directory for the project (" + projectWorkingDirectory.getAbsolutePath() + ")." );
+                }
+
+                store.setWorkingDirectory( projectId, projectWorkingDirectory.getAbsolutePath() );
+
+                ContinuumProject project = store.getProject( projectId );
+
+                ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
+
+                ProjectDescriptor descriptor = builder.createDescriptor( project );
+
+                store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
+
+                store.setProjectDescriptor( projectId, descriptor );
+
+                txManager.leave();
+
+                getLogger().info( "Added project: " + project.getName() );
+                getLogger().info( "  Working directory: " + project.getWorkingDirectory() );
+
+                scm.checkOutProject( project );
+
+                return projectId;
+            }
+        }
+        catch ( ContinuumScmException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Exception while checking out the project.", ex );
+
+            throw new ContinuumException( "Exception while checking out the project.", ex );
+        }
+        catch ( ContinuumStoreException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Exception while adding project.", ex );
+
+            throw new ContinuumException( "Exception while adding project.", ex );
+        }
     }
 }

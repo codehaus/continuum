@@ -19,7 +19,16 @@
         <requirement>
           <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.maven.MavenTool</role>
+        </requirement>
       </requirements>
+      <configuration>
+        <working-directory>${plexus.home}/temp</working-directory>
+      </configuration>
     </component>
 
     <component>
@@ -79,7 +88,9 @@
       </requirements>
       <configuration>
         <!-- @TODO: change this to ${continuum.checkout} -->
+<!--
         <checkout-directory>/tmp/continuum</checkout-directory>
+-->
       </configuration>
     </component>
 

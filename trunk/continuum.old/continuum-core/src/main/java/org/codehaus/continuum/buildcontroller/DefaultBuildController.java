@@ -15,6 +15,7 @@ import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.scm.ContinuumScm;
+import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
@@ -22,7 +23,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.1 2004-10-24 14:18:47 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.2 2004-10-28 17:28:39 trygvis Exp $
  */
 public class DefaultBuildController
 	extends AbstractLogEnabled
@@ -107,9 +108,8 @@ public class DefaultBuildController
     }
 
     // ----------------------------------------------------------------------
-    // 
+    //
     // ----------------------------------------------------------------------
-
 
     /**
      * This method shall not throw any exceptions unless there
@@ -167,13 +167,11 @@ public class DefaultBuildController
     {
         ContinuumProject project = build.getProject();
 
-        File workingDirectory;
-
         try
         {
             notifier.checkoutStarted( build );
 
-            workingDirectory = checkOut( project );
+            checkOut( project );
         }
         finally
         {
@@ -186,7 +184,7 @@ public class DefaultBuildController
 
         try
         {
-            result = runGoals( builder, workingDirectory, build );
+            result = runGoals( builder, project.getWorkingDirectory(), build );
         }
         finally
         {
@@ -196,20 +194,18 @@ public class DefaultBuildController
         return result;
     }
 
-    private File checkOut( ContinuumProject project )
-        throws ContinuumException
+    private void checkOut( ContinuumProject project )
+        throws ContinuumScmException
     {
         scm.clean( project );
 
-        File workingDirectory = scm.checkout( project );
-
-        return workingDirectory;
+        scm.checkOutProject( project );
     }
 
-    private ContinuumBuildResult runGoals( ContinuumBuilder builder, File workingDirectory, ContinuumBuild build )
+    private ContinuumBuildResult runGoals( ContinuumBuilder builder, String workingDirectory, ContinuumBuild build )
         throws ContinuumException
     {
-        ContinuumBuildResult result = builder.build( workingDirectory, build );
+        ContinuumBuildResult result = builder.build( new File( workingDirectory ), build );
 
         if ( result == null )
         {

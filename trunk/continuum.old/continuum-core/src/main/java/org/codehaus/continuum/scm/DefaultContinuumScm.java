@@ -25,12 +25,13 @@ package org.codehaus.continuum.scm;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.ScmRepository;
+import org.apache.maven.scm.repository.ScmRepositoryException;
 
-import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -39,16 +40,15 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.14 2004-10-24 20:39:07 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.15 2004-10-28 17:28:40 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
     implements ContinuumScm, Initializable
 {
-    /** @default */
-    private String checkoutDirectory;
-
-    /** @requirement */
+    /**
+     * @requirement
+     */
     private ScmManager scmManager;
 
     // ----------------------------------------------------------------------
@@ -59,18 +59,6 @@ public class DefaultContinuumScm
         throws Exception
     {
         PlexusUtils.assertRequirement( scmManager, ScmManager.ROLE );
-
-        PlexusUtils.assertConfiguration( checkoutDirectory, "checkout-directory" );
-
-        File f = new File( checkoutDirectory );
-
-        getLogger().info( "Using " + checkoutDirectory + " as checkout directory." );
-
-        if ( !f.exists() )
-        {
-            getLogger().info( "Checkout directory does not exist, creating." );
-            f.mkdirs();
-        }
     }
 
     // ----------------------------------------------------------------------
@@ -78,40 +66,35 @@ public class DefaultContinuumScm
     // ----------------------------------------------------------------------
 
     public void clean( ContinuumProject project )
-        throws ContinuumException
+        throws ContinuumScmException
     {
         try
         {
-            FileUtils.deleteDirectory( getProjectScmDirectory( project ) );
+            FileUtils.deleteDirectory( project.getWorkingDirectory() );
         }
-        catch( IOException ex )
+        catch ( IOException ex )
         {
-            throw new ContinuumException( "Exception while cleaning the directory.", ex );
+            throw new ContinuumScmException( "Exception while cleaning the directory.", ex );
         }
     }
 
-    /**
-     * Checks out the sources to the specified directory.
-     *
-     * @param project The project to check out.
-     * @throws ContinuumException Thrown in case of a exception while checking out the sources.
-     */
-    public File checkout( ContinuumProject project )
-        throws ContinuumException
+    public void checkOut( File workingDirectory, String scmUrl )
+        throws ContinuumScmException
     {
         try
         {
-            File workingDirectory = getProjectScmDirectory( project );
-
-            ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
 
             CheckOutScmResult result;
 
-            synchronized( this )
+            synchronized ( this )
             {
                 if ( !workingDirectory.exists() )
                 {
-                    FileUtils.mkdir( workingDirectory.getAbsolutePath() );
+                    if ( !workingDirectory.mkdirs() )
+                    {
+                        throw new ContinuumScmException( "Could not make directory: " + workingDirectory.getAbsolutePath() );
+                    }
                 }
 
                 String tag = null;
@@ -121,32 +104,55 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
-                throw new ContinuumException( "Error while checking out the project: " + result.getMessage() );
+                throw new ContinuumScmException( "Error while checking out the project.", result );
             }
-
-            // TODO: yes, this is CVS specific and pure bad
-            String url = repository.getScmSpecificUrl2();
-
-            return new File( workingDirectory, url.substring( url.lastIndexOf( ":" ) + 1 ) );
         }
-        catch ( Exception e )
+        catch ( ScmRepositoryException e )
         {
-            throw new ContinuumException( "Cannot checkout sources.", e );
+            throw new ContinuumScmException( "Cannot checkout sources.", e );
         }
+        catch ( ScmException e )
+        {
+            throw new ContinuumScmException( "Cannot checkout sources.", e );
+        }
+    }
+
+    /**
+     * Checks out the sources to the specified directory.
+     *
+     * @param project The project to check out.
+     * @throws ContinuumScmException Thrown in case of a exception while checking out the sources.
+     */
+    public void checkOutProject( ContinuumProject project )
+        throws ContinuumScmException
+    {
+        String wd = project.getWorkingDirectory();
+
+        if ( wd == null )
+        {
+            throw new ContinuumScmException( "The working directory for the project has to be set." );
+        }
+
+        checkOut( new File( wd ), project.getScmUrl() );
     }
 
     /**
      * Updates the sources in the specified directory.
      *
      * @param project The project to update.
-     * @throws ContinuumException Thrown in case of a exception while updating the sources.
+     * @throws ContinuumScmException Thrown in case of a exception while updating the sources.
      */
-    public synchronized File update( ContinuumProject project )
-        throws ContinuumException
+    public boolean updateProject( ContinuumProject project )
+        throws ContinuumScmException
     {
         try
         {
-            File dir = getProjectScmDirectory( project );
+            File workingDirectory = new File( project.getWorkingDirectory() );
+
+            if ( !workingDirectory.exists() )
+            {
+                throw new ContinuumScmException( "The working directory for the project doesn't exist (" + project.getWorkingDirectory() + ")." );
+            }
 
             ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
 
@@ -154,30 +160,25 @@ public class DefaultContinuumScm
 
             UpdateScmResult result;
 
-            synchronized( this )
+            synchronized ( this )
             {
-                result = scmManager.update( repository, dir, tag );
+                result = scmManager.update( repository, workingDirectory, tag );
             }
 
             if ( !result.isSuccess() )
             {
-                throw new ContinuumException( "Error while updating repository: " + result.getMessage() );
+                throw new ContinuumScmException( "Error while updating project.", result );
             }
 
-            return dir;
+            return result.getUpdatedFiles().size() > 0;
         }
-        catch ( Exception ex )
+        catch ( ScmRepositoryException ex )
         {
-            throw new ContinuumException( "Error while update sources.", ex );
+            throw new ContinuumScmException( "Error while update sources.", ex );
         }
-    }
-
-    // ----------------------------------------------------------------------
-    // Private
-    // ----------------------------------------------------------------------
-
-    private File getProjectScmDirectory( ContinuumProject project )
-    {
-        return new File( checkoutDirectory, project.getId() );
+        catch ( ScmException ex )
+        {
+            throw new ContinuumScmException( "Error while update sources.", ex );
+        }
     }
 }

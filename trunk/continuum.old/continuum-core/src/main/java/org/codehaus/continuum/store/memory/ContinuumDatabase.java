@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.5 2004-10-24 20:39:07 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.6 2004-10-28 17:28:41 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -226,9 +226,9 @@ public class ContinuumDatabase
 
         project.setVersion( version );
 
-        project.setState( ContinuumProjectState.NEW );
-
         project.setType( type );
+
+        project.setState( ContinuumProjectState.NEW );
 
         projectList.add( project );
 
@@ -319,6 +319,19 @@ public class ContinuumDatabase
         project.setNagEmailAddress( nagEmailAddress );
 
         project.setVersion( version );
+    }
+
+    public void setWorkingDirectory( String projectId, String workingDirectory )
+    	throws ContinuumStoreException
+    {
+        if ( StringUtils.isEmpty( workingDirectory ) )
+        {
+            throw new ContinuumStoreException( "workingDirectory cannot be null." );
+        }
+
+        ContinuumProject project = getProject( projectId );
+
+        project.setWorkingDirectory( workingDirectory );
     }
 
     public Iterator getAllProjects()
