@@ -1,4 +1,4 @@
-package org.codehaus.continuum;
+package org.codehaus.continuum.builder.test;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
@@ -22,33 +22,24 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import junit.framework.Assert;
+import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestUtils.java,v 1.2 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: TestProjectDescriptor.java,v 1.1 2004-07-29 04:27:41 trygvis Exp $
  */
-public abstract class TestUtils
+public class TestProjectDescriptor
+    extends AbstractProjectDescriptor
 {
-    private TestUtils()
+    private int attribute;
+
+    public void setAttribute( int attribute )
     {
+        this.attribute = attribute;
     }
 
-    public static List iteratorToList( Iterator it )
+    public int getAttribute()
     {
-        Assert.assertNotNull( it );
-
-        List list = new ArrayList( 10 );
-
-        while ( it.hasNext() )
-        {
-            list.add( it.next() );
-        }
-
-        return list;
+        return attribute;
     }
 }
