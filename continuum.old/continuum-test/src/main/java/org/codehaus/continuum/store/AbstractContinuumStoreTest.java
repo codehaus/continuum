@@ -17,12 +17,13 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.8 2004-10-24 20:39:11 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.9 2004-10-28 17:21:25 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends AbstractContinuumTest
 {
     // TODO: Add tests for the ordering of builds
+    // TODO: Add test for setWorkingDirectory
 
     private ContinuumStore store;
 

@@ -29,7 +29,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifierTest.java,v 1.6 2004-10-20 19:29:35 trygvis Exp $
+ * @version $Id: AbstractNotifierTest.java,v 1.7 2004-10-28 17:21:24 trygvis Exp $
  */
 public abstract class AbstractNotifierTest
     extends AbstractContinuumTest
@@ -50,11 +50,7 @@ public abstract class AbstractNotifierTest
 
     protected abstract String getProjectScmUrl();
 
-    protected abstract String getProjectNagEmailAddress();
-
-    protected abstract String getProjectVersion();
-
-    protected abstract String getProjectType();
+    protected abstract String getProjectBuilder();
 
     // ----------------------------------------------------------------------
     // Implementation of the test
@@ -81,13 +77,11 @@ public abstract class AbstractNotifierTest
     protected ContinuumBuild build()
         throws Exception
     {
-        String projectName = "Notifier Test Project";
-
         Continuum continuum = getContinuum();
 
         getStoreTransactionManager().begin();
 
-        String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectNagEmailAddress(), getProjectVersion(), getProjectType() );
+        String projectId = continuum.addProjectFromScm( getProjectScmUrl(), getProjectBuilder() );
 
         getStoreTransactionManager().commit();
 
