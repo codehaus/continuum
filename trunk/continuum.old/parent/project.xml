@@ -4,7 +4,7 @@
   <artifactId>continuum-parent</artifactId>
   <groupId>continuum</groupId>
   <name>Continuum Top Level Project</name>
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>0.1</currentVersion>
 
   <organization>
     <name>Codehaus</name>
