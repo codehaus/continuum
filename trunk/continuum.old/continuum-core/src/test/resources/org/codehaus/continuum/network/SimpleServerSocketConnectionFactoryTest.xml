@@ -9,7 +9,7 @@
         </requirement>
       </requirements>
       <configuration>
-        <port>6789</port>
+        <port>6000</port>
       </configuration>
     </component>
     <component>
