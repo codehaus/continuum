@@ -26,9 +26,8 @@ package org.codehaus.continuum.builder.maven.m1;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.shell.ShellBuilder;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
-import org.codehaus.continuum.project.DefaultContinuumProject;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
@@ -39,7 +38,7 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenShellBuilder.java,v 1.1.1.1 2005-02-17 22:23:50 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
@@ -49,13 +48,9 @@ public class MavenShellBuilder
     {
         File pomFile = createMetadataFile( metadata );
 
-        ContinuumProject project = new DefaultContinuumProject();
+        ContinuumProject project = new ContinuumProject();
 
         mapMetadata( pomFile, project );
-
-        project.setState( ContinuumProjectState.NEW );
-
-        project.setBuilderId( "maven1" );
 
         return project;
     }

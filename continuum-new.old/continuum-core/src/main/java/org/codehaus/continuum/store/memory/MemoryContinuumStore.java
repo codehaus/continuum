@@ -24,21 +24,20 @@ package org.codehaus.continuum.store.memory;
  * SOFTWARE.
  */
 
+import java.util.Iterator;
+import java.util.Properties;
+
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.AbstractContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.Mutex;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
-import java.util.Iterator;
-import java.util.Properties;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.1.1.1 2005-02-17 22:23:53 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -80,14 +79,14 @@ public class MemoryContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type, String workingDirectory, Properties configuration )
+    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String builderId, String workingDirectory, Properties configuration )
         throws ContinuumStoreException
     {
         try
         {
             enter();
 
-            String projectId = database.addProject( name, scmConnection, nagEmailAddress, version, type, workingDirectory, configuration );
+            String projectId = database.addProject( name, scmUrl, nagEmailAddress, version, builderId, workingDirectory, configuration );
 
             leave();
 
@@ -249,7 +248,7 @@ public class MemoryContinuumStore
         }
     }
 
-    public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )
+    public void setBuildResult( String id, int state, ContinuumBuildResult buildResult, Throwable error )
         throws ContinuumStoreException
     {
         try
@@ -343,7 +342,6 @@ public class MemoryContinuumStore
     }
 
     private void leave()
-        throws ContinuumStoreException
     {
         lock.release();
     }

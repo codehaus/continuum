@@ -26,9 +26,9 @@ package org.codehaus.continuum.notification.mail;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.notification.AbstractContinuumNotifier;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.1.1.1 2005-02-17 22:23:51 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -135,7 +135,7 @@ public class MailContinuumNotifier
         getLogger().info( "From name: " + fromName );
 
         // ----------------------------------------------------------------------
-        // 
+        //
         // ----------------------------------------------------------------------
 
         generators.put( "maven2", new ExternalMaven2MailGenerator( getLogger() ) );
@@ -293,7 +293,7 @@ public class MailContinuumNotifier
         // Send if the state has changed
         getLogger().info( "Current build state: " + build.getState() + ", last build state: " + lastBuild.getState() );
 
-        if ( !build.getState().equals( lastBuild.getState() ) )
+        if ( build.getState() != lastBuild.getState() )
         {
             return true;
         }

@@ -24,17 +24,21 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Iterator;
+
 import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
-import org.codehaus.continuum.scm.DefaultContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.context.Context;
@@ -46,15 +50,10 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Iterator;
-
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.1.1.1 2005-02-17 22:23:48 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled

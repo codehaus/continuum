@@ -24,27 +24,45 @@ package org.codehaus.continuum.store;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.DefaultContinuumBuild;
-import org.codehaus.continuum.project.DefaultContinuumProject;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStore.java,v 1.1.1.1 2005-02-17 22:23:52 trygvis Exp $
+ * @version $Id: AbstractContinuumStore.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public abstract class AbstractContinuumStore
     extends AbstractLogEnabled
     implements ContinuumStore
 {
-    protected DefaultContinuumProject getGenericProject( String id )
+    // TODO: Remove
+    protected ContinuumProject getGenericProject( String id )
         throws ContinuumStoreException
     {
-        return (DefaultContinuumProject) getProject( id );
+        return getProject( id );
     }
 
-    protected DefaultContinuumBuild getGenericBuild( String id )
+    // TODO: Remove
+    protected ContinuumBuild getGenericBuild( String id )
         throws ContinuumStoreException
     {
-        return (DefaultContinuumBuild) getBuild( id );
+        return getBuild( id );
     }
-}
+
+    public static String throwableToString( Throwable error )
+    {
+        StringWriter writer = new StringWriter();
+
+        PrintWriter printer = new PrintWriter( writer );
+
+        error.printStackTrace( printer );
+
+        printer.flush();
+
+        return writer.getBuffer().toString();
+    }
+ }

@@ -24,13 +24,13 @@ package org.codehaus.continuum.scm;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.ContinuumProject;
-
 import java.io.File;
+
+import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.1.1.1 2005-02-17 22:23:52 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public interface ContinuumScm
 {

@@ -24,17 +24,17 @@ package org.codehaus.continuum.store;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 import java.util.Iterator;
 import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.1.1.1 2005-02-17 22:23:53 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -54,7 +54,7 @@ public interface ContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type, String workingDirectory, Properties properties )
+    String addProject( String name, String scmUrl, String nagEmailAddress, String version, String builderId, String workingDirectory, Properties properties )
         throws ContinuumStoreException;
 
     void removeProject( String projectId )
@@ -79,7 +79,7 @@ public interface ContinuumStore
     String createBuild( String projectId )
         throws ContinuumStoreException;
 
-    void setBuildResult( String buildId, ContinuumProjectState state, ContinuumBuildResult result, Throwable error )
+    void setBuildResult( String buildId, int state, ContinuumBuildResult result, Throwable error )
         throws ContinuumStoreException;
 
     ContinuumBuild getBuild( String buildId )

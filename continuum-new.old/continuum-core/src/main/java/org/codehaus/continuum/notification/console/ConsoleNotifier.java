@@ -30,7 +30,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.1.1.1 2005-02-17 22:23:51 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class ConsoleNotifier
     extends AbstractLogEnabled
@@ -83,7 +83,7 @@ public class ConsoleNotifier
     private void out( ContinuumBuild build, String msg )
     {
         System.out.println( "Build event for project " + build.getProject().getName() + ":" + msg );
-
+/*
         Throwable ex = build.getError();
 
         if ( ex != null )
@@ -94,5 +94,7 @@ public class ConsoleNotifier
 //            System.out.println( "Message: " + message );
             ex.printStackTrace( System.out );
         }
+*/
+        System.out.println( build.getError() );
     }
 }
