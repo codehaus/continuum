@@ -26,19 +26,18 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.scm.manager.ScmManager;
-import org.apache.maven.scm.repository.RepositoryInfo;
+import org.apache.maven.scm.repository.ScmRepository;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.utils.PlexusUtils;
-import org.codehaus.continuum.utils.ScmUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.11 2004-10-09 13:01:53 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.12 2004-10-20 19:50:09 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -102,22 +101,22 @@ public class DefaultContinuumScm
         {
             File workingDirectory = getProjectScmDirectory( project );
 
-            RepositoryInfo repositoryInfo = ScmUtils.createRepositoryInfo( project );
+            ScmRepository repository = scmManager.makeScmRepository( project.getScmConnection() );
 
             synchronized( this )
             {
-                scmManager.setRepositoryInfo( repositoryInfo );
-
                 if ( !workingDirectory.exists() )
                 {
                     FileUtils.mkdir( workingDirectory.getAbsolutePath() );
                 }
 
-                scmManager.checkout( workingDirectory.getAbsolutePath() );
+                String tag = null;
+
+                scmManager.checkOut( repository, workingDirectory, tag );
             }
 
             // TODO: yes, this is CVS specific and pure bad
-            String connection = repositoryInfo.getConnection();
+            String connection = repository.getScmSpecificUrl2();
 
             return new File( workingDirectory, connection.substring( connection.lastIndexOf( ":" ) + 1 ) );
         }
@@ -140,11 +139,13 @@ public class DefaultContinuumScm
         {
             File dir = getProjectScmDirectory( project );
 
+            ScmRepository repository = scmManager.makeScmRepository( project.getScmConnection() );
+
+            String tag = null;
+
             synchronized( this )
             {
-                scmManager.setRepositoryInfo( ScmUtils.createRepositoryInfo( project ) );
-
-                scmManager.update( dir.getAbsolutePath() );
+                scmManager.update( repository, dir, tag );
             }
 
             return dir;
