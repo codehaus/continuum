@@ -1,4 +1,9 @@
 <plexus>
+
+  <load-on-start>
+    <service role="org.codehaus.plexus.continuum.trigger.ContinuumTrigger"/>
+  </load-on-start>
+
   <components>
     <component>
       <role>org.codehaus.plexus.continuum.Continuum</role>
@@ -9,7 +14,6 @@
       </requirements>
       <configuration>
         <working-directory>${plexus.home}/continuum</working-directory>
-        <build-interval>1</build-interval>
         <smtp-server>mail.maven.org</smtp-server>
         <reply-to>jason@maven.org</reply-to>
       </configuration>
@@ -38,6 +42,16 @@
     <component>
       <role>org.apache.maven.artifact.Artifactory</role>
       <implementation>org.apache.maven.artifact.DefaultArtifactory</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.continuum.trigger.ContinuumTrigger</role>
+      <implementation>org.codehaus.plexus.continuum.trigger.AlarmClockTrigger</implementation>
+      <configuration>
+        <interval>1</interval>
+      </configuration>
+      <requirements>
+        <requirement>org.codehaus.plexus.continuum.Continuum</requirement>
+      </requirements>
     </component>
   </components>
 </plexus>
