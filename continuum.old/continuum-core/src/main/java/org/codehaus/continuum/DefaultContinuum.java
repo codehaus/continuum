@@ -3,6 +3,7 @@ package org.codehaus.plexus.continuum;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.genericscm.manager.ScmManager;
 import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.continuum.mail.MailMessage;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -24,7 +25,7 @@ import java.util.TimerTask;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.6 2004-01-16 14:16:24 jvanzyl Exp $
+ * @version $Id: DefaultContinuum.java,v 1.7 2004-01-16 15:02:16 jvanzyl Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -38,18 +39,14 @@ public class DefaultContinuum
 
     private int buildInterval;
 
-    private Map projects;
+    private Map builds;
 
     private String workDirectory;
-
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
     {
-        projects = new LinkedHashMap();
+        builds = new LinkedHashMap();
 
         File f = new File ( workDirectory );
 
@@ -80,7 +77,9 @@ public class DefaultContinuum
 
     public void addProject( Project project )
     {
-        projects.put( project.getId(), project );
+        ContinuumBuild build = new ContinuumBuild( project );
+
+        builds.put( project.getId(), build );
     }
 
     private void notifyAudience( Project project, String message )
@@ -113,7 +112,7 @@ public class DefaultContinuum
     {
         getLogger().info( "Building Projects ..." );
 
-        for ( Iterator i = projects.values().iterator(); i.hasNext(); )
+        for ( Iterator i = builds.values().iterator(); i.hasNext(); )
         {
             Project project = (Project) i.next();
 
