@@ -121,7 +121,6 @@
       <groupId>jpox</groupId>
       <artifactId>jpox</artifactId>
       <version>1.0.4</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>

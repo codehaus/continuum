@@ -309,5 +309,9 @@
       </configuration>
     </component>
 
+    <component>
+      <role>org.apache.maven.artifact.repository.authentication.AuthenticationInfoProvider</role>
+      <implementation>org.codehaus.continuum.ContinuumAuthenticationInfoProvider</implementation>
+    </component>
   </components>
 </component-set>
