@@ -1,5 +1,5 @@
 <form>
-  <id>addAntProject</id>
+  <id>continuumProject</id>
   <source-role>org.codehaus.continuum.Continuum</source-role>
   <lookup-expression>getProject(#id)</lookup-expression>
   <summary-collection-expression>getProjects()</summary-collection-expression>
@@ -20,6 +20,7 @@
       <label-key>addProject.name.label</label-key>
       <error-message-key>addProject.name.error</error-message-key>
       <type>text</type>
+      <expression>name</expression>
     </element>
     <element>
       <id>addProject.nagEmailAddress</id>
