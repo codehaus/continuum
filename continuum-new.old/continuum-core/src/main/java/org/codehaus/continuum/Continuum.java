@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * This is the main entry point for Continuum. Projects are added to Continuum
@@ -61,4 +63,14 @@ public interface Continuum
 
     boolean checkIfProjectNeedsToBeBuilt( String projectId )
         throws ContinuumException;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    Iterator getProjects()
+        throws ContinuumStoreException;
+
+    ContinuumBuild getLatestBuildForProject( String id )
+        throws ContinuumStoreException;
 }

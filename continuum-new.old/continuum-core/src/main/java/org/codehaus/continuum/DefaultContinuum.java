@@ -28,6 +28,7 @@ import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.buildqueue.BuildQueueException;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
@@ -43,7 +44,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.9 2005-03-10 00:05:26 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.10 2005-03-20 07:19:57 jvanzyl Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -66,6 +67,26 @@ public class DefaultContinuum
     private BuilderThread builderThread;
 
     private Thread builderThreadThread;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public Iterator getProjects()
+        throws ContinuumStoreException
+    {
+        return store.getAllProjects();
+    }
+
+    public ContinuumBuild getLatestBuildForProject( String id )
+        throws ContinuumStoreException    
+    {
+        return store.getLatestBuildForProject( id );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     // ----------------------------------------------------------------------
     // Here it would probably be possible to tell from looking at the meta
