@@ -30,12 +30,12 @@ import org.codehaus.continuum.AbstractContinuumTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.8 2004-10-06 13:37:14 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.9 2004-10-08 12:15:32 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends AbstractContinuumTest
 {
-    private int port = 6789;
+    private final static int PORT = 6000;
 
     private byte[] rawData = {
         (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe,
@@ -54,7 +54,7 @@ public class SimpleServerSocketConnectionFactoryTest
 
         factory = (ConnectionFactory)lookup( ConnectionFactory.ROLE );
 
-        socket = new Socket( "127.0.0.1", port );
+        socket = new Socket( "127.0.0.1", PORT );
 
         output = socket.getOutputStream();
         input = socket.getInputStream();

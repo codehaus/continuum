@@ -24,12 +24,15 @@ package org.codehaus.continuum.store.memory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -46,7 +49,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.6 2004-10-08 09:13:24 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.7 2004-10-08 12:15:32 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -135,6 +138,23 @@ public class MemoryContinuumStore
             }
 
             return false;
+        }
+    }
+
+    private static class StartTimeComparator
+        implements Comparator
+    {
+        public int compare(Object o1, Object o2)
+        {
+            ContinuumBuild b1 = (ContinuumBuild) o1;
+            ContinuumBuild b2 = (ContinuumBuild) o2;
+
+            return (int) (b1.getStartTime() - b2.getStartTime());
+        }
+
+        public boolean equals( Object other )
+        {
+            throw new RuntimeException( "Not implemented." );
         }
     }
 
@@ -567,30 +587,24 @@ public class MemoryContinuumStore
     public ContinuumBuild getLatestBuildForProject( String projectId )
         throws ContinuumStoreException
     {
-        Iterator it = getBuildsForProject( projectId, 0, 0);
+        SortedSet builds = getBuildsForProjectAsList( projectId, 0, 0);
 
-        if ( !it.hasNext() )
+        if ( builds.size() == 0 )
         {
             return null;
         }
 
-        ContinuumBuild max = (ContinuumBuild) it.next();
+        return (ContinuumBuild) builds.last();
+    }
 
-        while( it.hasNext() )
-        {   
-            ContinuumBuild current = (ContinuumBuild) it.next();
-
-            if ( current.getStartTime() > max.getStartTime() )
-            {
-                max = current;
-            }
-        }
-
-        return max;
+    public Iterator getBuildsForProject( String projectId, int start, int end )
+        throws ContinuumStoreException
+    {
+        return getBuildsForProjectAsList( projectId, start, end ).iterator();
     }
 
     // TODO: Implement start and end
-    public Iterator getBuildsForProject( String projectId, int start, int end )
+    public SortedSet getBuildsForProjectAsList( String projectId, int start, int end )
         throws ContinuumStoreException
     {
         try
@@ -599,7 +613,7 @@ public class MemoryContinuumStore
 
             ContinuumProject project = getProject( projectId );
 
-            List result = new ArrayList();
+            SortedSet result = new TreeSet( new StartTimeComparator() );
 
             for ( Iterator it = buildList.iterator(); it.hasNext(); )
             {
@@ -613,7 +627,7 @@ public class MemoryContinuumStore
 
             txManager.leave();
 
-            return result.iterator();
+            return result;
         }
         catch( ContinuumStoreException ex )
         {
