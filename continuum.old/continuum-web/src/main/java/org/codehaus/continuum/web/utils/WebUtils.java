@@ -28,10 +28,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.maven2.ExternalMaven2BuildResult;
 import org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.web.model.BuildModel;
+import org.codehaus.continuum.web.model.BuildResultModel;
+import org.codehaus.continuum.web.model.ExternalMaven2BuildResultModel;
 import org.codehaus.continuum.web.model.Maven2ProjectDescriptorModel;
 import org.codehaus.continuum.web.model.ProjectDescriptorModel;
 import org.codehaus.continuum.web.model.ProjectModel;
@@ -39,7 +44,7 @@ import org.codehaus.plexus.i18n.I18N;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: WebUtils.java,v 1.2 2004-07-29 04:38:10 trygvis Exp $
+ * @version $Id: WebUtils.java,v 1.3 2004-10-06 14:24:26 trygvis Exp $
  */
 public class WebUtils
 {
@@ -75,7 +80,10 @@ public class WebUtils
         {
             Maven2ProjectDescriptor maven2ProjectDescriptor = (Maven2ProjectDescriptor) project.getDescriptor();
 
-            projectDescriptorModel = new Maven2ProjectDescriptorModel( maven2ProjectDescriptor.getGoals() );
+            if ( maven2ProjectDescriptor != null )
+            {
+                projectDescriptorModel = new Maven2ProjectDescriptorModel( maven2ProjectDescriptor.getGoals() );
+            }
         }
 
         ProjectModel projectModel = new ProjectModel( project.getId(),
@@ -93,6 +101,7 @@ public class WebUtils
     // ----------------------------------------------------------------------
 
     public static List buildsToBuildModels( I18N i18n, Iterator builds )
+        throws ContinuumException
     {
         List buildModels = new ArrayList();
 
@@ -109,6 +118,7 @@ public class WebUtils
     }
 
     public static BuildModel buildToBuildModel( I18N i18n, ContinuumBuild build )
+        throws ContinuumException
     {
         String startDate = WebUtils.formatDate( build.getStartTime() );
 
@@ -116,7 +126,25 @@ public class WebUtils
 
         String state = i18n.getString( build.getState().getI18nKey() );
 
-        return new BuildModel( startDate, endDate, state );
+        ContinuumBuildResult result = build.getBuildResult();
+
+        BuildResultModel resultModel = null;
+
+        if ( result instanceof ExternalMaven2BuildResult )
+        {
+            ExternalMaven2BuildResult externalMaven2BuildResult = (ExternalMaven2BuildResult) result;
+
+            resultModel = new ExternalMaven2BuildResultModel( externalMaven2BuildResult.getStandardOutput(), externalMaven2BuildResult.getStandardError() );
+        }
+        else if ( result == null )
+        {
+        }
+        else
+        {
+            throw new ContinuumException( "Unknown build result type: " + result.getClass().getName() );
+        }
+
+        return new BuildModel( build.getId(), startDate, endDate, state, resultModel );
     }
 
     // ----------------------------------------------------------------------

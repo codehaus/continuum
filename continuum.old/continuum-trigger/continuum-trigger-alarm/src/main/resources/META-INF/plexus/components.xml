@@ -8,6 +8,9 @@
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+        </requirement>
       </requirements>
       <configuration>
         <interval>60000</interval>

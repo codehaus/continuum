@@ -22,28 +22,23 @@ package org.codehaus.continuum.web.action;
  * SOFTWARE.
  */
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Map;
-
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.web.ContinuumWeb;
 import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.continuum.web.ContinuumWeb;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-import org.codehaus.plexus.summit.SummitConstants;
-import org.codehaus.plexus.summit.rundata.RunData;
-import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractAction.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: AbstractAction.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
  */
 public abstract class AbstractAction
     extends AbstractLogEnabled
@@ -72,6 +67,19 @@ public abstract class AbstractAction
         }
     }
 
+    protected I18N getI18N()
+        throws ContinuumException
+    {
+        try
+        {
+            return (I18N) container.lookup( I18N.ROLE );
+        }
+        catch ( ComponentLookupException ex )
+        {
+            throw new ContinuumException( "Exception while looking up I18N.", ex );
+        }
+    }
+
     protected ContinuumStore getContinuumStore()
         throws ContinuumException
     {
@@ -85,6 +93,20 @@ public abstract class AbstractAction
         }
     }
 
+    protected StoreTransactionManager getStoreTransactionManager()
+        throws ContinuumException
+    {
+        try
+        {
+            return (StoreTransactionManager) container.lookup( StoreTransactionManager.ROLE );
+        }
+        catch ( ComponentLookupException ex )
+        {
+            throw new ContinuumException( "Exception while looking up Continuum.", ex );
+        }
+    }
+
+/*
     protected void handleError( Map request, String message )
     {
         handleError( request, message, null );
@@ -118,4 +140,5 @@ public abstract class AbstractAction
             vc.put( "exception", output.toString() );
         }
     }
+*/
 }

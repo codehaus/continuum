@@ -28,21 +28,17 @@ import java.util.Map;
 
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProjectBuilds.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: ShowProjectBuilds.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
  */
 public class ShowProjectBuilds
     extends AbstractAction
 {
-    /** @requirement */
-    private I18N i18n;
-
     public void execute( Map map )
         throws Exception
     {
@@ -58,7 +54,7 @@ public class ShowProjectBuilds
 
         Iterator builds = getContinuumStore().getBuildsForProject( id, 0, 0 );
 
-        List buildModels = WebUtils.buildsToBuildModels( i18n, builds );
+        List buildModels = WebUtils.buildsToBuildModels( getI18N(), builds );
 
         vc.put( "builds", buildModels );
     }

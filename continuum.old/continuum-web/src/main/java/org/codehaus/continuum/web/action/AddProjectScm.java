@@ -25,39 +25,35 @@ package org.codehaus.continuum.web.action;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectScm.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: AddProjectScm.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
  */
 public class AddProjectScm
     extends AbstractAction
 {
-    /** @requirement */
-    private I18N i18n;
-
     public void execute( Map request )
+        throws Exception
     {
-        try
-        {
+//        try
+//        {
             String name = (String) request.get( "addProject.name" );
     
             String scm = (String) request.get( "addProject.scm" );
     
             getContinuum().addProject( name, scm, "maven2" );
-        }
-        catch( ContinuumException ex )
-        {
-            handleError( request, "Error adding the project.", ex );
-
-            return;
-        }
+//        }
+//        catch( ContinuumException ex )
+//        {
+//            handleError( request, "Error adding the project.", ex );
+//
+//            return;
+//        }
 
         RunData data = (RunData) request.get( "data" );
 
@@ -65,17 +61,17 @@ public class AddProjectScm
 
         Iterator projects;
 
-        try
-        {
+//        try
+//        {
             projects = getContinuumStore().getAllProjects();
-        }
-        catch( Exception ex )
-        {
-            handleError( request, "Error while getting projects.", ex );
+//        }
+//        catch( Exception ex )
+//        {
+//            handleError( request, "Error while getting projects.", ex );
+//
+//            return;
+//        }
 
-            return;
-        }
-
-        vc.put( "projects", WebUtils.projectsToProjectModels( i18n, projects ) );
+        vc.put( "projects", WebUtils.projectsToProjectModels( getI18N(), projects ) );
     }
 }

@@ -20,12 +20,11 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ViewContextManager.java,v 1.1 2004-07-27 05:16:12 trygvis Exp $
+ * @version $Id: ViewContextManager.java,v 1.2 2004-10-06 14:24:25 trygvis Exp $
  */
 public interface ViewContextManager
 {
-    /** Role. */
-    static String ROLE = ViewContextManager.class.getName();
+    String ROLE = ViewContextManager.class.getName();
 
     /** Map of scalars to place in the context. */
     Map getScalars( String view, Object model, Map parameters );

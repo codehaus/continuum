@@ -25,23 +25,18 @@ package org.codehaus.continuum.web.action;
 import java.util.Map;
 
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: UpdateProject.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: UpdateProject.java,v 1.3 2004-10-06 14:24:25 trygvis Exp $
  */
 public class UpdateProject
     extends AbstractAction
 {
-    /** @requirement */
-    private I18N i18n;
-
     public void execute( Map request )
         throws Exception
     {
@@ -57,16 +52,16 @@ public class UpdateProject
 
         if ( button != null && button.trim().length() > 0 && button.equals( "Update" ) )
         {
-            try
-            {
+//            try
+//            {
                 project = getContinuumStore().getProject( projectId );
-            }
-            catch( ContinuumStoreException ex )
-            {
-                handleError( request, "Project doesn't exist." );
-
-                return;
-            }
+//            }
+//            catch( ContinuumStoreException ex )
+//            {
+//                handleError( request, "Project doesn't exist." );
+//
+//                return;
+//            }
 
             String name = (String) request.get( "name" );
 
@@ -77,6 +72,6 @@ public class UpdateProject
 
         project = getContinuumStore().getProject( projectId );
 
-        vc.put( "project", WebUtils.projectToProjectModel( i18n, project ) );
+        vc.put( "project", WebUtils.projectToProjectModel( getI18N(), project ) );
     }
 }

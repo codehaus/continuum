@@ -2,17 +2,17 @@
 
 CP=src/main/resources:apps/continuum/resources:target/classes
 
-if [ -d apps/continuum/lib/ ]
+if [ -d apps/continuumweb/lib/ ]
 then
-  for jar in `find apps/continuum/lib/ -name '*.jar'`
+  for jar in `find apps/continuumweb/lib/ -name '*.jar'`
   do
     CP=$CP:$jar
   done
 fi
 
-if [ -d generated-runtime/apps/continuum/lib ]
+if [ -d generated-runtime/apps/continuumweb/lib ]
 then
-  for jar in `find generated-runtime/apps/continuum/lib -name '*.jar'`
+  for jar in `find generated-runtime/apps/continuumweb/lib -name '*.jar'`
   do
     CP=$CP:$jar
   done

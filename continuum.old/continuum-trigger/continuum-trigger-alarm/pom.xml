@@ -6,7 +6,7 @@
     <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <artifactId>continuum-alarm-trigger</artifactId>
+  <artifactId>continuum-trigger-alarm</artifactId>
   <groupId>continuum</groupId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Alarm Trigger</name>
