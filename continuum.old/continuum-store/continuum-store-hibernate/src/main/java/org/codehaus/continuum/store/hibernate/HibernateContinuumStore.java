@@ -1,4 +1,4 @@
-package org.codehaus.continuum.store.hibernate; 
+package org.codehaus.continuum.store.hibernate;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
@@ -47,7 +47,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.11 2004-10-06 13:47:05 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.12 2004-10-06 13:48:09 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
