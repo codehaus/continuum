@@ -12,7 +12,7 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleNetworkTriggerTest.java,v 1.3 2004-10-20 20:34:21 trygvis Exp $
+ * @version $Id: SimpleNetworkTriggerTest.java,v 1.4 2004-10-28 17:52:45 trygvis Exp $
  */
 public class SimpleNetworkTriggerTest
     extends AbstractContinuumTest
@@ -30,7 +30,7 @@ public class SimpleNetworkTriggerTest
 
         txManager.begin();
 
-        String projectId = continuum.addProject( "Test Project", "scm:test:src/test/repository:successful", "foo@bar", "1.0", "test");
+        String projectId = continuum.addProjectFromScm( "scm:local:src/test/repository:successful", "test");
 
         txManager.commit();
 
