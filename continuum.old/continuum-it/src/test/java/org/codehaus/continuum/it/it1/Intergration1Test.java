@@ -25,6 +25,9 @@ package org.codehaus.continuum.it.it1;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 import junit.framework.TestCase;
 import net.sf.hibernate.cfg.Configuration;
@@ -45,7 +48,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Intergration1Test.java,v 1.1 2004-07-29 16:11:45 trygvis Exp $
+ * @version $Id: Intergration1Test.java,v 1.2 2004-07-29 22:59:38 trygvis Exp $
  */
 public class Intergration1Test
     extends TestCase
@@ -71,6 +74,12 @@ public class Intergration1Test
     public void setUp()
         throws Exception
     {
+        FileUtils.forceDelete( getTestFile( "continuumdb.log" ) );
+
+        FileUtils.forceDelete( getTestFile( "continuumdb.properties" ) );
+
+        FileUtils.forceDelete( getTestFile( "continuumdb.sql" ) );
+
         container = new DefaultPlexusContainer();
 
         container.getContext().put( "basedir", new File( "" ).getAbsolutePath() );
@@ -117,6 +126,23 @@ public class Intergration1Test
         container.release( continuum );
 
         container.dispose();
+
+        Connection connection = DriverManager.getConnection( "jdbc:hsqldb:.", "sa", "" );
+
+        try
+        {
+            Statement statement = connection.createStatement();
+
+            statement.execute( "SHUTDOWN IMMEDIATELY" );
+
+            statement.close();
+        }
+        catch( Exception ex )
+        {
+            ex.printStackTrace( System.err );
+        }
+
+        connection.close();
     }
 
     protected String getTestPath( String path )
@@ -166,7 +192,7 @@ public class Intergration1Test
     {
         String projectName = "Intergration Test Project 1";
 
-        String projectScmUrl = "scm:test:../repositories/:normal";
+        String projectScmUrl = "scm:test:src/test/repositories/:normal";
 
         // Add the project
         String projectId = continuum.addProject( projectName, projectScmUrl, "maven2" );
