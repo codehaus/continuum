@@ -1,0 +1,11 @@
+#!/bin/bash
+
+projectId=$1
+
+if [ -z "$projectId" ]
+then
+  read -p "Project id:" projectId
+fi
+
+echo "$projectId
+" | nc localhost 7890
