@@ -6,7 +6,7 @@ import org.codehaus.plexus.continuum.buildqueue.BuildQueue;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumTest.java,v 1.12 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.13 2004-04-26 00:22:23 trygvis Exp $
  */
 public class DefaultContinuumTest
     extends PlexusTestCase
@@ -26,8 +26,10 @@ public class DefaultContinuumTest
 
         continuum.buildProject( "plexus", "continuum-project1" );
 
-        Thread.sleep( 10000 );
-
+        // NOTE: this test might fail if you have a slow system
+        // because the builder thread might start before the return of the call.
         assertEquals( 1, queue.getLength() );
+
+        Thread.sleep( 10000 );
     }
 }
