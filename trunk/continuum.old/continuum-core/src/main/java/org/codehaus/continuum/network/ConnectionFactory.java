@@ -1,12 +1,12 @@
 package org.codehaus.plexus.continuum.network;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConnectionFactory.java,v 1.1 2004-04-07 15:56:55 trygvis Exp $
+ * @version $Id: ConnectionFactory.java,v 1.2 2004-04-22 20:03:41 trygvis Exp $
  */
 public interface ConnectionFactory
 {
