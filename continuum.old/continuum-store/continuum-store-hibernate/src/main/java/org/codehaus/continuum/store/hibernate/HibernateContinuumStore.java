@@ -47,7 +47,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.12 2004-10-06 13:48:09 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.13 2004-10-07 13:14:08 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -526,7 +526,7 @@ public class HibernateContinuumStore
 
             txManager.enter();
 
-            List list = session.find( "from GenericContinuumBuild where projectId=? order by startTime", projectId, Hibernate.STRING );
+            List list = session.find( "from GenericContinuumBuild where projectId=? order by startTime desc", projectId, Hibernate.STRING );
 
             it = list.iterator();
 
