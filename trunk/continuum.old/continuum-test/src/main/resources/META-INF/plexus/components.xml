@@ -5,10 +5,5 @@
       <role-hint>test</role-hint>
       <implementation>org.codehaus.continuum.builder.test.TestContinuumBuilder</implementation>
     </component>
-    <component>
-      <role>org.apache.maven.scm.Scm</role>
-      <role-hint>test</role-hint>
-      <implementation>org.codehaus.continuum.test.scm.TestScm</implementation>
-    </component>
   </components>
 </component-set>
