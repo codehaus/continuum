@@ -9,15 +9,28 @@ then
 fi
 
 m2 pom:install
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
 # Build the JARs
-( cd continuum-core && sh make.sh )
-( cd continuum-web && m2 install )
+(
+  cd continuum-core 
+  m2 install
+  ret=$?; if [ $ret != 0 ]; then exit $ret; fi
+)
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
+(
+  cd continuum-web 
+  m2 install
+  ret=$?; if [ $ret != 0 ]; then exit $ret; fi
+)
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
 (
   cd continuum-web
   sh runtime.sh
+  ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 )
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
 exit;
 
