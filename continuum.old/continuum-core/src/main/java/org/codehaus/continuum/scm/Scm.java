@@ -37,11 +37,9 @@
 
 package org.codehaus.plexus.continuum.scm;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.codehaus.plexus.continuum.ContinuumException;
 
 /**
  * This interface defines behavior required by ModificationSet.java when

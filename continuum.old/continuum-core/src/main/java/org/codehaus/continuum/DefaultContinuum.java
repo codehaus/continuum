@@ -1,20 +1,5 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.avalon.framework.activity.Initializable;
-import org.apache.avalon.framework.activity.Startable;
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.service.ServiceException;
-import org.apache.avalon.framework.service.ServiceManager;
-import org.apache.avalon.framework.service.Serviceable;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.Model;
-import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.mail.MailMessage;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,12 +9,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.apache.avalon.framework.activity.Initializable;
+import org.apache.avalon.framework.activity.Startable;
+import org.apache.avalon.framework.configuration.Configurable;
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.avalon.framework.service.ServiceException;
+import org.apache.avalon.framework.service.ServiceManager;
+import org.apache.avalon.framework.service.Serviceable;
+import org.apache.maven.Model;
+import org.apache.maven.project.Project;
+import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.continuum.mail.MailMessage;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.3 2003-10-12 01:14:55 pdonald Exp $
+ * @version $Id: DefaultContinuum.java,v 1.4 2003-10-17 04:41:58 pdonald Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled

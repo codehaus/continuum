@@ -54,8 +54,8 @@
 
 package org.codehaus.plexus.continuum.scm.cvsimpl;
 
-import java.util.Vector;
 import java.io.File;
+import java.util.Vector;
 
 /**
  * Wrapper for environment variables.

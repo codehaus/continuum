@@ -37,14 +37,13 @@
 
 package org.codehaus.plexus.continuum.scm;
 
-import org.jdom.CDATA;
-import org.jdom.Element;
-import org.jdom.output.XMLOutputter;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.jdom.CDATA;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
 
 /**
  * data structure for holding data about a single modification

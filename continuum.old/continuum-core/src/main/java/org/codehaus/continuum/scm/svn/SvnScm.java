@@ -36,16 +36,6 @@
  ********************************************************************************/
 package org.codehaus.plexus.continuum.scm.svn;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.continuum.scm.AbstractScm;
-import org.codehaus.plexus.continuum.scm.Modification;
-import org.codehaus.plexus.continuum.util.Commandline;
-import org.codehaus.plexus.continuum.util.StreamPumper;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +51,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.plexus.continuum.scm.AbstractScm;
+import org.codehaus.plexus.continuum.scm.Modification;
+import org.codehaus.plexus.continuum.util.Commandline;
+import org.codehaus.plexus.continuum.util.StreamPumper;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 /**
  * This class implements the SourceControl methods for a Subversion repository.
