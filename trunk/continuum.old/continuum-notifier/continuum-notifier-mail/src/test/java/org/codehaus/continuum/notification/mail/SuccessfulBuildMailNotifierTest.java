@@ -26,18 +26,21 @@ import org.codehaus.continuum.notification.AbstractSuccessfulBuildNotifierTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.4 2004-09-07 16:22:17 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.5 2004-10-06 14:08:11 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
+    private MailContinuumNotifier notifier;
+
     // ----------------------------------------------------------------------
     // Setup
     // ----------------------------------------------------------------------
 
     protected void setUpNotifier()
+        throws Exception
     {
-        System.setProperty( "maven.repo.local", "/home/trygvis/.maven/repository" );
+        notifier = (MailContinuumNotifier) getContinuumNotifier( "mail" );
     }
 
     protected String getProjectScmUrl()
@@ -59,17 +62,18 @@ public class SuccessfulBuildMailNotifierTest
     // Assertions
     // ----------------------------------------------------------------------
 
+    protected void preBuildStarted()
+    {
+        assertNull( notifier.getLastMessage() );
+
+        assertEquals( 0, notifier.getMessageCount() );
+    }
+
     protected void postBuildComplete()
         throws Exception
     {
-        MailContinuumNotifier notifier = (MailContinuumNotifier) getContinuumNotifier( "mail" );
+        assertNotNull( notifier.getLastMessage() );
 
-        String lastMessage = notifier.getLastMessage();
-
-        System.out.println("-------");
-        System.out.println("Email sent");
-        System.out.println("-------");
-        System.out.print(lastMessage);
-        System.out.println("-------");
+        assertEquals( 1, notifier.getMessageCount() );
     }
 }

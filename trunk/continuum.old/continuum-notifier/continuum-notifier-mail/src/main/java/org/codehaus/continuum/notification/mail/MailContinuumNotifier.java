@@ -1,12 +1,9 @@
 package org.codehaus.continuum.notification.mail;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +18,7 @@ import org.codehaus.continuum.mail.MailMessage;
 import org.codehaus.continuum.notification.AbstractContinuumNotifier;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -30,7 +28,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.10 2004-09-09 14:04:41 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.11 2004-10-06 14:08:10 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -240,7 +238,7 @@ public class MailContinuumNotifier
 
         ContinuumBuild lastBuild = null;
 
-        if ( it.hasNext() )
+        if ( it.hasNext() && build.getState() != ContinuumProjectState.FAILED )
         {
             List list = new ArrayList();
 
@@ -253,6 +251,7 @@ public class MailContinuumNotifier
             {
                 lastBuild = (ContinuumBuild)list.get( list.size() - 2 );
 
+                // send if failed or the state has changed
                 if ( build.getState() == lastBuild.getState() )
                 {
                     return;
@@ -303,14 +302,12 @@ public class MailContinuumNotifier
                 return;
             }
 
-            if ( fromName != null )
-            {
-                mailMessage.from( fromName + "<" + from + ">" );
-            }
-            else
-            {
-                mailMessage.from( from );
-            }
+//            if ( fromName != null )
+//            {
+//                from = fromName + "<" + from + ">";
+//            }
+
+            mailMessage.from( from );
 
             String to = getToAddress( project );
 
@@ -323,7 +320,7 @@ public class MailContinuumNotifier
 
             mailMessage.to( to );
 
-            getLogger().info( "Sending message to: " + to + ", to the SMPT host at: " + smtpServer + ":" + port );
+            getLogger().info( "Sending message: From '" + from + "'. To '" + to + "'. SMTP host: " + smtpServer + ":" + port );
 
             mailMessage.setSubject( subject );
 
@@ -409,67 +406,5 @@ public class MailContinuumNotifier
         }
 
         return descriptor.getMavenProject();
-    }
-
-    private void writeStats( PrintWriter output, ContinuumBuild build )
-    {
-        long fullDiff = build.getEndTime() - build.getStartTime();
-
-        line( output );
-
-        output.println( "Build statistics" );
-
-        line( output );
-
-        output.println( "Started at: " + formatTime( build.getStartTime() ) );
-
-        output.println( "Finished at: " + formatTime( build.getEndTime() ) );
-
-        output.println( "Total time: " + formatTimeInterval( fullDiff ) );
-
-        line( output );
-    }
-
-    private void line( PrintWriter output )
-    {
-//        output.println( "----------------------------------------------------------------------------" );
-        output.println( "****************************************************************************" );
-    }
-
-    private String formatTime( long time )
-    {
-        return getDateFormat().format( new Date( time ) );
-    }
-
-    private static String formatTimeInterval( long ms )
-    {
-        long secs = ms / 1000;
-        long min = secs / 60;
-        secs = secs % 60;
-
-        if ( min > 0 )
-        {
-            return min + " minutes " + secs + " seconds";
-        }
-        else
-        {
-            return secs + " seconds";
-        }
-    }
-
-    private ThreadLocal dateFormatter = new ThreadLocal();
-
-    private DateFormat getDateFormat()
-    {
-        DateFormat dateFormatter = (DateFormat) this.dateFormatter.get();
-
-        if ( dateFormatter == null )
-        {
-            dateFormatter = DateFormat.getDateTimeInstance( DateFormat.FULL, DateFormat.FULL );
-
-            this.dateFormatter.set( dateFormatter );
-        }
-
-        return dateFormatter;
     }
 }
