@@ -21,12 +21,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id: DefaultContinuum.java,v 1.8 2004-01-16 18:04:02 jvanzyl Exp $
- */
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
@@ -37,15 +31,23 @@ public class DefaultContinuum
 
     // Configuration
 
+    /** Where all the sources get checked out to be built. */
     private String workDirectory;
 
+    /** How often are we going to attempt to build the project. */
     private int buildInterval;
 
+    // Anything mail related can be encapsualted in a separate
+    // communicatino module but it's what we'll be doing first so we'll
+    // get it working before abstracting it out.
+
+    /** Outgoing smtp server for messages. */
     private String smtpServer;
 
+    /** Message to set as the reply to in the outgoing messages. */
     private String replyTo;
 
-    //
+    // Internal helpers
 
     private Timer timer;
 
