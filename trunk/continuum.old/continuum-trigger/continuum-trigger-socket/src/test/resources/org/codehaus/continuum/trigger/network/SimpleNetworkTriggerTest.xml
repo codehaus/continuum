@@ -1,3 +1,18 @@
 <plexus>
-  
+  <components>
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>simple-socket-trigger-server</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>simple-socket-trigger</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>40030</port>
+      </configuration>
+    </component>
+  </components>
 </plexus>
