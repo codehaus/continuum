@@ -7,9 +7,9 @@
     <version>0.1</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-xmlrpc-interface</artifactId>
+  <artifactId>continuum-xmlrpc-server</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>Continuum XML-RPC Interface</name>
+  <name>Continuum XML-RPC Server</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
