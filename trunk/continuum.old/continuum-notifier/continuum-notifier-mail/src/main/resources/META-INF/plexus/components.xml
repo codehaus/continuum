@@ -13,7 +13,7 @@
         </requirement>
       </requirements>
       <configuration>
-        <administrator></administrator>
+        <administrator>nobody@localhost</administrator>
       </configuration>
     </component>
   </components>
