@@ -14,6 +14,7 @@ import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.AbstractContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.memory.ContinuumDatabase;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -27,7 +28,7 @@ import org.prevayler.TransactionWithQuery;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PrevaylerContinuumStore.java,v 1.2 2004-10-08 09:11:33 trygvis Exp $
+ * @version $Id: PrevaylerContinuumStore.java,v 1.3 2004-10-08 13:51:07 trygvis Exp $
  */
 public class PrevaylerContinuumStore
     extends AbstractContinuumStore
@@ -426,7 +427,7 @@ public class PrevaylerContinuumStore
         public Object execute( ContinuumDatabase database )
             throws ContinuumStoreException
         {
-            return database.getBuildsForProject( projectId, start, end ).iterator();
+            return database.getBuildsForProject( projectId, start, end );
         }
     }
     
