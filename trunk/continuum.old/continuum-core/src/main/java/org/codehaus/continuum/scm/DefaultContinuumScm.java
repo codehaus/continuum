@@ -7,11 +7,11 @@ package org.codehaus.continuum.scm;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.RepositoryInfo;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.continuum.utils.ScmUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.5 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.6 2004-07-03 03:21:16 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -60,7 +60,7 @@ public class DefaultContinuumScm
     ///////////////////////////////////////////////////////////////////////////
     // ContinuumScm implementation
 
-    public void clean( MavenProject project )
+    public void clean( ContinuumProject project )
         throws ContinuumException
     {
         try
@@ -79,7 +79,7 @@ public class DefaultContinuumScm
      * @param project The project to check out.
      * @throws ContinuumException Thrown in case of a exception while checking out the sources.
      */
-    public String checkout( MavenProject project )
+    public String checkout( ContinuumProject project )
         throws ContinuumException
     {
         try
@@ -113,7 +113,7 @@ public class DefaultContinuumScm
      * @param project The project to update.
      * @throws ContinuumException Thrown in case of a exception while updating the sources.
      */
-    public synchronized String update( MavenProject project )
+    public synchronized String update( ContinuumProject project )
         throws ContinuumException
     {
         try
@@ -138,10 +138,8 @@ public class DefaultContinuumScm
     ///////////////////////////////////////////////////////////////////////////
     // Private
 
-    private String getProjectScmDirectory( MavenProject project, String checkoutDirectory )
+    private String getProjectScmDirectory( ContinuumProject project, String checkoutDirectory )
     {
-        return checkoutDirectory + File.separator + 
-            project.getGroupId() + File.separator + 
-            project.getArtifactId();
+        return checkoutDirectory + File.separator + project.getId();
     }
 }

@@ -4,11 +4,10 @@ package org.codehaus.continuum.project;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.2 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.3 2004-07-03 03:21:15 trygvis Exp $
  */
 public class ContinuumProject
 {
@@ -53,10 +52,16 @@ public class ContinuumProject
     private String id;
 
     /** */
-    private MavenProject mavenProject;
+    private String name;
+
+    /** */
+    private String scmConnection;
 
     /** */
     private int projectState;
+
+    /** */
+    private Object projectDescriptor;
 
     /**
      */
@@ -82,19 +87,35 @@ public class ContinuumProject
     }
 
     /**
-     * @return Returns the mavenProject.
+     * @return Returns the name.
      */
-    public MavenProject getMavenProject()
+    public String getName()
     {
-        return mavenProject;
+        return name;
     }
 
     /**
-     * @param mavenProject The mavenProject to set.
+     * @param name The name to set.
      */
-    public void setMavenProject( MavenProject mavenProject )
+    public void setName( String name )
     {
-        this.mavenProject = mavenProject;
+        this.name = name;
+    }
+
+    /**
+     * @return Returns the scm connection.
+     */
+    public String getScmConnection()
+    {
+        return scmConnection;
+    }
+
+    /**
+     * @param ccmConnection The ccmConnection to set.
+     */
+    public void setScmConnection( String scmConnection)
+    {
+        this.scmConnection = scmConnection;
     }
 
     /**
@@ -111,5 +132,15 @@ public class ContinuumProject
     public void setProjectState( int projectState )
     {
         this.projectState = projectState;
+    }
+
+    public Object getProjectDescriptor()
+    {
+        return projectDescriptor;
+    }
+
+    public void setProjectDescriptor( Object projectDescriptor )
+    {
+        this.projectDescriptor = projectDescriptor;
     }
 }

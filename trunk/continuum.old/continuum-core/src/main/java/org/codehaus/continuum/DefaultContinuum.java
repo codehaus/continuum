@@ -4,8 +4,6 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -18,7 +16,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.30 2004-07-01 15:30:56 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.31 2004-07-03 03:21:13 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -99,6 +97,27 @@ public class DefaultContinuum
     ///////////////////////////////////////////////////////////////////////////
     // Continuum implementation
 
+    public String addProject( String name, String scmConnection )
+        throws ContinuumException
+    {
+        String id;
+
+        try
+        {
+            id = store.addProject( name, scmConnection );
+
+            getLogger().info( "Added project: " + name );
+        }
+        catch ( Exception ex )
+        {
+            getLogger().error( "Cannot add project!", ex );
+
+            throw new ContinuumException( "Exception while building project.", ex );
+        }
+
+        return id;
+    }
+
     public String buildProject( String id )
         throws ContinuumException
     {
@@ -117,7 +136,7 @@ public class DefaultContinuum
             throw new ContinuumException( "Exception while creating build object.", ex );
         }
 
-        getLogger().info( "Enqueuing " + project.getMavenProject().getName() + ", build id " + buildId + "..." );
+        getLogger().info( "Enqueuing " + project.getName() + ", build id " + buildId + "..." );
 
         return buildId;
     }
@@ -161,26 +180,6 @@ public class DefaultContinuum
     ///////////////////////////////////////////////////////////////////////////
     // Private
 
-    public String addProject( MavenProject project )
-        throws ContinuumException
-    {
-        String id;
-
-        try
-        {
-            id = store.storeProject( project );
-
-            getLogger().info( "Added project: " + project.getName() );
-        }
-        catch ( Exception ex )
-        {
-            getLogger().error( "Cannot add project!", ex );
-
-            throw new ContinuumException( "Exception while building project.", ex );
-        }
-
-        return id;
-    }
 /*
     private boolean hasProject( String groupId, String artifactId )
     {

@@ -4,55 +4,54 @@ package org.codehaus.continuum.notification.console;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.project.BuildResult;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.5 2004-06-27 19:28:43 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.6 2004-07-03 03:21:15 trygvis Exp $
  */
 public class ConsoleNotifier
     implements ContinuumNotifier
 {
-    public void buildStarted(MavenProject project)
+    public void buildStarted( BuildResult build )
     {
-        out( project, "Build started." );
+        out( build, "Build started." );
     }
 
-    public void checkoutStarted(MavenProject project)
+    public void checkoutStarted( BuildResult build )
     {
-        out( project, "Checkout started." );
+        out( build, "Checkout started." );
     }
 
-    public void checkoutComplete(MavenProject project, Exception ex)
+    public void checkoutComplete( BuildResult build, Exception ex )
     {
-        out( project, "Checkout complete.", ex );
+        out( build, "Checkout complete.", ex );
     }
 
-    public void runningGoals(MavenProject project)
+    public void runningGoals( BuildResult build )
     {
-        out( project, "Running goals." );
+        out( build, "Running goals." );
     }
 
-    public void goalsCompleted(MavenProject project, Exception ex)
+    public void goalsCompleted( BuildResult build, Exception ex )
     {
-        out( project, "Goals completed.", ex );
+        out( build, "Goals completed.", ex );
     }
 
-    public void buildComplete(MavenProject project, Exception ex)
+    public void buildComplete( BuildResult build, Exception ex )
     {
-        out( project, "Build complete.", ex );
+        out( build, "Build complete.", ex );
     }
 
-    private void out( MavenProject project, String msg )
+    private void out( BuildResult build, String msg )
     {
-        out( project, msg, null );
+        out( build, msg, null );
     }
 
-    private void out( MavenProject project, String msg, Exception ex )
+    private void out( BuildResult build, String msg, Exception ex )
     {
-        System.out.println( project.getId() + ":" + msg );
+        System.out.println( build.getBuildId() + ":" + msg );
 
         if ( ex != null )
         {

@@ -4,11 +4,6 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import java.io.File;
-
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.store.ContinuumStore;
@@ -16,39 +11,25 @@ import org.codehaus.continuum.store.ContinuumStore;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumTest.java,v 1.18 2004-07-01 20:53:30 trygvis Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.19 2004-07-03 03:21:17 trygvis Exp $
  */
 public class DefaultContinuumTest
     extends AbstractContinuumTest
 {
-//  private String project1Url = "http://cvs.plexus.codehaus.org/viewcvs.cgi/*checkout*/plexus/plexus-components/native/continuum/src/test-projects/project1/project.xml";
-
-    private String project1Url = getTestFile( "." ) + "/src/test-projects/project1/pom.xml";
-
     public void testContinuum()
         throws Exception
     {
         Continuum continuum = getContinuum();
 
-        MavenProjectBuilder projectBuilder = getMavenProjectBuilder();
-
         BuildQueue queue = getBuildQueue();
 
         ContinuumStore store = getContinuumStore();
 
-        MavenProject project = projectBuilder.build( new File( project1Url ), getLocalRepository() );
+        String repo = "scm:cvs:local:ignored:" + getTestFile( "src/test/repository/" ) + ":project1";
 
-        String connection = project.getScm().getConnection();
+        String projectId = continuum.addProject( "Continuum Test Project 1", repo );
 
-        String repoRoot = getTestFile( "src/test/repository/" );
-
-        int index = connection.indexOf( "/cvs/root" );
-
-        connection = connection.substring( 0, index ) + repoRoot + ":" + connection.substring( index + 10 );
-
-        project.getScm().setConnection( connection );
-
-        String projectId = continuum.addProject( project );
+        assertEquals( 0, queue.getLength() );
 
         String buildId = continuum.buildProject( projectId );
 

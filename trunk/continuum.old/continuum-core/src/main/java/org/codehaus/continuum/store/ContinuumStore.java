@@ -6,14 +6,12 @@ package org.codehaus.continuum.store;
 
 import java.util.Iterator;
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.6 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.7 2004-07-03 03:21:16 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -23,7 +21,7 @@ public interface ContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    String storeProject( MavenProject project )
+    String addProject( String name, String scmConnection )
         throws ContinuumStoreException;
 
     Iterator getAllProjects()

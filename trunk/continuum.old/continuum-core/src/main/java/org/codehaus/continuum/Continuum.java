@@ -1,12 +1,10 @@
 package org.codehaus.continuum;
 
-import org.apache.maven.project.MavenProject;
-
 public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    String addProject( MavenProject project )
+    String addProject( String name, String scmConnection )
         throws ContinuumException;
 
     /**

@@ -12,19 +12,63 @@
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+          <role-hint>maven2</role-hint>
         </requirement>
       </requirements>
     </component>
+
     <component>
       <role>org.codehaus.continuum.network.ConnectionFactory</role>
-      <role-hint>simple-server-socket</role-hint>
+      <role-hint>simple-network-registrar-server</role-hint>
       <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>simple-network-registrar</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>6789</port>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>simple-network-trigger-server</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>simple-network-trigger</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>7890</port>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <role-hint>simple-network-registrar</role-hint>
+      <implementation>org.codehaus.continuum.registration.network.SimpleNetworkRegistrar</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
         </requirement>
       </requirements>
     </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <role-hint>simple-network-trigger</role-hint>
+      <implementation>org.codehaus.continuum.trigger.network.SimpleNetworkTrigger</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+
     <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
       <role-hint>maven2</role-hint>
@@ -40,9 +84,13 @@
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.MavenCore</role>
+          <role>org.apache.maven.Maven</role>
         </requirement>
       </requirements>
+      <configuration>
+        <maven-home>${maven.home}/</maven-home>
+        <maven-local-repository>${maven.home}/repository</maven-local-repository>
+      </configuration>
     </component>
     <component>
       <role>org.codehaus.continuum.scm.ContinuumScm</role>
@@ -52,6 +100,10 @@
           <role>org.apache.maven.scm.manager.ScmManager</role>
         </requirement>
       </requirements>
+      <configuration>
+        <!-- @TODO: change this to ${continuum.checkout} -->
+        <checkout-directory>/tmp/continuum</checkout-directory>
+      </configuration>
     </component>
     <component>
       <role>org.codehaus.continuum.buildqueue.BuildQueue</role>

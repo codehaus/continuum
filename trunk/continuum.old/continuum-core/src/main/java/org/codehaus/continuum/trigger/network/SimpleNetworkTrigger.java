@@ -19,7 +19,7 @@ import org.codehaus.plexus.util.IOUtil;
  * all the projects.
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkTrigger.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.6 2004-07-03 03:21:16 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger
@@ -33,30 +33,19 @@ public class SimpleNetworkTrigger
         throws IOException
     {
         PrintWriter printer = new PrintWriter( output );
+
         BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
-        String project, id;
-        int i;
+
+        String id;
 
         try
         {
-            project = reader.readLine();
-
-            i = project.indexOf( ':' );
-
-            if( i == -1 )
-            {
-                printer.println( "ERROR" );
-                printer.println( "Error in input, expected format: id." );
-
-                return;
-            }
-
-            id = project.substring( 0, i ).trim();
-
+            id = reader.readLine();
 
             if( id.length() == 0 )
             {
                 printer.println( "ERROR" );
+
                 printer.println( "Error in input, expected format: id." );
 
                 return;
@@ -65,12 +54,15 @@ public class SimpleNetworkTrigger
             String buildId = getContinuum().buildProject( id );
 
             printer.println( "OK" );
+
             printer.println( buildId );
+
             printer.println( "Build of " + id + " scheduled. Build id: " + buildId);
         }
         catch( ContinuumException ex )
         {
             printer.println( "ERROR" );
+
             ex.printStackTrace( printer );
         }
         finally

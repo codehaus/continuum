@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.GoalNotFoundException;
-import org.apache.maven.MavenCore;
+import org.apache.maven.Maven;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 
@@ -26,6 +26,7 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -33,14 +34,14 @@ import org.codehaus.plexus.util.StringUtils;
  * @component.role org.codehaus.continuum.builder.ContinuumBuilder
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.2 2004-07-01 20:53:30 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.3 2004-07-03 03:21:14 trygvis Exp $
  */
 public class Maven2ContinuumBuilder
     extends AbstractLogEnabled
-    implements Initializable, ContinuumBuilder
+    implements Initializable, Startable , ContinuumBuilder
 {
     /** @requirement */
-    private MavenCore maven;
+    private Maven maven;
 
     /** @requirement */
     private ContinuumScm scm;
@@ -68,25 +69,34 @@ public class Maven2ContinuumBuilder
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( maven, MavenCore.ROLE );
+        PlexusUtils.assertRequirement( maven, Maven.ROLE );
         PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
 //        PlexusUtils.assertRequirement( projectBuilder, MavenProjectBuilder.ROLE );
         PlexusUtils.assertRequirement( notifier, ContinuumNotifier.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
 
-        PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
-
+        observer = new NotifierWrapper( notifier, getLogger() );
+    }
+    
+    public void start()
+        throws Exception
+    {
         getLogger().info( "Using " + mavenHome + " as maven home." );
 
         maven.setMavenHome( mavenHome );
-
-        PlexusUtils.assertConfiguration( mavenLocalRepository, "maven-local-repo" );
 
         getLogger().info( "Using " + mavenLocalRepository + " as the maven repository." );
 
         maven.setLocalRepository( mavenLocalRepository );
 
-        observer = new NotifierWrapper( notifier, getLogger() );
+        getLogger().info( "Booting maven." );
+
+        maven.booty();
+    }
+
+    public void stop()
+        throws Exception
+    {
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -104,9 +114,11 @@ public class Maven2ContinuumBuilder
 
         ContinuumProject continuumProject;
 
+        BuildResult build;
+
         try
         {
-            BuildResult build = store.getBuildResult( buildId );
+            build = store.getBuildResult( buildId );
 
             continuumProject = store.getProject( build.getProjectId() );
         }
@@ -119,30 +131,26 @@ public class Maven2ContinuumBuilder
             return;
         }
 
-        MavenProject project = continuumProject.getMavenProject();
-
-        observer.buildStarted( project );
+        observer.buildStarted( build );
 
         try
         {
-            observer.checkoutStarted( project );
+            observer.checkoutStarted( build );
 
-            // scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-components/native/continuum/src/test-projects/project1
-
-            String[] connection = StringUtils.split( project.getScm().getConnection(), ":" );
+            String[] connection = StringUtils.split( continuumProject.getScmConnection(), ":" );
 
             if ( connection.length != 6 )
                 throw new ContinuumException( "Invalid connection string." );
 
-            scm.clean( project );
+            scm.clean( continuumProject );
 
-            basedir = scm.checkout( project );
+            basedir = scm.checkout( continuumProject );
 
-            observer.checkoutComplete( project, null );
+            observer.checkoutComplete( build, null );
         }
         catch( Exception ex )
         {
-            observer.checkoutComplete( project, ex );
+            observer.checkoutComplete( build, ex );
 
             setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
 
@@ -151,7 +159,7 @@ public class Maven2ContinuumBuilder
 
         try
         {
-            observer.buildStarted( project );
+            observer.buildStarted( build );
 
             File file = new File( basedir, "pom.xml" );
 
@@ -171,13 +179,13 @@ public class Maven2ContinuumBuilder
             // TODO: is this wanted?
             FileUtils.forceDelete( basedir );
 
-            observer.buildComplete( project, null );
+            observer.buildComplete( build, null );
 
             setBuildResult( buildId, BuildResult.BUILD_RESULT_OK, null );
         }
         catch ( ProjectBuildingException ex )
         {
-            observer.buildComplete( project, ex );
+            observer.buildComplete( build, ex );
 
             setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
 
@@ -185,7 +193,7 @@ public class Maven2ContinuumBuilder
         }
         catch ( GoalNotFoundException ex )
         {
-            observer.buildComplete( project, ex );
+            observer.buildComplete( build, ex );
 
             setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
 
@@ -193,7 +201,7 @@ public class Maven2ContinuumBuilder
         }
         catch ( IOException ex )
         {
-            observer.buildComplete( project, ex );
+            observer.buildComplete( build, ex );
 
             setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
 

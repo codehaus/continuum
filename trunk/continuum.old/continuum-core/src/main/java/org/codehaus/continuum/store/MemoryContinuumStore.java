@@ -10,14 +10,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.1 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.2 2004-07-03 03:21:16 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -39,10 +37,10 @@ public class MemoryContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String storeProject( MavenProject mavenProject )
+    public String addProject( String name, String scmConnection )
         throws ContinuumStoreException
     {
-        ContinuumProject project = findProjectByMavenProject( mavenProject );
+        ContinuumProject project = findProjectByName( name );
 
         if ( project != null )
             throw new ContinuumStoreException( "The specified project already exists in the store." );
@@ -51,7 +49,9 @@ public class MemoryContinuumStore
 
         project = new ContinuumProject( id );
 
-        project.setMavenProject( mavenProject );
+        project.setName( name );
+
+        project.setScmConnection( scmConnection );
 
         project.setProjectState( ContinuumProject.PROJECT_STATE_NEW );
 
@@ -86,15 +86,15 @@ public class MemoryContinuumStore
         return project;
     }
 
-    private ContinuumProject findProjectByMavenProject( MavenProject mavenProject )
+    private ContinuumProject findProjectByName( String name)
     {
         for ( Iterator it = projects.values().iterator(); it.hasNext(); )
         {
             ContinuumProject project = (ContinuumProject) it.next();
 
-            MavenProject candidate = project.getMavenProject();
+            String candidate = project.getName();
 
-            if ( candidate.equals( mavenProject ) )
+            if ( candidate.equals( name ) )
                 return project;
         }
 
