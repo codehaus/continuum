@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.project.ContinuumJPoxStore;
+import org.codehaus.continuum.builder.shell.ShellBuildResult;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.jdo.JdoFactory;
 import org.codehaus.plexus.util.FileUtils;
@@ -33,7 +36,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.5 2005-03-17 14:27:27 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.6 2005-03-23 16:24:21 trygvis Exp $
  */
 public class ModelloJPoxContinuumStoreTest
     extends PlexusTestCase
@@ -44,6 +47,102 @@ public class ModelloJPoxContinuumStoreTest
         super.setUp();
 
         FileUtils.cleanDirectory( getTestPath( "target/plexus-home" ) );
+    }
+
+    public void testTransactionHandling()
+        throws Exception
+    {
+        JdoFactory jdoFactory = (JdoFactory) lookup( JdoFactory.ROLE );
+
+        ContinuumJPoxStore store = new ContinuumJPoxStore( jdoFactory.getPersistenceManagerFactory() );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        assertNull( store.getThreadState() );
+
+        store.begin();
+
+        assertNotNull( store.getThreadState() );
+
+        store.commit();
+
+        assertNull( store.getThreadState() );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        store = new ContinuumJPoxStore( jdoFactory.getPersistenceManagerFactory() );
+
+        store.begin();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.begin();
+
+        assertEquals( 1, store.getThreadState().getDepth() );
+
+        store.commit();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.commit();
+
+        assertNull( store.getThreadState() );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        store = new ContinuumJPoxStore( jdoFactory.getPersistenceManagerFactory() );
+
+        store.begin();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.begin();
+
+        assertEquals( 1, store.getThreadState().getDepth() );
+
+        store.commit();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.rollback();
+
+        assertNull( store.getThreadState() );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        store = new ContinuumJPoxStore( jdoFactory.getPersistenceManagerFactory() );
+
+        store.begin();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.begin();
+
+        assertEquals( 1, store.getThreadState().getDepth() );
+
+        store.begin();
+
+        assertEquals( 2, store.getThreadState().getDepth() );
+
+        store.rollback();
+
+        assertNull( store.getThreadState() );
+
+        store.begin();
+
+        assertEquals( 0, store.getThreadState().getDepth() );
+
+        store.commit();
+
+        assertNull( store.getThreadState() );
     }
 
     public void testStoreProject()
@@ -312,6 +411,8 @@ public class ModelloJPoxContinuumStoreTest
 
         String buildId = store.createBuild( projectId );
 
+        assertIsCommitted( store );
+
         assertNotNull( buildId );
 
         // ----------------------------------------------------------------------
@@ -319,6 +420,8 @@ public class ModelloJPoxContinuumStoreTest
         // ----------------------------------------------------------------------
 
         ContinuumProject project = store.getProject( projectId );
+
+        assertIsCommitted( store );
 
         assertEquals( ContinuumProjectState.BUILD_SIGNALED, project.getState() );
 
@@ -328,24 +431,65 @@ public class ModelloJPoxContinuumStoreTest
 
         ContinuumBuild build = store.getBuild( buildId );
 
+        assertIsCommitted( store );
+
         assertNotNull( build );
 
-        assertEquals( now / 1000, build.getStartTime() / 1000 );
+        assertEquals( now / 10000, build.getStartTime() / 10000 );
 
         assertEquals( 0, build.getEndTime() );
 
         assertNull( build.getError() );
 
-        assertNotNull( build.getProject() );
+        assertEquals( ContinuumProjectState.BUILD_SIGNALED, build.getState() );
 
-//        assertEquals( projectId, build.getProject().getId() );
+        // ----------------------------------------------------------------------
+        // Check the build result
+        // ----------------------------------------------------------------------
 
-//        assertEquals( ContinuumProjectState.BUILD_SIGNALED, build.getState() );
-    }
+        ContinuumBuildResult result = store.getBuildResultForBuild( buildId );
+
+        assertIsCommitted( store );
+
+        assertNull( result );
+
+        ShellBuildResult shellBuildResult = new ShellBuildResult();
+
+        shellBuildResult.setExitCode( 1 );
+
+        shellBuildResult.setStandardOutput( "output" );
+
+        shellBuildResult.setStandardError( "error" );
+
+        store.setBuildResult( buildId, ContinuumProjectState.OK, shellBuildResult, null );
+
+        assertIsCommitted( store );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        shellBuildResult = (ShellBuildResult) store.getBuildResultForBuild( buildId );
+
+        assertIsCommitted( store );
+
+        assertEquals( 1, shellBuildResult.getExitCode() );
+
+        assertEquals( "output", shellBuildResult.getStandardOutput() );
+
+        assertEquals( "error", shellBuildResult.getStandardError() );
+   }
 
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
+
+    private void assertIsCommitted( ContinuumStore store )
+    {
+        ContinuumJPoxStore.ThreadState state = ( (ModelloJPoxContinuumStore) store ).getStore().getThreadState();
+
+        assertNull( state );
+    }
 
     private String addProject( String name )
         throws Exception

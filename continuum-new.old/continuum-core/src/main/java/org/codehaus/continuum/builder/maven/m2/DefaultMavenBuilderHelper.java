@@ -42,7 +42,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.5 2005-03-21 12:53:28 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.6 2005-03-23 16:24:20 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
@@ -77,9 +77,9 @@ public class DefaultMavenBuilderHelper
 
         try
         {
-            File f = createMetadataFile( metadata );
+            File file = createMetadataFile( metadata );
 
-            mapMetadataToProject( f, project );
+            mapMetadataToProject( file, project );
         }
         catch ( Exception e )
         {

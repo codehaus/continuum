@@ -19,17 +19,20 @@ package org.codehaus.continuum.builder.maven.m2;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.builder.shell.ShellBuilder;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.4 2005-03-10 00:05:50 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
 {
+    public final static String CONFIGURATION_GOALS = "goals";
+
     /** @requirement */
     private MavenBuilderHelper builderHelper;
 
@@ -43,5 +46,24 @@ public class MavenShellBuilder
         throws ContinuumException
     {
         builderHelper.updateProjectFromMetadata( workingDirectory, project );
+    }
+
+    protected String[] getArguments( ContinuumProject project )
+    {
+        String goals = project.getConfiguration().getProperty( CONFIGURATION_GOALS );
+
+        if ( goals == null )
+        {
+            return new String[] { "clean:clean", "install" };
+        }
+
+        String[] arguments =  StringUtils.split( goals, "," );
+
+        for ( int i = 0; i < arguments.length; i++ )
+        {
+            arguments[ i ] = arguments[ i ].trim();
+        }
+
+        return arguments;
     }
 }

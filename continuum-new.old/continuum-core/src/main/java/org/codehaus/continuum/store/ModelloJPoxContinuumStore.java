@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -36,7 +35,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.5 2005-03-17 14:27:27 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.6 2005-03-23 16:24:21 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -139,6 +138,8 @@ public class ModelloJPoxContinuumStore
         }
         catch ( Exception e )
         {
+            rollback( store );
+
             throw new ContinuumStoreException( "Error while updating project.", e );
         }
     }
@@ -210,6 +211,8 @@ public class ModelloJPoxContinuumStore
         }
         catch ( Exception e )
         {
+            rollback( store );
+
             throw new ContinuumStoreException( "Error while loading project.", e );
         }
     }
@@ -221,7 +224,6 @@ public class ModelloJPoxContinuumStore
     public String createBuild( String projectId )
         throws ContinuumStoreException
     {
-        String buildId;
         try
         {
             store.begin();
@@ -248,6 +250,8 @@ public class ModelloJPoxContinuumStore
         }
         catch ( Exception e )
         {
+            rollback( store );
+
             throw new ContinuumStoreException( "Error while creating continuum build for project: '" + projectId + "'.", e );
         }
     }
@@ -288,6 +292,8 @@ public class ModelloJPoxContinuumStore
         }
         catch ( Exception e )
         {
+            rollback( store );
+
             throw new ContinuumStoreException( "Error while setting build result for build: '" + buildId + "'.", e );
         }
     }
@@ -297,9 +303,7 @@ public class ModelloJPoxContinuumStore
     {
         try
         {
-            ContinuumBuild build = store.getContinuumBuild( buildId, true );
-
-            return build;
+            return store.getContinuumBuild( buildId, true );
         }
         catch ( Exception e )
         {
@@ -339,6 +343,65 @@ public class ModelloJPoxContinuumStore
         catch ( Exception e )
         {
             throw new ContinuumStoreException( "Error while getting builds for project id: '" + projectId + "'.", e );
+        }
+    }
+
+    public ContinuumBuildResult getBuildResultForBuild( String buildId )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            store.begin();
+
+            ContinuumBuild build = store.getContinuumBuild( buildId, false );
+
+            if ( build.getBuildResult() == null )
+            {
+                store.commit();
+
+                return null;
+            }
+
+            Object id = JDOHelper.getObjectId( build.getBuildResult() );
+
+            store.commit();
+
+            ContinuumBuildResult result = store.getContinuumBuildResultByJdoId( id, true );
+
+            return result;
+        }
+        catch ( Exception e )
+        {
+            rollback( store );
+
+            throw new ContinuumStoreException( "Error while getting build result.", e );
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public ContinuumJPoxStore getStore()
+    {
+        return store;
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private void rollback( ContinuumJPoxStore store )
+    {
+        try
+        {
+            getLogger().warn( "Rolling back transaction." );
+
+            store.rollback();
+        }
+        catch ( Exception e )
+        {
+            getLogger().error( "Error while rolling back tx.", e );
         }
     }
 }

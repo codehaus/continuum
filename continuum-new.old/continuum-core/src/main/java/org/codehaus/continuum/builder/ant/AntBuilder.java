@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.4 2005-03-10 00:05:47 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
  */
 public class AntBuilder
     extends AbstractLogEnabled
@@ -59,6 +59,11 @@ public class AntBuilder
 
         String[] goals = StringUtils.split( configuration.getProperty( CONFIGURATION_TARGETS ), "," );
 
+        for ( int i = 0; i < goals.length; i++ )
+        {
+            goals[ i ] = goals[ i ].trim();
+        }
+
         ExecutionResult executionResult;
 
         try
@@ -69,8 +74,6 @@ public class AntBuilder
         {
             throw new ContinuumException( "Error while executing shell command.", e );
         }
-
-        System.err.println( "exit code: " + executionResult.getExitCode() );
 
         boolean success = executionResult.getExitCode() == 0;
 
@@ -90,7 +93,7 @@ public class AntBuilder
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
     {
-        return null;
+        throw new ContinuumException( "The Ant builder cannot create metadata from a URL." );
     }
 
     public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
