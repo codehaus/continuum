@@ -7,9 +7,9 @@
     <version>0.1</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-main-notifier</artifactId>
+  <artifactId>continuum-mail-notifier</artifactId>
   <name>Continuum Mail Notifier</name>
-  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <version>0.1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
