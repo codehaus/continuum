@@ -1,0 +1,34 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.continuum.Continuum</role>
+      <implementation>org.codehaus.plexus.continuum.DefaultContinuum</implementation>
+      <configuration>
+        <work-directory>${plexus.home}/continuum</work-directory>
+        <build-interval>1</build-interval>
+        <moms>
+          <mom>${basedir}/src/test-input/project.xml</mom>
+        </moms>
+      </configuration>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.compiler.Compiler</role>
+      <implementation>org.codehaus.plexus.compiler.ajc.AspectJCompiler</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.project.ProjectBuilder</role>
+      <implementation>org.apache.maven.project.DefaultProjectBuilder</implementation>
+      <configuration/>
+    </component>
+    <component>
+      <role>org.apache.maven.project.ModelUnmarshaller</role>
+      <implementation>org.apache.maven.project.DefaultModelUnmarshaller</implementation>
+      <configuration/>
+    </component>
+    <component>
+      <role>org.apache.maven.project.ModelMarshaller</role>
+      <implementation>org.apache.maven.project.DefaultModelMarshaller</implementation>
+      <configuration/>
+    </component>
+  </components>
+</plexus>
