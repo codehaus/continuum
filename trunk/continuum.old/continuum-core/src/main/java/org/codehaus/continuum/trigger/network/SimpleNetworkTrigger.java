@@ -19,8 +19,7 @@ import org.codehaus.plexus.util.IOUtil;
  * all the projects.
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id: SimpleNetworkTrigger.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger
@@ -35,7 +34,7 @@ public class SimpleNetworkTrigger
     {
         PrintWriter printer = new PrintWriter( output );
         BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
-        String project, groupId, artifactId;
+        String project, id;
         int i;
 
         try
@@ -47,35 +46,27 @@ public class SimpleNetworkTrigger
             if( i == -1 )
             {
                 printer.println( "ERROR" );
-                printer.println( "Error in input, expected format: groupId:artifactId." );
+                printer.println( "Error in input, expected format: id." );
 
                 return;
             }
 
-            groupId = project.substring( 0, i ).trim();
-            artifactId = project.substring( i + 1 ).trim();
+            id = project.substring( 0, i ).trim();
 
-            if( groupId.length() == 0 )
+
+            if( id.length() == 0 )
             {
                 printer.println( "ERROR" );
-                printer.println( "Error in input, expected format: groupId:artifactId." );
+                printer.println( "Error in input, expected format: id." );
 
                 return;
             }
 
-            if( artifactId.length() == 0 )
-            {
-                printer.println( "ERROR" );
-                printer.println( "Error in input, expected format: groupId:artifactId." );
-
-                return;
-            }
-
-            String jobId = getContinuum().buildProject( groupId, artifactId );
+            String buildId = getContinuum().buildProject( id );
 
             printer.println( "OK" );
-            printer.println( jobId );
-            printer.println( "Build of " + groupId + ":" + artifactId + " scheduled. Job #" + jobId);
+            printer.println( buildId );
+            printer.println( "Build of " + id + " scheduled. Build id: " + buildId);
         }
         catch( ContinuumException ex )
         {

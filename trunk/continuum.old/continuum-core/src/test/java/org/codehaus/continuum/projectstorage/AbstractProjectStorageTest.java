@@ -4,7 +4,6 @@ package org.codehaus.continuum.projectstorage;
  * LICENSE
  */
 
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,7 +14,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractProjectStorageTest.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: AbstractProjectStorageTest.java,v 1.4 2004-06-27 23:21:04 trygvis Exp $
  */
 public abstract class AbstractProjectStorageTest
     extends PlexusTestCase
@@ -25,10 +24,10 @@ public abstract class AbstractProjectStorageTest
     {
         Iterator i;
         Map projects = new HashMap();
-        ProjectStorage store;
+        ContinuumProjectStorage store;
         MavenProject p;
 
-        store = (ProjectStorage)lookup( ProjectStorage.class.getName() );
+        store = (ContinuumProjectStorage) lookup( ContinuumProjectStorage.class.getName() );
 
         i = store.getAllProjects();
 
@@ -44,9 +43,19 @@ public abstract class AbstractProjectStorageTest
         assertHasProject( projects, "inamo", "accountmanager" );
 
         assertEquals( 0, projects.size() );
+/*
+        ContinuumProject project = new ContinuumProject();
 
-        store.storeProject( "maven","maven-ajc-plugin", new FileReader( getTestFile( "src/test-input/project.xml" ) ) );
+        MavenProjectBuilder mavenProjectBuidler = (MavenProjectBuilder) lookup( MavenProjectBuilder.ROLE );
 
+        MavenProject mavenProject = mavenProjectBuilder.build( "" );
+
+        project.setMavenProject( mavenProject );
+
+        project.setProjectState( ContinuumProject.PROJECT_STATE_OK );
+
+        store.storeProject( project );
+*/
         i = store.getAllProjects();
 
         while ( i.hasNext() )

@@ -1,4 +1,4 @@
-package org.codehaus.continuum;
+package org.codehaus.continuum.scm;
 
 /*
  * LICENSE
@@ -11,6 +11,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.RepositoryInfo;
 
+import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.continuum.utils.ScmUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -19,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.3 2004-06-27 19:28:43 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled

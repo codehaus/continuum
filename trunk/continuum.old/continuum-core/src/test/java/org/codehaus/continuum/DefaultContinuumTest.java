@@ -11,7 +11,7 @@ import org.codehaus.plexus.PlexusTestCase;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumTest.java,v 1.15 2004-06-27 19:28:44 trygvis Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.16 2004-06-27 23:21:03 trygvis Exp $
  */
 public class DefaultContinuumTest
     extends PlexusTestCase
@@ -47,9 +47,9 @@ public class DefaultContinuumTest
 
         project.getScm().setConnection( connection );
 
-        continuum.addProject( project );
+        String projectId = continuum.addProject( project );
 
-        String jobId = continuum.buildProject( "plexus", "continuum-project1" );
+        String jobId = continuum.buildProject( projectId );
 
         jobId = jobId.toString();
 
