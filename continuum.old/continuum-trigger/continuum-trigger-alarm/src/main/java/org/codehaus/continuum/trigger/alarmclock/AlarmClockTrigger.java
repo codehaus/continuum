@@ -39,7 +39,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.8 2004-10-06 14:18:59 trygvis Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.9 2004-10-28 17:48:38 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger
@@ -48,14 +48,14 @@ public class AlarmClockTrigger
     /**
      * The default value is one hour.
      *
-     * @default 60000
+     * @configuration default=3600
      */
     private int interval;
 
     /**
      * The default value is 5 minutes.
      *
-     * @default 3000
+     * @configuration default=300
      */
     private int delay;
 

@@ -27,11 +27,13 @@ import java.io.PrintStream;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.builder.test.TestContinuumBuilder;
+import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.10 2004-10-24 22:31:33 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.11 2004-10-28 17:48:38 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends AbstractContinuumTest
@@ -48,11 +50,16 @@ public class AlarmClockTriggerTest
 
         getStoreTransactionManager().begin();
 
-        continuum.addProject( "Test Project 1", "scm:local:src/test/repository:simple", "foo@bar", "1.0", "test" );
+        continuum.addProjectFromScm( "scm:local:src/test/repository:simple", "test" );
 
-        continuum.addProject( "Test Project 2", "scm:local:src/test/repository:simple", "foo@bar", "1.0", "test" );
+//        continuum.addProjectFromScm( "scm:local:src/test/repository:simple", "test" );
 
         getStoreTransactionManager().commit();
+
+        // Make sure each project takes 10 seconds to build
+        TestContinuumBuilder builder = (TestContinuumBuilder) lookup( ContinuumBuilder.ROLE, "test" );
+
+        builder.setBuildSleepInterval( 100000 );
 
         // The lookup starts the trigger
         getContinuumTrigger( "alarm-clock-test" );
@@ -63,17 +70,9 @@ public class AlarmClockTriggerTest
         // The alarm goes of every second and the builder should
         // build every 100th second
 
-        long start = System.currentTimeMillis();
+        Thread.sleep( 4000 );
 
-        while( System.currentTimeMillis() < ( start + 5000 ) )
-        {
-            if ( continuum.getBuildQueueLength() >= 2 )
-            {
-                return;
-            }
-        }
-
-        fail( "Timeout while waiting for the trigger to build." );
+        assertTrue( "There should be at least two builds in the queue. Was: " + continuum.getBuildQueueLength(), continuum.getBuildQueueLength() >= 2 );
     }
 
     public void testConfigurationValues()
