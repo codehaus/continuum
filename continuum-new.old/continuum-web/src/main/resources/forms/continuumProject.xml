@@ -12,6 +12,7 @@
       <label-key>addProject.scmUrl.label</label-key>
       <error-message-key>addProject.scmUrl.error</error-message-key>
       <type>text</type>
+      <expression>scmUrl</expression>
     </element>
     <element>
       <id>addProject.name</id>
@@ -29,6 +30,7 @@
       <label-key>addProject.nagEmailAddress.label</label-key>
       <error-message-key>addProject.nagEmailAddress.error</error-message-key>
       <type>text</type>
+      <expression>nagEmailAddress</expression>
     </element>
     <element>
       <id>addProject.version</id>
@@ -37,6 +39,7 @@
       <label-key>addProject.version.label</label-key>
       <error-message-key>addProject.version.error</error-message-key>
       <type>text</type>
+      <expression>version</expression>
     </element>
     <element>
       <id>addAntProject.executable</id>
@@ -54,17 +57,36 @@
       <error-message-key>addAntProject.targets.error</error-message-key>
       <type>text</type>
     </element>
+    <element>
+      <id>continuumProject.type</id>
+      <validator>default</validator>
+      <message-key>continuumProject.type.message</message-key>
+      <label-key>continuumProject.type.label</label-key>
+      <error-message-key>continuumProject.type.error</error-message-key>
+      <type>text</type>
+      <expression>builderId</expression>
+    </element>
   </elements>
-  <!-- Add form -->
+
+  <!-- Add -->
   <add>
     <title-key>addAntProject.title</title-key>
     <action>addAntProject</action>
-    <view>projectOverview.vm</view>
+    <view>continuumProject.form?mode=summary</view>
   </add>
-  <!-- Detail View -->
+
+  <!-- Update -->
+  <update>
+    <title-key>addAntProject.title</title-key>
+    <action>updateProject</action>
+    <view>continuumProject.form?mode=summary</view>
+  </update>
+
+  <!-- View -->
   <view>
     <title-key>viewAntProject.title</title-key>
   </view>
+
   <!-- Summary -->
   <summary>
     <title-key>title.key</title-key>
@@ -72,15 +94,18 @@
       <summary-element>
         <id>addProject.name</id>
       </summary-element>
+      <summary-element>
+        <id>continuumProject.type</id>
+      </summary-element>
     </summary-elements>
     <operations>
       <operation>
         <name>View</name>
-        <action>view</action>
+        <action>target/$formId$.form?mode=view&amp;id=$id$</action>
       </operation>
       <operation>
         <name>Details</name>
-        <action>details</action>
+        <action>target/$formId$.form?mode=update&amp;id=$id$</action>
       </operation>
       <operation>
         <name>Delete</name>
@@ -88,5 +113,4 @@
       </operation>
     </operations>
   </summary>
-
 </form>
