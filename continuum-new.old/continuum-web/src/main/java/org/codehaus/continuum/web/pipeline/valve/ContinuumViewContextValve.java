@@ -17,29 +17,19 @@ package org.codehaus.continuum.web.pipeline.valve;
  */
 
 import org.codehaus.continuum.web.ContinuumWeb;
-import org.codehaus.continuum.web.context.ViewContextPopulator;
 import org.codehaus.continuum.web.tool.CssTool;
-import org.codehaus.continuum.web.tool.OgnlTool;
-import org.codehaus.continuum.Continuum;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Enumeration;
-import java.util.Iterator;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.4 2005-03-20 07:19:13 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.5 2005-03-20 16:25:02 jvanzyl Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
 {
-    private OgnlTool ognl = new OgnlTool();
-
     private CssTool css = new CssTool();
 
     private ContinuumWeb continuum;
@@ -51,8 +41,6 @@ public class ContinuumViewContextValve
         context.put( "continuum", continuum );
 
         context.put( "css", css );
-
-        context.put( "ognl", ognl );
 
         context.put( "i18n", i18n );
 
