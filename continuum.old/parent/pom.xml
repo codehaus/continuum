@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project>
-  <artifactId>continuum-parent</artifactId>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
+  <artifactId>continuum-parent</artifactId>
   <version>0.1</version>
 
   <name>Continuum Parent Project</name>
