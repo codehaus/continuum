@@ -1,17 +1,6 @@
 <form>
   <id>addProjectScm</id>
-  <title-key>addProjectScm.title</title-key>
-  <action>addProjectScm</action>
-  <view>projectOverview.vm</view>
   <elements>
-    <element>
-      <id>addProject.name</id>
-      <validator>default</validator>
-      <message-key>addProject.name.message</message-key>
-      <label-key>addProject.name.label</label-key>
-      <error-message-key>addProject.name.error</error-message-key>
-      <type>text</type>
-    </element>
     <element>
       <id>addProject.scm</id>
       <validator>default</validator>
@@ -20,21 +9,10 @@
       <error-message-key>addProject.scm.error</error-message-key>
       <type>text</type>
     </element>
-    <element>
-      <id>addProject.nagEmailAddress</id>
-      <validator>default</validator>
-      <message-key>addProject.nagEmailAddress.message</message-key>
-      <label-key>addProject.nagEmailAddress.label</label-key>
-      <error-message-key>addProject.nagEmailAddress.error</error-message-key>
-      <type>text</type>
-    </element>
-    <element>
-      <id>addProject.version</id>
-      <validator>default</validator>
-      <message-key>addProject.version.message</message-key>
-      <label-key>addProject.version.label</label-key>
-      <error-message-key>addProject.version.error</error-message-key>
-      <type>text</type>
-    </element>
   </elements>
+  <add>
+    <title-key>addProjectScm.title</title-key>
+    <action>addProjectScm</action>
+    <view>projectOverview.vm</view>
+  </add>
 </form>

@@ -66,11 +66,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addProjectPomUrl</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.maven2.Maven2Utils</role>
-        </requirement>
-      </requirements>
     </component>
 
     <!-- showProjects -->
@@ -128,7 +123,7 @@
       <role-hint>enqueueProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.EnqueueProject</implementation>
     </component>
-
+<!--
     <component>
       <role>org.codehaus.continuum.maven2.Maven2Utils</role>
       <implementation>org.codehaus.continuum.maven2.DefaultMaven2Utils</implementation>
@@ -145,7 +140,7 @@
         </requirement>
       </requirements>
     </component>
-
+-->
     <!--
      |
      | Socket listeners
@@ -154,12 +149,12 @@
 
     <component>
       <role>org.codehaus.continuum.network.ConnectionFactory</role>
-      <role-hint>simple-network-registrar-server</role-hint>
+      <role-hint>scm-registrar-server</role-hint>
       <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.network.ConnectionConsumer</role>
-          <role-hint>simple-network-registrar</role-hint>
+          <role-hint>scm-registrar</role-hint>
         </requirement>
       </requirements>
       <configuration>
@@ -184,8 +179,8 @@
 
     <component>
       <role>org.codehaus.continuum.network.ConnectionConsumer</role>
-      <role-hint>simple-network-registrar</role-hint>
-      <implementation>org.codehaus.continuum.registration.socket.SimpleSocketRegistrar</implementation>
+      <role-hint>scm-registrar</role-hint>
+      <implementation>org.codehaus.continuum.registration.socket.ScmSocketRegistrar</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
@@ -202,7 +197,7 @@
       <implementation>org.codehaus.continuum.registration.socket.UrlSocketRegistrar</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.maven2.Maven2Utils</role>
+          <role>org.codehaus.continuum.Continuum</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>

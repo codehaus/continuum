@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.codehaus.continuum.maven2.Maven2Utils;
 import org.codehaus.continuum.web.utils.WebUtils;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
@@ -34,14 +33,11 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrl.java,v 1.5 2004-10-20 17:04:05 trygvis Exp $
+ * @version $Id: AddProjectPomUrl.java,v 1.6 2004-10-28 23:19:25 trygvis Exp $
  */
 public class AddProjectPomUrl
     extends AbstractAction
 {
-    /** @requirement */
-    private Maven2Utils maven2Utils;
-
     public void execute( Map request )
         throws Exception
     {
@@ -49,7 +45,7 @@ public class AddProjectPomUrl
 
         getLogger().info( "Adding project from '" + url + "'." );
 
-        maven2Utils.addProjectFromUrl( new URL( url ) );
+        getContinuum().addProjectFromUrl( new URL( url ), "maven2" );
 
         RunData data = (RunData) request.get( "data" );
 

@@ -25,6 +25,10 @@ package org.codehaus.continuum.web.action;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.maven.scm.ScmResult;
+
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.web.utils.WebUtils;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
@@ -32,7 +36,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectScm.java,v 1.4 2004-10-15 13:01:10 trygvis Exp $
+ * @version $Id: AddProjectScm.java,v 1.5 2004-10-28 23:19:25 trygvis Exp $
  */
 public class AddProjectScm
     extends AbstractAction
@@ -40,15 +44,25 @@ public class AddProjectScm
     public void execute( Map request )
         throws Exception
     {
-        String name = (String) request.get( "addProject.name" );
-
         String scm = (String) request.get( "addProject.scm" );
 
-        String nagEmailAddress = (String) request.get( "addProject.nagEmailAddress" );
+        try
+        {
+            getContinuum().addProjectFromScm( scm, "maven2" );
+        }
+        catch( ContinuumException ex )
+        {
+            Throwable cause = ex.getCause();
 
-        String version = (String) request.get( "addProject.version" );
+            if ( cause instanceof ContinuumScmException )
+            {
+                ScmResult result = ((ContinuumScmException) cause).getResult();
 
-        getContinuum().addProject( name, scm, nagEmailAddress, version, "maven2" );
+                getLogger().fatalError( "Error while checking out." );
+                getLogger().fatalError( "  Provider message:" + result.getProviderMessage() );
+                getLogger().fatalError( "  Command output:" + result.getCommandOutput() );
+            }
+        }
 
         RunData data = (RunData) request.get( "data" );
 
