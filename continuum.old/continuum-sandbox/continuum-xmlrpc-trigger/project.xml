@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <extend>${maven.repo.local}/continuum/poms/continuum-parent-1.0.pom</extend>
+  <artifactId>continuum-xmlrpc-trigger</artifactId>
+  <name>Continuum XML-RPC Trigger</name>
+  <currentVersion>1.0-SNAPSHOT</currentVersion>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

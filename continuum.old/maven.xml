@@ -1,0 +1,26 @@
+<project default="help"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  >
+
+  <goal name="help">
+    <ant:echo>
+To build continuum:
+ $ maven build
+    </ant:echo>
+  </goal>
+
+  <goal name="build">
+    <maven:reactor
+      basedir="${basedir}"
+      includes="parent/project.xml"
+      goals="pom:install"/>
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="*/project.xml"
+      excludes="parent/project.xml"
+      goals="jar:install"/>
+  </goal>
+
+</project>

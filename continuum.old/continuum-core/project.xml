@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <extend>${maven.repo.local}/plexus/poms/plexus-components-1.0.pom</extend>
-  <id>plexus-continuum</id>
-  <artifactId>plexus-continuum</artifactId>
-  <name>Plexus Continuum Component</name>
-  <currentVersion>1.0-SNAPSHOT</currentVersion>
+  <extend>${maven.repo.local}/continuum/poms/continuum-parent-1.0.pom</extend>
+  <artifactId>continuum-core</artifactId>
+  <name>Continuum Core</name>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
 
   <dependencies>
 
