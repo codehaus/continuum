@@ -19,20 +19,48 @@ package org.codehaus.continuum.builder;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuilder.java,v 1.3 2005-03-23 16:24:17 trygvis Exp $
+ * @version $Id: AbstractContinuumBuilder.java,v 1.4 2005-03-28 12:11:42 trygvis Exp $
  */
 public abstract class AbstractContinuumBuilder
     extends AbstractLogEnabled
     implements ContinuumBuilder
 {
+    protected String getConfigurationString( Properties configuration, String property )
+        throws ContinuumException
+    {
+        String string = configuration.getProperty( property );
+
+        if ( StringUtils.isEmpty( string ) )
+        {
+            throw new ContinuumException( "Missing configuration: '" + property + "'." );
+        }
+
+        return string;
+    }
+
+    protected String[] getConfigurationStringArray( Properties configuration, String property )
+        throws ContinuumException
+    {
+        String[] array = StringUtils.split( getConfigurationString( configuration, property ), "," );
+
+        for ( int i = 0; i < array.length; i++ )
+        {
+            array[ i ] = array[ i ].trim();
+        }
+
+        return array;
+    }
+
     protected static File createMetadataFile( URL metadata )
         throws ContinuumException
     {

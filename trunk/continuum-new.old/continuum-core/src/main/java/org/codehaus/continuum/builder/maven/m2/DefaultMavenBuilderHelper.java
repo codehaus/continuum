@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.model.Notifier;
@@ -42,7 +43,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.6 2005-03-23 16:24:20 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.7 2005-03-28 12:11:43 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
@@ -179,6 +180,13 @@ public class DefaultMavenBuilderHelper
         project.setScmUrl( getScmUrl( mavenProject ) );
 
         project.setVersion( getVersion( mavenProject ) );
+
+        Properties configuration = project.getConfiguration();
+
+        if ( !configuration.containsKey( MavenShellBuilder.CONFIGURATION_GOALS ) )
+        {
+            configuration.setProperty( MavenShellBuilder.CONFIGURATION_GOALS, "clean:clean, install" );
+        }
     }
 
     protected MavenProject getProject( File file )

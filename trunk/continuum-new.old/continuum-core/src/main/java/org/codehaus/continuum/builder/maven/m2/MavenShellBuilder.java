@@ -26,7 +26,7 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
@@ -49,15 +49,9 @@ public class MavenShellBuilder
     }
 
     protected String[] getArguments( ContinuumProject project )
+        throws ContinuumException
     {
-        String goals = project.getConfiguration().getProperty( CONFIGURATION_GOALS );
-
-        if ( goals == null )
-        {
-            return new String[] { "clean:clean", "install" };
-        }
-
-        String[] arguments =  StringUtils.split( goals, "," );
+        String[] arguments = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS );
 
         for ( int i = 0; i < arguments.length; i++ )
         {

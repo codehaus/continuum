@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
@@ -59,7 +59,7 @@ public class Maven1Builder
 
         File workingDirectory = new File( project.getWorkingDirectory() );
 
-        String[] goals = StringUtils.split( configuration.getProperty( CONFIGURATION_GOALS ), "," );
+        String[] goals = getConfigurationStringArray( configuration, CONFIGURATION_GOALS );
 
         ExecutionResult executionResult;
 
@@ -183,7 +183,10 @@ public class Maven1Builder
         // Goals
         Properties configuration = new Properties();
 
-        configuration.setProperty( CONFIGURATION_GOALS, "clean:clean,jar:install" );
+        if ( !configuration.containsKey( CONFIGURATION_GOALS ) )
+        {
+            configuration.setProperty( CONFIGURATION_GOALS, "clean:clean, jar:install" );
+        }
 
         // ----------------------------------------------------------------------
         // Make the project
