@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.5 2004-10-06 13:33:29 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.6 2004-10-08 09:09:30 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -87,6 +87,9 @@ public interface ContinuumStore
         throws ContinuumStoreException;
 
     ContinuumBuild getBuild( String buildId )
+        throws ContinuumStoreException;
+
+    ContinuumBuild getLatestBuildForProject( String projectId )
         throws ContinuumStoreException;
 
     Iterator getBuildsForProject( String projectId, int start, int end )
