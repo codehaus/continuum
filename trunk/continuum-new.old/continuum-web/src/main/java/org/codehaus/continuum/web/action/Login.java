@@ -17,12 +17,13 @@ package org.codehaus.continuum.web.action;
  */
 
 import org.codehaus.plexus.summit.rundata.RunData;
+import org.codehaus.plexus.action.AbstractAction;
 
 import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Login.java,v 1.2 2005-03-10 00:05:57 trygvis Exp $
+ * @version $Id: Login.java,v 1.3 2005-03-27 05:57:58 jvanzyl Exp $
  */
 public class Login
     extends AbstractAction
