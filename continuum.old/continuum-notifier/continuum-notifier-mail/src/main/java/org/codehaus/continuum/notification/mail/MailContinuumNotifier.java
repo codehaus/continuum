@@ -26,7 +26,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.12 2004-10-24 20:39:07 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.13 2004-10-24 22:21:04 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -83,18 +83,6 @@ public class MailContinuumNotifier
 //    private int port;
 
     private String localHostName;
-
-    /**
-     * This is the last message sent by the notifier.
-     * 
-     * Probably mostly useful for testing.
-     */
-    private String lastMessage;
-
-    /**
-     * The number of messages created (not necessary sent).
-     */
-    private int messageCount;
 
     private Map generators = new HashMap();
 
@@ -235,22 +223,12 @@ public class MailContinuumNotifier
         {
             MailGenerator generator = (MailGenerator) generators.get( project.getType() );
 
-            lastMessage = generator.generateContent( project, build, lastBuild );
+            String message = generator.generateContent( project, build, lastBuild );
 
             String subject = generator.generateSubject( project, build, lastBuild );
 
-            sendMessage( build, subject, lastMessage );
+            sendMessage( build, subject, message );
         }
-    }
-
-    public String getLastMessage()
-    {
-        return lastMessage;
-    }
-
-    public int getMessageCount()
-    {
-        return messageCount;
     }
 
     // ----------------------------------------------------------------------
@@ -261,8 +239,6 @@ public class MailContinuumNotifier
         throws ContinuumException
     {
         ContinuumProject project = build.getProject();
-
-        messageCount++;
 
         String fromAddress = getFromAddress( project );
 
@@ -295,7 +271,7 @@ public class MailContinuumNotifier
 
         try
         {
-            mailSender.sendMail( subject, message, toAddress, null, fromAddress, fromName, headers );
+            mailSender.send( subject, message, toAddress, null, fromAddress, fromName, headers );
         }
         catch( MailSenderException ex )
         {

@@ -13,10 +13,6 @@
         </requirement>
       </requirements>
       <configuration>
-<!--
-        <smtp-server>localhost</smtp-server>
-        <smtp-port>25</smtp-port>
--->
         <administrator></administrator>
       </configuration>
     </component>
