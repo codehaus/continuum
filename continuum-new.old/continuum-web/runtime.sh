@@ -85,7 +85,7 @@ maven2="$runtime/apps/maven2"
 dest="$runtime/core"
 #copyDependency "plexus" "plexus-container-api" "1.0-alpha-1-SNAPSHOT"
 copyDependency "plexus" "plexus-container-default" "1.0-alpha-2-SNAPSHOT"
-copyDependency "plexus" "plexus-container-artifact" "1.0-alpha-1-SNAPSHOT"
+copyDependency "plexus" "plexus-container-artifact" "1.0-alpha-2-SNAPSHOT"
 copyDependency "plexus" "plexus-utils" "1.0-alpha-1-SNAPSHOT"
 copyDependency "maven" "maven-artifact" "2.0-SNAPSHOT"
 
@@ -144,14 +144,14 @@ copyDependency "maven" "maven-scm-provider-cvs" "1.0-alpha-1-SNAPSHOT"
 copyDependency "commons-collections" "commons-collections" "2.0"
 copyDependency "commons-fileupload" "commons-fileupload" "1.0"
 copyDependency "hsqldb" "hsqldb" "1.7.3.0"
-copyDependency "jdbm" "jdbm" "0.20"
+copyDependency "jdbm" "jdbm" "0.20-dev"
 copyDependency "jdo" "jdo" "1.0.1"
 copyDependency "jetty" "org.mortbay.jetty" "4.2.22"
 copyDependency "jpox" "jpox" "1.0.4"
 copyDependency "log4j" "log4j" "1.2.8"
 copyDependency "obie" "stash" "1.0-alpha-1-SNAPSHOT"
 copyDependency "ognl" "ognl" "2.5.1"
-copyDependency "oro" "oro" "2.0.7"
+copyDependency "oro" "oro" "2.0.6"
 copyDependency "postgresql" "postgresql" "7.4.1-jdbc3"
 copyDependency "qdox" "qdox" "1.2"
 copyDependency "servletapi" "servletapi" "2.3"
@@ -162,13 +162,6 @@ copyDependency "prevayler" "prevayler" "2.02.005"
 
 mkdir -p $maven2
 mkdir -p $runtime/apps/maven2
-m2=$HOME/m2/
-
-if [ ! -d $m2 ]
-then
-  echo "FATAL: $m2 doesn't exist"
-  exit
-fi
 
 cp -r $m2/* $runtime/apps/maven2
 mkdir -p $runtime/apps/maven2/repository
