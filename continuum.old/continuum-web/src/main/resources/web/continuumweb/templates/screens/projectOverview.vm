@@ -16,14 +16,15 @@
       <tr>
         <th>Project Name</th>
         <th>State</th>
-        <th>Version</th>
         <th>Details</th>
       </tr>
       #foreach ( $project in $projects )
+      #if ( $project.state == "failed" )
+      #set ( $class = "warning" )
+      #end
       <tr class="$class">
         <td>$project.name</td>
         <td>$project.state</td>
-        <td>$project.version</td>
         <td><a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Details</a></td>
       </tr>
       #if ( $class == "a" )
