@@ -56,6 +56,7 @@ class ContinuumXmlRpcClient(cli.cli):
         print """Id: %(id)s
 Name: %(name)s
 Version: %(version)s
+Working directory: %(workingDirectory)s
 Builder type: %(builderId)s""" % project.map
         print ""
 
@@ -65,11 +66,11 @@ Builder type: %(builderId)s""" % project.map
 
         print ""
         print "Project Builds:"
-        print "|  Id  | State |           Start time            |             End time            | Build time |"
+        print "|  Id  |  State |           Start time            |             End time            | Build time |"
         builds = continuum.getBuildsForProject( project.id, 0, 0 )
         for build in builds:
             build.state = continuum.decodeState( build.state )
-            print "| %(id)4s | %(state)5s | %(startTime)s | %(endTime)s | %(totalTime)10s |" % build.map
+            print "| %(id)4s | %(state)6s | %(startTime)s | %(endTime)s | %(totalTime)10s |" % build.map
 
     def do_showProjects(self, args):
         """Shows all Continuum projects registeret.
