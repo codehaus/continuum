@@ -81,7 +81,12 @@
 
     <component>
       <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
-      <implementation>org.codehaus.continuum.buildqueue.SimpleBuildQueue</implementation>
+      <implementation>org.codehaus.continuum.buildqueue.DefaultBuildQueue</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.taskqueue.TaskQueue</role>
+        </requirement>
+      </requirements>
     </component>
 
     <component>
@@ -218,6 +223,54 @@
       <implementation>org.codehaus.continuum.store.stash.StashContinuumStore</implementation>
       <configuration>
         <database-directory>${plexus.home}/database</database-directory>
+      </configuration>
+    </component>
+
+    <!--
+     |
+     | Task Queue
+     |
+     |-->
+
+    <component>
+      <role>org.codehaus.plexus.taskqueue.TaskQueue</role>
+      <implementation>org.codehaus.plexus.taskqueue.DefaultTaskQueue</implementation>
+      <lifecycle-handler>plexus-configurable</lifecycle-handler>
+      <configuration>
+        <task-entry-evaluators>
+          <!--
+          <task-entry-evaluator>a</task-entry-evaluator>
+          -->
+        </task-entry-evaluators>
+        <task-exit-evaluators>
+          <!--
+          <task-exit-evaluator>a</task-exit-evaluator>
+          -->
+        </task-exit-evaluators>
+        <task-viability-evaluators>
+          <task-viability-evaluator>build-project</task-viability-evaluator>
+        </task-viability-evaluators>
+      </configuration>
+    </component>
+<!--
+    <component>
+      <role>org.codehaus.plexus.taskqueue.TaskEntryEvaluator</role>
+      <role-hint>a</role-hint>
+      <implementation>org.codehaus.plexus.taskqueue.ATaskEntryEvaluator</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.taskqueue.TaskExitEvaluator</role>
+      <role-hint>a</role-hint>
+      <implementation>org.codehaus.plexus.taskqueue.ATaskExitEvaluator</implementation>
+    </component>
+-->
+    <component>
+      <role>org.codehaus.plexus.taskqueue.TaskViabilityEvaluator</role>
+      <role-hint>build-project</role-hint>
+      <implementation>org.codehaus.continuum.buildqueue.evaluator.BuildProjectTaskViabilityEvaluator</implementation>
+      <configuration>
+        <required-buildInterval>1000</required-buildInterval>
       </configuration>
     </component>
 

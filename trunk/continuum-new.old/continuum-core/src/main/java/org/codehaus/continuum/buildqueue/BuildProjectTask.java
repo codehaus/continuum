@@ -1,9 +1,9 @@
-package org.codehaus.continuum.project;
+package org.codehaus.continuum.buildqueue;
 
 /*
  * The MIT License
  *
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
+ * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,33 +24,42 @@ package org.codehaus.continuum.project;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.taskqueue.Task;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResultState.java,v 1.1.1.1 2005-02-17 22:23:52 trygvis Exp $
+ * @version $Id: BuildProjectTask.java,v 1.1 2005-02-22 10:12:18 trygvis Exp $
  */
-public class BuildResultState
+public class BuildProjectTask
+    implements Task
 {
-    /** */
-    public final static BuildResultState BUILDING = new BuildResultState( "building" );
+    private String projectId;
 
-    /** */
-    public final static BuildResultState RESULT_OK = new BuildResultState( "ok" );
+    private String buildId;
 
-    /** */
-    public final static BuildResultState RESULT_FAILURE = new BuildResultState( "failure" );
+    private long timestamp;
 
-    /** */
-    public final static BuildResultState RESULT_ERROR = new BuildResultState( "error" );
-
-    private final String name;
-
-    private BuildResultState( String name )
+    public BuildProjectTask( String projectId, String buildId, long timestamp )
     {
-        this.name = name;
+        this.projectId = projectId;
+
+        this.buildId = buildId;
+
+        this.timestamp = timestamp;
     }
 
-    public String getI18nKey()
+    public String getProjectId()
     {
-        return "org.codehaus.continuum.project.BuildResult.state." + name;
+        return projectId;
+    }
+
+    public String getBuildId()
+    {
+        return buildId;
+    }
+
+    public long getTimestamp()
+    {
+        return timestamp;
     }
 }

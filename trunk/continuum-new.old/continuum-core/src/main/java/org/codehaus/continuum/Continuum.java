@@ -64,7 +64,4 @@ public interface Continuum
 
     boolean checkIfProjectNeedsToBeBuilt( String projectId )
         throws ContinuumException;
-
-    int getBuildQueueLength()
-        throws ContinuumException;
 }

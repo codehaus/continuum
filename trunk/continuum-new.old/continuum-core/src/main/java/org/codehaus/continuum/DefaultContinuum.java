@@ -33,6 +33,7 @@ import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.buildqueue.BuildQueueException;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
@@ -53,7 +54,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.3 2005-02-22 10:12:18 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -300,21 +301,25 @@ public class DefaultContinuum
 
             builder.build( new File( project.getWorkingDirectory() ), project );
 
-            //String buildId = store.createBuild( project.getId() );
-
-            String buildId = "100";
+            String buildId = store.createBuild( project.getId() );
 
             getLogger().info( "Enqueuing " + project.getName() + ", projet projectId: " + project.getId() + ", build projectId: " + buildId + "..." );
 
-            //buildQueue.enqueue( buildId );
+            buildQueue.enqueue( projectId, buildId );
 
             return buildId;
         }
-        catch ( ContinuumStoreException ex )
+        catch ( ContinuumStoreException e )
         {
-            getLogger().error( "Exception while building project.", ex );
+            getLogger().error( "Error while building project.", e );
 
-            throw new ContinuumException( "Exception while creating build object.", ex );
+            throw new ContinuumException( "Error while creating build object.", e );
+        }
+        catch ( BuildQueueException e )
+        {
+            getLogger().error( "Error while enqueuing project.", e );
+
+            throw new ContinuumException( "Error while creating enqueuing object.", e );
         }
     }
 
@@ -346,12 +351,6 @@ public class DefaultContinuum
         }
     }
 
-    public int getBuildQueueLength()
-        throws ContinuumException
-    {
-        return buildQueue.getLength();
-    }
-
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
@@ -381,8 +380,6 @@ public class DefaultContinuum
                                                  project.getConfiguration() );
 
             project = store.getProject( projectId );
-
-            System.out.println( project );
 
             scm.checkOutProject( project );
 
@@ -417,7 +414,7 @@ public class DefaultContinuum
     public void initialize()
         throws Exception
     {
-        getLogger().info( "Initializing continuum." );
+        getLogger().info( "Initializing Continuum." );
 
         PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
 
@@ -457,7 +454,7 @@ public class DefaultContinuum
     public void start()
         throws Exception
     {
-        getLogger().info( "Starting continuum." );
+        getLogger().info( "Starting Continuum." );
 
         // start the builder thread
         builderThread = new BuilderThread( buildController, buildQueue, getLogger() );
@@ -490,7 +487,7 @@ public class DefaultContinuum
         int interval = 1000;
         int slept = 0;
 
-        getLogger().info( "Stopping continuum." );
+        getLogger().info( "Stopping Continuum." );
 
         // signal the thread to stop
         builderThread.shutdown();
@@ -501,12 +498,12 @@ public class DefaultContinuum
         {
             if ( slept > maxSleep )
             {
-                getLogger().warn( "Timeout, stopping continuum." );
+                getLogger().warn( "Timeout, stopping Continuum." );
 
                 break;
             }
 
-            getLogger().info( "Waiting until continuum is idling..." );
+            getLogger().info( "Waiting until Continuum is idling..." );
 
             try
             {

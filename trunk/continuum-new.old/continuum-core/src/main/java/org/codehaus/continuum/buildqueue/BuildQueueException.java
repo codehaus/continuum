@@ -3,7 +3,7 @@ package org.codehaus.continuum.buildqueue;
 /*
  * The MIT License
  *
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
+ * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,31 +25,19 @@ package org.codehaus.continuum.buildqueue;
  */
 
 /**
- * A queue of build job ids.
- *
- * <it>A <code>BuildQueue</code> implementation MUST be thread safe.</it>
- *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildQueue.java,v 1.2 2005-02-22 10:12:18 trygvis Exp $
+ * @version $Id: BuildQueueException.java,v 1.1 2005-02-22 10:12:18 trygvis Exp $
  */
-public interface BuildQueue
+public class BuildQueueException
+    extends Exception
 {
-    String ROLE = BuildQueue.class.getName();
+    public BuildQueueException( String message )
+    {
+        super( message );
+    }
 
-    /**
-     * Returns a bulid id from the queue.
-     * <p/>
-     * Returns <code>null</code> if the queue is empty.
-     *
-     * @return Returns a build id from the queue or <code>null</code> if the queue is empty.
-     */
-    String dequeue()
-        throws BuildQueueException;
-
-    /**
-     * @param projectId The id of the build to enqueue.
-     * @param buildId
-     */
-    void enqueue( String projectId, String buildId )
-        throws BuildQueueException;
+    public BuildQueueException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 }
