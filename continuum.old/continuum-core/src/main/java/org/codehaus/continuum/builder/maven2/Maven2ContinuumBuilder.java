@@ -27,6 +27,7 @@ import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.continuum.utils.PomV3ToV4Converter;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
@@ -35,7 +36,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.6 2004-07-11 23:57:43 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.7 2004-07-13 20:54:49 trygvis Exp $
  */
 public class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -109,7 +110,9 @@ public class Maven2ContinuumBuilder
 
         try
         {
-            pom = IOUtil.toString( new FileReader( new File( basedir, "pom.xml" ) ) );
+            File pomFile = getPomFile( basedir );
+
+            pom = IOUtil.toString( new FileReader( pomFile ) );
         }
         catch( FileNotFoundException ex )
         {
@@ -191,7 +194,9 @@ public class Maven2ContinuumBuilder
         {
             notifier.buildStarted( build );
 
-            File file = new File( basedir, "pom.xml" );
+//            File file = new File( basedir, "pom.xml" );
+
+            File file = getPomFile( basedir );
 
             MavenProject pom;
 
@@ -250,6 +255,39 @@ public class Maven2ContinuumBuilder
         {
             getLogger().fatalError( "Error while persising build state.", ex2 );
         }
+    }
+
+    private File getPomFile( String basedir )
+        throws ContinuumException
+    {
+        File pomFile = new File( basedir, "pom.xml" );
+
+        if ( pomFile.isFile() )
+        {
+            return pomFile;
+        }
+
+        File projectXmlFile = new File( basedir, "project.xml" );
+
+        if( !projectXmlFile.isFile() )
+        {
+            throw new ContinuumException( "Could not find either Maven 1 or Maven 2 project descriptor." );
+        }
+
+        getLogger().info( "Found Maven 1 descriptor." );
+
+        PomV3ToV4Converter converter = new PomV3ToV4Converter();
+
+        try
+        {
+            converter.convertFile( projectXmlFile );
+        }
+        catch( Exception ex )
+        {
+            throw new ContinuumException( "Could not convert the Maven 1 project descriptor.", ex );
+        }
+
+        return pomFile;
     }
 
     private Maven getMaven()
