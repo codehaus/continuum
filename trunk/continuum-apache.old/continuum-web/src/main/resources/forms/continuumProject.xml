@@ -3,7 +3,7 @@
   <key-expression>id</key-expression>
   <lookup-expression>getProject(#id)</lookup-expression>
   <summary-collection-expression>getProjects()</summary-collection-expression>
-  <source-role>org.apache.maven.continuum.Continuum</source-role>
+  <source-role>org.codehaus.continuum.Continuum</source-role>
   <elements>
     <element>
       <id>project.name</id>
@@ -55,7 +55,7 @@
   <!-- Add -->
   <add>
     <title-key>project.title</title-key>
-    <action>project</action>
+    <action>addEntity</action>
     <view>continuumProject.form?mode=summary</view>
   </add>
 

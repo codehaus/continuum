@@ -1,6 +1,7 @@
 <form>
   <extend>shellProject</extend>
   <id>antProject</id>
+  <target-class></target-class>
   <elements>
     <element>
       <id>project.targets</id>
