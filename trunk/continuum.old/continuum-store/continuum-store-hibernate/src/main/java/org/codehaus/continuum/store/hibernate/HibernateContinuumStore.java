@@ -22,6 +22,7 @@ package org.codehaus.continuum.store.hibernate;
  * SOFTWARE.
  */
 
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +47,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.7 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.8 2004-07-29 04:35:02 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -54,7 +55,9 @@ public class HibernateContinuumStore
 {
     private HibernateSessionService hibernate;
 
-    private Transaction tx;
+    private ThreadLocal tx = new ThreadLocal();
+
+    private final static String HIBERNATE_CONFIGURATION = "hibernate.cfg.xml";
 
     // ----------------------------------------------------------------------
     // Lifecycle
@@ -91,7 +94,7 @@ public class HibernateContinuumStore
     public void beginTransaction()
         throws ContinuumStoreException
     {
-        if ( tx != null )
+        if ( tx.get() != null )
         {
             throw new ContinuumStoreException( "A transaction is already in progress." );
         }
@@ -100,7 +103,9 @@ public class HibernateContinuumStore
         {
             Session session = getHibernateSession();
 
-            tx = session.beginTransaction();
+            tx.set( session.beginTransaction() );
+
+            getLogger().warn( "Started transaction: " + tx.get() );
         }
         catch( HibernateException ex )
         {
@@ -111,14 +116,20 @@ public class HibernateContinuumStore
     public void commitTransaction()
         throws ContinuumStoreException
     {
-        if ( tx == null )
+        if ( tx.get() == null )
         {
             throw new ContinuumStoreException( "No transaction has been started." );
         }
 
         try
         {
-            tx.commit();
+//            Session session = getHibernateSession();
+
+//            Transaction tx = session.beginTransaction();
+
+            ((Transaction) tx.get()).commit();
+
+//            getLogger().warn( "Committed transaction " + tx, new Exception() );
         }
         catch( HibernateException ex )
         {
@@ -126,23 +137,27 @@ public class HibernateContinuumStore
         }
         finally
         {
-            closeSession();
+            tx.set( null );
 
-            tx = null;
+            closeSession();
         }
     }
 
     public void rollbackTransaction()
         throws ContinuumStoreException
     {
-        if ( tx == null )
+        if ( tx.get() == null )
         {
             throw new ContinuumStoreException( "No transaction has been started." );
         }
 
         try
         {
-            tx.rollback();
+//            Session session = getHibernateSession();
+
+//            Transaction tx = session.beginTransaction();
+
+            ((Transaction) tx.get()).rollback();
         }
         catch( HibernateException ex )
         {
@@ -150,9 +165,55 @@ public class HibernateContinuumStore
         }
         finally
         {
-            closeSession();
+            tx.set( null );
 
-            tx = null;
+            closeSession();
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // Database methods
+    // ----------------------------------------------------------------------
+
+    public void createDatabase()
+        throws ContinuumStoreException
+    {
+        URL configuration = Thread.currentThread().getContextClassLoader().getResource( HIBERNATE_CONFIGURATION );
+
+        if ( configuration == null )
+        {
+            throw new ContinuumStoreException( "Internal error: Could not find hibernate configuration: " + HIBERNATE_CONFIGURATION );
+        }
+
+        try
+        {
+            HibernateUtils.createDatabase( configuration );
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Exception while initializing database.", ex );
+        }
+    }
+
+    public void deleteDatabase()
+        throws ContinuumStoreException
+    {
+        String name = "/hibernate.xml";
+
+        URL configuration = Thread.currentThread().getContextClassLoader().getResource( name );
+
+        if ( configuration == null )
+        {
+            throw new ContinuumStoreException( "Internal error: Could not find hibernate configuration: " + name );
+        }
+
+        try
+        {
+            HibernateUtils.deleteDatabase( configuration );
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Exception while initializing database.", ex );
         }
     }
 
@@ -185,6 +246,33 @@ public class HibernateContinuumStore
         }
 
         return project.getId();
+    }
+
+    public void removeProject( String projectId )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            Session session = getHibernateSession();
+
+            session.delete( "from GenericContinuumBuild where projectId=?", projectId, Hibernate.STRING );
+
+            ContinuumProject project = getProject( projectId );
+
+            ProjectDescriptor descriptor = project.getDescriptor();
+
+            // TODO: hibernate should take care of this.
+            if ( descriptor != null )
+            {
+                session.delete( descriptor );
+            }
+
+            session.delete( project );
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Error while adding project.", ex );
+        }
     }
 
     public void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )

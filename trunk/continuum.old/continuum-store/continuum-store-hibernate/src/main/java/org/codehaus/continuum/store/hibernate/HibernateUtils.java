@@ -22,53 +22,45 @@ package org.codehaus.continuum.store.hibernate;
  * SOFTWARE.
  */
 
-import java.util.Properties;
+import java.net.URL;
 
+import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
 
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.hibernate.DefaultHibernateService;
-import org.codehaus.plexus.hibernate.HibernateService;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateSchemaGeneratorTest.java,v 1.4 2004-07-29 04:35:02 trygvis Exp $
+ * @version $Id: HibernateUtils.java,v 1.1 2004-07-29 04:35:02 trygvis Exp $
  */
-public class HibernateSchemaGeneratorTest
-    extends PlexusTestCase
+public class HibernateUtils
 {
-    public void testCreateSchemas()
-        throws Exception
+    public static void createDatabase( URL url )
+        throws HibernateException
     {
-        DefaultHibernateService hibernate = (DefaultHibernateService) lookup( HibernateService.ROLE );
+        boolean script = false;
 
-        Configuration configuration = hibernate.getConfiguration();
+        boolean export = true;
 
-        String[] dialects = new String[]{
-            "net.sf.hibernate.dialect.PostgreSQLDialect"
-        };
+        getSchemaExport( url ).create( script, export );
+    }
 
-        for ( int i = 0; i < dialects.length; i++ )
-        {
-            String dialect = dialects[i];
+    public static void deleteDatabase( URL url )
+        throws HibernateException
+    {
+        boolean script = false;
 
-            System.out.println( "" );
-            System.out.println( "" );
-            System.out.println( "Writing schema for " + dialect );
-            System.out.println( "" );
-            System.out.println( "" );
+        boolean export = true;
 
-            Properties properties = new Properties();
+        getSchemaExport( url ).drop( script, export );
+    }
 
-            properties.setProperty( "hibernate.dialect", dialect );
+    private static SchemaExport getSchemaExport( URL url )
+        throws HibernateException
+    {
+        Configuration configuration = new Configuration();
 
-            SchemaExport exporter = new SchemaExport( configuration, properties );
+        configuration.configure( url );
 
-            exporter.setDelimiter( ";" );
-
-            exporter.create( true, false );
-        }
-/* */
+        return new SchemaExport( configuration );
     }
 }

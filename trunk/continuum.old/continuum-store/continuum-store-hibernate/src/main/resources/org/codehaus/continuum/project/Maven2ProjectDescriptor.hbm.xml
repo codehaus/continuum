@@ -12,8 +12,12 @@
     <id name="projectId" type="java.lang.String">
       <generator class="assigned"/>
     </id>
-    <property name="index" type="java.lang.String"/>
-    <property name="name" type="java.lang.String"/>
+    <property
+      name="index"
+      type="java.lang.String"/>
+    <property
+      name="name"
+      type="java.lang.String"/>
   </class>
 
   <class
@@ -24,12 +28,17 @@
       <generator class="assigned"/>
     </id>
     <property name="pom" type="java.lang.String" length="8000"/>
-    <list name="goals" table="Maven2Goal">
+    <list
+      name="goals"
+      table="Maven2Goal">
       <key column="projectId"/>
       <index column="index"/>
       <element column="name" type="java.lang.String"/>
     </list>
-    <one-to-one name="project" class="org.codehaus.continuum.project.GenericContinuumProject" constrained="true"/>
+    <one-to-one
+      name="project"
+      class="org.codehaus.continuum.project.GenericContinuumProject"
+      constrained="true"/>
   </class>
 
 </hibernate-mapping>

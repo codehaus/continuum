@@ -24,6 +24,7 @@ package org.codehaus.continuum.store.hibernate;
 
 import com.thoughtworks.xstream.XStream;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,10 +38,10 @@ import org.apache.maven.ExecutionResponse;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExecutionResponseType.java,v 1.2 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: ExecutionResponseType.java,v 1.3 2004-07-29 04:35:02 trygvis Exp $
  */
 public class ExecutionResponseType
-    implements UserType
+    implements UserType, Serializable
 {
     private static XStream xStream = new XStream();
 

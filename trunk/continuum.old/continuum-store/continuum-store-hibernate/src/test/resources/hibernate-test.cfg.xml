@@ -26,5 +26,6 @@
     <mapping resource="org/codehaus/continuum/project/Maven2BuildResult.hbm.xml"/>
 
     <mapping resource="org/codehaus/continuum/project/TestProjectDescriptor.hbm.xml"/>
+    <mapping resource="org/codehaus/continuum/project/TestBuildResult.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
