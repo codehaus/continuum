@@ -25,7 +25,7 @@ import java.util.TimerTask;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.7 2004-01-16 15:02:16 jvanzyl Exp $
+ * @version $Id: DefaultContinuum.java,v 1.8 2004-01-16 18:04:02 jvanzyl Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -35,13 +35,21 @@ public class DefaultContinuum
 
     private Compiler compiler;
 
-    private Timer timer;
+    // Configuration
+
+    private String workDirectory;
 
     private int buildInterval;
 
-    private Map builds;
+    private String smtpServer;
 
-    private String workDirectory;
+    private String replyTo;
+
+    //
+
+    private Timer timer;
+
+    private Map builds;
 
     public void initialize()
         throws Exception
@@ -71,10 +79,6 @@ public class DefaultContinuum
     {
     }
 
-    // ----------------------------------------------------------------------
-    // Implementation
-    // ----------------------------------------------------------------------
-
     public void addProject( Project project )
     {
         ContinuumBuild build = new ContinuumBuild( project );
@@ -86,11 +90,18 @@ public class DefaultContinuum
     {
         try
         {
-            MailMessage mailMessage = new MailMessage( "mail.maven.org" );
+            MailMessage mailMessage = new MailMessage( smtpServer );
 
-            mailMessage.from( "jason@maven.org" );
+            if ( replyTo != null )
+            {
+                mailMessage.from( replyTo );
+            }
+            else
+            {
+                mailMessage.from( project.getBuild().getNagEmailAddress() );
+            }
 
-            mailMessage.to( "jason@maven.org" );
+            mailMessage.to( project.getBuild().getNagEmailAddress() );
 
             mailMessage.setSubject( "Continuum: " + project.getName() );
 
