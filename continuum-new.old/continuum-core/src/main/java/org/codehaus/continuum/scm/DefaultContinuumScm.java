@@ -33,7 +33,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.5 2005-03-10 00:05:53 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.6 2005-03-21 12:53:32 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -137,13 +137,11 @@ public class DefaultContinuumScm
     {
         try
         {
+            getLogger().info( "Updating project: id: '" + project.getId() + "', name '" + project.getName() + "'." );
+
             File workingDirectory = new File( project.getWorkingDirectory() );
 
-            getLogger().info( "Checking out project: '" + project.getName() + "', " +
-                              "id: '" + project.getId() + "' " +
-                              "to '" + workingDirectory + "'." );
-
-            getLogger().info( workingDirectory.getAbsolutePath() );
+            getLogger().info( "Working directory '" + workingDirectory.getAbsolutePath() + "'." );
 
             if ( !workingDirectory.exists() )
             {

@@ -47,7 +47,7 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.4 2005-03-10 00:05:52 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.5 2005-03-21 12:53:31 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -206,7 +206,7 @@ public class MailContinuumNotifier
 
         String subject = generateSubject( project, build );
 
-        sendMessage( build, recipients, subject, writer.getBuffer().toString() );
+        sendMessage( project, recipients, subject, writer.getBuffer().toString() );
     }
 
     // ----------------------------------------------------------------------
@@ -240,11 +240,9 @@ public class MailContinuumNotifier
         }
     }
 
-    private void sendMessage( ContinuumBuild build, Set recipients, String subject, String content )
+    private void sendMessage( ContinuumProject project, Set recipients, String subject, String content )
         throws ContinuumException
     {
-        ContinuumProject project = build.getProject();
-
         String fromAddress = getFromAddress( project );
 
         if ( fromAddress == null )
