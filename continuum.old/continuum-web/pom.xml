@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
+    <version>0.1</version>
+  </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-web</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>Continuum Web</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-test</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-hibernate-store</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-mail-notifier</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>scm-cvslib</artifactId>
+      <version>0.9-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Web dependencies -->
+    <dependency>
+      <groupId>velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-velocity</artifactId>
+      <version>1.0-beta-3</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.0-beta-1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-summit</artifactId>
+      <version>1.0-beta-3</version>
+    </dependency>
+
+    <!-- this is really a summit dependency -->
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-servlet</artifactId>
+      <version>1.0-beta-2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-i18n</artifactId>
+      <version>1.0-beta-3</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-formica</artifactId>
+      <version>1.0-beta-2</version>
+    </dependency>
+    <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>ognl</groupId>
+      <artifactId>ognl</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-jetty</artifactId>
+      <version>1.0-beta-1</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/configuration</directory>
+<!--
+        <includes>
+          <include></include>
+        </includes>
+-->
+      </resource>
+    </resources>
+  </build>
+</project>

@@ -1,0 +1,12 @@
+target
+*~
+*.log
+.classpath
+.project
+*.ipr
+*.iws
+*.iml
+
+rg*
+continuumdb.*
+generated-runtime
