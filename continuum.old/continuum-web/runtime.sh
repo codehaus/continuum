@@ -6,7 +6,7 @@ function findRepo()
 
   if [ ! -d "$repo" ]
   then
-    echo "Could not find a maven repository in $repo"
+    echo "FATAL: Could not find a maven repository in $repo"
     exit
   fi
 }
@@ -17,7 +17,7 @@ function findM2()
 
   if [ ! -x $m2/bin/m2 ]
   then
-    echo "Could not find a maven 2 installation in $m2"
+    echo "FATAL: Could not find a maven 2 installation in $m2"
     exit
   fi
 }
@@ -33,11 +33,17 @@ function copyDependency
 
   if [ ! -r "$file" ]
   then
-    echo "Could not find $file"
+    echo "FATAL: Could not find $file"
     exit -1
   fi
 
-  cp "$file" "$dest"
+  destFile="$dest/$artifactId-$version.jar" 
+
+  if [ "$file" -nt "$destFile" ]
+  then
+    echo "Copying $groupId $artifactId $version"
+    cp "$file" "$destFile"
+  fi 
 }
 
 function copyPlugin
@@ -51,12 +57,18 @@ function copyPlugin
 
   if [ ! -r "$file" ]
   then
-    echo "Could not find $file"
+    echo "FATAL: Could not find $file"
     exit -1
   fi
 
-  mkdir -p "$runtime/apps/maven2/repository/$groupId/plugins/"
-  cp "$file" "$runtime/apps/maven2/repository/$groupId/plugins/$artifactId-$version.jar"
+  destFile="$runtime/apps/maven2/repository/$groupId/plugins/$artifactId-$version.jar"
+
+  if [ "$file" -nt "$destFile" ]
+  then
+    echo "Copying plugin: $artifactId $version"
+    mkdir -p "$runtime/apps/maven2/repository/$groupId/plugins/"
+    cp "$file" "$destFile"
+  fi 
 }
 
 findRepo;
@@ -73,11 +85,9 @@ maven2="$runtime/apps/maven2"
 dest="$runtime/core"
 copyDependency "plexus" "plexus-container-api" "1.0-alpha-1-SNAPSHOT"
 copyDependency "plexus" "plexus-container-default" "1.0-alpha-1-SNAPSHOT"
-copyDependency "plexus" "plexus-artifact-container" "1.0-alpha-1-SNAPSHOT"
+copyDependency "plexus" "plexus-container-artifact" "1.0-alpha-1-SNAPSHOT"
 copyDependency "plexus" "plexus-utils" "1.0-alpha-1-SNAPSHOT"
 copyDependency "maven" "maven-artifact" "2.0-SNAPSHOT"
-copyDependency "xstream" "xstream" "1.0-SNAPSHOT"
-copyDependency "xpp3" "xpp3" "1.1.3.3"
 
 mkdir -p $runtime/bin
 mkdir -p $runtime/conf
@@ -119,13 +129,14 @@ copyDependency "cglib" "cglib" "1.0"
 copyDependency "commons-beanutils" "commons-beanutils" "1.6"
 copyDependency "commons-cli" "commons-cli" "1.0"
 copyDependency "commons-collections" "commons-collections" "3.0"
-copyDependency "commons-fileupload" "commons-fileupload" "1.0-beta-1"
 copyDependency "commons-httpclient" "commons-httpclient" "2.0-rc2"
 copyDependency "commons-lang" "commons-lang" "1.0.1"
 copyDependency "commons-logging" "commons-logging" "1.0.2"
 copyDependency "continuum" "continuum-api" "1.0-alpha-1-SNAPSHOT"
 copyDependency "continuum" "continuum-builder-maven2" "1.0-alpha-1-SNAPSHOT"
+copyDependency "continuum" "continuum-builder-shell" "1.0-alpha-1-SNAPSHOT"
 copyDependency "continuum" "continuum-core" "1.0-alpha-1-SNAPSHOT"
+copyDependency "continuum" "continuum-maven-utils" "1.0-alpha-1-SNAPSHOT"
 copyDependency "continuum" "continuum-notifier-mail" "1.0-alpha-1-SNAPSHOT"
 copyDependency "continuum" "continuum-standalone" "1.0-alpha-1-SNAPSHOT"
 copyDependency "continuum" "continuum-store-hibernate" "1.0-alpha-1-SNAPSHOT"
@@ -149,8 +160,12 @@ copyDependency "maven" "maven-core" "2.0-SNAPSHOT"
 copyDependency "maven" "maven-model" "2.0-SNAPSHOT"
 copyDependency "maven" "maven-artifact" "2.0-SNAPSHOT"
 copyDependency "maven" "maven-plugin" "2.0-SNAPSHOT"
-copyDependency "maven" "scm-api" "0.9-SNAPSHOT"
-copyDependency "maven" "scm-cvslib" "0.9-SNAPSHOT"
+#copyDependency "maven" "scm-api" "0.9-SNAPSHOT"
+#copyDependency "maven" "scm-cvslib" "0.9-SNAPSHOT"
+
+copyDependency "maven" "maven-scm-api" "1.0-alpha-1-SNAPSHOT"
+copyDependency "maven" "maven-scm-provider-cvs" "1.0-alpha-1-SNAPSHOT"
+copyDependency "maven" "maven-scm-provider-local" "1.0-alpha-1-SNAPSHOT"
 copyDependency "maven" "wagon-api" "1.0-alpha-1-SNAPSHOT"
 copyDependency "maven" "wagon-http-lightweight" "1.0-alpha-1-SNAPSHOT"
 copyDependency "modello" "modello-1.0" "SNAPSHOT"
@@ -159,14 +174,23 @@ copyDependency "ognl" "ognl" "2.5.1"
 copyDependency "oro" "oro" "2.0.6"
 copyDependency "plexus" "plexus-compiler-api" "1.0"
 copyDependency "plexus" "plexus-compiler-javac" "1.0"
-copyDependency "plexus" "plexus-formica" "1.0-beta-2"
+
+#copyDependency "plexus" "plexus-formica" "1.0-beta-2"
+#copyDependency "plexus" "plexus-summit" "1.0-beta-3"
+#copyDependency "commons-fileupload" "commons-fileupload" "1.0-beta-1"
+
+copyDependency "plexus" "plexus-formica" "1.0-beta-3-SNAPSHOT"
+copyDependency "plexus" "plexus-formica-web" "1.0-alpha-1-SNAPSHOT"
+copyDependency "plexus" "plexus-summit" "1.0-beta-4-SNAPSHOT"
+copyDependency "commons-fileupload" "commons-fileupload" "1.0"
+
 copyDependency "plexus" "plexus-hibernate" "1.0-beta-4-SNAPSHOT"
 copyDependency "plexus" "plexus-i18n" "1.0-beta-3"
-#copyDependency "plexus" "plexus-jetty" "1.0-beta-1"
+copyDependency "plexus" "plexus-mail-sender-api" "1.0-alpha-1-SNAPSHOT"
+copyDependency "plexus" "plexus-mail-sender-simple" "1.0-alpha-1-SNAPSHOT"
 copyDependency "plexus" "plexus-jetty" "1.0-beta-2-SNAPSHOT"
 copyDependency "plexus" "plexus-log4j-logging" "1.0-SNAPSHOT"
 copyDependency "plexus" "plexus-servlet" "1.0-beta-2-SNAPSHOT"
-copyDependency "plexus" "plexus-summit" "1.0-beta-3"
 copyDependency "plexus" "plexus-velocity" "1.0-beta-3"
 copyDependency "postgresql" "postgresql" "7.4.1-jdbc3"
 copyDependency "qdox" "qdox" "1.2"
@@ -177,6 +201,8 @@ copyDependency "tomcat" "jasper-compiler" "4.0.4"
 copyDependency "tomcat" "jasper-runtime" "4.0.4"
 copyDependency "velocity" "velocity" "1.4"
 copyDependency "werken-xpath" "werken-xpath" "0.9.4"
+copyDependency "xpp3" "xpp3" "1.1.3.3"
+copyDependency "xstream" "xstream" "1.0-SNAPSHOT"
 
 mkdir -p $maven2
 mkdir -p $runtime/apps/maven2
@@ -184,7 +210,7 @@ m2=$HOME/m2/
 
 if [ ! -d $m2 ]
 then
-  echo "$m2 doesn't exist"
+  echo "FATAL: $m2 doesn't exist"
   exit
 fi
 

@@ -1,8 +1,5 @@
 <form>
-  <id>addProjectPomUrl</id>
-  <title-key>addProjectPomUrl.title</title-key>
-  <action>addShellBuilderProject</action>
-  <view>projectOverview.vm</view>
+  <id>addShellProjectPomUrl</id>
   <elements>
     <element>
       <id>addProject.pomUrl</id>
@@ -13,4 +10,9 @@
       <type>text</type>
     </element>
   </elements>
+  <add>
+    <title-key>addProjectPomUrl.title</title-key>
+    <action>addShellBuilderProject</action>
+    <view>projectOverview.vm</view>
+  </add>
 </form>

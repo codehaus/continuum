@@ -1,8 +1,5 @@
 <form>
   <id>login</id>
-  <title-key>login.title</title-key>
-  <action>login</action>
-  <view>Index.vm</view>
   <elements>
     <element>
       <id>login.username</id>
@@ -21,4 +18,9 @@
       <type>password</type>
     </element>
   </elements>
+  <add>
+    <title-key>login.title</title-key>
+    <action>login</action>
+    <view>Index.vm</view>
+  </add>
 </form>
