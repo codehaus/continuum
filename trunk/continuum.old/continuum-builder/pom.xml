@@ -10,6 +10,7 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-builder</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
+  <name>Continuum Builders</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
