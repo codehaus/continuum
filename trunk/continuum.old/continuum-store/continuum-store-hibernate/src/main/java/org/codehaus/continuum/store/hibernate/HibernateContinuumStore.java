@@ -10,6 +10,8 @@ import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
 import net.sf.hibernate.Transaction;
 
+import org.apache.maven.ExecutionResponse;
+
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.GenericBuildResult;
@@ -23,13 +25,15 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.2 2004-07-08 01:13:59 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.3 2004-07-12 00:00:27 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
     implements Initializable
 {
     private HibernateSessionService hibernate;
+
+    private Transaction tx;
 
     // ----------------------------------------------------------------------
     // Lifecycle
@@ -39,6 +43,74 @@ public class HibernateContinuumStore
         throws Exception
     {
         PlexusUtils.assertRequirement( hibernate, HibernateSessionService.ROLE );
+    }
+
+    // ----------------------------------------------------------------------
+    // Transaction handling
+    // ----------------------------------------------------------------------
+
+    public void beginTransaction()
+        throws ContinuumStoreException
+    {
+        if ( tx != null )
+        {
+            throw new ContinuumStoreException( "A transaction is already in progress." );
+        }
+
+        try
+        {
+            Session session = getHibernateSession();
+
+            tx = session.beginTransaction();
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
+        }
+    }
+
+    public void commitTransaction()
+        throws ContinuumStoreException
+    {
+        if ( tx == null )
+        {
+            throw new ContinuumStoreException( "No transaction has been started." );
+        }
+
+        try
+        {
+            tx.commit();
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
+        }
+        finally
+        {
+            tx = null;
+        }
+    }
+
+    public void rollbackTransaction()
+        throws ContinuumStoreException
+    {
+        if ( tx == null )
+        {
+            throw new ContinuumStoreException( "No transaction has been started." );
+        }
+
+        try
+        {
+            tx.rollback();
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Exception while beginning transaction.", ex );
+        }
+        finally
+        {
+            tx = null;
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -62,11 +134,7 @@ public class HibernateContinuumStore
         {
             Session session = getHibernateSession();
 
-            Transaction tx = session.beginTransaction();
-
             session.save( project );
-
-            tx.commit();
         }
         catch( HibernateException ex )
         {
@@ -83,8 +151,6 @@ public class HibernateContinuumStore
         {
             Session session = hibernate.getSession();
 
-            Transaction tx = session.beginTransaction();
-
             ContinuumProject project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
 
             descriptor.setProjectId( projectId );
@@ -96,8 +162,6 @@ public class HibernateContinuumStore
             session.save( descriptor );
 
             session.update( project );
-
-            tx.commit();
         }
         catch( HibernateException ex )
         {
@@ -165,11 +229,7 @@ public class HibernateContinuumStore
         {
             Session session = getHibernateSession();
 
-            Transaction tx = session.beginTransaction();
-
             session.save( buildResult );
-
-            tx.commit();
         }
         catch( HibernateException ex )
         {
@@ -179,14 +239,12 @@ public class HibernateContinuumStore
         return buildResult.getBuildId();
     }
 
-    public void setBuildResult( String buildId, int state, Throwable error )
+    public void setBuildResult( String buildId, int state, Throwable error, ExecutionResponse exectionResponse )
         throws ContinuumStoreException
     {
         try
         {
             Session session = getHibernateSession();
-
-            Transaction tx = session.beginTransaction();
 
             BuildResult buildResult = getBuildResult( buildId );
 
@@ -197,8 +255,6 @@ public class HibernateContinuumStore
             buildResult.setError( error );
 
             session.update( buildResult );
-
-            tx.commit();
         }
         catch( HibernateException ex )
         {
