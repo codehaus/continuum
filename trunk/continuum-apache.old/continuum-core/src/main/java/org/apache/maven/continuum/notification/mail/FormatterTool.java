@@ -23,7 +23,7 @@ import org.apache.maven.continuum.project.ContinuumProjectState;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FormatterTool.java,v 1.1 2005-04-01 22:55:52 trygvis Exp $
+ * @version $Id: FormatterTool.java,v 1.2 2005-04-03 21:53:22 trygvis Exp $
  */
 public class FormatterTool
 {
@@ -76,9 +76,11 @@ public class FormatterTool
 
     public String formatInterval( long start, long end )
     {
-        long interval = end - start / 1000;
+        long diff = end - start;
 
-        long hours = interval / 3600;
+        long interval = diff / 1000L;
+
+        long hours = interval / 3600L;
 
         interval -= hours * 3600;
 
