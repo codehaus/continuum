@@ -1,5 +1,14 @@
 package org.codehaus.plexus.continuum;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.Project;
+import org.apache.maven.project.ProjectBuilder;
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.continuum.mail.MailMessage;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,85 +18,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.apache.avalon.framework.activity.Initializable;
-import org.apache.avalon.framework.activity.Startable;
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.service.ServiceException;
-import org.apache.avalon.framework.service.ServiceManager;
-import org.apache.avalon.framework.service.Serviceable;
-import org.apache.maven.Model;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.ProjectBuilder;
-import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.mail.MailMessage;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.4 2003-10-17 04:41:58 pdonald Exp $
+ * @version $Id: DefaultContinuum.java,v 1.5 2004-01-16 06:20:14 jvanzyl Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
-    implements Continuum, Serviceable, Configurable, Initializable, Startable
+    implements Continuum, Initializable, Startable
 {
-    /** Maven Project Builder */
     private ProjectBuilder projectBuilder;
 
-    /** Compiler */
     private Compiler compiler;
 
-    /** TimerTask */
     private Timer timer;
 
-    /** Build buildInterval */
     private int buildInterval;
 
-    /** List of xml maven object model files */
     private List moms;
 
-    /** List of projects to build. */
     private List projects;
 
-    /** Working directory where builds take place. */
     private String workDirectory;
 
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /** @see Serviceable#service */
-    public void service( ServiceManager serviceManager )
-        throws ServiceException
-    {
-        projectBuilder = (ProjectBuilder) serviceManager.lookup( ProjectBuilder.ROLE );
-        compiler = (Compiler) serviceManager.lookup( Compiler.ROLE );
-    }
-
-    /** @see Configurable#configure */
-    public void configure( Configuration configuration )
-        throws ConfigurationException
-    {
-        workDirectory = configuration.getChild( "work-directory" ).getValue();
-
-        buildInterval = configuration.getChild( "build-interval" ).getValueAsInteger();
-
-        moms = new ArrayList();
-
-        Configuration[] momConfigurations = configuration.getChild( "moms" ).getChildren( "mom" );
-
-        for ( int i = 0; i < momConfigurations.length; i++ )
-        {
-            Configuration momConfiguration = momConfigurations[i];
-
-            moms.add( momConfiguration.getValue() );
-        }
-    }
-
-    /** @see Initializable#initialize */
     public void initialize()
         throws Exception
     {
@@ -112,6 +71,7 @@ public class DefaultContinuum
             if ( !file.exists() )
             {
                 getLogger().warn( "The specified POM doesn't exist: " + file + ". Skipping." );
+
                 continue;
             }
 
@@ -120,11 +80,13 @@ public class DefaultContinuum
             try
             {
                 project = projectBuilder.build( file );
+
                 projects.add( project );
             }
             catch ( Exception e )
             {
                 getLogger().warn( "Error building POM: " + file + ". Skipping." );
+
                 continue;
             }
         }
@@ -154,9 +116,8 @@ public class DefaultContinuum
     // Implementation
     // ----------------------------------------------------------------------
 
-    public void addModel( Model model )
+    public void addProject( Project project )
     {
-
     }
 
     private void notifyAudience( Project project, String message )
@@ -166,12 +127,17 @@ public class DefaultContinuum
             MailMessage mailMessage = new MailMessage( "mail.maven.org" );
 
             mailMessage.from( "jason@maven.org" );
+
             mailMessage.to( "jason@maven.org" );
+
             mailMessage.setSubject( "Continuum: " + project.getName() );
+
             mailMessage.getPrintStream().print( message );
+
             mailMessage.sendAndClose();
 
             getLogger().info( "The following message has been sent: " );
+
             getLogger().info( message );
         }
         catch ( IOException e )
@@ -190,7 +156,9 @@ public class DefaultContinuum
 
             try
             {
-                List messages = compiler.compile( project );
+                List messages = compiler.compile( classpathElements( project ),
+                                                  new String[]{ project.getBuild().getSourceDirectory() },
+                                                  project.getProperty( "maven.build.dest" ) );
 
                 // Notification is there are failures.
                 if ( messages.size() > 0 )
@@ -208,7 +176,9 @@ public class DefaultContinuum
             catch ( Exception e )
             {
                 StringWriter writer = new StringWriter();
+
                 PrintWriter w = new PrintWriter( writer );
+
                 e.printStackTrace( w );
 
                 // Notification of failure.
@@ -218,9 +188,18 @@ public class DefaultContinuum
         }
     }
 
-    /**
-     *
-     */
+    private String[] classpathElements( Project project )
+    {
+        String[] classpathElements = new String[project.getArtifacts().size()];
+
+        for ( int i = 0; i < classpathElements.length; i++ )
+        {
+            classpathElements[i] = ((Artifact)project.getArtifacts().get(i)).getPath();
+        }
+
+        return classpathElements;
+    }
+
     class BuildTask
         extends TimerTask
     {

@@ -5,18 +5,15 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-continuum</artifactId>
   <id>plexus-continuum</id>
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>1.0-SNAPSHOT</currentVersion>
 
   <organization>
-    <name>Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
-    <logo>http://maven.apache.org/images/jakarta-logo-blue.gif</logo>
+    <name>Codehaus</name>
+    <url>http://www.codehaus.org/</url>
   </organization>
 
   <mailingLists/>
-
   <developers/>
-
   <dependencies>
 
     <!-- Plexus -->
@@ -48,7 +45,7 @@
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-compiler</artifactId>
-      <version>1.0</version>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
