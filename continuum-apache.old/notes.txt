@@ -1,0 +1,22 @@
+o getting all the dependencies correctly aggregated for the container to use
+ for th runtime.
+
+o having to manually keep the component descriptors up-to-date. 
+
+o anything user configurable must use the new mode of placing the
+  configuration in a space that makes it easily changed ... or make
+  a little administration console like Joe ... that would kick ass.
+
+o need the runtime builder
+
+o need the CDC fully working
+
+o how to easily make changes to the app during development
+
+o a console for configuring during runtime would rock
+
+o process a combination of serialized configurations taken during runtime and
+  values in the XML configuration.
+  
+o how to validate the component.xml ... most problems would be alleviated
+with the use of the CDC.
