@@ -11,9 +11,12 @@
 ( cd continuum-trigger/continuum-trigger-alarm && m2 jar:install )
 
 (
-  cd continuum-web
-  sh make.sh
-  cd ..
+#  cd continuum-web
+#  sh make.sh
+#  cd ..
 )
 
-( cd continuum-it && m2 jar:install )
+#( cd continuum-it && m2 jar:install )
+
+# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/** eclipse:eclipse
+# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/** pom:install

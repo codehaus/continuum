@@ -7,7 +7,7 @@
 <hibernate-mapping>
 
   <class
-    name="org.codehaus.continuum.builder.maven2.Maven2BuildResult"
+    name="org.codehaus.continuum.builder.maven2.ExternalMaven2BuildResult"
     table="Maven2BuildResult">
     <id name="buildId" type="java.lang.String">
       <generator class="assigned"/>

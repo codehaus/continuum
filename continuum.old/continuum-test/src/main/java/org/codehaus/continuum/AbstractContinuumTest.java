@@ -27,14 +27,14 @@ import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.4 2004-08-29 21:08:18 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.5 2004-09-07 16:22:19 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
-    extends PlexusTestCase
+    extends ArtifactEnabledPlexusTestCase
 {
     protected Continuum getContinuum()
         throws Exception
@@ -65,13 +65,7 @@ public abstract class AbstractContinuumTest
     {
         return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE, roleHint );
     }
-/*
-    protected NotifierManager getNotifierManager()
-        throws Exception
-    {
-        return (NotifierManager) lookupComponent( NotifierManager.ROLE );
-    }
-*/
+
     protected ContinuumScm getContinuumScm()
         throws Exception
     {
@@ -83,25 +77,7 @@ public abstract class AbstractContinuumTest
     {
         return (ContinuumStore) lookupComponent( ContinuumStore.ROLE );
     }
-/*
-    protected MavenProjectBuilder getMavenProjectBuilder()
-        throws Exception
-    {
-        return (MavenProjectBuilder) lookupComponent( MavenProjectBuilder.ROLE );
-    }
 
-    protected Maven getMaven()
-        throws Exception
-    {
-        return (Maven) lookupComponent( Maven.ROLE );
-    }
-
-    protected String getLocalRepository()
-        throws Exception
-    {
-        return getMaven().getLocalRepository();
-    }
-*/
     private Object lookupComponent( String role )
         throws Exception
     {

@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestCheckOutCommand.java,v 1.3 2004-07-29 04:27:42 trygvis Exp $
+ * @version $Id: TestCheckOutCommand.java,v 1.4 2004-09-07 16:22:19 trygvis Exp $
  */
 public class TestCheckOutCommand
     extends AbstractTestCommand
@@ -47,11 +47,6 @@ public class TestCheckOutCommand
         File workingDirectory = new File( getWorkingDirectory() );
 
         TestRepository repository = (TestRepository) getRepository();
-
-        if ( !repository.isValid() )
-        {
-            return;
-        }
 
         File base = new File( repository.getBase() );
 
@@ -76,12 +71,14 @@ public class TestCheckOutCommand
             throw new ScmException( "The module directory doesn't exist (" + source.getAbsolutePath() + ")." );
         }
 
+        FileUtils.deleteDirectory( destination );
+
         if ( !destination.mkdirs() )
         {
             throw new ScmException( "Could not create destination directory: " + destination.getAbsolutePath() );
         }
 
-        System.out.println( "Checking out " + source.getAbsolutePath() + " to " + destination.getAbsolutePath() );
+        System.err.println( "Checking out " + source.getAbsolutePath() + " to " + destination.getAbsolutePath() );
 
         FileUtils.copyDirectory( source, destination );
     }

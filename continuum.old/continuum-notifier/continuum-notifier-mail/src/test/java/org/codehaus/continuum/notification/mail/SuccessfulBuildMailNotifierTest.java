@@ -22,41 +22,54 @@ package org.codehaus.continuum.notification.mail;
  * SOFTWARE.
  */
 
-import org.apache.maven.MavenTestUtils;
-
 import org.codehaus.continuum.notification.AbstractSuccessfulBuildNotifierTest;
-import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.3 2004-08-29 21:01:50 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.4 2004-09-07 16:22:17 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
-    protected void customizeContext()
-        throws Exception
-    {
-        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ) );
-    }
+    // ----------------------------------------------------------------------
+    // Setup
+    // ----------------------------------------------------------------------
 
-    protected PlexusContainer getContainerInstance()
+    protected void setUpNotifier()
     {
-        return MavenTestUtils.getContainerInstance();
+        System.setProperty( "maven.repo.local", "/home/trygvis/.maven/repository" );
     }
 
     protected String getProjectScmUrl()
     {
-        return "scm:test:foo";
+        return "scm:test:src/test/repository:success";
     }
 
     protected String getProjectType()
     {
         return "maven2";
     }
-    
+
     protected String getNotifierRoleHint()
     {
         return "mail";
+    }
+
+    // ----------------------------------------------------------------------
+    // Assertions
+    // ----------------------------------------------------------------------
+
+    protected void postBuildComplete()
+        throws Exception
+    {
+        MailContinuumNotifier notifier = (MailContinuumNotifier) getContinuumNotifier( "mail" );
+
+        String lastMessage = notifier.getLastMessage();
+
+        System.out.println("-------");
+        System.out.println("Email sent");
+        System.out.println("-------");
+        System.out.print(lastMessage);
+        System.out.println("-------");
     }
 }

@@ -28,17 +28,17 @@ import org.apache.maven.scm.command.Command;
 import org.apache.maven.scm.command.checkout.CheckOutCommand;
 import org.apache.maven.scm.manager.ScmManager;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestScmTest.java,v 1.3 2004-08-29 21:08:18 trygvis Exp $
+ * @version $Id: TestScmTest.java,v 1.4 2004-09-07 16:22:20 trygvis Exp $
  */
 public class TestScmTest
-    extends PlexusTestCase
+    extends ArtifactEnabledPlexusTestCase
 {
-    public void testDummy()
+    public void testInvalidRepository()
         throws Exception
     {
         ScmManager scmManager = (ScmManager) lookup( ScmManager.ROLE );
@@ -47,11 +47,16 @@ public class TestScmTest
 
         scmManager.setRepositoryInfo( scmUrl );
 
-        Command checkOut = scmManager.getCommand( CheckOutCommand.NAME );
+        try
+        {
+            scmManager.getCommand( CheckOutCommand.NAME );
 
-        TestRepository repository = (TestRepository) checkOut.getRepository();
-
-        assertFalse( repository.isValid() );
+            fail( "Expected InvalidConnectionUrlException." );
+        }
+        catch( InvalidConnectionUrlException ex )
+        {
+            // expected
+        }
     }
 
     public void testTestScm()

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 dist=continuum-alpha-1
+dist=continuum-`date +%Y%m%d-%H%M`
 
 # Create a tarball
 tgzball=$dist.tar.gz
