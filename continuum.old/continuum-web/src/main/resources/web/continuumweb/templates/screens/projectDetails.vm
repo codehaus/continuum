@@ -42,6 +42,8 @@
 #end
         </td>
       </tr>
+#elseif ( $project.type == "maven" )
+
 #else
       <tr class="a">
         <td><font color="red">UNKNOWN PROJECT TYPE '$project.type'</td>
@@ -62,5 +64,11 @@
 </div>
 #if( $latestBuild && ( $latestBuild.state == "ok" || $latestBuild.state == "failed" || $latestBuild.state == "error" ) )
 #set ( $build = $latestBuild )
+#if ( $project.type == "maven2" )
 #parse ( "screens/ExternalMaven2BuildResult.vm" ) 
+#elseif( $project.type == "maven" )
+#parse ( "screens/ShellBuildResult.vm" ) 
+#else
+
+#end
 #end

@@ -31,6 +31,8 @@ import java.util.List;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.maven2.ExternalMaven2BuildResult;
 import org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor;
+import org.codehaus.continuum.builder.shell.ShellBuildResult;
+import org.codehaus.continuum.builder.shell.ShellProjectDescriptor;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -40,11 +42,13 @@ import org.codehaus.continuum.web.model.ExternalMaven2BuildResultModel;
 import org.codehaus.continuum.web.model.Maven2ProjectDescriptorModel;
 import org.codehaus.continuum.web.model.ProjectDescriptorModel;
 import org.codehaus.continuum.web.model.ProjectModel;
+import org.codehaus.continuum.web.model.ShellBuildResultModel;
+import org.codehaus.continuum.web.model.ShellProjectDescriptorModel;
 import org.codehaus.plexus.i18n.I18N;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: WebUtils.java,v 1.5 2004-10-24 20:39:12 trygvis Exp $
+ * @version $Id: WebUtils.java,v 1.6 2004-10-29 00:31:10 trygvis Exp $
  */
 public class WebUtils
 {
@@ -83,6 +87,16 @@ public class WebUtils
             if ( maven2ProjectDescriptor != null )
             {
                 projectDescriptorModel = new Maven2ProjectDescriptorModel( maven2ProjectDescriptor.getGoals() );
+            }
+        }
+
+        if ( project.getType().equals( "maven" ) )
+        {
+            ShellProjectDescriptor shellProjectDescriptor = (ShellProjectDescriptor) project.getDescriptor();
+
+            if ( shellProjectDescriptor != null )
+            {
+                projectDescriptorModel = new ShellProjectDescriptorModel();
             }
         }
 
@@ -137,6 +151,12 @@ public class WebUtils
             ExternalMaven2BuildResult externalMaven2BuildResult = (ExternalMaven2BuildResult) result;
 
             resultModel = new ExternalMaven2BuildResultModel( externalMaven2BuildResult.getStandardOutput(), externalMaven2BuildResult.getStandardError() );
+        }
+        else if ( result instanceof ShellBuildResult )
+        {
+            ShellBuildResult shellBuildResult = (ShellBuildResult) result;
+
+            resultModel = new ShellBuildResultModel( shellBuildResult.getStandardOutput(), shellBuildResult.getStandardError() );
         }
         else if ( result == null )
         {
