@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>continuum-parent</artifactId>
+    <groupId>continuum</groupId>
+    <version>1.0-alpha-1-SNAPSHOT</version>
+  </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-hibernate-store-it</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
+  <name>Continuum Hibernate Store Itergration Test</name>
+  <repositories>
+    <repository>
+      <id>codehaus</id>
+      <url>http://repository.codehaus.org</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-store-hibernate</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-builder-maven2</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
