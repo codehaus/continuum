@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.7 2004-10-28 21:19:28 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.8 2004-10-29 17:07:10 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -57,13 +57,16 @@ public class DefaultMavenTool
     /** @requirement */
     private Maven maven;
 
+    /** @configuration default="m2" */
+	private String mavenBin;
+
     /** @configuration default ${maven.home} */
     private String mavenHome;
 
     /** @configuration default ${maven.home.local} */
     private String mavenHomeLocal;
 
-    /** @configuration default ${maven.home}/repository */
+    /** @configuration default ${maven.repo.local} */
     private String mavenRepository;
 
     private File classWorldsJar;
@@ -76,6 +79,8 @@ public class DefaultMavenTool
         throws Exception
     {
         PlexusUtils.assertRequirement( maven, Maven.ROLE );
+
+        PlexusUtils.assertConfiguration( mavenBin, "maven-bin" );
 
         PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
         PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
@@ -91,7 +96,6 @@ public class DefaultMavenTool
             mavenHomeFile = locateMavenHome();
 
             mavenHome = mavenHomeFile.getAbsolutePath();
-//            throw new ContinuumException( "Maven home isn't properly set: it's not a directory (" + mavenHome + ")." );
         }
 
         if ( mavenHomeLocal.equals( "${maven.home.local}" ) || !mavenHomeLocalFile.isDirectory() )
@@ -99,7 +103,6 @@ public class DefaultMavenTool
             mavenHomeLocalFile = locateMavenHomeLocal();
 
             mavenHomeLocal = mavenHomeLocalFile.getAbsolutePath();
-//            throw new ContinuumException( "Maven home local isn't properly set: it's not a directory (" + mavenHomeLocal + ")." );
         }
 
         if ( mavenRepository.equals( "${maven.repo.local}" ) || mavenRepository == null )
@@ -113,6 +116,8 @@ public class DefaultMavenTool
         getLogger().info( "Using " + maven.getMavenHome().getAbsolutePath() + " as maven.home." );
         getLogger().info( "Using " + maven.getMavenHomeLocal().getAbsolutePath() + " as maven.home.local." );
 //        getLogger().info( "Using " + mavenRepository + " as maven.repo.local" );
+
+        getLogger().info( "Using '" + mavenBin + "' as the maven 2 executable" );
 
         // ----------------------------------------------------------------------
         // Component Lifecycle
@@ -264,26 +269,26 @@ public class DefaultMavenTool
     {
         Commandline cl = new Commandline();
 
-        cl.setExecutable( "java" );
+        cl.setExecutable( mavenBin );
 
         cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
 
-        cl.createArgument().setValue( "-classpath" );
-
-        cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
-
-        cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
-
-        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
-
-        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
+//        cl.createArgument().setValue( "-classpath" );
+//
+//        cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
+//
+//        cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
+//
+//        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
+//
+//        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
 
         if ( !StringUtils.isEmpty( getMavenRepository() ) )
         {
             cl.createArgument().setValue( "-Dmaven.repo.local=" + getMavenRepository() );
         }
 
-        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
+//        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
 
         for ( Iterator it = goals.iterator(); it.hasNext(); )
         {
