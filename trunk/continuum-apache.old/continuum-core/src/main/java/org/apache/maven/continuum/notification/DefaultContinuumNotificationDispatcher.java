@@ -29,7 +29,7 @@ import org.codehaus.plexus.notification.NotificationException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumNotificationDispatcher.java,v 1.1.1.1 2005-03-29 20:42:01 trygvis Exp $
+ * @version $Id: DefaultContinuumNotificationDispatcher.java,v 1.2 2005-04-01 22:55:52 trygvis Exp $
  */
 public class DefaultContinuumNotificationDispatcher
     extends AbstractLogEnabled
@@ -93,7 +93,7 @@ public class DefaultContinuumNotificationDispatcher
         }
         catch ( ContinuumStoreException e )
         {
-            getLogger().error( "Error while loading the project.", e );
+            getLogger().error( "Error while population the notification context.", e );
 
             return;
         }

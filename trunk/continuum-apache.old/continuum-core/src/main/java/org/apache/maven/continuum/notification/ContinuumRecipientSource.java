@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumRecipientSource.java,v 1.1.1.1 2005-03-29 20:42:01 trygvis Exp $
+ * @version $Id: ContinuumRecipientSource.java,v 1.2 2005-04-01 22:55:52 trygvis Exp $
  */
 public class ContinuumRecipientSource
     extends AbstractLogEnabled
@@ -87,8 +87,14 @@ public class ContinuumRecipientSource
     // ----------------------------------------------------------------------
 
     private Set getMailRecipients( Map context )
+        throws NotificationException
     {
         ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
+
+        if ( project == null )
+        {
+            throw new NotificationException( "Missing project from the notification context." );
+        }
 
         Set recipients = new HashSet();
 

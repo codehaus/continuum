@@ -59,20 +59,37 @@
     | The mail notifier
     |-->
     <component>
-      <role>org.apache.maven.continuum.notification.ContinuumNotifier</role>
+      <role>org.codehaus.plexus.notification.notifier.Notifier</role>
       <role-hint>mail</role-hint>
       <implementation>org.apache.maven.continuum.notification.mail.MailContinuumNotifier</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.plexus.mailsender.MailSender</role>
+          <role>org.codehaus.plexus.velocity.VelocityComponent</role>
         </requirement>
         <requirement>
           <role>org.apache.maven.continuum.store.ContinuumStore</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.mailsender.MailSender</role>
+        </requirement>
       </requirements>
       <configuration>
-        <from>@mail.from@</from>
-        <to>@mail.to@</to>
+        <fromMailbox>@mail.override.from.mailbox@</fromMailbox>
+        <fromName>@mail.override.from.name@</fromName>
+        <timestampFormat>EEE, d MMM yyyy HH:mm:ss Z</timestampFormat>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.notification.RecipientSource</role>
+      <implementation>org.apache.maven.continuum.notification.ContinuumRecipientSource</implementation>
+      <configuration>
+        <!--
+        Setting this propery will make Continuum send all emails to
+        this address instead the address specified in the project
+        configuration
+        -->
+        <toOverride>@mail.override.to.address@</toOverride>
       </configuration>
     </component>
 
@@ -236,7 +253,7 @@
           </property>
           <property>
             <name>velocimacro.library</name>
-            <value>CommonMacros.vm</value>
+            <value>/org/apache/maven/continuum/notification/mail/templates/common.vm</value>
           </property>
         </properties>
       </configuration>

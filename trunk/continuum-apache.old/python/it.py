@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 import time
+import traceback
 
 def progress( message ):
     print "* " + message
@@ -173,10 +174,10 @@ def initMaven1Project( basedir, cvsroot, artifactId ):
     <connection>scm:cvs:local:%(cvsroot)s:%(artifactId)s</connection>
   </repository>
   <build>
-    <nagEmailAddress>maven-1@foo.com</nagEmailAddress>
+    <nagEmailAddress>%(email)s</nagEmailAddress>
   </build>
 </project>
-""" % { "artifactId" : artifactId, "cvsroot" : cvsroot } )
+""" % { "artifactId" : artifactId, "cvsroot" : cvsroot, "email" : email } )
     pom.close()
 
     os.makedirs( basedir + "/src/main/java" )
@@ -201,7 +202,7 @@ def initMaven2Project( basedir, cvsroot, artifactId ):
     <notifiers>
       <notifier>
         <type>mail</type>
-        <address>dev@continuum.codehaus.org</address>
+        <address>%(email)s</address>
       </notifier>
     </notifiers>
   </ciManagement>
@@ -209,7 +210,7 @@ def initMaven2Project( basedir, cvsroot, artifactId ):
     <connection>scm:cvs:local:%(cvsroot)s:%(artifactId)s</connection>
   </scm>
 </project>
-""" % { "artifactId" : artifactId, "cvsroot" : cvsroot } )
+""" % { "artifactId" : artifactId, "cvsroot" : cvsroot, "email" : email } )
     pom.close()
 
     os.makedirs( basedir + "/src/main/java" )
@@ -262,6 +263,9 @@ do
 # Start
 ############################################################
 
+# This is the email that will be used as the nag email address
+email = "trygvis@codehaus.org"
+
 basedir = os.getcwd() + "/test-ci"
 cvsroot = basedir + "/cvsroot"
 svnroot = basedir + "/svnroot"
@@ -287,7 +291,7 @@ if 1:
     progress( "Adding Maven 1 project" )
     maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
     maven1 = continuum.getProject( maven1Id )
-    assertProject( "1", "Maven 1 Project", "maven-1@foo.com", continuum.STATE_NEW, "1.0", "maven-1", maven1 )
+    assertProject( "1", "Maven 1 Project", email, continuum.STATE_NEW, "1.0", "maven-1", maven1 )
 
     progress( "Building Maven 1 project" )
     buildId = continuum.buildProject( maven1.id )
@@ -320,7 +324,7 @@ if 1:
     progress( "Adding Maven 2 project" )
     maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
     maven2 = continuum.getProject( maven2Id )
-    assertProject( "2", "Maven 2 Project", "dev@continuum.codehaus.org", continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
+    assertProject( "2", "Maven 2 Project", email, continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
 
     progress( "Building Maven 2 project" )
     build = continuum.buildProject( maven2.id )
@@ -335,10 +339,10 @@ if 1:
     initAntProject( antProject, svnroot, "ant" )
 
     progress( "Adding Ant project" )
-    antId = continuum.addProjectFromScm( "scm:svn:file://" + svnroot + "/ant", "ant", "Ant Project", "foo@bar", "3.0", 
+    antId = continuum.addProjectFromScm( "scm:svn:file://" + svnroot + "/ant", "ant", "Ant Project", email, "3.0", 
                                          { "executable": "ant", "targets" : "clean, build"} )
     ant = continuum.getProject( antId )
-    assertProject( "3", "Ant Project", "foo@bar", continuum.STATE_NEW, "3.0", "ant", ant )
+    assertProject( "3", "Ant Project", email, continuum.STATE_NEW, "3.0", "ant", ant )
     progress( "Building Ant project" )
     build = continuum.buildProject( ant.id )
     assertSuccessfulAntBuild( build )
@@ -348,12 +352,12 @@ if 1:
     initShellProject( shellProject, cvsroot, "shell" )
 
     progress( "Adding Shell project" )
-    prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum-plexus-application-1.0-alpha-1-SNAPSHOT-application/temp/Shell-Project/"
-    shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", "foo@bar", "3.0", 
+    prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum/temp/Shell-Project/"
+    shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", email, "3.0", 
                                            { "script": prefix + "script.sh", "arguments" : ""} )
 
     shell = continuum.getProject( shellId )
-    assertProject( "4", "Shell Project", "foo@bar", continuum.STATE_NEW, "3.0", "shell", shell )
+    assertProject( "4", "Shell Project", email, continuum.STATE_NEW, "3.0", "shell", shell )
 
     progress( "Building Shell project" )
     build = continuum.buildProject( shell.id )
