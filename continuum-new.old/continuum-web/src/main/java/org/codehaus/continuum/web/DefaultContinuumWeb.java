@@ -30,7 +30,6 @@ import org.codehaus.continuum.web.action.ActionManager;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.jetty.ServletContainer;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -38,15 +37,13 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumWeb.java,v 1.2 2005-03-10 00:05:56 trygvis Exp $
+ * @version $Id: DefaultContinuumWeb.java,v 1.3 2005-03-15 07:37:37 trygvis Exp $
  */
 public class DefaultContinuumWeb
     extends AbstractLogEnabled
     implements ContinuumWeb, Initializable, Contextualizable, Startable
 {
     private ActionManager actionManager;
-
-    private ServletContainer servletContainer;
 
     private List triggers;
 
@@ -105,8 +102,6 @@ public class DefaultContinuumWeb
 
         actionManager = (ActionManager) container.lookup( ActionManager.ROLE );
 
-        servletContainer = (ServletContainer) container.lookup( ServletContainer.ROLE );
-
         triggers = container.lookupList( ContinuumTrigger.ROLE );
 
         connectionFactories = container.lookupList( ConnectionFactory.ROLE );
@@ -117,8 +112,6 @@ public class DefaultContinuumWeb
     {
         if ( false )
         {
-            container.release( servletContainer );
-
             container.release( actionManager );
 
             container.release( store );

@@ -15,6 +15,50 @@
       <artifactId>continuum-web</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
+
+    <!--
+     |
+     | Services
+     |
+     |-->
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-service-jetty</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>plexus-service</type>
+    </dependency>
+
+    <!--
+     |
+     | Implementation of required services
+     |
+     |-->
+
+    <!-- Maven SCM Providers -->
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-provider-cvs</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Maven Wagons -->
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>wagon-http-lightweight</artifactId>
+      <version>1.0-alpha-2-SNAPSHOT</version>
+    </dependency>
+
+    <!-- -->
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-mail-sender-simple</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>7.4.1-jdbc3</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -29,12 +73,15 @@
           <goal>
             <id>bundle-application</id>
           </goal>
+          <goal>
+            <id>test-runtime</id>
+          </goal>
         </goals>
         <configuration>
           <configurationDirectory>src/conf</configurationDirectory>
           <applicationName>continuum</applicationName>
-          <plexusConfigurationPropertiesFile>src/plexus.properties</plexusConfigurationPropertiesFile>
-          <plexusConfiguration>src/conf/application.xml</plexusConfiguration>
+          <applicationConfiguration>src/conf/application.xml</applicationConfiguration>
+          <testRuntimeConfiguration>src/test/conf/testRuntimeConfiguration.xml</testRuntimeConfiguration>
           <basedir>target</basedir>
         </configuration>
       </plugin>
