@@ -13,16 +13,10 @@
       <lifecycle-handler>plexus-configurable</lifecycle-handler>
       <configuration>
         <valves>
+          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.ActionValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
-          <!--
-           |
-           | If i put this after the PullToolValve the tools placed in the context vanish ...
-           | that's because the
-           |
-           -->
-          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
           <valve>org.codehaus.plexus.summit.pull.PullToolValve</valve>
@@ -191,18 +185,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addAntProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddAntProjectAction</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>showProjects</role-hint>
-      <implementation>org.codehaus.continuum.web.action.ShowProjects</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>showProject</role-hint>
-      <implementation>org.codehaus.continuum.web.action.ShowProject</implementation>
     </component>
 
     <component>
