@@ -12,12 +12,12 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleNetworkTriggerTest.java,v 1.2 2004-10-15 13:01:09 trygvis Exp $
+ * @version $Id: SimpleNetworkTriggerTest.java,v 1.3 2004-10-20 20:34:21 trygvis Exp $
  */
 public class SimpleNetworkTriggerTest
     extends AbstractContinuumTest
 {
-    private final static int DEFAULT_PORT = 7890;
+    private final static int DEFAULT_PORT = 40030;
 
     public void testNetworkTrigger()
         throws Exception
