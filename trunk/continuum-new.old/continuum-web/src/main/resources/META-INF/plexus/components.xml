@@ -36,14 +36,25 @@
       <implementation>org.codehaus.plexus.summit.pull.DefaultPullService</implementation>
       <configuration>
         <tools>
-          <!-- The component descriptor for this tool is in the summit components.xml -->
           <tool>
             <name>link</name>
             <role>linktool</role>
             <scope>request</scope>
           </tool>
+          <tool>
+            <name>css</name>
+            <role>csstool</role>
+            <scope>request</scope>
+          </tool>
         </tools>
       </configuration>
+    </component>
+
+    <component>
+      <role>csstool</role>
+      <implementation>org.codehaus.continuum.web.tool.CssTool</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <configuration/>
     </component>
 
     <!--

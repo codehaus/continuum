@@ -2,35 +2,24 @@ package org.codehaus.continuum.web.pipeline.valve;
 
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.web.context.ViewContextPopulator;
-import org.codehaus.plexus.summit.SummitConstants;
-import org.codehaus.plexus.summit.exception.SummitException;
-import org.codehaus.plexus.summit.pipeline.valve.AbstractValve;
+import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextPopulatorValve.java,v 1.2 2005-03-20 16:26:40 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextPopulatorValve.java,v 1.3 2005-03-20 19:36:29 jvanzyl Exp $
  */
 public class ContinuumViewContextPopulatorValve
-    extends AbstractValve
+    extends CreateViewContextValve
 {
     private ViewContextPopulator viewContextPopulator;
 
     private Continuum model;
-
-    public void invoke( RunData data )
-        throws IOException, SummitException
-    {
-        ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
-
-        populateViewContext( data, vc );
-    }
 
     protected void populateViewContext( RunData data, ViewContext context )
     {
@@ -39,8 +28,6 @@ public class ContinuumViewContextPopulatorValve
             String view = data.getTarget();
 
             view = view.substring( 0, view.indexOf( "." ) );
-
-            System.out.println( "view = " + view );
 
             if ( view != null )
             {
