@@ -27,16 +27,16 @@ import java.util.Properties;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 import org.codehaus.plexus.hibernate.DefaultHibernateService;
 import org.codehaus.plexus.hibernate.HibernateService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateSchemaGeneratorTest.java,v 1.4 2004-07-29 04:35:02 trygvis Exp $
+ * @version $Id: HibernateSchemaGeneratorTest.java,v 1.5 2004-08-29 17:37:29 trygvis Exp $
  */
 public class HibernateSchemaGeneratorTest
-    extends PlexusTestCase
+    extends ArtifactEnabledPlexusTestCase
 {
     public void testCreateSchemas()
         throws Exception
