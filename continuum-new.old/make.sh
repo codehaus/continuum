@@ -11,13 +11,15 @@ fi
 m2 pom:install
 
 # Build the JARs
-( cd continuum-core && m2 install )
+( cd continuum-core && sh make.sh )
 ( cd continuum-web && m2 install )
 
-#(
-#  cd continuum-web
-#  sh runtime.sh
-#)
+(
+  cd continuum-web
+  sh runtime.sh
+)
+
+exit;
 
 # Build the Plexus application
 (
