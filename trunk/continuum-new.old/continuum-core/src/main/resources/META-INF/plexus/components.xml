@@ -73,7 +73,7 @@
       <role>org.codehaus.plexus.notification.RecipientSource</role>
       <implementation>org.codehaus.continuum.notification.ContinuumRecipientSource</implementation>
       <configuration>
-        <to>nobody@localhost</to>
+        <toOverride>nobody@localhost</toOverride>
       </configuration>
     </component>
 
