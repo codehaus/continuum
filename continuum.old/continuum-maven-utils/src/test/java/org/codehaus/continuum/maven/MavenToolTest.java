@@ -24,23 +24,72 @@ package org.codehaus.continuum.maven;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.TestCase;
+
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.continuum.AbstractContinuumTest;
+import org.codehaus.plexus.DefaultArtifactEnabledContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenToolTest.java,v 1.1.1.1 2004-10-28 16:08:17 trygvis Exp $
+ * @version $Id: MavenToolTest.java,v 1.2 2004-10-28 18:27:04 trygvis Exp $
  */
 public class MavenToolTest
-    extends AbstractContinuumTest
+    extends TestCase
 {
-    public void testMavenTool()
+    private MavenTool mavenTool;
+
+    public void setUp()
+    	throws Exception
+    {
+        String mavenHome = System.getProperty( "maven.home" );
+        String mavenHomeLocal = System.getProperty( "maven.home" );
+        String mavenRepo = System.getProperty( "maven.repo" );
+
+        if ( mavenHome == null )
+        {
+            File tmp = new File( System.getProperty( "user.home" ), "m2" );
+
+            assertTrue( "Could not find maven.home in '" + tmp.getAbsolutePath() + "'.", tmp.isDirectory() );
+
+            mavenHome = tmp.getAbsolutePath();
+        }
+
+        if ( mavenHomeLocal == null )
+        {
+            File tmp = new File( System.getProperty( "user.home" ), ".m2" );
+
+            assertTrue( "Could not find maven.home.local in '" + tmp.getAbsolutePath() + "'.", tmp.isDirectory() );
+
+            mavenHomeLocal = tmp.getAbsolutePath();
+        }
+
+        PlexusContainer container = new DefaultArtifactEnabledContainer();
+
+        container.getContext().put( "maven.home", mavenHome );
+        container.getContext().put( "maven.home.local", mavenHomeLocal );
+
+        if ( mavenRepo != null )
+        {
+            container.getContext().put( "maven.repo", mavenRepo );
+        }
+
+        container.initialize();
+        container.start();
+
+        mavenTool = (MavenTool) container.lookup( MavenTool.ROLE );
+    }
+
+    public void testPomXmlLoading()
         throws Exception
     {
-        MavenTool mavenTool = (MavenTool) lookup( MavenTool.ROLE );
-
-        MavenProject project = mavenTool.getProject( getTestFile( "src/test/resources/maven-tool-pom.xml" ) );
+        MavenProject project = mavenTool.getProject( PlexusTestCase.getTestFile( "src/test/resources/maven-tool-pom.xml" ) );
 
         assertEquals( "continuum-test", project.getGroupId() );
 
@@ -49,5 +98,19 @@ public class MavenToolTest
         assertEquals( "1.0", project.getVersion() );
 
         assertEquals( "Maven Tool Test Project", project.getName() );
+    }
+
+    public void testExecuteExternal()
+    	throws Exception
+    {
+        List goals = new ArrayList();
+
+        goals.add( "clean:clean" );
+
+        File workingDirectory = PlexusTestCase.getTestFile( "src/test/repository/external-maven" );
+
+        MavenProject mavenProject = mavenTool.getProject( new File( workingDirectory, "pom.xml" ) );
+
+        mavenTool.executeExternal( workingDirectory, mavenProject, goals );
     }
 }
