@@ -248,7 +248,7 @@
           </property>
           <property>
             <name>file.resource.loader.path</name>
-            <value>${plexus.home}/webapp/web/continuumweb/templates</value>
+            <value>${plexus.home}/webapp/templates</value>
           </property>
           <property>
             <name>threadContext.resource.loader.class</name>
