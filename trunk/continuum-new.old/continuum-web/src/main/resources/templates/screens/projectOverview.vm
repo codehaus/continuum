@@ -25,7 +25,7 @@
       <tr class="$class">
         <td>$project.name</td>
         <td>$project.state $project.id</td>
-        <td><a href="$link.addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Details</a></td>
+        <td><a href="$link.addQueryData( "id", "$project.Id" ).setPage('addAntProject.form').addQueryData("mode","view")">Details</a></td>
       </tr>
       #if ( $class == "a" )
         #set ( $class = "b" )
