@@ -11,6 +11,7 @@
     <url>http://continuum.codehaus.org/continuumweb/servlet/continuum</url>
     <notifiers>
       <notifier>
+        <type>mail</type>
         <address>dev@continuum.codehaus.org</address>
       </notifier>
     </notifiers>
