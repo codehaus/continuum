@@ -53,12 +53,12 @@
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.0-alpha-2-SNAPSHOT</version>
+      <version>1.0-alpha-2</version>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
+      <version>1.0-alpha-2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -68,8 +68,8 @@
     </dependency>
   </dependencies>
   <scm>
-    <connection>scm:cvs:pserver:anonymous@cvs.continuum.codehaus.org:/scm/continuum:continuum</connection>
-    <url>http://cvs.continuum.codehaus.org/continuum</url>
+    <connection>scm:cvs:pserver:anonymous@cvs.continuum.codehaus.org:/scm/continuum:continuum-apache</connection>
+    <url>http://cvs.continuum.codehaus.org/continuum-apache</url>
   </scm>
   <organization>
     <name>Codehaus</name>
