@@ -268,49 +268,6 @@ os.makedirs( basedir )
 os.makedirs( cvsroot )
 os.system( "cvs -d " + cvsroot + " init" )
 
-progress( "Initializing Maven 1 CVS project" )
-initMaven1Project( maven1Project, cvsroot, "maven-1" )
-
-progress( "Initializing Maven 2 CVS project" )
-
-initMaven2Project( maven2Project, cvsroot, "maven-2" )
-
-progress( "Initializing Ant CVS project" )
-initAntProject( antProject, cvsroot, "ant" )
-
-progress( "Initializing Shell CVS project" )
-initShellProject( shellProject, cvsroot, "shell" )
-
-progress( "Adding Maven 1 project" )
-maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
-
-progress( "Adding Maven 2 project" )
-maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
-
-progress( "Adding Ant project" )
-antId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant", "ant", "Ant Project", "foo@bar", "3.0", { "executable": "ant", "targets" : "clean, build"} )
-
-progress( "Adding Shell project" )
-prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum-plexus-application-1.0-alpha-1-SNAPSHOT-application/temp/Shell-Project/"
-shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", "foo@bar", "3.0", 
-        { "script": prefix + "script.sh", "arguments" : ""} )
-
-progress( "Asserting projects" )
-
-maven1 = continuum.getProject( maven1Id )
-maven2 = continuum.getProject( maven2Id )
-ant = continuum.getProject( antId )
-shell = continuum.getProject( shellId )
-
-############################################################
-# Assert the projects
-############################################################
-
-assertProject( "1", "Maven 1 Project", "maven-1@foo.com", continuum.STATE_NEW, "1.0", "maven-1", maven1 )
-assertProject( "2", "Maven 2 Project", "dev@continuum.codehaus.org", continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
-assertProject( "3", "Ant Project", "foo@bar", continuum.STATE_NEW, "3.0", "ant", ant )
-assertProject( "4", "Shell Project", "foo@bar", continuum.STATE_NEW, "3.0", "shell", shell )
-
 ############################################################
 # Project building
 ############################################################
@@ -318,6 +275,13 @@ assertProject( "4", "Shell Project", "foo@bar", continuum.STATE_NEW, "3.0", "she
 startTime = int( time.time() )
 
 if 1:
+    progress( "Initializing Maven 1 CVS project" )
+    initMaven1Project( maven1Project, cvsroot, "maven-1" )
+    progress( "Adding Maven 1 project" )
+    maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
+    maven1 = continuum.getProject( maven1Id )
+    assertProject( "1", "Maven 1 Project", "maven-1@foo.com", continuum.STATE_NEW, "1.0", "maven-1", maven1 )
+
     progress( "Building Maven 1 project" )
     buildId = continuum.buildProject( maven1.id )
     assertSuccessfulMaven1Build( buildId )
@@ -344,6 +308,13 @@ if 1:
     assertEquals( "The project version wasn't changed.", "1.1", maven1.version )
 
 if 1:
+    progress( "Initializing Maven 2 CVS project" )
+    initMaven2Project( maven2Project, cvsroot, "maven-2" )
+    progress( "Adding Maven 2 project" )
+    maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
+    maven2 = continuum.getProject( maven2Id )
+    assertProject( "2", "Maven 2 Project", "dev@continuum.codehaus.org", continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
+
     progress( "Building Maven 2 project" )
     build = continuum.buildProject( maven2.id )
     assertSuccessfulMaven2Build( build )
@@ -353,11 +324,30 @@ if 1:
     assertSuccessfulNoBuildPerformed( build )
 
 if 1:
+    progress( "Initializing Ant CVS project" )
+    initAntProject( antProject, cvsroot, "ant" )
+
+    progress( "Adding Ant project" )
+    antId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant", "ant", "Ant Project", "foo@bar", "3.0", 
+                                         { "executable": "ant", "targets" : "clean, build"} )
+    ant = continuum.getProject( antId )
+    assertProject( "3", "Ant Project", "foo@bar", continuum.STATE_NEW, "3.0", "ant", ant )
     progress( "Building Ant project" )
     build = continuum.buildProject( ant.id )
     assertSuccessfulAntBuild( build )
 
 if 1:
+    progress( "Initializing Shell CVS project" )
+    initShellProject( shellProject, cvsroot, "shell" )
+
+    progress( "Adding Shell project" )
+    prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum-plexus-application-1.0-alpha-1-SNAPSHOT-application/temp/Shell-Project/"
+    shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", "foo@bar", "3.0", 
+                                           { "script": prefix + "script.sh", "arguments" : ""} )
+
+    shell = continuum.getProject( shellId )
+    assertProject( "4", "Shell Project", "foo@bar", continuum.STATE_NEW, "3.0", "shell", shell )
+
     progress( "Building Shell project" )
     build = continuum.buildProject( shell.id )
     assertSuccessfulShellBuild( build, "" )
