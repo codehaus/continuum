@@ -176,13 +176,25 @@ cleanDirectory( basedir )
 os.mkdir( basedir )
 os.mkdir( cvsroot )
 
+print "Initializing Maven 1 CVS project"
 initMaven1Project( maven1Project, cvsroot, "maven-1" )
+
+print "Initializing Maven 2 CVS project"
+
 initMaven2Project( maven2Project, cvsroot, "maven-2" )
+print "Initializing Ant CVS project"
 initAntProject( antProject, cvsroot, "ant" )
 
+print "Adding Maven 1 project"
 maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
+
+print "Adding Maven 2 project"
 maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
+
+print "Adding Ant project"
 antId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant", "ant", "Ant Project", "foo@bar", "3.0", { "executable": "ant", "targets" : "clean, build"} )
+
+print "Asserting projects"
 
 maven1 = continuum.getProject( maven1Id )
 maven2 = continuum.getProject( maven2Id )
@@ -200,17 +212,19 @@ assertProject( "3", "Ant Project", "foo@bar", "1", "3.0", "ant", ant )
 # Project building
 ############################################################
 
+print "Building Maven 1 project"
 buildId = continuum.buildProject( maven1.id )
 assertSuccessfulMaven1Build( buildId )
 
+print "Building Maven 2 project"
 build = continuum.buildProject( maven2.id )
 assertSuccessfulMaven2Build( build )
 
+print "Building Ant project"
 build = continuum.buildProject( ant.id )
 assertSuccessfulAntBuild( build )
 
+print ""
 print "##############################################"
-print ""
 print "ALL TESTS PASSED"
-print ""
 print "##############################################"
