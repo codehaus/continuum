@@ -20,7 +20,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.34 2004-07-12 00:00:27 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.35 2004-07-13 20:53:33 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -133,6 +133,10 @@ public class DefaultContinuum
         }
         catch ( Exception ex )
         {
+            rollback();
+
+            getLogger().error( "Exception while building project.", ex );
+
             throw new ContinuumException( "Exception while building project.", ex );
         }
 
@@ -160,6 +164,10 @@ public class DefaultContinuum
         }
         catch( ContinuumStoreException ex )
         {
+            rollback();
+
+            getLogger().error( "Exception while building project.", ex );
+
             throw new ContinuumException( "Exception while creating build object.", ex );
         }
 
@@ -227,6 +235,18 @@ public class DefaultContinuum
         catch( ContinuumStoreException ex )
         {
             throw new ContinuumException( "Could not retrieve project #" + id, ex );
+        }
+    }
+
+    private void rollback()
+    {
+        try
+        {
+            store.rollbackTransaction();
+        }
+        catch( Exception ex )
+        {
+            getLogger().warn( "Exception while rolling back transaction, ignored.", ex );
         }
     }
 }
