@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -33,9 +31,6 @@ public class DefaultContinuum
     /** Where all the sources get checked out to be built. */
     private String workingDirectory;
 
-    /** How often are we going to attempt to build the project. */
-    private int buildInterval;
-
     // Anything mail related can be encapsualted in a separate
     // communicatino module but it's what we'll be doing first so we'll
     // get it working before abstracting it out.
@@ -48,8 +43,6 @@ public class DefaultContinuum
 
     // Internal helpers
 
-    private Timer timer;
-
     private Map builds;
 
     public void initialize()
@@ -57,32 +50,27 @@ public class DefaultContinuum
     {
         builds = new LinkedHashMap();
 
-        File f = new File ( workingDirectory );
+        File f = new File( workingDirectory );
 
         if ( !f.exists() )
         {
             f.mkdirs();
         }
-
-        //timer = new Timer();
     }
 
     public void start()
         throws Exception
     {
-        getLogger().info( "Starting Continuum!" );
-
-        //timer.schedule( new BuildTask(), 0, buildInterval * 60 * 1000 );
-
-        //addProject( projectBuilder.build( new File( "/home/jvanzyl/js/org.codehaus/plexus/plexus-container/project.xml" ) ) );
-        addProject( projectBuilder.build( new File( "/home/jvanzyl/js/org.apache.maven/maven-components/maven-model/project.xml" ) ) );
-
-        buildProjects();
     }
 
     public void stop()
         throws Exception
     {
+    }
+
+    public void addProject( String url )
+    {
+        // Now we will need to retrieve the project from its home first.
     }
 
     public void addProject( Project project )
@@ -95,18 +83,14 @@ public class DefaultContinuum
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
+            getLogger().error( "Cannot add project!", e );
         }
 
-        builds.put( project.getId(), build );
+        builds.put( project.getGroupId() + ":" + project.getArtifactId(), build );
     }
 
     private void notifyAudience( Project project, String message )
     {
-
-        System.out.println( "message = " + message );
-
-        /*
         try
         {
             MailMessage mailMessage = new MailMessage( smtpServer );
@@ -136,11 +120,16 @@ public class DefaultContinuum
         {
             getLogger().error( "Can't send notification message.", e );
         }
-        */
     }
 
+    public void buildProject( String groupId, String artifactId )
+        throws Exception
+    {
+        buildProject( (MavenProjectBuild) builds.get( groupId + ":" + artifactId ) );
+    }
 
-    private void buildProjects()
+    public void buildProjects()
+        throws Exception
     {
         getLogger().info( "Building Projects ..." );
 
@@ -179,14 +168,9 @@ public class DefaultContinuum
         }
     }
 
-    // How to get the initial POM!!!!!
-
-
     private List buildProject( MavenProjectBuild build )
         throws Exception
     {
-        System.out.println( "workingDirectory = " + workingDirectory );
-
         // We need to check out the sources
         build.getProjectScm().checkout( workingDirectory );
 
@@ -195,7 +179,7 @@ public class DefaultContinuum
         String destinationDirectory = workingDirectory + "/target/classes";
 
         List messages = compiler.compile( classpathElements( build.getProject() ),
-                                          new String[]{ build.getProject().getBuild().getSourceDirectory() },
+                                          new String[]{build.getProject().getBuild().getSourceDirectory()},
                                           destinationDirectory );
 
         return messages;
@@ -207,18 +191,9 @@ public class DefaultContinuum
 
         for ( int i = 0; i < classpathElements.length; i++ )
         {
-            classpathElements[i] = ((Artifact)project.getArtifacts().get(i)).getPath();
+            classpathElements[i] = ( (Artifact) project.getArtifacts().get( i ) ).getPath();
         }
 
         return classpathElements;
-    }
-
-    class BuildTask
-        extends TimerTask
-    {
-        public void run()
-        {
-            buildProjects();
-        }
     }
 }
