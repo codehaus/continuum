@@ -39,7 +39,7 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.5 2004-07-27 05:42:12 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.6 2004-07-29 03:45:08 trygvis Exp $
  */
 class BuilderThread
     implements Runnable
@@ -107,7 +107,7 @@ class BuilderThread
             }
             catch( ContinuumStoreException ex )
             {
-                getLogger().error( "Exception while setting state flag.", ex );
+                getLogger().error( "Exception while setting the state flag.", ex );
 
                 rollback();
 
@@ -124,7 +124,7 @@ class BuilderThread
             }
             catch( Exception ex )
             {
-                getLogger().error( "Internal error while building project.", ex );
+                getLogger().error( "Internal error while building the project.", ex );
 
                 rollback();
 
@@ -132,11 +132,15 @@ class BuilderThread
             }
         }
 
+        getLogger().info( "Builder thread exited." );
+
         done = true;
     }
 
     public void shutdown()
     {
+        getLogger().info( "Builder thread signaled." );
+
         shutdown = true;
     }
 
@@ -203,7 +207,7 @@ class BuilderThread
         {
             store.setBuildResult( buildId, ContinuumProjectState.ERROR, null, ex );
 
-            getLogger().fatalError( "Error building project.", ex );
+            getLogger().fatalError( "Error building the project.", ex );
 
             return;
         }
