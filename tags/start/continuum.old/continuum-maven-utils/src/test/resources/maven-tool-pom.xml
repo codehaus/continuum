@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>continuum-test</groupId>
+  <artifactId>maven-tool-test</artifactId>
+  <version>1.0</version>
+  <name>Maven Tool Test Project</name>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:local:src/test/repository:maven-tool</connection>
+  </scm>
+</project>

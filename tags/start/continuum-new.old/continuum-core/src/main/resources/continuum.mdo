@@ -1,0 +1,169 @@
+<model>
+  <id>continuum</id>
+  <name>Continuum</name>
+  <description>Continuum's entity model.</description>
+  <defaults>
+    <default>
+      <key>package</key>
+      <value>org.codehaus.continuum.model</value>
+    </default>
+  </defaults>
+
+  <!--
+   |
+   | ContinuumProject.
+   |
+   |-->
+  <classes>
+    <class stash.storable="true">
+      <name>ContinuumProject</name>
+      <version>1.0.0</version>
+      <fields>
+        <field>
+          <name>id</name>
+          <required>true</required>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>type</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>name</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>scmUrl</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>nagEmailAddress</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>workingDirectory</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>state</name>
+          <version>1.0.0</version>
+          <type>int</type>
+          <!--
+          <association>
+            <type>ContinuumProjectState</type>
+          </association>
+          -->
+        </field>
+        <field>
+          <name>projectDescriptor</name>
+          <version>1.0.0</version>
+          <association>
+            <type>ProjectDescriptor</type>
+          </association>
+        </field>
+      </fields>
+    </class>
+
+    <!--
+     |
+     | ProjectDescriptor
+     |
+     | This class should be abstract.
+     |
+     | -->
+<!--
+    <class stash.storable="true">
+      <name>ProjectDescriptor</name>
+      <version>1.0.0</version>
+      <fields>
+        <field>
+          <name>projectId</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>project</name>
+          <version>1.0.0</version>
+          <association>
+            <type>ContinuumProject</type>
+          </association>
+        </field>
+      </fields>
+    </class>
+-->
+    <!--
+    |
+    | BuildResult
+    |
+    -->
+    <class stash.storable="true">
+      <name>BuildResult</name>
+      <version>1.0.0</version>
+      <fields>
+        <field>
+          <name>buildId</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>state</name>
+          <version>1.0.0</version>
+          <type>int</type>
+          <!--
+          <association>
+            <type>BuildResultState</type>
+          </association>
+          -->
+        </field>
+        <field>
+          <name>startTime</name>
+          <version>1.0.0</version>
+          <type>Date</type>
+        </field>
+        <field>
+          <name>endTime</name>
+          <version>1.0.0</version>
+          <type>Date</type>
+        </field>
+        <field>
+          <name>error</name>
+          <version>1.0.0</version>
+          <type>String</type>
+          <!--
+          <association>
+            <type>java.lang.Throwable</type>
+          </association>
+          -->
+        </field>
+        <field>
+          <name>project</name>
+          <version>1.0.0</version>
+          <association>
+            <type>ContinuumProject</type>
+          </association>
+        </field>
+        <field>
+          <name>builderBuildResult</name>
+          <version>1.0.0</version>
+          <type>String</type>
+<!--
+          <association>
+            <type>Object</type>
+          </association>
+-->
+        </field>
+      </fields>
+    </class>
+  </classes>
+</model>
