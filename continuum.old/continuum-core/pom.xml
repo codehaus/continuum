@@ -10,9 +10,6 @@
   <artifactId>continuum-core</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Core</name>
-  <scm>
-    <connection>scm:cvs:pserver:anoncvs@cvs.continuum.codehaus.org:/scm/continuum:continuum/continuum-core</connection>
-  </scm>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
