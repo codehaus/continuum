@@ -1,9 +1,12 @@
 #! /bin/sh
 
-CLASSWORLDS_VERSION=1.1-SNAPSHOT
+CLASSWORLDS_VERSION=1.1-alpha-1
 
 MAIN_CLASS=org.codehaus.classworlds.Launcher
-PLEXUS_OPTS="-Xmx128m"
+
+if [ -z "$PLEXUS_OPTS" ]; then
+  PLEXUS_OPTS="-Xmx128m"
+fi
 
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false
@@ -62,9 +65,9 @@ if [ -z "$JAVACMD" ] ; then
   if [ -n "$JAVA_HOME"  ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then 
       # IBM's JDK on AIX uses strange locations for the executables
-      JAVACMD=$JAVA_HOME/jre/sh/java
+      JAVACMD="$JAVA_HOME/jre/sh/java"
     else
-      JAVACMD=$JAVA_HOME/bin/java
+      JAVACMD="$JAVA_HOME/bin/java"
     fi
   else
     JAVACMD=java
@@ -114,11 +117,11 @@ fi
 
 $JAVACMD \
   $PLEXUS_OPTS \
-  -classpath ${PLEXUS_HOME}/core/boot/classworlds-${CLASSWORLDS_VERSION}.jar \
-  -Dclassworlds.conf=${PLEXUS_HOME}/conf/classworlds.conf  \
-  -Dplexus.core=${PLEXUS_HOME}/core \
-  -Djava.io.tmpdir=${PLEXUS_TMPDIR} \
-  -Dtools.jar=$TOOLS_JAR \
-  -Dplexus.home=${PLEXUS_HOME} \
-  -Dmaven.repo.local=${PLEXUS_HOME}/apps/maven2/repository/ \
-  $MAIN_CLASS ${CONF}
+  -classpath "${PLEXUS_HOME}/core/boot/classworlds-${CLASSWORLDS_VERSION}.jar" \
+  -Dclassworlds.conf="${PLEXUS_HOME}/conf/classworlds.conf"  \
+  -Dplexus.core="${PLEXUS_HOME}/core" \
+  -Djava.io.tmpdir="${PLEXUS_TMPDIR}" \
+  -Dtools.jar="$TOOLS_JAR" \
+  -Dplexus.home="${PLEXUS_HOME}" \
+  -Dmaven.repo.local="${PLEXUS_HOME}/apps/maven2/repository/" \
+  $MAIN_CLASS "${CONF}"

@@ -27,7 +27,7 @@ ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
 (
   cd continuum-web
-  sh runtime.sh
+  ./runtime.sh
   ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 )
 ret=$?; if [ $ret != 0 ]; then exit $ret; fi
@@ -38,7 +38,7 @@ exit;
 (
   cd continuum-plexus-application
 #  m2 plexus:app plexus:bundle-application
-  sh make.sh
+  ./make.sh
 )
 
 # Build the plexus runtime and install the application

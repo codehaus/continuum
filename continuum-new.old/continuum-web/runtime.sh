@@ -2,23 +2,38 @@
 
 function findRepo()
 {
-  repo="$HOME/maven-repo-local"
+  repo=`egrep ^maven.repo.local $HOME/.m2/maven.properties | sed 's/maven.repo.local\\s*=\\s*//'`
 
   if [ ! -d "$repo" ]
   then
-    echo "FATAL: Could not find a maven repository in $repo"
-    exit
+    repo="$HOME/maven-repo-local"
+
+    if [ ! -d "$repo" ]
+    then
+      echo "FATAL: Could not find a maven repository in $repo"
+      exit
+    fi
   fi
 }
 
 function findM2()
 {
-  m2="$HOME/m2"
+  m2="$M2_HOME"
 
   if [ ! -x $m2/bin/m2 ]
   then
-    echo "FATAL: Could not find a maven 2 installation in $m2"
-    exit
+    m2=`egrep ^maven.home $HOME/.m2/maven.properties | sed 's/maven.home\\s*=\\s*//'`
+
+    if [ ! -x $m2/bin/m2 ]
+    then
+      m2="$HOME/m2"
+
+      if [ ! -x $m2/bin/m2 ]
+      then
+        echo "FATAL: Could not find a maven 2 installation in $m2"
+        exit
+      fi
+    fi
   fi
 }
 
@@ -97,7 +112,7 @@ cp src/runtime/conf/plexus.conf $runtime/conf
 cp src/runtime/conf/classworlds.conf $runtime/conf
 
 dest=$runtime/core/boot
-copyDependency "classworlds" "classworlds" "1.1-SNAPSHOT"
+copyDependency "classworlds" "classworlds" "1.1-alpha-1"
 
 #
 # Make the continuumweb application
@@ -115,9 +130,9 @@ cp -r src/main/resources/* $runtime/apps/continuumweb/resources
 (
   cd $runtime/apps/continuumweb 
   echo app:$runtime/apps/continuumweb 
-  rm -rf web && ln -s ../../../src/main/resources/web web
-  rm -rf forms && ln -s ../../../src/main/resources/forms forms
-  rm -rf localization && ln -s ../../../src/main/resources/localization localization
+  rm -rf web && cp -r ../../../src/main/resources/web web
+  rm -rf forms && cp -r ../../../src/main/resources/forms forms
+  rm -rf localization && cp -r ../../../src/main/resources/localization localization
 )
 
 # Copy the dependencies
