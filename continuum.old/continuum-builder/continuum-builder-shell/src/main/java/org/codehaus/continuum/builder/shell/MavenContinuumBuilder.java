@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.5 2004-10-28 21:23:59 trygvis Exp $
+ * @version $Id: MavenContinuumBuilder.java,v 1.6 2004-10-29 15:03:44 trygvis Exp $
  */
 public class MavenContinuumBuilder
     extends ShellContinuumBuilder
@@ -44,15 +44,6 @@ public class MavenContinuumBuilder
         throws ContinuumException
     {
         ShellProjectDescriptor descriptor = new ShellProjectDescriptor();
-
-//        try
-//        {
-//            scm.checkOutProject( project );
-//        }
-//        catch( ContinuumScmException ex )
-//        {
-//            throw new ContinuumException( "Error while checking out the project.", ex );
-//        }
 
         Xpp3Dom mavenProject;
 
@@ -76,8 +67,15 @@ public class MavenContinuumBuilder
             throw new ContinuumException( "The project descriptor is missing the SCM information." );
         }
 
-        Xpp3Dom build = mavenProject.getChild( "build" );
+        // Name
+        String name = mavenProject.getChild( "name" ).getValue();
 
+        if ( StringUtils.isEmpty( name ) )
+        {
+            throw new ContinuumException( "Missing <name> from the project descriptor." );
+        }
+
+        // Scm
         Xpp3Dom scm = mavenProject.getChild( "repository" );
 
         String scmConnection = scm.getChild( "connection" ).getValue();
@@ -92,6 +90,9 @@ public class MavenContinuumBuilder
             throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
         }
 
+        // Nag email address
+        Xpp3Dom build = mavenProject.getChild( "build" );
+
         String nagEmailAddress = build.getChild( "nagEmailAddress" ).getValue();
 
         if ( StringUtils.isEmpty( nagEmailAddress ) )
@@ -99,6 +100,7 @@ public class MavenContinuumBuilder
             throw new ContinuumException( "Missing nag email address from the ci section of the project descriptor." );
         }
 
+        // Version
         String version = mavenProject.getChild( "currentVersion" ).getValue();
 
         if ( StringUtils.isEmpty( version ) )
@@ -112,10 +114,7 @@ public class MavenContinuumBuilder
 
         ContinuumProject project = new GenericContinuumProject();
 
-        if ( !StringUtils.isEmpty( mavenProject.getName() ) )
-        {
-            project.setName( mavenProject.getName() );
-        }
+        project.setName( name );
 
         project.setScmUrl( scmConnection );
 
