@@ -48,7 +48,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Intergration1Test.java,v 1.2 2004-07-29 22:59:38 trygvis Exp $
+ * @version $Id: Intergration1Test.java,v 1.3 2004-07-30 02:28:44 trygvis Exp $
  */
 public class Intergration1Test
     extends TestCase
@@ -74,15 +74,17 @@ public class Intergration1Test
     public void setUp()
         throws Exception
     {
-        FileUtils.forceDelete( getTestFile( "continuumdb.log" ) );
-
-        FileUtils.forceDelete( getTestFile( "continuumdb.properties" ) );
-
-        FileUtils.forceDelete( getTestFile( "continuumdb.sql" ) );
-
         container = new DefaultPlexusContainer();
 
-        container.getContext().put( "basedir", new File( "" ).getAbsolutePath() );
+        String basedir = System.getProperty( "basedir", new File( "" ).getAbsolutePath() );
+
+        container.getContext().put( "basedir", basedir );
+
+        deleteFile( "continuumdb.log" );
+
+        deleteFile( "continuumdb.properties" );
+
+        deleteFile( "continuumdb.sql" );
 
         File plexusHome = getTestFile( "target/plexus-home" );
 
@@ -156,7 +158,11 @@ public class Intergration1Test
     protected File getTestFile( String path )
         throws Exception
     {
-        String basedir = container.getContext().get( "basedir" ).toString();
+        Object dir = container.getContext().get( "basedir" );
+
+        assertNotNull( "Internal error, missing basedir from the container context.", dir );
+
+        String basedir = dir.toString();
 
         return new File( basedir, path );
     }
@@ -268,6 +274,17 @@ public class Intergration1Test
             {
                 fail( "Timeout" );
             }
+        }
+    }
+
+    private void deleteFile( String fileName )
+        throws Exception
+    {
+        File file = getTestFile( fileName );
+
+        if ( file.exists() )
+        {
+            assertTrue( "Error while deleting " + file.getAbsolutePath(), file.delete() );
         }
     }
 }
