@@ -7,15 +7,15 @@ import org.apache.maven.project.Project;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumBuild.java,v 1.2 2004-01-16 17:57:17 jvanzyl Exp $
+ * @version $Id: ProjectBuild.java,v 1.1 2004-01-16 19:36:50 jvanzyl Exp $
  */
-public class ContinuumBuild
+public class ProjectBuild
 {
     private Project project;
 
     private ProjectScm projectScm;
 
-    public ContinuumBuild( Project project )
+    public ProjectBuild( Project project )
     {
         this.project = project;
 

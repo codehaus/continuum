@@ -82,7 +82,7 @@ public class DefaultContinuum
 
     public void addProject( Project project )
     {
-        ContinuumBuild build = new ContinuumBuild( project );
+        ProjectBuild build = new ProjectBuild( project );
 
         builds.put( project.getId(), build );
     }
@@ -126,7 +126,7 @@ public class DefaultContinuum
 
         for ( Iterator i = builds.values().iterator(); i.hasNext(); )
         {
-            ContinuumBuild projectBuild = (ContinuumBuild) i.next();
+            ProjectBuild projectBuild = (ProjectBuild) i.next();
 
             try
             {
@@ -159,7 +159,7 @@ public class DefaultContinuum
         }
     }
 
-    private List buildProject( ContinuumBuild build )
+    private List buildProject( ProjectBuild build )
         throws Exception
     {
         List messages = compiler.compile( classpathElements( build.getProject() ),
