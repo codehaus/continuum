@@ -1,7 +1,7 @@
 package org.codehaus.continuum.web.context;
 
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ViewContextManager.java,v 1.1.1.1 2005-02-17 22:23:57 trygvis Exp $
+ * @version $Id: ViewContextManager.java,v 1.2 2005-03-10 00:05:57 trygvis Exp $
  */
 public interface ViewContextManager
 {
