@@ -25,10 +25,15 @@ import java.util.Iterator;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.model.Notifier;
 import org.apache.maven.model.Scm;
+import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
+import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.apache.maven.settings.MavenSettings;
+import org.apache.maven.settings.MavenSettingsBuilder;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -37,13 +42,25 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.4 2005-03-13 22:30:28 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.5 2005-03-21 12:53:28 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
 {
     /** @requirement */
     private MavenProjectBuilder projectBuilder;
+
+    /** @requirement */
+    private ArtifactRepositoryFactory artifactRepositoryFactory;
+
+    /** @requirement */
+    private MavenSettingsBuilder settingsBuilder;
+
+    /** @requirement */
+    private ArtifactRepositoryLayout repositoryLayout;
+
+    /** @configuration */
+    private String localRepository;
 
     // ----------------------------------------------------------------------
     // MavenBuilderHelper Implementation
@@ -167,13 +184,11 @@ public class DefaultMavenBuilderHelper
     protected MavenProject getProject( File file )
         throws ContinuumException
     {
-        ArtifactRepository r = new ArtifactRepository( "local", "file:///home/jvanzyl/maven-repo-local" );
-
         MavenProject project = null;
 
         try
         {
-            project = projectBuilder.build( file, r );
+            project = projectBuilder.build( file, getRepository() );
         }
         catch ( ProjectBuildingException e )
         {
@@ -219,5 +234,28 @@ public class DefaultMavenBuilderHelper
         }
 
         return project;
+    }
+
+    private ArtifactRepository getRepository()
+        throws ContinuumException
+    {
+        MavenSettings settings;
+
+        try
+        {
+            settings = settingsBuilder.buildSettings();
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumException( "Error while building settings.", e );
+        }
+
+        Repository repository = new Repository();
+
+        repository.setId( "local" );
+
+        repository.setUrl( "file://" + localRepository );
+
+        return artifactRepositoryFactory.createArtifactRepository( repository, settings, repositoryLayout );
     }
 }

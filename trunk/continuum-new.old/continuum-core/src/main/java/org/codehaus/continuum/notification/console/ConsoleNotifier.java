@@ -21,13 +21,14 @@ import java.util.Set;
 
 import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.notification.NotificationException;
 import org.codehaus.plexus.notification.notifier.Notifier;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.4 2005-03-10 00:05:51 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.5 2005-03-21 12:53:30 trygvis Exp $
  */
 public class ConsoleNotifier
     extends AbstractLogEnabled
@@ -42,29 +43,31 @@ public class ConsoleNotifier
     {
         ContinuumBuild build = (ContinuumBuild) context.get( ContinuumNotificationDispatcher.CONTEXT_BUILD );
 
+        ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
+
         if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_STARTED ) )
         {
-            buildStarted( build );
+            buildStarted( build, project );
         }
         else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_CHECKOUT_STARTED ) )
         {
-            checkoutStarted( build );
+            checkoutStarted( build, project );
         }
         else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_CHECKOUT_COMPLETE ) )
         {
-            checkoutComplete( build );
+            checkoutComplete( build, project );
         }
         else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_RUNNING_GOALS ) )
         {
-            runningGoals( build );
+            runningGoals( build, project );
         }
         else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_GOALS_COMPLETED ) )
         {
-            goalsCompleted( build );
+            goalsCompleted( build, project );
         }
         else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_COMPLETE ) )
         {
-            buildComplete( build );
+            buildComplete( build, project );
         }
         else
         {
@@ -76,53 +79,53 @@ public class ConsoleNotifier
     //
     // ----------------------------------------------------------------------
 
-    private void buildStarted( ContinuumBuild build )
+    private void buildStarted( ContinuumBuild build, ContinuumProject project )
     {
-        out( build, "Build started." );
+        out( build, project, "Build started." );
     }
 
-    private void checkoutStarted( ContinuumBuild build )
+    private void checkoutStarted( ContinuumBuild build, ContinuumProject project )
     {
-        out( build, "Checkout started." );
+        out( build, project, "Checkout started." );
     }
 
-    private void checkoutComplete( ContinuumBuild build )
+    private void checkoutComplete( ContinuumBuild build, ContinuumProject project )
     {
-        out( build, "Checkout complete." );
+        out( build, project, "Checkout complete." );
     }
 
-    private void runningGoals( ContinuumBuild build )
+    private void runningGoals( ContinuumBuild build, ContinuumProject project )
     {
-        out( build, "Running goals." );
+        out( build, project, "Running goals." );
     }
 
-    private void goalsCompleted( ContinuumBuild build )
+    private void goalsCompleted( ContinuumBuild build, ContinuumProject project )
     {
         if ( build.getBuildResult() != null )
         {
-            out( build, "Goals completed. state: " + build.getState() );
+            out( build, project, "Goals completed. state: " + build.getState() );
         }
         else
         {
-            out( build, "Goals completed." );
+            out( build, project, "Goals completed." );
         }
     }
 
-    private void buildComplete( ContinuumBuild build )
+    private void buildComplete( ContinuumBuild build, ContinuumProject project )
     {
         if ( build.getBuildResult() != null )
         {
-            out( build, "Build complete. state: " + build.getState() );
+            out( build, project, "Build complete. state: " + build.getState() );
         }
         else
         {
-            out( build, "Build complete." );
+            out( build, project, "Build complete." );
         }
     }
 
-    private void out( ContinuumBuild build, String msg )
+    private void out( ContinuumBuild build, ContinuumProject project, String msg )
     {
-        System.out.println( "Build event for project " + build.getProject().getName() + ":" + msg );
+        System.out.println( "Build event for project " + project.getName() + ":" + msg );
 
         System.out.println( build.getError() );
     }

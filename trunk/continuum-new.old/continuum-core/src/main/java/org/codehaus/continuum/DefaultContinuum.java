@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.codehaus.continuum.buildcontroller.BuildController;
-import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
+import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.buildqueue.BuildQueueException;
 import org.codehaus.continuum.project.ContinuumBuild;
@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.11 2005-03-21 00:11:59 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.12 2005-03-21 12:53:22 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -467,11 +467,11 @@ public class DefaultContinuum
     private void updateProjectFromCheckOut( ContinuumProject project )
         throws ContinuumException
     {
-        ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
-
         // ----------------------------------------------------------------------
         // Make a new descriptor
         // ----------------------------------------------------------------------
+
+        ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
         builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
 
