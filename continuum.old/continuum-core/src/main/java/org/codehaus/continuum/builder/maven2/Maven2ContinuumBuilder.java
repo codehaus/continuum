@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.maven.ExecutionResponse;
 import org.apache.maven.GoalNotFoundException;
 import org.apache.maven.Maven;
 import org.apache.maven.project.MavenProject;
@@ -34,7 +35,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.5 2004-07-08 01:13:35 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.6 2004-07-11 23:57:43 trygvis Exp $
  */
 public class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -144,6 +145,10 @@ public class Maven2ContinuumBuilder
 
         Maven maven = getMaven();
 
+        Exception exception = null;
+
+        ExecutionResponse executionResponse = null;
+
         try
         {
             build = store.getBuildResult( buildId );
@@ -197,46 +202,49 @@ public class Maven2ContinuumBuilder
             List goals = descriptor.getGoals();
 
             // TODO: get the output from the maven build and check for error
-            maven.execute( pom, goals );
+            executionResponse = maven.execute( pom, goals );
 
             // TODO: is this wanted?
             FileUtils.forceDelete( basedir );
 
-            notifier.buildComplete( build, null );
-
-            setBuildResult( buildId, BuildResult.BUILD_RESULT_OK, null );
+            build.setMaven2Result( executionResponse );
         }
         catch ( ProjectBuildingException ex )
         {
-            notifier.buildComplete( build, ex );
-
-            setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
-
-            return;
+            exception = ex;
         }
         catch ( GoalNotFoundException ex )
         {
-            notifier.buildComplete( build, ex );
-
-            setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
-
-            return;
+            exception = ex;
         }
         catch ( IOException ex )
         {
-            notifier.buildComplete( build, ex );
-
-            setBuildResult( buildId, BuildResult.BUILD_RESULT_ERROR, ex );
-
-            return;
+            exception = ex;
         }
+
+        int result = ( exception == null ) ? BuildResult.BUILD_RESULT_OK : 
+                                             BuildResult.BUILD_RESULT_ERROR;
+
+        setBuildResult( buildId, result, exception, executionResponse );
+
+        notifier.buildComplete( build, exception );
+    }
+
+    private void setBuildResult( String buildId, int state )
+    {
+        setBuildResult( buildId, state, null, null );
     }
 
     private void setBuildResult( String buildId, int state, Exception ex )
     {
+        setBuildResult( buildId, state, ex, null );
+    }
+
+    private void setBuildResult( String buildId, int state, Exception ex, ExecutionResponse executionResponse )
+    {
         try
         {
-            store.setBuildResult( buildId, state, ex );
+            store.setBuildResult( buildId, state, ex, executionResponse );
         }
         catch( ContinuumStoreException ex2 )
         {

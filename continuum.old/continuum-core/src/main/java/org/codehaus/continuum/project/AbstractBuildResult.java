@@ -1,12 +1,14 @@
 package org.codehaus.continuum.project;
 
+import org.apache.maven.ExecutionResponse;
+
 /*
  * LICENSE
  */
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuildResult.java,v 1.1 2004-07-07 02:34:35 trygvis Exp $
+ * @version $Id: AbstractBuildResult.java,v 1.2 2004-07-11 23:59:06 trygvis Exp $
  */
 public abstract class AbstractBuildResult
     implements BuildResult
@@ -28,6 +30,11 @@ public abstract class AbstractBuildResult
 
     /** */
     private Throwable error;
+
+    /**
+     * TODO: Refactor to a new Maven2BuildResult class.
+     */
+    private ExecutionResponse maven2Result;
 
     /**
      */
@@ -129,6 +136,16 @@ public abstract class AbstractBuildResult
     public void setError( Throwable error )
     {
         this.error = error;
+    }
+
+    public ExecutionResponse getMaven2Result()
+    {
+        return maven2Result;
+    }
+
+    public void setMaven2Result( ExecutionResponse executionResponse )
+    {
+        this.maven2Result = executionResponse;
     }
 
     public static String buildStateToString( int state )
