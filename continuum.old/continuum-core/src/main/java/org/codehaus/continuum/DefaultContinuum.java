@@ -20,7 +20,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.35 2004-07-13 20:53:33 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.36 2004-07-14 05:35:56 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -141,6 +141,19 @@ public class DefaultContinuum
         }
 
         return projectId;
+    }
+
+    public Iterator getAllProjects( int start, int end )
+        throws ContinuumException
+    {
+        try
+        {
+            return store.getAllProjects();
+        }
+        catch( ContinuumStoreException ex )
+        {
+            throw new ContinuumException( "Exception while getting all projects.", ex );
+        }
     }
 
     public String buildProject( String id )

@@ -1,10 +1,15 @@
 package org.codehaus.continuum;
 
+import java.util.Iterator;
+
 public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
     String addProject( String name, String scmConnection, String type )
+        throws ContinuumException;
+
+    Iterator getAllProjects( int start, int end )
         throws ContinuumException;
 
     /**
