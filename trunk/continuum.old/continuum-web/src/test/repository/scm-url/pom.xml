@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>continuum-test</groupId>
+  <artifactId>scm-socket-registrar-test-project</artifactId>
+  <name>Scm Socket Registrar Test Project</name>
+  <version>1.0.0</version>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:local:src/test/repository:scm-url</connection>
+  </scm>
+</project>

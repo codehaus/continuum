@@ -1,0 +1,18 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>url-registrar-server</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>url-registrar</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>6000</port>
+      </configuration>
+    </component>
+  </components>
+</plexus>
