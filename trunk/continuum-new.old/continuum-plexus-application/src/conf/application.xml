@@ -14,7 +14,12 @@
     <service>
       <id>servlet-container</id>
       <configuration>
-        <webapps>${plexus.home}/lib</webapps>
+        <webapps>
+          <webapp>
+            <path>${plexus.home}/lib/continuum-web-1.0-alpha-1-SNAPSHOT.jar</path>
+            <context>/continuum</context>
+          </webapp>
+        </webapps>
       </configuration>
       </service>
   </services>

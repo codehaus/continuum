@@ -106,7 +106,7 @@
     <plugin>
       <id>modello</id>
       <configuration>
-        <version>1.0</version>
+        <version>1.0.0</version>
         <model>src/main/resources/continuum.mdo</model>
         <packageWithVersion>false</packageWithVersion>
       </configuration>

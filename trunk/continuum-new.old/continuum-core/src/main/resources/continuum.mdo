@@ -383,5 +383,29 @@
         </field>
       </fields>
     </class>
+
+    <class>
+      <name>Maven1BuildResult</name>
+      <packageName>org.codehaus.continuum.builder.maven.m1</packageName>
+      <superClass>ContinuumBuildResult</superClass>
+      <version>1.0.0</version>
+      <fields>
+        <field stash.maxSize="8000">
+          <name>standardOutput</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field stash.maxSize="8000">
+          <name>standardError</name>
+          <version>1.0.0</version>
+          <type>String</type>
+        </field>
+        <field>
+          <name>exitCode</name>
+          <version>1.0.0</version>
+          <type>int</type>
+        </field>
+      </fields>
+    </class>
   </classes>
 </model>
