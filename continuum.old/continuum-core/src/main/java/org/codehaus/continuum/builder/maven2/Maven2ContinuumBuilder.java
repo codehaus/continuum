@@ -31,10 +31,9 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @component.role org.codehaus.continuum.builder.ContinuumBuilder
- * @c-omponent.roleHint maven2
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.1 2004-07-01 15:30:56 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.2 2004-07-01 20:53:30 trygvis Exp $
  */
 public class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -134,9 +133,6 @@ public class Maven2ContinuumBuilder
 
             if ( connection.length != 6 )
                 throw new ContinuumException( "Invalid connection string." );
-
-            if ( !connection[1].equals( "cvs" ) )
-                throw new ContinuumException( "Continuum currently only supports 'cvs' as scm repo." );
 
             scm.clean( project );
 

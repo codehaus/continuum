@@ -16,7 +16,7 @@ import org.codehaus.continuum.store.ContinuumStore;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumTest.java,v 1.17 2004-07-01 15:30:59 trygvis Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.18 2004-07-01 20:53:30 trygvis Exp $
  */
 public class DefaultContinuumTest
     extends AbstractContinuumTest
@@ -56,7 +56,7 @@ public class DefaultContinuumTest
         // because the builder thread might start before the return of the call.
         assertEquals( 1, queue.getLength() );
 
-        int time = 10000;
+        int time = 30 * 1000;
 
         int interval = 100;
 
@@ -66,12 +66,19 @@ public class DefaultContinuumTest
         {
             Thread.sleep( interval );
 
+            time -= interval;
+
             result = store.getBuildResult( buildId );
 
             if ( result.getState() != BuildResult.BUILD_BUILDING )
+            {
                 break;
+            }
+        }
 
-            time -= interval;
+        if ( time <= 0 )
+        {
+            fail( "Timeout while waiting for the build to finnish." );
         }
 
         assertEquals( BuildResult.buildStateToString( BuildResult.BUILD_RESULT_OK ), 
