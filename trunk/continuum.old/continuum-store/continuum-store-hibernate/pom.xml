@@ -2,7 +2,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>continuum-parent</artifactId>
+    <artifactId>continuum-store</artifactId>
     <groupId>continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
@@ -10,12 +10,6 @@
   <artifactId>continuum-store-hibernate</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Hibernate Store</name>
-  <repositories>
-    <repository>
-      <id>codehaus</id>
-      <url>http://repository.codehaus.org</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
