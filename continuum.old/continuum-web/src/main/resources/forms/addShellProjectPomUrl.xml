@@ -1,7 +1,7 @@
 <form>
   <id>addProjectPomUrl</id>
   <title-key>addProjectPomUrl.title</title-key>
-  <action>addShellProjectPomUrl</action>
+  <action>addShellBuilderProject</action>
   <view>projectOverview.vm</view>
   <elements>
     <element>
