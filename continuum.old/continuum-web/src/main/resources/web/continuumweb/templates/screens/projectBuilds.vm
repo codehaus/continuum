@@ -1,0 +1,29 @@
+## Input
+##  $project ContinuumProject
+##  $builds List of BuildResults
+<div class="app">
+  <h3>Build results for $project.name</h3>
+  <p>
+    #set ( $class = "a" )
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+      <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>State</th>
+      </tr>
+
+      #foreach ( $build in $builds )
+      <tr class="$class">
+        <td>$build.startTime</td>
+        <td>$build.endTime</td>
+        <td>$build.state</td>
+      </tr>
+      #if ( $class == "a" )
+        #set ( $class = "b" )
+      #else
+        #set ( $class = "a" )
+      #end
+      #end
+    </table>
+  </p>
+</div>

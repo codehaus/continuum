@@ -1,0 +1,20 @@
+<div id="navcolum">
+ <div id="projecttools" class="toolgroup">
+  <div class="label">Continuum</div>
+  <div class="body">
+    <div><a href="$link.setPage('projectOverview.vm')">Show Projects</a></div>
+<!--
+    <div><a href="$link.setPage('addProject.form')">Add Project</a></div>
+    <div><a href="$link.setPage('addProject.form')">Add Project</a></div>
+-->
+  </div>
+ </div>
+
+ <div id="projecttools" class="toolgroup">
+  <div class="label">Add Project</div>
+  <div class="body">
+    <div><a href="$link.setPage('addProjectScm.form')">Scm Url</a></div>
+    <div><a href="$link.setPage('addProjectPomUrl.form')">Pom Url</a></div>
+  </div>
+ </div>
+</div>
