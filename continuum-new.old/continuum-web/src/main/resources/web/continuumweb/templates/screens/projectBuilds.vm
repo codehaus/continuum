@@ -19,7 +19,6 @@
         <th>State</th>
         <th>Output</th>
       </tr>
-
       #foreach ( $build in $builds )
       <tr class="$class">
         <td>$build.startTime</td>

@@ -27,7 +27,7 @@ package org.codehaus.continuum.buildcontroller;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
-import org.codehaus.continuum.notification.NotifierManager;
+import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -42,7 +42,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.4 2005-03-09 20:06:37 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -52,7 +52,7 @@ public class DefaultBuildController
 
     private ContinuumStore store;
 
-    private NotifierManager notifier;
+    private ContinuumNotificationDispatcher notifier;
 
     private ContinuumScm scm;
 

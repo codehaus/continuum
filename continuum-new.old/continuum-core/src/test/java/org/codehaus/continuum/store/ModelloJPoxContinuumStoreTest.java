@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumBuild;
@@ -39,7 +40,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.1 2005-02-28 17:04:46 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.2 2005-03-09 20:06:52 trygvis Exp $
  */
 public class ModelloJPoxContinuumStoreTest
     extends PlexusTestCase
@@ -213,6 +214,62 @@ public class ModelloJPoxContinuumStoreTest
         assertNotNull( build );
 
         assertEquals( "build.id", buildId, build.getId() );
+    }
+
+    public void testTheAssociationBetweenTheProjectAndItsBuilds()
+        throws Exception
+    {
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+
+        JdoFactory jdoFactory = (JdoFactory) lookup( JdoFactory.ROLE );
+
+        jdoFactory.getPersistenceManagerFactory().close();
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        String projectId = addProject( "Test Project" );
+
+        String projectIdFoo = addProject( "Foo Project" );
+
+        String projectIdBar = addProject( "Bar Project" );
+
+        List expectedBuilds = new ArrayList();
+
+        for ( int i = 0; i < 10; i++ )
+        {
+            expectedBuilds.add( 0, store.createBuild( projectId ) );
+
+            store.createBuild( projectIdFoo );
+
+            store.createBuild( projectIdBar );
+
+            store.createBuild( projectIdFoo );
+        }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        Iterator builds = store.getBuildsForProject( projectId, 0, 0 );
+
+        List actualBuilds = CollectionUtils.iteratorToList( builds );
+
+        assertEquals( "builds.size", expectedBuilds.size(), actualBuilds.size() );
+
+        Iterator it;
+
+        int i;
+
+        for ( it = expectedBuilds.iterator(), i = 0; it.hasNext(); i++ )
+        {
+            String expectedBuildId = (String) it.next();
+
+            String actualBuildId = ((ContinuumBuild) actualBuilds.get( i )).getId();
+
+            assertEquals( "builds[" + i + "]", expectedBuildId, actualBuildId );
+        }
     }
 
     // ----------------------------------------------------------------------

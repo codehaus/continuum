@@ -47,7 +47,7 @@
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
-          <role>org.codehaus.continuum.notification.NotifierManager</role>
+          <role>org.codehaus.continuum.notification.ContinuumNotificationDispatcher</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
@@ -56,14 +56,24 @@
     </component>
 
     <component>
-      <role>org.codehaus.continuum.notification.NotifierManager</role>
-      <implementation>org.codehaus.continuum.notification.DefaultNotifierManager</implementation>
+      <role>org.codehaus.continuum.notification.ContinuumNotificationDispatcher</role>
+      <implementation>org.codehaus.continuum.notification.DefaultContinuumNotificationDispatcher</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
-          <field-name>notifiers</field-name>
+          <role>org.codehaus.plexus.notification.NotificationDispatcher</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
       </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.notification.RecipientSource</role>
+      <implementation>org.codehaus.continuum.notification.ContinuumRecipientSource</implementation>
+      <configuration>
+        <to>nobody@localhost</to>
+      </configuration>
     </component>
 
     <component>
@@ -84,12 +94,6 @@
           <role>org.codehaus.plexus.taskqueue.TaskQueue</role>
         </requirement>
       </requirements>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
-      <role-hint>console</role-hint>
-      <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
     </component>
 
     <component>
@@ -181,7 +185,13 @@
     <!-- Notifier -->
 
     <component>
-      <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+      <role>org.codehaus.plexus.notification.notifier.Notifier</role>
+      <role-hint>console</role-hint>
+      <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.notification.notifier.Notifier</role>
       <role-hint>mail</role-hint>
       <implementation>org.codehaus.continuum.notification.mail.MailContinuumNotifier</implementation>
       <requirements>
@@ -190,6 +200,9 @@
         </requirement>
         <requirement>
           <role>org.codehaus.plexus.mailsender.MailSender</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.velocity.VelocityComponent</role>
         </requirement>
       </requirements>
       <configuration>
@@ -279,33 +292,15 @@
       <lifecycle-handler>plexus-configurable</lifecycle-handler>
       <configuration>
         <task-entry-evaluators>
-          <!--
-          <task-entry-evaluator>a</task-entry-evaluator>
-          -->
         </task-entry-evaluators>
         <task-exit-evaluators>
-          <!--
-          <task-exit-evaluator>a</task-exit-evaluator>
-          -->
         </task-exit-evaluators>
         <task-viability-evaluators>
           <task-viability-evaluator>build-project</task-viability-evaluator>
         </task-viability-evaluators>
       </configuration>
     </component>
-<!--
-    <component>
-      <role>org.codehaus.plexus.taskqueue.TaskEntryEvaluator</role>
-      <role-hint>a</role-hint>
-      <implementation>org.codehaus.plexus.taskqueue.ATaskEntryEvaluator</implementation>
-    </component>
 
-    <component>
-      <role>org.codehaus.plexus.taskqueue.TaskExitEvaluator</role>
-      <role-hint>a</role-hint>
-      <implementation>org.codehaus.plexus.taskqueue.ATaskExitEvaluator</implementation>
-    </component>
--->
     <component>
       <role>org.codehaus.plexus.taskqueue.TaskViabilityEvaluator</role>
       <role-hint>build-project</role-hint>

@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.1 2005-03-09 00:14:39 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.2 2005-03-09 20:06:38 trygvis Exp $
  */
 public class AntBuilder
     extends AbstractLogEnabled
@@ -75,6 +75,8 @@ public class AntBuilder
         {
             throw new ContinuumException( "Error while executing shell command.", e );
         }
+
+        System.err.println( "exit code: " + executionResult.getExitCode() );
 
         boolean success = executionResult.getExitCode() == 0;
 

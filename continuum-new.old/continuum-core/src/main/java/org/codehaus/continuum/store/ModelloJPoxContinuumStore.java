@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Collections;
 
 import javax.jdo.JDOHelper;
 
@@ -43,7 +44,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.1 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.2 2005-03-09 20:06:46 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -256,9 +257,18 @@ public class ModelloJPoxContinuumStore
 
             build.setEndTime( new Date().getTime() );
 
-            build.setBuildResult( result );
-
             build.setError( throwableToString( error ) );
+
+            store.commit();
+
+            // ----------------------------------------------------------------------
+            // This double commit seems to be needed for some reason. Not having it
+            // seems to result in some foreign key constraint violation.
+            // ----------------------------------------------------------------------
+
+            store.begin();
+
+            build.setBuildResult( result );
 
             store.commit();
         }
@@ -319,7 +329,11 @@ public class ModelloJPoxContinuumStore
     {
         try
         {
-            return store.getContinuumProject( projectId, true ).getBuilds().iterator();
+            List builds = store.getContinuumProject( projectId, true ).getBuilds();
+
+            Collections.reverse( builds );
+
+            return builds.iterator();
         }
         catch ( Exception e )
         {

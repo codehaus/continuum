@@ -24,39 +24,87 @@ package org.codehaus.continuum.notification.console;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.notification.ContinuumNotifier;
+import java.util.Map;
+import java.util.Set;
+
+import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.notification.NotificationException;
+import org.codehaus.plexus.notification.notifier.Notifier;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.3 2005-03-09 20:06:43 trygvis Exp $
  */
 public class ConsoleNotifier
     extends AbstractLogEnabled
-    implements ContinuumNotifier
+    implements Notifier
 {
-    public void buildStarted( ContinuumBuild build )
+    // ----------------------------------------------------------------------
+    // Notifier Implementation
+    // ----------------------------------------------------------------------
+
+    public void sendNotification( String source, Set recipients, Map context )
+        throws NotificationException
+    {
+        ContinuumBuild build = (ContinuumBuild) context.get( ContinuumNotificationDispatcher.CONTEXT_BUILD );
+
+        if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_STARTED ) )
+        {
+            buildStarted( build );
+        }
+        else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_CHECKOUT_STARTED ) )
+        {
+            checkoutStarted( build );
+        }
+        else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_CHECKOUT_COMPLETE ) )
+        {
+            checkoutComplete( build );
+        }
+        else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_RUNNING_GOALS ) )
+        {
+            runningGoals( build );
+        }
+        else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_GOALS_COMPLETED ) )
+        {
+            goalsCompleted( build );
+        }
+        else if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_COMPLETE ) )
+        {
+            buildComplete( build );
+        }
+        else
+        {
+            getLogger().warn( "Unknown source: '" + source + "'." );
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private void buildStarted( ContinuumBuild build )
     {
         out( build, "Build started." );
     }
 
-    public void checkoutStarted( ContinuumBuild build )
+    private void checkoutStarted( ContinuumBuild build )
     {
         out( build, "Checkout started." );
     }
 
-    public void checkoutComplete( ContinuumBuild build )
+    private void checkoutComplete( ContinuumBuild build )
     {
         out( build, "Checkout complete." );
     }
 
-    public void runningGoals( ContinuumBuild build )
+    private void runningGoals( ContinuumBuild build )
     {
         out( build, "Running goals." );
     }
 
-    public void goalsCompleted( ContinuumBuild build )
+    private void goalsCompleted( ContinuumBuild build )
     {
         if ( build.getBuildResult() != null )
         {
@@ -68,7 +116,7 @@ public class ConsoleNotifier
         }
     }
 
-    public void buildComplete( ContinuumBuild build )
+    private void buildComplete( ContinuumBuild build )
     {
         if ( build.getBuildResult() != null )
         {
@@ -83,18 +131,7 @@ public class ConsoleNotifier
     private void out( ContinuumBuild build, String msg )
     {
         System.out.println( "Build event for project " + build.getProject().getName() + ":" + msg );
-/*
-        Throwable ex = build.getError();
 
-        if ( ex != null )
-        {
-            // TODO: better reporting
-//            String message = ex.getMessage();
-
-//            System.out.println( "Message: " + message );
-            ex.printStackTrace( System.out );
-        }
-*/
         System.out.println( build.getError() );
     }
 }

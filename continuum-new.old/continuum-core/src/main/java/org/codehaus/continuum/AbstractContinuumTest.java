@@ -28,7 +28,6 @@ import junit.framework.Assert;
 import org.apache.maven.scm.manager.ScmManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
-import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
@@ -40,7 +39,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.1.1.1 2005-02-17 22:23:48 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.2 2005-03-09 20:06:36 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends ArtifactEnabledPlexusTestCase
@@ -53,9 +52,6 @@ public abstract class AbstractContinuumTest
         super.setUp();
 
         File plexusTemp = getTestFile( "target/plexus-home/temp" );
-
-        // TODO: fix
-//        plexusTemp = getTestFile( "${plexus.temp}" );
 
         FileUtils.deleteDirectory( plexusTemp );
 
@@ -99,12 +95,6 @@ public abstract class AbstractContinuumTest
         throws Exception
     {
         return (BuildQueue) lookupComponent( BuildQueue.ROLE );
-    }
-
-    public static ContinuumNotifier getContinuumNotifier( String roleHint )
-        throws Exception
-    {
-        return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE, roleHint );
     }
 
     public static ContinuumTrigger getContinuumTrigger( String roleHint )
