@@ -48,7 +48,7 @@ import org.codehaus.plexus.i18n.I18N;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: WebUtils.java,v 1.6 2004-10-29 00:31:10 trygvis Exp $
+ * @version $Id: WebUtils.java,v 1.7 2004-10-30 13:14:04 trygvis Exp $
  */
 public class WebUtils
 {
@@ -105,6 +105,7 @@ public class WebUtils
             project.getScmUrl(),
             project.getNagEmailAddress(),
             project.getVersion(),
+            project.getWorkingDirectory(),
             i18n.getString( project.getState().getI18nKey() ),
             project.getType(),
             projectDescriptorModel );
