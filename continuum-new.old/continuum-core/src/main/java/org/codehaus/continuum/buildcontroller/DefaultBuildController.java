@@ -42,7 +42,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -121,9 +121,9 @@ public class DefaultBuildController
         // if these calls fail we're screwed anyway
         // and it will only be logged through the logger.
 
-        ContinuumBuilder builder = builderManager.getBuilderForBuild( buildId );
-
         ContinuumBuild build = store.getBuild( buildId );
+
+        ContinuumBuilder builder = builderManager.getBuilder( build.getProject().getBuilderId() );
 
         try
         {
@@ -148,14 +148,10 @@ public class DefaultBuildController
         {
             store.setBuildResult( buildId, ContinuumProjectState.ERROR, null, ex );
 
-            getLogger().fatalError( "Error building the project.", ex );
+            getLogger().fatalError( "Error building the project, build id: '" + buildId + "'.", ex );
+        }
 
-            return;
-        }
-        finally
-        {
-            notifier.buildComplete( build );
-        }
+        notifier.buildComplete( build );
     }
 
     private ContinuumBuildResult build( ContinuumBuilder builder, ContinuumBuild build )
@@ -167,7 +163,7 @@ public class DefaultBuildController
         {
             notifier.checkoutStarted( build );
 
-            update( project );
+            scm.updateProject( project );
         }
         finally
         {
@@ -188,12 +184,6 @@ public class DefaultBuildController
         }
 
         return result;
-    }
-
-    private void update( ContinuumProject project )
-        throws ContinuumScmException
-    {
-        scm.updateProject( project );
     }
 
     private ContinuumBuildResult runGoals( ContinuumBuilder builder, String workingDirectory, ContinuumBuild build )

@@ -36,7 +36,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder
@@ -77,7 +77,15 @@ public abstract class ShellBuilder
 
         if ( project != null )
         {
-            ShellBuildResult result = new ShellBuildResult( success, out, err, exitCode );
+            ShellBuildResult result = new ShellBuildResult();
+
+            result.setSuccess( success );
+
+            result.setStandardOutput( out );
+
+            result.setStandardError( err );
+
+            result.setExitCode( exitCode );
 
             return result;
         }

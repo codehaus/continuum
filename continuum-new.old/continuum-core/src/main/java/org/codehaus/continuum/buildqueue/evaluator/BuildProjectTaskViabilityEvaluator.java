@@ -24,21 +24,20 @@ package org.codehaus.continuum.buildqueue.evaluator;
  * SOFTWARE.
  */
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.taskqueue.TaskViabilityEvaluator;
-import org.codehaus.plexus.taskqueue.TaskQueueException;
 import org.codehaus.continuum.buildqueue.BuildProjectTask;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.taskqueue.TaskQueueException;
+import org.codehaus.plexus.taskqueue.TaskViabilityEvaluator;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildProjectTaskViabilityEvaluator.java,v 1.1 2005-02-22 10:12:18 trygvis Exp $
+ * @version $Id: BuildProjectTaskViabilityEvaluator.java,v 1.2 2005-02-28 17:04:45 trygvis Exp $
  */
 public class BuildProjectTaskViabilityEvaluator
     extends AbstractLogEnabled
@@ -51,7 +50,7 @@ public class BuildProjectTaskViabilityEvaluator
     // TaskViabilityEvaluator Implementation
     // ----------------------------------------------------------------------
 
-    public void evaluate( List tasks )
+    public List evaluate( List tasks )
         throws TaskQueueException
     {
         // ----------------------------------------------------------------------
@@ -86,7 +85,7 @@ public class BuildProjectTaskViabilityEvaluator
             toBeRemoved.addAll( checkTasks( (List) it.next() ) );
         }
 
-        tasks.removeAll( toBeRemoved );
+        return toBeRemoved;
     }
 
     // ----------------------------------------------------------------------

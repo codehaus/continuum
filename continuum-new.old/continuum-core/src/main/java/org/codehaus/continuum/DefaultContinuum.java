@@ -34,17 +34,13 @@ import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.buildqueue.BuildQueueException;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.FileUtils;
@@ -54,11 +50,11 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.3 2005-02-22 10:12:18 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.4 2005-02-28 17:04:45 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
-    implements Continuum, Initializable, Startable, Contextualizable
+    implements Continuum, Initializable, Startable
 {
     private BuilderManager builderManager;
 
@@ -77,10 +73,6 @@ public class DefaultContinuum
     private BuilderThread builderThread;
 
     private Thread builderThreadThread;
-
-    String plexusHome;
-
-    DefaultPlexusContainer container;
 
     // ----------------------------------------------------------------------
     // Here it would probably be possible to tell from looking at the meta
@@ -188,7 +180,7 @@ public class DefaultContinuum
         {
             ContinuumProject project = store.getProject( projectId );
 
-            ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
+            ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
             // ----------------------------------------------------------------------
             // Update the check out
@@ -402,14 +394,6 @@ public class DefaultContinuum
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
-
-    public void contextualize( Context context )
-        throws Exception
-    {
-        plexusHome = (String) context.get( "plexus.home" );
-
-        container = (DefaultPlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
-    }
 
     public void initialize()
         throws Exception

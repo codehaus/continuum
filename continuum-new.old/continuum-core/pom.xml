@@ -52,20 +52,45 @@
     </dependency>
     <!-- Store -->
     <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-jdo</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>obie</groupId>
       <artifactId>stash</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>prevayler</groupId>
       <artifactId>prevayler</artifactId>
       <version>2.02.005</version>
-    </dependency>    
+    </dependency>
+    <dependency>
+      <groupId>jpox</groupId>
+      <artifactId>jpox</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>jpox</groupId>
+      <artifactId>jpox-enhancer</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.7.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>7.4.1-jdbc3</version>
+    </dependency>
     <dependency>
       <groupId>modello</groupId>
       <artifactId>modello-plugin-prevayler</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
   </dependencies>
   <plugins>
     <plugin>

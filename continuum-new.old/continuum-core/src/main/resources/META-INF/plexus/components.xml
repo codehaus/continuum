@@ -30,9 +30,6 @@
       <implementation>org.codehaus.continuum.builder.manager.DefaultBuilderManager</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.store.ContinuumStore</role>
-        </requirement>
-        <requirement>
           <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
           <field-name>builders</field-name>
         </requirement>
@@ -104,6 +101,17 @@
       <role>org.codehaus.continuum.store.ContinuumStore</role>
       <role-hint>memory</role-hint>
       <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.store.ContinuumStore</role>
+      <role-hint>modello-jpox</role-hint>
+      <implementation>org.codehaus.continuum.store.ModelloJPoxContinuumStore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.jdo.JdoFactory</role>
+        </requirement>
+      </requirements>
     </component>
 
     <component>

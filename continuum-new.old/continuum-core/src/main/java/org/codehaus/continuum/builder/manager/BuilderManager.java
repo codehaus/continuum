@@ -29,18 +29,12 @@ import org.codehaus.continuum.builder.ContinuumBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuilderManager.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: BuilderManager.java,v 1.2 2005-02-28 17:04:45 trygvis Exp $
  */
 public interface BuilderManager
 {
     String ROLE = BuilderManager.class.getName();
 
     ContinuumBuilder getBuilder( String builderType )
-        throws ContinuumException;
-
-    ContinuumBuilder getBuilderForProject( String projectId )
-        throws ContinuumException;
-
-    ContinuumBuilder getBuilderForBuild( String buildId )
         throws ContinuumException;
 }
