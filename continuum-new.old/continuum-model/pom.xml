@@ -10,6 +10,18 @@
   <packaging>jar</packaging>
   <name>Continuum Core</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>jdo</groupId>
+      <artifactId>jdo</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jpox</groupId>
+      <artifactId>jpox-enhancer</artifactId>
+      <version>1.0.4</version>
+    </dependency>    
+  </dependencies>  
   <build>
     <plugins>
       <plugin>
