@@ -29,17 +29,20 @@ import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestContinuumBuilder.java,v 1.3 2004-10-06 13:33:49 trygvis Exp $
+ * @version $Id: TestContinuumBuilder.java,v 1.4 2004-10-28 21:19:39 trygvis Exp $
  */
 public class TestContinuumBuilder
     extends AbstractLogEnabled
     implements ContinuumBuilder
 {
+    private String scmUrl;
+
     /** Number of builds done. */
     private int buildCount = 0;
 
@@ -51,16 +54,28 @@ public class TestContinuumBuilder
     // ContinuumBuilder Implementation
     // ----------------------------------------------------------------------
 
-    public ProjectDescriptor createDescriptor( ContinuumProject project )
+    public ContinuumProject createProject( File workingDirectory )
         throws ContinuumException
     {
+        ContinuumProject project = new GenericContinuumProject();
+
+        project.setName( "Test project" );
+
+        project.setScmUrl( scmUrl );
+
+        project.setVersion( "1.0" );
+
+        project.setNagEmailAddress( "foo@bar" );
+
         ProjectDescriptor projectDescriptor = new TestProjectDescriptor();
 
         projectDescriptor.setProject( project );
 
         projectDescriptor.setProjectId( project.getId() );
 
-        return projectDescriptor;
+        project.setDescriptor( projectDescriptor );
+
+        return project;
     }
 
     public ContinuumBuildResult build( File workingDirectory, ContinuumBuild build )
@@ -92,6 +107,11 @@ public class TestContinuumBuilder
     // ----------------------------------------------------------------------
     // Misc
     // ----------------------------------------------------------------------
+
+    public void setScmUrl( String scmUrl )
+    {
+        this.scmUrl = scmUrl;
+    }
 
     public void setBuildSleepInterval( int buildSleepInterval )
     {
