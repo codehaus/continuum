@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.10 2004-10-30 11:42:08 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.11 2004-10-31 15:28:45 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -66,9 +66,6 @@ public class DefaultMavenTool
     /** @configuration default ${maven.home.local} */
     private String mavenHomeLocal;
 
-    /** @configuration default ${maven.repo.local} */
-    private String mavenRepository;
-
     // ----------------------------------------------------------------------
     // Component Lifecycle
     // ----------------------------------------------------------------------
@@ -82,9 +79,8 @@ public class DefaultMavenTool
 
         PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
         PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
-        PlexusUtils.assertConfiguration( mavenRepository, "maven-repository" );
 
-        // TODO: assert that mavenHome, mavenHomelocal and mavenRepository exists.
+        // TODO: assert that mavenHome, mavenHomelocal exists.
 
         File mavenHomeFile = new File( mavenHome );
         File mavenHomeLocalFile = new File( mavenHomeLocal );
@@ -103,17 +99,11 @@ public class DefaultMavenTool
             mavenHomeLocal = mavenHomeLocalFile.getAbsolutePath();
         }
 
-        if ( mavenRepository.equals( "${maven.repo.local}" ) || mavenRepository == null )
-        {
-            mavenRepository = new File( mavenHomeLocalFile, "repository" ).getAbsolutePath();
-        }
-
         maven.setMavenHome( mavenHomeFile );
         maven.setMavenHomeLocal( mavenHomeLocalFile );
 
         getLogger().info( "Using " + maven.getMavenHome().getAbsolutePath() + " as maven.home." );
         getLogger().info( "Using " + maven.getMavenHomeLocal().getAbsolutePath() + " as maven.home.local." );
-//        getLogger().info( "Using " + mavenRepository + " as maven.repo.local" );
 
         getLogger().info( "Using '" + mavenBin + "' as the maven 2 executable" );
     }
@@ -270,11 +260,6 @@ public class DefaultMavenTool
 //
 //        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
 
-        if ( !StringUtils.isEmpty( getMavenRepository() ) )
-        {
-            cl.createArgument().setValue( "-Dmaven.repo.local=" + getMavenRepository() );
-        }
-
 //        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
 
         for ( Iterator it = goals.iterator(); it.hasNext(); )
@@ -312,11 +297,6 @@ public class DefaultMavenTool
     public String getMavenHomeLocal()
     {
         return mavenHomeLocal;
-    }
-
-    public String getMavenRepository()
-    {
-        return mavenRepository;
     }
 
     // ----------------------------------------------------------------------

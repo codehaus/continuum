@@ -12,7 +12,6 @@
         <maven-bin>m2</maven-bin>
         <maven-home>${maven.home}</maven-home>
         <maven-home-local>${maven.home.local}</maven-home-local>
-        <maven-repository>${maven.repo.local}</maven-repository>
       </configuration>
     </component>
   </components>
