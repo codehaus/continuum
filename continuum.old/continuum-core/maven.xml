@@ -1,6 +1,13 @@
 <project
   default="jar"
+  xmlns:ant="jelly:ant"
   xmlns:plexus="plexus">
+
+  <preGoal name="test:test-resources">
+    <ant:copy todir="target/plexus-home/continuum/storage/">
+      <ant:fileset dir="src/test-file-storage"/>
+    </ant:copy>
+  </preGoal>
 
   <goal name="cc">
 
@@ -10,6 +17,7 @@
       application="continuum"
       plexusVersion="0.14-SNAPSHOT"
       plexusConfiguration="${basedir}/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml"/>
+
   </goal>
 
 </project>

@@ -1,80 +1,82 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.maven.artifact.MavenArtifact;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import org.apache.maven.artifact.MavenArtifact;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
+import org.codehaus.plexus.continuum.projectstorage.ProjectStorage;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.util.IOUtil;
 
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
+    // configuration
+    private String buildDirectory;
+
+    private String checkoutDirectory;
+
     private MavenProjectBuilder projectBuilder;
 
     private Compiler compiler;
 
     private ContinuumNotifier notifier;
 
-    private String workingDirectory;
+    private ProjectStorage projectStorage;
 
-    private File storageDirectory;
-
+    // member variables
     private Map builds;
+
+    private boolean building;
+
+    private boolean addingProject;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Component lifecycle
 
     public void initialize()
         throws Exception
     {
+        getLogger().info( "Initializing continuum." );
+
         builds = new LinkedHashMap();
 
-        File f = new File( workingDirectory );
+        if( checkoutDirectory == null )
+            throw new PlexusConfigurationException( "Missing configuration: checkout directory." );
 
+        if( buildDirectory == null )
+            throw new PlexusConfigurationException( "Missing configuration: build directory." );
+
+        File f = new File( checkoutDirectory );
+
+        getLogger().info( "Using " + checkoutDirectory + " as checkout directory." );
         if ( !f.exists() )
         {
+            getLogger().info( "Checkout directory does not exist, creating." );
             f.mkdirs();
         }
 
-        storageDirectory = new File( workingDirectory, "storage" );
-
-        if ( !storageDirectory.exists() )
-        {
-            storageDirectory.mkdirs();
-        }
-
-        // Now lets bring up all the projects that we have stored, if there are any.
-
-        List poms = FileUtils.getFiles( storageDirectory, "*.pom", null );
-
-        for ( Iterator i = poms.iterator(); i.hasNext(); )
-        {
-            File pom = (File) i.next();
-
-            try
-            {
-                addProject( projectBuilder.build( pom ) );
-            }
-            catch ( Exception e )
-            {
-                getLogger().error( "Cannot process pom: " + pom, e );
-            }
-        }
+        getLogger().info( "Continuum initialized." );
     }
 
     public void start()
@@ -85,12 +87,35 @@ public class DefaultContinuum
     public void stop()
         throws Exception
     {
+        int maxSleep = 10 * 1000; // 10 seconds
+        int interval = 1000;
+        int slept = 0;
+
+        getLogger().info( "Stopping continuum." );
+
+        while( isWorking() )
+        {
+            if ( slept > maxSleep )
+                getLogger().warn( "Timeout, stopping continuum." );
+
+            getLogger().info( "Waiting untill continuum is idling..." );
+            Thread.sleep( interval );
+
+            slept += interval;
+        }
+
+        getLogger().info( "Continuum stopped." );
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Continuum implementation
 
     public void addProject( String projectUrl )
     {
         // We will simply deal with POMs that can be retrieved from
         // the local file system or over http.
+
+        addingProject = true;
 
         MavenProject project = null;
 
@@ -98,45 +123,30 @@ public class DefaultContinuum
         {
             try
             {
+                getLogger().info( "Downloading project.xml" );
+
                 URL url = new URL( projectUrl );
 
                 InputStream is = url.openStream();
 
-                byte[] buffer = new byte[1024];
+                // for now
 
-                int read = 0;
+                String contents = IOUtil.toString( is );
 
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                File file = File.createTempFile( "continuum-project-", ".xml" );
+                FileWriter writer = new FileWriter( file );
 
-                while ( is.available() > 0 )
-                {
-                    read = is.read( buffer, 0, buffer.length );
+                getLogger().info("filename:" + file.getPath());
 
-                    if ( read < 0 )
-                    {
-                        break;
-                    }
+                IOUtil.copy( contents, writer );
 
-                    os.write( buffer, 0, read );
-                }
-
-                String pomContents = os.toString().trim();
-
-                // Now we need to write this out to a temp file so that we
-                // can read it because the project builder can only deal with
-                // files because of configuration stuff.
-
-                File file = new File( workingDirectory, "project.xml" );
-
-                IOUtil.copy( pomContents, new FileWriter( file ) );
+                writer.close();
 
                 project = projectBuilder.build( file );
 
-                File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
-
-                FileUtils.copyFile( file, pom );
-
                 file.delete();
+
+                projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new StringReader( contents ) );
             }
             catch ( Exception e )
             {
@@ -151,9 +161,7 @@ public class DefaultContinuum
 
                 project = projectBuilder.build( file );
 
-                File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
-
-                FileUtils.copyFile( file, pom );
+                projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new FileReader( file ) );
             }
             catch ( Exception e )
             {
@@ -166,11 +174,15 @@ public class DefaultContinuum
         {
             addProject( project );
         }
+
+        addingProject = false;
     }
 
     public void addProject( MavenProject project )
     {
         MavenProjectBuild build = null;
+
+        addingProject = true;
 
         try
         {
@@ -184,6 +196,8 @@ public class DefaultContinuum
         }
 
         builds.put( project.getGroupId() + ":" + project.getArtifactId(), build );
+
+        addingProject = false;
     }
 
     public void buildProject( String groupId, String artifactId )
@@ -193,9 +207,10 @@ public class DefaultContinuum
     }
 
     public void buildProjects()
-        throws Exception
     {
         getLogger().info( "Building Projects ..." );
+
+        building = true;
 
         for ( Iterator i = builds.values().iterator(); i.hasNext(); )
         {
@@ -234,21 +249,37 @@ public class DefaultContinuum
 
                 e.printStackTrace( w );
 
-                notifier.notifyAudience( projectBuild.getProject(), w.toString() );
-
+                try
+                {
+                    notifier.notifyAudience( projectBuild.getProject(), writer.toString() );
+                }
+                catch ( Exception ex )
+                {
+                    getLogger().fatalError( "Could not send notify", ex);
+                }
             }
         }
+
+        building = false;
+    }
+
+    public boolean isWorking()
+    {
+        return building || addingProject;
     }
 
     private List buildProject( MavenProjectBuild build )
         throws Exception
     {
         // We need to check out the sources
-        build.getProjectScm().checkout( workingDirectory );
+        build.getProjectScm().checkout( checkoutDirectory );
 
-        getLogger().info( "Done checking out project!!!" );
+        getLogger().info( "Done checking out the project!" );
 
-        String destinationDirectory = workingDirectory + "/target/classes";
+        String destinationDirectory = buildDirectory + "/target/classes";
+//        build.getProject().setProperty( "basedir", buildDirectory );
+
+        System.err.println( new TreeMap( build.getProject().getProperties() ).toString().replace( ',', '\n' ) );
 
         List messages = compiler.compile( classpathElements( build.getProject() ),
                                           new String[]{build.getProject().getBuild().getSourceDirectory()},

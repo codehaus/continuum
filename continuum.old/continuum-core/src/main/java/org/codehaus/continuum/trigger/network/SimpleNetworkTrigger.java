@@ -1,13 +1,11 @@
 package org.codehaus.plexus.continuum.trigger.network;
 
-import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import org.codehaus.plexus.continuum.network.ConnectionConsumer;
+import org.codehaus.plexus.continuum.network.NetworkUtils;
+import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
 
 /**
  * This trigger listens on a specified port and takes one line
@@ -17,109 +15,28 @@ import java.net.Socket;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkTrigger.java,v 1.1 2004-01-18 17:45:38 jvanzyl Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.2 2004-04-07 15:56:56 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger
-    implements Initializable, Startable
+    implements ConnectionConsumer
 {
-    private int port;
-
-    private Thread serverThread;
-
-    private boolean serverStarted;
-
-    private ServerSocket serverSocket;
-
-    private DefaultServerSocketFactory serverSocketFactory;
-
-    private InetAddress localAddress;
-
-    private InetAddress bindAddress;
-
-    public boolean isServerStarted()
-    {
-        return serverStarted;
-    }
-
-    private void setServerStarted( boolean serverStarted )
-    {
-        this.serverStarted = serverStarted;
-    }
-
     // ----------------------------------------------------------------------
-    // Lifecylce Management
+    // ConnectionConsumer Implementation
     // ----------------------------------------------------------------------
 
-    /** @see Initializable#initialize */
-    public void initialize()
-        throws Exception
+    public void consumeConnection( InputStream input, OutputStream output )
     {
-        serverSocketFactory = new DefaultServerSocketFactory();
-
-        InetAddress[] adds = InetAddress.getAllByName( "192.168.1.103" );
-
-        bindAddress = adds[0];
-
-        serverSocket = serverSocketFactory.createServerSocket( port, 50 );
-
-        //serverSocket = serverSocketFactory.createServerSocket( port, 50, bindAddress );
-
-        localAddress = InetAddress.getLocalHost();
-    }
-
-    public void start()
-    {
-        if ( serverThread != null )
-        {
-            return;
-        }
-
-        setServerStarted( true );
-
-        serverThread = new Thread( new Runnable()
-        {
-            public void run()
-            {
-                while ( isServerStarted() )
-                {
-                    try
-                    {
-                        Socket socket = serverSocket.accept();
-
-                        socket.close();
-
-                        getContinuum().buildProjects();
-                    }
-                    catch ( Exception e )
-                    {
-                        getLogger().error( "Error processing request: ", e );
-                    }
-                }
-            }
-        } );
-
-        serverThread.start();
-    }
-
-    public void stop()
-    {
-        setServerStarted( false );
-
-        serverThread = null;
+        NetworkUtils.closeInput( input );
+        NetworkUtils.closeOutput( output );
 
         try
         {
-            serverSocket.close();
+            getContinuum().buildProjects();
         }
-        catch ( IOException e )
+        catch( Exception ex )
         {
-            getLogger().error( "Error shutting down server." );
+            
         }
-    }
-
-    public void dispose()
-    {
-        stop();
     }
 }

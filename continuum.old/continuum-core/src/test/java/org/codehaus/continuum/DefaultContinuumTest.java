@@ -7,16 +7,7 @@ import java.io.InputStream;
 public class DefaultContinuumTest
     extends PlexusTestCase
 {
-    public DefaultContinuumTest( String s )
-    {
-        super( s );
-    }
-
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-    }
+    private String mavenCoreUrl = "http://cvs.apache.org/viewcvs.cgi/*checkout*/maven-components/maven-core/project.xml";
 
     protected InputStream getCustomConfiguration()
     {
@@ -33,5 +24,9 @@ public class DefaultContinuumTest
         Continuum continuum = (Continuum) lookup( Continuum.ROLE );
 
         assertNotNull( continuum );
+/*
+        continuum.addProject( mavenCoreUrl );
+        continuum.buildProjects();
+*/
     }
 }
