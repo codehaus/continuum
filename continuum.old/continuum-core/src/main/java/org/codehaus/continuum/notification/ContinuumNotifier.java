@@ -1,8 +1,8 @@
-package org.codehaus.plexus.continuum.notification;
+package org.codehaus.continuum.notification;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.continuum.ContinuumException;
 
 /**
  * Approximate sequence:
@@ -19,7 +19,7 @@ import org.codehaus.plexus.continuum.ContinuumException;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumNotifier.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: ContinuumNotifier.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public interface ContinuumNotifier
 {

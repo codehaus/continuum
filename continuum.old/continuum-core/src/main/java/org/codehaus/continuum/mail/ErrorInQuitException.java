@@ -52,7 +52,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.codehaus.plexus.continuum.mail;
+package org.codehaus.continuum.mail;
 
 import java.io.IOException;
 
@@ -65,7 +65,7 @@ import java.io.IOException;
  * report 5273</a>.</p>
  *
  * @author <a href="mailto:stefan.bodewig@epost.de">Stefan Bodewig</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ErrorInQuitException
     extends IOException

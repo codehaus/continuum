@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 /*
  * LICENSE
@@ -7,14 +7,14 @@ package org.codehaus.plexus.continuum;
 import java.util.Collection;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.continuum.network.NetCat;
+import org.codehaus.continuum.network.NetCat;
 import org.codehaus.plexus.smtp.queue.Queue;
 import org.codehaus.plexus.synapse.SynapseServer;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumConfigurationTest.java,v 1.3 2004-04-26 00:22:23 trygvis Exp $
+ * @version $Id: DefaultContinuumConfigurationTest.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
  */
 public class DefaultContinuumConfigurationTest
     extends PlexusTestCase

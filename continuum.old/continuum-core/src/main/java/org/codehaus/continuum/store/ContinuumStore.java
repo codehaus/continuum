@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.projectstorage;
+package org.codehaus.continuum.projectstorage;
 
 /*
  * LICENSE
@@ -11,7 +11,7 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.2 2004-04-22 20:03:41 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public interface ProjectStorage {
     void storeProject( String groupId, String artifactId, Reader input )

@@ -1,6 +1,6 @@
-package org.codehaus.plexus.continuum.trigger;
+package org.codehaus.continuum.trigger;
 
-import org.codehaus.plexus.continuum.Continuum;
+import org.codehaus.continuum.Continuum;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
@@ -8,7 +8,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AbstractContinuumTrigger.java,v 1.1 2004-01-18 07:27:27 jvanzyl Exp $
+ * @version $Id: AbstractContinuumTrigger.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public class AbstractContinuumTrigger
     extends AbstractLogEnabled

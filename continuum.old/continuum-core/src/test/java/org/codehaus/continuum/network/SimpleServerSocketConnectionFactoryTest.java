@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.network;
+package org.codehaus.continuum.network;
 
 /*
  * LICENSE
@@ -12,7 +12,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.2 2004-04-24 23:54:14 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends PlexusTestCase

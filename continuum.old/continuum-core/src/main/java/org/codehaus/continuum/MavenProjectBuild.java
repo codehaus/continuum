@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 import org.apache.maven.project.MavenProject;
 
@@ -7,7 +7,7 @@ import org.apache.maven.project.MavenProject;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MavenProjectBuild.java,v 1.3 2004-02-02 20:15:59 jvanzyl Exp $
+ * @version $Id: MavenProjectBuild.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
  */
 public class MavenProjectBuild
 {

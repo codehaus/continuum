@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 /*
  * LICENSE
@@ -13,7 +13,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.1 2004-04-24 23:54:12 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled

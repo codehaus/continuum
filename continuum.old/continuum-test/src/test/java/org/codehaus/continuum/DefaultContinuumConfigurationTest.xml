@@ -38,11 +38,11 @@
      | so these two services needs to be loaded start.
     -->
     <component>
-      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
       <role-hint>trigger-socket</role-hint>
     </component>
     <component>
-      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
       <role-hint>registrar-socket</role-hint>
     </component>
 

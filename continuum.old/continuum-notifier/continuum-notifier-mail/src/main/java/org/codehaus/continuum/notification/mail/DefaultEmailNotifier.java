@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.notification.mail;
+package org.codehaus.continuum.notification.mail;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,9 +7,9 @@ import java.io.StringWriter;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.continuum.mail.MailMessage;
-import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.mail.MailMessage;
+import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
@@ -17,7 +17,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultEmailNotifier.java,v 1.4 2004-04-26 00:22:04 trygvis Exp $
+ * @version $Id: DefaultEmailNotifier.java,v 1.5 2004-05-13 17:48:17 trygvis Exp $
  */
 public class DefaultEmailNotifier
     extends AbstractLogEnabled

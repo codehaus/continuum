@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.notification.console;
+package org.codehaus.continuum.notification.console;
 
 /*
  * LICENSE
@@ -6,11 +6,11 @@ package org.codehaus.plexus.continuum.notification.console;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.notification.ContinuumNotifier;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.3 2004-04-26 00:21:43 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
  */
 public class ConsoleNotifier
     implements ContinuumNotifier

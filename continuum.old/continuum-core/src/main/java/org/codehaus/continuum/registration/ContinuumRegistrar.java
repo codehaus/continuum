@@ -1,11 +1,11 @@
-package org.codehaus.plexus.continuum.registration;
+package org.codehaus.continuum.registration;
 
 /**
  *
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumRegistrar.java,v 1.1 2004-01-18 18:01:40 jvanzyl Exp $
+ * @version $Id: ContinuumRegistrar.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public interface ContinuumRegistrar
 {

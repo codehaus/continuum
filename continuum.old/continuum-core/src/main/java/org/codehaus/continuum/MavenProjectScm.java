@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.manager.ScmManager;
@@ -6,7 +6,7 @@ import org.apache.maven.scm.manager.ScmManager;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MavenProjectScm.java,v 1.5 2004-04-24 23:54:12 trygvis Exp $
+ * @version $Id: MavenProjectScm.java,v 1.6 2004-05-13 17:48:17 trygvis Exp $
  */
 public class MavenProjectScm
 {

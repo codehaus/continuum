@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.registration.network;
+package org.codehaus.continuum.registration.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,13 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.continuum.network.ConnectionConsumer;
-import org.codehaus.plexus.continuum.registration.AbstractContinuumRegistrar;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.network.ConnectionConsumer;
+import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.5 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.6 2004-05-13 17:48:17 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
