@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.3 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.4 2004-07-29 03:43:48 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -52,10 +52,23 @@ public interface ContinuumStore
         throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
+    // Database methods
+    // ----------------------------------------------------------------------
+
+    public void createDatabase()
+        throws ContinuumStoreException;
+
+    public void deleteDatabase()
+        throws ContinuumStoreException;
+
+    // ----------------------------------------------------------------------
     // ContinuumProject
     // ----------------------------------------------------------------------
 
     String addProject( String name, String scmConnection, String type )
+        throws ContinuumStoreException;
+
+    void removeProject( String projectId )
         throws ContinuumStoreException;
 
     void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
