@@ -10,13 +10,13 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.6 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.7 2004-07-14 05:33:25 trygvis Exp $
  */
 public interface ContinuumBuilder
 {
     String ROLE = ContinuumBuilder.class.getName();
 
-    public ProjectDescriptor createDescriptor( ContinuumProject project )
+    ProjectDescriptor createDescriptor( ContinuumProject project )
         throws ContinuumException;
 
     void build( String buildId )
