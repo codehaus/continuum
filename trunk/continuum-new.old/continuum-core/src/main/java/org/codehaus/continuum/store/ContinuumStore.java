@@ -26,7 +26,7 @@ import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.3 2005-03-10 00:05:53 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.4 2005-03-17 14:27:27 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -62,6 +62,9 @@ public interface ContinuumStore
         throws ContinuumStoreException;
 
     ContinuumProject getProject( String projectId )
+        throws ContinuumStoreException;
+
+    ContinuumProject getProjectByBuild( String buildId )
         throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
