@@ -42,7 +42,7 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.2 2004-07-27 05:42:14 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.3 2004-07-29 04:30:42 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -75,6 +75,22 @@ public class MemoryContinuumStore
     }
 
     public void rollbackTransaction()
+    {
+        // ignored
+    }
+
+    // ----------------------------------------------------------------------
+    // Database methods
+    // ----------------------------------------------------------------------
+
+    public void createDatabase()
+        throws ContinuumStoreException
+    {
+        // ignored
+    }
+
+    public void deleteDatabase()
+        throws ContinuumStoreException
     {
         // ignored
     }
@@ -121,6 +137,27 @@ public class MemoryContinuumStore
         projects.put( id, project );
 
         return id;
+    }
+
+    public void removeProject( String projectId )
+        throws ContinuumStoreException
+    {
+        ContinuumProject project = (ContinuumProject) projects.remove( projectId );
+
+        if ( project == null )
+        {
+            throw new ContinuumStoreException( "No such project (" + projectId + ")." );
+        }
+
+        for( Iterator it = builds.values().iterator(); it.hasNext(); )
+        {
+            ContinuumBuild build = (ContinuumBuild) it.next();
+
+            if ( projectId.equals( build.getProject().getId() ) )
+            {
+                it.remove();
+            }
+        }
     }
 
     public void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
@@ -206,6 +243,8 @@ public class MemoryContinuumStore
         GenericContinuumBuild build = new GenericContinuumBuild( id );
 
         build.setProject( project );
+
+        project.setState( ContinuumProjectState.BUILD_SIGNALED );
 
         build.setState( ContinuumProjectState.BUILD_SIGNALED );
 

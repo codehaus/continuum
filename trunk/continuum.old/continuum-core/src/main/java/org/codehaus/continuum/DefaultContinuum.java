@@ -40,7 +40,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.38 2004-07-27 05:42:12 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.39 2004-07-29 04:30:42 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -203,11 +203,11 @@ public class DefaultContinuum
 
             buildId = store.createBuild( project.getId() );
 
-            buildQueue.enqueue( buildId );
-
             getLogger().info( "Enqueuing " + project.getName() + ", build id " + buildId + "..." );
 
             store.commitTransaction();
+
+            buildQueue.enqueue( buildId );
         }
         catch( ContinuumStoreException ex )
         {
