@@ -27,6 +27,5 @@
 
     <mapping resource="org/codehaus/continuum/project/ContinuumProject.hbm.xml"/>
     <mapping resource="org/codehaus/continuum/project/BuildResult.hbm.xml"/>
-    <mapping resource="org/codehaus/continuum/project/ProjectDescriptor.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
