@@ -200,5 +200,17 @@
       </requirements>
     </component>
 
+    <component>
+      <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpc</role>
+      <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpc</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+      </requirements>
+    </component>
   </components>
 </component-set>
