@@ -253,6 +253,14 @@
     </component>
 
     <component>
+      <role>org.apache.maven.settings.MavenSettingsBuilder</role>
+      <implementation>org.apache.maven.settings.DefaultMavenSettingsBuilder</implementation>
+      <configuration>
+        <settings-path>${plexus.home}/maven-settings.xml</settings-path>
+      </configuration>
+    </component>
+
+    <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
       <role-hint>maven-1</role-hint>
       <implementation>org.codehaus.continuum.builder.maven.m1.Maven1Builder</implementation>
