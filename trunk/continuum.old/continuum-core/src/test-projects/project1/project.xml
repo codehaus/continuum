@@ -11,7 +11,7 @@
   <package>org.codehaus.plexus</package>
 
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:/plexus/plexus-components/native/continuum/src/test-projects/project1</connection>
+    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-components/native/continuum/src/test-projects/project1</connection>
     <url>http://cvs.plexus.codehaus.org/plexus-components/native/continuum/src/test-projects/project1</url>
   </repository>
 
