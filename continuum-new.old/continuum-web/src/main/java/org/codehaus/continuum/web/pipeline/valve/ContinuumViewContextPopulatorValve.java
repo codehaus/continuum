@@ -1,27 +1,21 @@
 package org.codehaus.continuum.web.pipeline.valve;
 
-import org.codehaus.continuum.web.ContinuumWeb;
-import org.codehaus.continuum.web.context.ViewContextPopulator;
-import org.codehaus.continuum.web.tool.CssTool;
-import org.codehaus.continuum.web.tool.OgnlTool;
 import org.codehaus.continuum.Continuum;
-import org.codehaus.plexus.i18n.I18N;
-import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
+import org.codehaus.continuum.web.context.ViewContextPopulator;
+import org.codehaus.plexus.summit.SummitConstants;
+import org.codehaus.plexus.summit.exception.SummitException;
 import org.codehaus.plexus.summit.pipeline.valve.AbstractValve;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
-import org.codehaus.plexus.summit.exception.SummitException;
-import org.codehaus.plexus.summit.SummitConstants;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextPopulatorValve.java,v 1.1 2005-03-20 07:19:13 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextPopulatorValve.java,v 1.2 2005-03-20 16:26:40 jvanzyl Exp $
  */
 public class ContinuumViewContextPopulatorValve
     extends AbstractValve
