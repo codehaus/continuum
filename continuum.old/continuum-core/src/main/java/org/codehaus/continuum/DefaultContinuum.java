@@ -18,10 +18,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 
-import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.continuum.buildqueue.BuildQueue;
-import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
 import org.codehaus.plexus.continuum.projectstorage.ProjectStorage;
 import org.codehaus.plexus.continuum.projectstorage.ProjectStorageException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -35,10 +33,6 @@ public class DefaultContinuum
 {
     // configuration
 
-    private String buildDirectory;
-
-    private String checkoutDirectory;
-
     // requirements
 
     private ContinuumBuilder builder;
@@ -46,10 +40,6 @@ public class DefaultContinuum
     private BuildQueue buildQueue;
 
     private MavenProjectBuilder projectBuilder;
-
-    private Compiler compiler;
-
-    private ContinuumNotifier notifier;
 
     private ProjectStorage projectStorage;
 
@@ -75,27 +65,10 @@ public class DefaultContinuum
 
         builds = new LinkedHashMap();
 
-        assertRequirement( builder, "builder" );
-        assertRequirement( buildQueue, "build-queue" );
-        assertRequirement( projectBuilder, "project-builder" );
-        assertRequirement( compiler, "compiler" );
-        assertRequirement( notifier, "notifier" );
-        assertRequirement( projectStorage, "project-storage" );
-
-        if( checkoutDirectory == null )
-            throw new PlexusConfigurationException( "Missing configuration: checkout directory." );
-
-        if( buildDirectory == null )
-            throw new PlexusConfigurationException( "Missing configuration: build directory." );
-
-        File f = new File( checkoutDirectory );
-
-        getLogger().info( "Using " + checkoutDirectory + " as checkout directory." );
-        if ( !f.exists() )
-        {
-            getLogger().info( "Checkout directory does not exist, creating." );
-            f.mkdirs();
-        }
+        assertRequirement( builder, ContinuumBuilder.class );
+        assertRequirement( buildQueue, BuildQueue.class );
+        assertRequirement( projectBuilder, MavenProjectBuilder.class );
+        assertRequirement( projectStorage, ProjectStorage.class );
 
         getLogger().info( "Continuum initialized." );
     }
@@ -150,6 +123,9 @@ public class DefaultContinuum
     {
         // We will simply deal with POMs that can be retrieved from
         // the local file system or over http.
+
+        if ( projectUrl == null )
+            throw new ContinuumException( "The project url cannot be null." );
 
         addingProject = true;
 
@@ -335,17 +311,13 @@ public class DefaultContinuum
     private void addProject( MavenProject project )
         throws ContinuumException
     {
-        MavenProjectBuild build = null;
-
         addingProject = true;
 
         try
         {
-            build = new MavenProjectBuild( project );
-
             String id = createId( project.getGroupId(), project.getArtifactId() );
 
-            builds.put( id, build );
+            builds.put( id, project );
 
             getLogger().info( "Adding project: " + project.getName() );
         }
@@ -359,23 +331,6 @@ public class DefaultContinuum
         {
             addingProject = false;
         }
-    }
-
-    private List compileProject( MavenProject project )
-        throws Exception
-    {
-        getLogger().info( "Done checking out the project!" );
-
-        String destinationDirectory = buildDirectory + "/target/classes";
-//        build.getProject().setProperty( "basedir", buildDirectory );
-
-        List messages = compiler.compile( classpathElements( project ),
-                                          new String[]{project.getBuild().getSourceDirectory()},
-                                          destinationDirectory );
-
-        getLogger().info( "Done compiling!" );
-
-        return messages;
     }
 
     private String[] classpathElements( MavenProject project )
@@ -413,10 +368,17 @@ public class DefaultContinuum
         return groupId + ":" + artifactId;
     }
 
-    private void assertRequirement( Object requirement, String name )
+    private void assertConfiguration( Object configuration, String name )
+        throws PlexusConfigurationException
+    {
+        if( configuration == null )
+            throw new PlexusConfigurationException( "Missing configuration element: '" + name + "'." );
+    }
+
+    private void assertRequirement( Object requirement, Class clazz )
         throws PlexusConfigurationException
     {
         if ( requirement == null )
-            throw new PlexusConfigurationException( "Missing requirement '" + name + "'." );
+            throw new PlexusConfigurationException( "Missing requirement '" + clazz.getName() + "'." );
     }
 }
