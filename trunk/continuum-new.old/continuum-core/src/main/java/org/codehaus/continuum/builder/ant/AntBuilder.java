@@ -30,7 +30,7 @@ import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.7 2005-03-28 14:10:57 trygvis Exp $
  */
 public class AntBuilder
     extends AbstractContinuumBuilder
@@ -56,7 +56,7 @@ public class AntBuilder
 
         String executable = getConfigurationString( configuration, CONFIGURATION_EXECUTABLE );
 
-        String[] targets = getConfigurationStringArray( configuration, CONFIGURATION_TARGETS );
+        String[] targets = getConfigurationStringArray( configuration, CONFIGURATION_TARGETS, "," );
 
         ExecutionResult executionResult;
 

@@ -45,7 +45,7 @@ class ContinuumXmlRpcClient(cli.cli):
 
         projectId = continuum.addProjectFromUrl( args[0], args[1] )
 
-        print "Added project, id: " + result[ "projectId" ]
+        print "Added project, id: " + projectId
 
         return None
 
@@ -55,8 +55,15 @@ class ContinuumXmlRpcClient(cli.cli):
 
         project = continuum.getProject( args[0] )
 
-        print "Id: %(id)s" % project
-        print "Name: %(name)s" % project
+        print """Id: %(id)s
+Name: %(name)s
+Version: %(version)s
+Builder type: %(builderId)s""" % project.map
+
+        print "Configuration:"
+        keys = project.configuration.iterkeys()
+        for key in keys:
+            print key + "=" + project.configuration[ key ]
 
         return
 
