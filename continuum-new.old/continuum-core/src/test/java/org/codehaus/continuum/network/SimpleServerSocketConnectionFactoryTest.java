@@ -20,14 +20,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.codehaus.continuum.AbstractContinuumTest;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.2 2005-03-10 00:05:55 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.3 2005-03-15 22:27:11 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
-    extends AbstractContinuumTest
+    extends PlexusTestCase
 {
     private final static int PORT = 54321;
 
