@@ -45,7 +45,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.46 2004-10-24 14:18:47 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.47 2004-10-24 20:39:07 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -185,7 +185,7 @@ public class DefaultContinuum
     // Continuum Implementation
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type ) throws ContinuumException
+    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type ) throws ContinuumException
     {
         try
         {
@@ -207,7 +207,7 @@ public class DefaultContinuum
             {
                 txManager.enter();
 
-                String projectId = store.addProject( name, scmConnection, nagEmailAddress, version, type );
+                String projectId = store.addProject( name, scmUrl, nagEmailAddress, version, type );
 
                 ContinuumProject project = store.getProject( projectId );
 
@@ -215,7 +215,7 @@ public class DefaultContinuum
 
                 ProjectDescriptor descriptor = builder.createDescriptor( project );
 
-                store.updateProject( projectId, project.getName(), project.getScmConnection(), project.getNagEmailAddress(), project.getVersion() );
+                store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
 
                 store.setProjectDescriptor( projectId, descriptor );
 
@@ -248,7 +248,7 @@ public class DefaultContinuum
 
             ProjectDescriptor descriptor = builder.createDescriptor( project );
 
-            store.updateProject( projectId, project.getName(), project.getScmConnection(), project.getNagEmailAddress(), project.getVersion() );
+            store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
 
             store.updateProjectDescriptor( projectId, descriptor );
 

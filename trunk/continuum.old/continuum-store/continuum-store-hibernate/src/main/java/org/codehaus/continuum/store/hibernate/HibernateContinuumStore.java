@@ -48,7 +48,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.15 2004-10-15 13:01:05 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.16 2004-10-24 20:39:09 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -141,7 +141,7 @@ public class HibernateContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
+    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
         try
@@ -154,7 +154,7 @@ public class HibernateContinuumStore
 
             project.setName( name );
 
-            project.setScmConnection( scmConnection );
+            project.setScmUrl( scmUrl );
 
             project.setNagEmailAddress( nagEmailAddress );
 
@@ -328,7 +328,7 @@ public class HibernateContinuumStore
 
             project.setName( name );
 
-            project.setScmConnection( scmUrl );
+            project.setScmUrl( scmUrl );
 
             project.setNagEmailAddress( nagEmailAddress );
 

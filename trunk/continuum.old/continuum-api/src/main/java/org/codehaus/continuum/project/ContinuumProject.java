@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
  */
 public interface ContinuumProject
     extends Serializable
@@ -62,14 +62,14 @@ public interface ContinuumProject
     void setName( String name );
 
     /**
-     * @return Returns the scm connection.
+     * @return Returns the scm url.
      */
-    String getScmConnection();
+    String getScmUrl();
 
     /**
-     * @param scmConnection The ccmConnection to set.
+     * @param scmUrl The scmUrl to set.
      */
-    void setScmConnection( String scmConnection );
+    void setScmUrl( String scmUrl );
 
     String getNagEmailAddress();
 

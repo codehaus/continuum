@@ -52,7 +52,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.7 2004-10-15 13:00:58 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.8 2004-10-24 20:39:04 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -191,22 +191,22 @@ public abstract class Maven2ContinuumBuilder
 
         descriptor.setName( mavenProject.getName() );
 
-        // The public connection takes priority over the developer connection
+        // The public Url takes priority over the developer connection
         Scm scm = mavenProject.getScm();
 
-        String scmConnection = scm.getConnection();
+        String scmUrl = scm.getConnection();
 
-        if ( StringUtils.isEmpty( scmConnection ) )
+        if ( StringUtils.isEmpty( scmUrl ) )
         {
-            scmConnection = scm.getDeveloperConnection();
+            scmUrl = scm.getDeveloperConnection();
         }
 
-        if ( StringUtils.isEmpty( scmConnection ) )
+        if ( StringUtils.isEmpty( scmUrl ) )
         {
             throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
         }
 
-        descriptor.setScmConnection( scmConnection );
+        descriptor.setScmUrl( scmUrl );
 
         CiManagement ciManagement = mavenProject.getCiManagement();
 
@@ -237,7 +237,7 @@ public abstract class Maven2ContinuumBuilder
             project.setName( mavenProject.getName() );
         }
 
-        project.setScmConnection( scmConnection );
+        project.setScmUrl( scmUrl );
 
         project.setNagEmailAddress( nagEmailAddress );
 

@@ -21,7 +21,7 @@
       </tr>
       <tr class="b">
         <td>Scm url</td>
-        <td>$project.scmConnection</td>
+        <td>$project.scmUrl</td>
       </tr>
       <tr class="a">
         <td>Nag email address</td>

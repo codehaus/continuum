@@ -8,6 +8,6 @@
     <nagEmailAddress>pom nag email address</nagEmailAddress>
   </ciManagement>
   <scm>
-    <connection>scm:test:src/test/repository:project1</connection>
+    <connection>scm:local:src/test/repository:project1</connection>
   </scm>
 </project>

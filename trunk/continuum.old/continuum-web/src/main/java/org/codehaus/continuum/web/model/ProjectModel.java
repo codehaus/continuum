@@ -24,7 +24,7 @@ package org.codehaus.continuum.web.model;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ProjectModel.java,v 1.3 2004-10-15 13:01:10 trygvis Exp $
+ * @version $Id: ProjectModel.java,v 1.4 2004-10-24 20:39:11 trygvis Exp $
  */
 public class ProjectModel
 {
@@ -34,7 +34,7 @@ public class ProjectModel
 
     private String state;
 
-    private String scmConnection;
+    private String scmUrl;
 
     private String nagEmailAddress;
 
@@ -46,18 +46,18 @@ public class ProjectModel
 
     /**
      * @param name
-     * @param scmConnection
+     * @param scmUrl
      * @param nagEmailAddress
      * @param version
      * @param state
      * @param type
      * @param descriptor
      */
-    public ProjectModel( String id, String name, String scmConnection, String nagEmailAddress, String version, String state, String type, ProjectDescriptorModel descriptor )
+    public ProjectModel( String id, String name, String scmUrl, String nagEmailAddress, String version, String state, String type, ProjectDescriptorModel descriptor )
     {
         this.id = id;
         this.name = name;
-        this.scmConnection = scmConnection;
+        this.scmUrl = scmUrl;
         this.nagEmailAddress = nagEmailAddress;
         this.version = version;
         this.state = state;
@@ -82,11 +82,11 @@ public class ProjectModel
     }
 
     /**
-     * @return Returns the scmConnection.
+     * @return Returns the scmUrl.
      */
-    public String getScmConnection()
+    public String getScmUrl()
     {
-        return scmConnection;
+        return scmUrl;
     }
 
     /**

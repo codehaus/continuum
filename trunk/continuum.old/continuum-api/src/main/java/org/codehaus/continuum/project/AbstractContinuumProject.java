@@ -24,7 +24,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumProject.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
+ * @version $Id: AbstractContinuumProject.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
  */
 public abstract class AbstractContinuumProject
     implements ContinuumProject
@@ -39,7 +39,7 @@ public abstract class AbstractContinuumProject
     private String name;
 
     /** */
-    private String scmConnection;
+    private String scmUrl;
 
     /** */
     private String nagEmailAddress;
@@ -102,19 +102,19 @@ public abstract class AbstractContinuumProject
     }
 
     /**
-     * @return Returns the scm connection.
+     * @return Returns the scm url.
      */
-    public String getScmConnection()
+    public String getScmUrl()
     {
-        return scmConnection;
+        return scmUrl;
     }
 
     /**
-     * @param scmConnection The ccmConnection to set.
+     * @param scmUrl The scm url to set.
      */
-    public void setScmConnection( String scmConnection )
+    public void setScmUrl( String scmUrl )
     {
-        this.scmConnection = scmConnection;
+        this.scmUrl = scmUrl;
     }
 
     /**

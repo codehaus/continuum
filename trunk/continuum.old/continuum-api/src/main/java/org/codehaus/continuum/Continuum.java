@@ -30,7 +30,7 @@ public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
+    String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
         throws ContinuumException;
 
     void removeProject( String projectId )

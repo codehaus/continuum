@@ -1,4 +1,4 @@
-<project>
+ <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
   <artifactId>continuum-notifier-mail-test</artifactId>
@@ -7,6 +7,6 @@
     <nagEmailAddress>foo@bar</nagEmailAddress>
   </ciManagement>
   <scm>
-    <connection>scm:test:src/test/repository:success</connection>
+    <connection>scm:local:src/test/repository:success</connection>
   </scm>
 </project>

@@ -16,7 +16,7 @@
       type="java.lang.String"
       not-null="true"/>
     <property
-      name="scmConnection"
+      name="scmUrl"
       type="java.lang.String"
       not-null="true"/>
     <property

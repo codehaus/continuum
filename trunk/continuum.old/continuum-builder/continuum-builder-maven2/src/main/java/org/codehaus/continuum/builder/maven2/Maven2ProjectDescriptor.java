@@ -30,7 +30,7 @@ import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ProjectDescriptor.java,v 1.4 2004-10-15 13:00:58 trygvis Exp $
+ * @version $Id: Maven2ProjectDescriptor.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
  */
 public class Maven2ProjectDescriptor
     extends AbstractProjectDescriptor
@@ -43,7 +43,7 @@ public class Maven2ProjectDescriptor
     // some selected fields from the POM
     private String name;
 
-    private String scmConnection;
+    private String scmUrl;
 
     private String nagEmailAddress;
 
@@ -105,19 +105,19 @@ public class Maven2ProjectDescriptor
     }
 
     /**
-     * @return Returns the scmConnection.
+     * @return Returns the scmUrl.
      */
-    public String getScmConnection()
+    public String getScmUrl()
     {
-        return scmConnection;
+        return scmUrl;
     }
 
     /**
-     * @param scmConnection The scmConnection to set.
+     * @param scmUrl The scmUrl to set.
      */
-    public void setScmConnection( String scmConnection )
+    public void setScmUrl( String scmUrl )
     {
-        this.scmConnection = scmConnection;
+        this.scmUrl = scmUrl;
     }
 
     /**

@@ -7,6 +7,6 @@
     <nagEmailAddress>foo@bar</nagEmailAddress>
   </ciManagement>
   <scm>
-    <connection>scm:test:target/repository:status-change</connection>
+    <connection>scm:local:target/repository:status-change</connection>
   </scm>
 </project>

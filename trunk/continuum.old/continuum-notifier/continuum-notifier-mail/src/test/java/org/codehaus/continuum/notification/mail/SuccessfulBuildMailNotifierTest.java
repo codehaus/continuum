@@ -23,10 +23,11 @@ package org.codehaus.continuum.notification.mail;
  */
 
 import org.codehaus.continuum.notification.AbstractSuccessfulBuildNotifierTest;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.6 2004-10-15 13:01:03 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.7 2004-10-24 20:39:08 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
@@ -40,12 +41,12 @@ public class SuccessfulBuildMailNotifierTest
     protected void setUpNotifier()
         throws Exception
     {
-        notifier = (MailContinuumNotifier) getContinuumNotifier( "mail" );
+        notifier = (MailContinuumNotifier) getContinuumNotifier( getNotifierRoleHint() );
     }
 
     protected String getProjectScmUrl()
     {
-        return "scm:test:src/test/repository:success";
+        return "scm:local:src/test/repository:success";
     }
 
     protected String getProjectNagEmailAddress()
@@ -72,14 +73,14 @@ public class SuccessfulBuildMailNotifierTest
     // Assertions
     // ----------------------------------------------------------------------
 
-    protected void preBuildStarted()
+    protected void assertPreBuildState()
     {
         assertNull( notifier.getLastMessage() );
 
         assertEquals( 0, notifier.getMessageCount() );
     }
 
-    protected void postBuildComplete()
+    protected void assertPostBuildState( ContinuumBuild build )
         throws Exception
     {
         assertNotNull( notifier.getLastMessage() );
