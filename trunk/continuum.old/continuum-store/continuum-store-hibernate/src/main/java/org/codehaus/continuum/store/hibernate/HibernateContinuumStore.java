@@ -48,7 +48,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.16 2004-10-24 20:39:09 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.17 2004-10-28 19:37:18 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -268,7 +268,7 @@ public class HibernateContinuumStore
 
                 session.delete( originalDescriptor );
 
-                // This flush && evict trick is required because hibernate 
+                // This flush && evict trick is required because hibernate
                 // caches the removed descriptor
                 session.flush();
 
@@ -337,6 +337,33 @@ public class HibernateContinuumStore
         finally
         {
             txManager.leave();
+        }
+    }
+
+    public void setWorkingDirectory( String projectId, String workingDirectory )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            Session session = hibernate.getSession();
+
+            txManager.enter();
+
+            ContinuumProject project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+
+            project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+
+            project.setWorkingDirectory( workingDirectory );
+
+            session.update( project );
+
+            txManager.leave();
+        }
+        catch( HibernateException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumStoreException( "Error while updating project.", ex );
         }
     }
 
