@@ -5,7 +5,9 @@ package org.codehaus.continuum.store.hibernate;
  */
 
 import java.util.Iterator;
+import java.util.List;
 
+import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
 import net.sf.hibernate.Transaction;
@@ -26,7 +28,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.4 2004-07-14 05:32:30 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.5 2004-07-19 16:39:33 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -100,7 +102,7 @@ public class HibernateContinuumStore
         {
             tx.commit();
 
-            hibernate.closeSession();
+//            hibernate.closeSession();
         }
         catch( HibernateException ex )
         {
@@ -253,6 +255,9 @@ public class HibernateContinuumStore
             Session session = getHibernateSession();
 
             session.save( buildResult );
+
+            getLogger().info( "Saved: " + buildResult.getBuildId() );
+            getLogger().info( "Saved: " + buildResult.getProject().getId() );
         }
         catch( HibernateException ex )
         {
@@ -302,6 +307,29 @@ public class HibernateContinuumStore
         }
 
         return buildResult;
+    }
+
+    // TODO: Implement start and end
+    public Iterator getBuildResultsForProject( String projectId, int start, int end )
+        throws ContinuumStoreException
+    {
+        Iterator it;
+
+        getLogger().warn( "projectId: " + projectId );
+        try
+        {
+            Session session = getHibernateSession();
+
+            List list = session.find( "from GenericBuildResult where projectId=?", projectId, Hibernate.STRING );
+
+            it = list.iterator();
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Error while storing project.", ex );
+        }
+
+        return it;
     }
 
     // ----------------------------------------------------------------------

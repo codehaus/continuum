@@ -9,8 +9,8 @@
     extends="org.codehaus.continuum.project.AbstractProjectDescriptor"
 -->
   <class
-    name="org.codehaus.continuum.project.MockProjectDescriptor"
-    discriminator-value="mock">
+    name="org.codehaus.continuum.project.TestProjectDescriptor"
+    discriminator-value="test">
     <id name="projectId" type="java.lang.String">
       <generator class="assigned"/>
     </id>
