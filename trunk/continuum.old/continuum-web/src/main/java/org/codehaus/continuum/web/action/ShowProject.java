@@ -24,6 +24,7 @@ package org.codehaus.continuum.web.action;
 
 import java.util.Map;
 
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.web.utils.WebUtils;
 import org.codehaus.plexus.summit.SummitConstants;
@@ -32,7 +33,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProject.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
+ * @version $Id: ShowProject.java,v 1.4 2004-10-08 09:05:51 trygvis Exp $
  */
 public class ShowProject
     extends AbstractAction
@@ -48,6 +49,10 @@ public class ShowProject
 
         ContinuumProject project = getContinuumStore().getProject( id );
 
+        ContinuumBuild build = getContinuumStore().getLatestBuildForProject( id );
+
         vc.put( "project", WebUtils.projectToProjectModel( getI18N(), project ) );
+
+        vc.put( "latestBuild", WebUtils.buildToBuildModel( getI18N(), build ) );
     }
 }
