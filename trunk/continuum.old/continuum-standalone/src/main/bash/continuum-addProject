@@ -1,0 +1,22 @@
+#!/bin/bash
+
+projectName=$1
+scmConnection=$2
+
+if [ -z "$projectName" ]
+then
+  read -p "Project name:" projectName
+fi
+
+if [ -z "$scmConnection" ]
+then
+read -p "SCM connection string:" scmConnection
+  fatal "The SCM connection cannot be empty"
+fi
+
+type="maven2"
+
+echo "$projectName
+$scmConnection
+$type
+" | nc localhost 6789
