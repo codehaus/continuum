@@ -24,15 +24,17 @@ package org.codehaus.continuum.notification.mail;
 
 import org.codehaus.continuum.notification.AbstractSuccessfulBuildNotifierTest;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.plexus.mailsender.MailSender;
+import org.codehaus.plexus.mailsender.test.MockMailSender;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.7 2004-10-24 20:39:08 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.8 2004-10-24 22:21:04 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
-    private MailContinuumNotifier notifier;
+    private MockMailSender mailSender;
 
     // ----------------------------------------------------------------------
     // Setup
@@ -41,7 +43,7 @@ public class SuccessfulBuildMailNotifierTest
     protected void setUpNotifier()
         throws Exception
     {
-        notifier = (MailContinuumNotifier) getContinuumNotifier( getNotifierRoleHint() );
+        mailSender = (MockMailSender) lookup( MailSender.ROLE );
     }
 
     protected String getProjectScmUrl()
@@ -75,16 +77,12 @@ public class SuccessfulBuildMailNotifierTest
 
     protected void assertPreBuildState()
     {
-        assertNull( notifier.getLastMessage() );
-
-        assertEquals( 0, notifier.getMessageCount() );
+        assertEquals( 0, mailSender.getReceievedEmailSize() );
     }
 
     protected void assertPostBuildState( ContinuumBuild build )
         throws Exception
     {
-        assertNotNull( notifier.getLastMessage() );
-
-        assertEquals( 1, notifier.getMessageCount() );
+        assertEquals( 1, mailSender.getReceievedEmailSize() );
     }
 }

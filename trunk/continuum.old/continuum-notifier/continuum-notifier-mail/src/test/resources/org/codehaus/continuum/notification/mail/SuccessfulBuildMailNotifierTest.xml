@@ -13,30 +13,12 @@
         </requirement>
       </requirements>
       <configuration>
-<!--
-        <smtp-server>localhost</smtp-server>
-        <smtp-port>25</smtp-port>
--->
         <administrator>nobody@localhost</administrator>
       </configuration>
     </component>
     <component>
-      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
-      <role-hint>maven2</role-hint>
-      <implementation>org.codehaus.continuum.builder.maven2.ExternalMaven2ContinuumBuilder</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.scm.ContinuumScm</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.Maven</role>
-        </requirement>
-      </requirements>
-      <configuration>
-        <maven-home>/home/trygvis/m2/</maven-home>
-        <maven-home-local>/home/trygvis/.m2</maven-home-local>
-        <maven-repository>/home/trygvis/.m2/repository</maven-repository>
-      </configuration>
+      <role>org.codehaus.plexus.mailsender.MailSender</role>
+      <implementation>org.codehaus.plexus.mailsender.test.MockMailSender</implementation>
     </component>
   </components>
 </component-set>
