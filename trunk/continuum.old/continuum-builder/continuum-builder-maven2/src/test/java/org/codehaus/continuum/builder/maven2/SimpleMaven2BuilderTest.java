@@ -24,30 +24,31 @@ package org.codehaus.continuum.builder.maven2;
 
 import java.io.File;
 
+import org.apache.maven.Maven;
 import org.apache.maven.MavenTestUtils;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.1 2004-08-29 18:45:16 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.2 2004-09-07 16:22:16 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
 {
-    private File repository;
+//    private File repository;
 
-    private File mavenRepository;
-
+//    private File mavenRepository;
+/*
     public void setUp()
         throws Exception
     {
@@ -97,8 +98,8 @@ public class SimpleMaven2BuilderTest
 
         FileUtils.copyFileToDirectory( file, directory );
     }
-
-    protected PlexusContainer getContainerInstance()
+*/
+    public PlexusContainer getContainerInstance()
     {
         return MavenTestUtils.getContainerInstance();
     }
@@ -112,6 +113,8 @@ public class SimpleMaven2BuilderTest
     public void testContinuum()
         throws Exception
     {
+        lookup( Maven.ROLE );
+
         Continuum continuum = getContinuum();
 
         BuildQueue queue = getBuildQueue();
@@ -148,6 +151,8 @@ public class SimpleMaven2BuilderTest
 
             result = store.getBuild( buildId );
 
+            assertNotNull( result );
+
             if ( result.getState() != ContinuumProjectState.BUILDING )
             {
                 break;
@@ -159,16 +164,36 @@ public class SimpleMaven2BuilderTest
             fail( "Timeout while waiting for the build to finnish." );
         }
 
+        ContinuumBuildResult buildResult = result.getBuildResult();
+
+        assertNotNull( buildResult );
+
+        assertTrue( buildResult instanceof ExternalMaven2BuildResult );
+
+        ExternalMaven2BuildResult m2Result = (ExternalMaven2BuildResult) buildResult;
+
+        System.err.println( "************************" );
+
+        System.err.println( m2Result.getOutput() );
+
+        System.err.println( "************************" );
+
+        System.err.println( m2Result.getError() );
+
+        System.err.println( "************************" );
+
         assertEquals( ContinuumProjectState.OK, project.getState() );
 
         assertEquals( 0, queue.getLength() );
 
+        String repository = ((Maven) lookup( Maven.ROLE ) ).getMavenHomeLocal();
+
         File project1Jar = new File( repository, "plexus/jars/continuum-project1-1.0.jar" );
 
-        assertTrue( project1Jar.exists() );
+        assertTrue( "Jar file doesn't exists: " + project1Jar.getAbsolutePath(), project1Jar.exists() );
 
         File project1Pom = new File( repository, "plexus/poms/continuum-project1-1.0.pom" );
 
-        assertTrue( project1Pom.exists() );
+        assertTrue( "Pom file doesn't exists: " + project1Pom.getAbsolutePath(), project1Pom.exists() );
     }
 }

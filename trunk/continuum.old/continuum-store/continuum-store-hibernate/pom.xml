@@ -10,6 +10,12 @@
   <artifactId>continuum-hibernate-store</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Hibernate Store</name>
+  <repositories>
+    <repository>
+      <id>codehaus</id>
+      <url>http://repository.codehaus.org</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>

@@ -26,12 +26,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.maven.ExecutionResponse;
 import org.apache.maven.Maven;
-import org.apache.maven.lifecycle.goal.GoalNotFoundException;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
@@ -45,14 +44,15 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.2 2004-09-07 16:22:16 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.1 2004-09-07 16:22:16 trygvis Exp $
  */
-public class Maven2ContinuumBuilder
+public class ExternalMaven2ContinuumBuilder
     extends AbstractLogEnabled
     implements ContinuumBuilder
 {
@@ -67,11 +67,22 @@ public class Maven2ContinuumBuilder
     /** @default ${maven.home} */
     private String mavenHome;
 
-    /** @default ${maven.home}/repository */
+    /** @default ${user.home}/m2*/
     private String mavenHomeLocal;
 
-    private boolean mavenInitialized;
+    /** @default ${maven.home}/repository */
+    private String mavenRepository;
 
+    private boolean mavenInitialized;
+/*
+    private PrintStream originalSystemOut;
+
+    private PrintStream originalSystemErr;
+
+    private Maven2PrintStream systemOutLogger;
+
+    private Maven2PrintStream systemErrLogger;
+*/
     // ----------------------------------------------------------------------
     // Component Lifecycle
     // ----------------------------------------------------------------------
@@ -79,11 +90,17 @@ public class Maven2ContinuumBuilder
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( mavenInstance, Maven.ROLE );
         PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
 
-        PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
         PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
+        PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
+        PlexusUtils.assertConfiguration( mavenRepository, "maven-repository" );
+
+        System.setProperty( "maven.repo.local", mavenRepository );
+
+        getLogger().info( "Maven home: " + mavenHome );
+        getLogger().info( "Maven local home: " + mavenHomeLocal );
+        getLogger().info( "Maven repository: " + mavenRepository );
 
         getMaven();
     }
@@ -129,19 +146,8 @@ public class Maven2ContinuumBuilder
         try
         {
             mavenProject = getMaven().getProject( pomFile );
-
-            ExecutionResponse response = getMaven().execute( mavenProject, goals );
-
-            if ( response.isExecutionFailure() )
-            {
-                throw new ContinuumException( "Error while building the project. Failed goal: " + response.getFailedGoal() + "\nFailure message: \n" + response.getFailureResponse().longMessage() );
-            }
         }
         catch( ProjectBuildingException ex )
-        {
-            throw new ContinuumException( "Error while building the project.", ex );
-        }
-        catch( GoalNotFoundException ex )
         {
             throw new ContinuumException( "Error while building the project.", ex );
         }
@@ -159,8 +165,6 @@ public class Maven2ContinuumBuilder
 
             if ( sourceDirectory != null && sourceDirectory.trim().length() > 0 )
             {
-                getLogger().warn( "new File( sourceDirectory ): " + new File( sourceDirectory ) );
-
                 if ( new File( sourceDirectory ).isDirectory() )
                 {
                     isPom = false;
@@ -185,64 +189,16 @@ public class Maven2ContinuumBuilder
     public synchronized ContinuumBuildResult build( File workingDirectory, ContinuumBuild build )
         throws ContinuumException
     {
-//        String basedir = null;
-
-//        BuildResult build;
-
         Maven2ProjectDescriptor descriptor;
 
         Maven maven = getMaven();
 
-//        Exception exception = null;
-
         Maven2BuildResult result;
 
         descriptor = (Maven2ProjectDescriptor) build.getProject().getDescriptor();
-/*
+
         try
         {
-            build = store.getBuildResult( buildId );
-        }
-        catch( ContinuumStoreException ex )
-        {
-            notifier.buildComplete( null );
-
-            setBuildResult( buildId, ContinuumProjectState.ERROR, ex );
-
-            return;
-        }
-*/
-//        ContinuumProject continuumProject = build.getProject();
-
-//        notifier.buildStarted( build );
-/*
-        try
-        {
-            notifier.checkoutStarted( build );
-
-            scm.clean( continuumProject );
-
-            basedir = scm.checkout( continuumProject );
-
-            notifier.checkoutComplete( build );
-        }
-        catch( Exception ex )
-        {
-            build.setError( ex );
-
-            notifier.checkoutComplete( build );
-
-            setBuildResult( buildId, ContinuumProjectState.ERROR, ex );
-
-            return;
-        }
-*/
-        try
-        {
-//            notifier.buildStarted( build );
-
-//            File file = new File( basedir, "pom.xml" );
-
             File file = getPomFile( workingDirectory );
 
             MavenProject pom;
@@ -253,70 +209,75 @@ public class Maven2ContinuumBuilder
 
             List goals = descriptor.getGoals();
 
-            // TODO: get the output from the maven build and check for error
-            ExecutionResponse executionResponse = maven.execute( pom, goals );
+            // ----------------------------------------------------------------------
+            // Build it
+            // ----------------------------------------------------------------------
 
-            // TODO: is this wanted?
-            FileUtils.forceDelete( workingDirectory );
+            Commandline cl = new Commandline();
 
-            result = new Maven2BuildResult( build, executionResponse );
+            cl.setExecutable( "java" );
+
+            cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
+
+            File classWorldsJar = new File( mavenHome, "/core/classworlds-1.1-SNAPSHOT.jar" );
+
+            cl.createArgument().setValue( "-classpath" );
+
+            cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
+
+            cl.createArgument().setValue( "-Dclassworlds.conf=" + mavenHome + "/bin/classworlds.conf" );
+
+            if ( !StringUtils.isEmpty( mavenRepository ) )
+            {
+                cl.createArgument().setValue( "-Dmaven.repo.local=" + mavenRepository );
+            }
+
+            cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
+
+            for ( Iterator it = goals.iterator(); it.hasNext(); )
+            {
+                String goal = (String) it.next();
+
+                cl.createArgument().setValue( goal );
+            }
+
+            String[] args = cl.getCommandline();
+
+            String cmd = args[0];
+
+            for ( int i = 1; i < args.length; i++ )
+            {
+                cmd += " " + args[i];
+            }
+
+            getLogger().info( "Executing external maven. Commandline: " + cmd );
+
+            CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+
+            CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
+
+            int exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
+
+            // ----------------------------------------------------------------------
+            //
+            // ----------------------------------------------------------------------
+
+            String out = stdout.getOutput();
+
+            String err = stderr.getOutput();
+
+            boolean success = out.indexOf( "BUILD SUCCESSFUL" ) != -1;
+
+            result = new ExternalMaven2BuildResult( build, success, out, err, exitCode );
         }
         catch ( ProjectBuildingException ex )
         {
             throw new ContinuumException( "Error while building the project metadata.", ex );
         }
-        catch ( GoalNotFoundException ex )
-        {
-            throw new ContinuumException( "Maven could not find the specified goal.", ex );
-        }
-        catch ( IOException ex )
-        {
-            throw new ContinuumException( "IO Error.", ex );
-        }
-/*
-        ContinuumProjectState result;
-
-        if ( exception == null )
-        {
-            result = ContinuumProjectState.OK;
-        }
-        else
-        {
-            result = ContinuumProjectState.ERROR;
-        }
-
-        setBuildResult( buildId, result, exception, executionResponse );
-
-        build.setError( exception );
-
-        notifier.buildComplete( build );
-*/
 
         return result;
     }
-/*
-    private void setBuildResult( String buildId, ContinuumProjectState state )
-    {
-        setBuildResult( buildId, state, null, null );
-    }
 
-    private void setBuildResult( String buildId, ContinuumProjectState state, Exception ex )
-    {
-        setBuildResult( buildId, state, ex, null );
-    }
-
-    private void setBuildResult( String buildId, ContinuumProjectState state, Exception ex, ExecutionResponse executionResponse )
-    {
-        try
-        {
-            store.setBuildResult( buildId, state, ex, executionResponse );
-        }
-        catch( ContinuumStoreException ex2 )
-        {
-            getLogger().fatalError( "Error while persising build state.", ex2 );
-        }
-    }
-*/
     private File getPomFile( File basedir )
         throws ContinuumException
     {

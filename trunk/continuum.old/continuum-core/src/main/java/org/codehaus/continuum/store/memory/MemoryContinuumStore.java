@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -42,14 +41,14 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.3 2004-07-29 04:30:42 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.4 2004-09-07 16:22:17 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
 {
-    private int projectSerial = Math.abs( new Random().nextInt() );
+    private int projectSerial = Math.abs( "projectSerial".hashCode() );
 
-    private int buildResultSerial = Math.abs( new Random().nextInt() );
+    private int buildSerial = Math.abs( "buildSerial".hashCode() );
 
     private Map projects = new HashMap();
 
@@ -122,9 +121,9 @@ public class MemoryContinuumStore
         if ( project != null )
             throw new ContinuumStoreException( "The specified project already exists in the store." );
 
-        String id = Integer.toString( projectSerial++ );
+        String projectId = Integer.toString( projectSerial++ );
 
-        project = new GenericContinuumProject( id );
+        project = new GenericContinuumProject( projectId );
 
         project.setName( name );
 
@@ -134,9 +133,9 @@ public class MemoryContinuumStore
 
         project.setType( type );
 
-        projects.put( id, project );
+        projects.put( projectId, project );
 
-        return id;
+        return projectId;
     }
 
     public void removeProject( String projectId )
@@ -223,7 +222,9 @@ public class MemoryContinuumStore
             String candidate = project.getName();
 
             if ( candidate.equals( name ) )
+            {
                 return project;
+            }
         }
 
         return null;
@@ -238,9 +239,9 @@ public class MemoryContinuumStore
     {
         ContinuumProject project = getProject( projectId );
 
-        String id = Integer.toString( buildResultSerial++ );
+        String buildId = Integer.toString( buildSerial++ );
 
-        GenericContinuumBuild build = new GenericContinuumBuild( id );
+        GenericContinuumBuild build = new GenericContinuumBuild( buildId );
 
         build.setProject( project );
 
@@ -250,9 +251,9 @@ public class MemoryContinuumStore
 
         build.setStartTime( new Date().getTime() );
 
-        builds.put( id, build );
+        builds.put( buildId, build );
 
-        return id;
+        return buildId;
     }
 
     public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )

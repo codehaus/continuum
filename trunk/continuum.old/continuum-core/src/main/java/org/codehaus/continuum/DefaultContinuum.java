@@ -34,17 +34,21 @@ import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.39 2004-07-29 04:30:42 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.40 2004-09-07 16:22:16 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
-    implements Continuum, Initializable, Startable
+    implements Continuum, Initializable, Startable, Contextualizable
 {
     /** @requirement */
     private BuilderManager builderManager;
@@ -69,6 +73,17 @@ public class DefaultContinuum
     // ----------------------------------------------------------------------
     // Component lifecycle
     // ----------------------------------------------------------------------
+
+    String plexusHome;
+    DefaultPlexusContainer container;
+
+    public void contextualize( Context context )
+        throws Exception
+    {
+        plexusHome = (String)context.get( "plexus.home" );
+
+        container = (DefaultPlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+    }
 
     public void initialize()
         throws Exception
@@ -96,6 +111,39 @@ public class DefaultContinuum
     {
         getLogger().info( "Starting continuum." );
 
+        if ( container.hasComponent( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" ) )
+        {
+            getLogger().warn( "Has m2 builder, booting" );
+
+            container.lookup( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" );
+        }
+        else
+        {
+            getLogger().warn( "Missing m2 builder" );
+        }
+/*
+        if ( !started )
+        {
+            File jarRepo = new File( plexusHome, "/apps/continuumweb/plugins" );
+
+            if ( !jarRepo.exists() )
+            {
+                getLogger().warn( "JAR REPOSITORY DOESN'T EXIST: " + jarRepo.getAbsolutePath() );
+            }
+            else
+            {
+                getLogger().warn( "JAR REPOSITORY: " + jarRepo.getAbsolutePath() );
+
+                // this initializes maven
+                container.lookup( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" );
+
+                container.addJarRepository( jarRepo );
+
+                container.discoverComponents();
+            }
+            started = true;
+        }
+*/
         // start the builder thread
         builderThread = new BuilderThread( builderManager, buildQueue, store, notifierManager, scm, getLogger() );
 
@@ -203,7 +251,7 @@ public class DefaultContinuum
 
             buildId = store.createBuild( project.getId() );
 
-            getLogger().info( "Enqueuing " + project.getName() + ", build id " + buildId + "..." );
+            getLogger().info( "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId + "..." );
 
             store.commitTransaction();
 

@@ -24,11 +24,21 @@ package org.codehaus.continuum.notification;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.2 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.3 2004-09-07 16:22:17 trygvis Exp $
  */
 public class SuccessfulBuildConsoleNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
+    protected String getProjectScmUrl()
+    {
+        return "scm:test:success";
+    }
+
+    protected String getProjectType()
+    {
+        return "test";
+    }
+
     protected String getNotifierRoleHint()
     {
         return "console";

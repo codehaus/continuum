@@ -1,4 +1,4 @@
-package org.codehaus.continuum.web.action;
+package org.codehaus.continuum.builder.maven2;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
@@ -22,26 +22,43 @@ package org.codehaus.continuum.web.action;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.AbstractContinuumTest;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrlTest.java,v 1.3 2004-09-07 16:22:21 trygvis Exp $
+ * @version $Id: ExternalMaven2BuildResult.java,v 1.1 2004-09-07 16:22:16 trygvis Exp $
  */
-public class AddProjectPomUrlTest
-    extends AbstractContinuumTest
+public class ExternalMaven2BuildResult
+    extends Maven2BuildResult
 {
-    public void testExecute()
-        throws Exception
+    private String output;
+
+    private String error;
+
+    private int exitCode;
+
+    private ExternalMaven2BuildResult()
     {
-/*
-        AddProjectPomUrl action = (AddProjectPomUrl) lookup( Action.ROLE, "addProjectPomUrl" );
+    }
 
-        Map params = new HashMap();
+    public ExternalMaven2BuildResult( ContinuumBuild build, boolean success, String output, String error, int exitCode )
+    {
+        super( build, success );
 
-        params.put( "addProject.pomUrl", "file://" + getTestFile( "src/test/resources/actions/addProject/pom.xml" ) );
+        this.output = output;
 
-        action.execute( params );
-*/
+        this.error = error;
+
+        this.exitCode = exitCode;
+    }
+
+    public String getOutput()
+    {
+        return output;
+    }
+
+    public String getError()
+    {
+        return error;
     }
 }

@@ -23,18 +23,20 @@ package org.codehaus.continuum.notification;
  */
 
 import org.codehaus.continuum.AbstractContinuumTest;
+import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifierTest.java,v 1.2 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: AbstractNotifierTest.java,v 1.3 2004-09-07 16:22:19 trygvis Exp $
  */
-public class AbstractNotifierTest
+public abstract class AbstractNotifierTest
     extends AbstractContinuumTest
 {
     // ----------------------------------------------------------------------
-    //
+    // Override these to set up the test.
     // ----------------------------------------------------------------------
 
     protected void setUpNotifier()
@@ -47,15 +49,9 @@ public class AbstractNotifierTest
     {
     }
 
-    protected String getProjectScmUrl()
-    {
-        return "scm:test:foo";
-    }
+    protected abstract String getProjectScmUrl();
 
-    protected String getProjectType()
-    {
-        return "test";
-    }
+    protected abstract String getProjectType();
 
     // ----------------------------------------------------------------------
     // Override these to assert the notifier.
@@ -109,19 +105,43 @@ public class AbstractNotifierTest
         super.tearDown();
     }
 
-    protected ContinuumBuild getBuildResult()
+    protected ContinuumBuild build()
         throws Exception
     {
-        ContinuumStore store = getContinuumStore( "memory" );
+        ContinuumStore store = getContinuumStore();
 
         String projectName = "Notifier Test Project";
 
-        String projectId = store.addProject( projectName, getProjectScmUrl(), getProjectType() );
+        Continuum continuum = getContinuum();
 
-        String buildId = store.createBuild( projectId );
+        String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectType() );
 
-        ContinuumBuild buildResult = store.getBuild( buildId );
+        String buildId = continuum.buildProject( projectId );
 
-        return buildResult;
+        ContinuumBuild build = store.getBuild( buildId );
+
+        int time = 30 * 1000;
+
+        int interval = 100;
+
+        ContinuumBuild result;
+
+        while( time > 0 )
+        {
+            Thread.sleep( interval );
+
+            time -= interval;
+
+            result = store.getBuild( buildId );
+
+            assertNotNull( result );
+
+            if ( result.getState() != ContinuumProjectState.BUILDING )
+            {
+                break;
+            }
+        }
+
+        return build;
     }
 }

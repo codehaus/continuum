@@ -29,7 +29,7 @@ import org.apache.maven.scm.repository.AbstractRepository;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestRepository.java,v 1.3 2004-07-30 02:23:09 trygvis Exp $
+ * @version $Id: TestRepository.java,v 1.4 2004-09-07 16:22:19 trygvis Exp $
  */
 public class TestRepository
     extends AbstractRepository
@@ -37,8 +37,6 @@ public class TestRepository
     private String base;
 
     private String dir;
-
-    private boolean valid;
 
     public TestRepository( String scmUrl )
         throws ScmException
@@ -59,6 +57,7 @@ public class TestRepository
     }
 
     public void parseConnection()
+        throws ScmException
     {
         String connection = getConnection();
 
@@ -66,9 +65,7 @@ public class TestRepository
 
         if ( index == -1 )
         {
-            valid = false;
-
-            return;
+            throw new InvalidConnectionUrlException( "Invalid Scm Url (" + connection + " ): expected ':'." );
         }
 
         base = connection.substring( 0, index );
@@ -78,8 +75,6 @@ public class TestRepository
         base = new File( basedir, base.substring( base.indexOf( ":" ) + 1 ) ).getAbsolutePath();
 
         dir = connection.substring( index + 1 );
-
-        valid = true;
     }
 
     /**
@@ -96,10 +91,5 @@ public class TestRepository
     public String getDir()
     {
         return dir;
-    }
-
-    public boolean isValid()
-    {
-        return valid;
     }
 }

@@ -33,7 +33,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.5 2004-07-27 05:42:09 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.6 2004-09-07 16:22:20 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends PlexusTestCase
@@ -48,9 +48,9 @@ public class AlarmClockTriggerTest
 
         assertEquals( 0, continuum.getBuildQueueLength() );
 
-        continuum.addProject( "Test Project 1", "scm:test:", "test" );
+        continuum.addProject( "Test Project 1", "scm:test:src/test/repository:simple", "test" );
 
-        continuum.addProject( "Test Project 2", "scm:test:", "test" );
+        continuum.addProject( "Test Project 2", "scm:test:src/test/repository:simple", "test" );
 
         // The lookup starts the trigger
         AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, "alarm-clock-test" );

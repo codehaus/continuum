@@ -2,21 +2,20 @@ package org.codehaus.continuum.notification.mail;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.builder.maven2.Maven2BuildResult;
 import org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor;
 import org.codehaus.continuum.mail.MailMessage;
 import org.codehaus.continuum.notification.AbstractContinuumNotifier;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
@@ -24,7 +23,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.8 2004-07-29 22:57:32 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.9 2004-09-07 16:22:17 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -66,9 +65,20 @@ public class MailContinuumNotifier
      */
     private Integer smtpPort;
 
-    // members
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     private int port;
+
+    /**
+     * This is the last message sent by the notifier.
+     * 
+     * Probably mostly useful for testing.
+     */
+    private String lastMessage;
+
+    private Map generators = new HashMap();
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
@@ -114,6 +124,10 @@ public class MailContinuumNotifier
             port = smtpPort.intValue();
             getLogger().info( "Smtp port: " + port );
         }
+
+        generators.put( "maven2", new Maven2MailGenerator( getLogger() ) );
+
+        generators.put( "maven2", new ExternalMaven2MailGenerator( getLogger() ) );
     }
 
     // ----------------------------------------------------------------------
@@ -148,123 +162,25 @@ public class MailContinuumNotifier
     public void buildComplete( ContinuumBuild build )
         throws ContinuumException
     {
-        StringWriter message = new StringWriter();
-
-        PrintWriter output = new PrintWriter( message );
-
         ContinuumProject project = build.getProject();
 
-        if ( !project.getType().equals( "maven2" ) )
+        if ( !generators.containsKey( project.getType() ) )
         {
             throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
         }
 
-        Maven2BuildResult result = (Maven2BuildResult)build.getBuildResult();
+        MailGenerator generator = (MailGenerator) generators.get( project.getType() );
 
-        ContinuumProjectState state = build.getState();
+        lastMessage = generator.generateContent( project, build );
 
-        String subject;
+        String subject = generator.generateSubject( project, build );
 
-        if ( state == ContinuumProjectState.ERROR )
-        {
-            output.println( "BUILD ERROR" );
+        sendMessage( build, subject, lastMessage );
+    }
 
-            subject = "[continuum] BUILD ERROR: " + project.getName();
-
-            Throwable error = build.getError();
-
-            if ( error != null )
-            {
-                line( output );
-
-                output.println( "Build exeption:" );
-
-                line( output );
-
-                error.printStackTrace( output );
-
-                line( output );
-            }
-        }
-        else if ( state == ContinuumProjectState.OK || state == ContinuumProjectState.FAILED )
-        {
-//            ExecutionResponse response = result.getExecutionResponse();
-            String response = result.getExecutionResponse();
-/*
-            // TODO: add isExecutionError() in the repsponse
-            if ( response.getException() != null )
-            {
-                subject = "[continuum] BUILD ERROR: " + project.getName();
-
-                line( output );
-
-                output.println( "BUILD ERROR" );
-
-                line( output );
-
-                Throwable error = response.getException();
-
-                if ( error != null )
-                {
-                    output.println( "Build exeption:" );
-
-                    line( output );
-
-                    error.printStackTrace( output );
-
-                    line( output );
-                }
-            }
-            else */
-            if ( !result.isSuccess() )
-            {
-                subject = "[continuum] BUILD FAILURE: " + project.getName();
-
-                line( output );
-
-                output.println( "BUILD FAILURE" );
-
-                line( output );
-
-                output.println( "Reason: " + result.getShortFailureResponse() );
-
-                output.println( result.getLongFailureResponse() );
-
-                line( output );
-
-                output.println( "Execution response: " );
-
-                output.println( response );
-
-                writeStats( output, build );
-            }
-            else
-            {
-                subject = "[continuum] BUILD SUCCESSFUL: " + project.getName();
-
-                line( output );
-
-                output.println( "BUILD SUCCESSFUL" );
-
-                if ( response.trim().length() > 0 )
-                {
-                    line( output );
-
-                    output.println( response );
-                }
-                writeStats( output, build );
-            }
-        }
-        else
-        {
-            getLogger().warn( "Unexpected build state: " + state );
-
-            subject = "[continuum] BUILD ERROR: Unknown build state";
-        }
-
-        output.close();
-
-        sendMessage( build, subject, message.toString() );
+    public String getLastMessage()
+    {
+        return lastMessage;
     }
 
     // ----------------------------------------------------------------------
@@ -384,7 +300,7 @@ public class MailContinuumNotifier
             return to;
         }
 
-        if ( mavenProject == null )
+        if ( mavenProject == null || mavenProject.getCiManagement() == null )
         {
             return administrator;
         }
@@ -433,7 +349,8 @@ public class MailContinuumNotifier
 
     private void line( PrintWriter output )
     {
-        output.println( "----------------------------------------------------------------------------" );
+//        output.println( "----------------------------------------------------------------------------" );
+        output.println( "****************************************************************************" );
     }
 
     private String formatTime( long time )
