@@ -52,6 +52,11 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addProjectScm</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddProjectScm</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
     </component>
 
     <!-- addProjectPomUrl -->
@@ -62,6 +67,21 @@
       <requirements>
         <requirement>
           <role>org.apache.maven.Maven</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- showProjects -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProjects</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProjects</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
         </requirement>
       </requirements>
     </component>
@@ -83,6 +103,18 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>updateProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- removeProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>removeProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.i18n.I18N</role>

@@ -102,18 +102,4 @@
       <version>1.0-beta-1</version>
     </dependency>
   </dependencies>
-  <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
-    <resources>
-      <resource>
-        <directory>src/main/configuration</directory>
-<!--
-        <includes>
-          <include></include>
-        </includes>
--->
-      </resource>
-    </resources>
-  </build>
 </project>

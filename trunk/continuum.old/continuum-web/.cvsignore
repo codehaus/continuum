@@ -7,6 +7,9 @@ target
 *.iws
 *.iml
 
+*.tar.gz
+*.tar.bz2
 rg*
+continuum-*
 continuumdb.*
 generated-runtime
