@@ -22,8 +22,8 @@
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-scm-api</artifactId>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-maven-utils</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <!-- Test -->
