@@ -15,7 +15,7 @@
         <valves>
           <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
-          <valve>org.codehaus.continuum.web.pipeline.valve.ActionValve</valve>
+          <valve>org.codehaus.plexus.action.web.ActionValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
@@ -161,62 +161,9 @@
      |-->
 
     <component>
-      <role>org.codehaus.continuum.web.action.ActionManager</role>
-      <implementation>org.codehaus.continuum.web.action.DefaultActionManager</implementation>
-      <requirements>
-        <requirement>
-          <field-name>actions</field-name>
-          <role>org.codehaus.continuum.web.action.Action</role>
-        </requirement>
-      </requirements>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
+      <role>org.codehaus.plexus.action.Action</role>
       <role-hint>login</role-hint>
       <implementation>org.codehaus.continuum.web.action.Login</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>addProjectPomUrl</role-hint>
-      <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>addMaven1ProjectPomUrl</role-hint>
-      <implementation>org.codehaus.continuum.web.action.AddMaven1ProjectPomUrl</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>addAntProject</role-hint>
-      <implementation>org.codehaus.continuum.web.action.AddAntProjectAction</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>removeProject</role-hint>
-      <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>showProjectBuilds</role-hint>
-      <implementation>org.codehaus.continuum.web.action.ShowProjectBuilds</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>showExternalMaven2BuildResult</role-hint>
-      <implementation>org.codehaus.continuum.web.action.ShowExternalMaven2BuildResultAction</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>enqueueProject</role-hint>
-      <implementation>org.codehaus.continuum.web.action.EnqueueProject</implementation>
     </component>
 
   </components>
