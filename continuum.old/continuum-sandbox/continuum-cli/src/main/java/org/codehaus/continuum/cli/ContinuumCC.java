@@ -37,7 +37,7 @@ import org.codehaus.plexus.embed.Embedder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumCC.java,v 1.3 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: ContinuumCC.java,v 1.1 2004-10-09 11:21:27 trygvis Exp $
  */
 public class ContinuumCC
 {

@@ -28,33 +28,14 @@ import org.codehaus.continuum.ContinuumException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectCliCommand.java,v 1.2 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: CliCommand.java,v 1.1 2004-10-09 11:21:27 trygvis Exp $
  */
-public class AddProjectCliCommand
-    extends AbstractCliCommand
+public interface CliCommand
 {
-    public AddProjectCliCommand()
-    {
-        super( "addProject" );
-    }
+    String ROLE = CliCommand.class.getName();
 
-    public void execute( String[] args )
-        throws ContinuumException, ParseException
-    {
-        addOption( projectNameOption );
+    void execute( String[] args )
+        throws ContinuumException, ParseException;
 
-        addOption( scmConnectionOption );
-
-        addOption( projectTypeOption );
-
-        initialize( args );
-
-        String projectName = getProjectNameOption();
-
-        String scmConnection = getScmConnectionOption();
-
-        String type = getProjectTypeOption();
-
-        getContinuum().addProject( projectName, scmConnection, type );
-    }
+    String getCommandLineHelp();
 }

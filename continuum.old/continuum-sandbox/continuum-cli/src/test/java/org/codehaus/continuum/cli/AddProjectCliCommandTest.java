@@ -31,7 +31,7 @@ import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectCliCommandTest.java,v 1.2 2004-07-27 05:42:12 trygvis Exp $
+ * @version $Id: AddProjectCliCommandTest.java,v 1.1 2004-10-09 11:21:27 trygvis Exp $
  */
 public class AddProjectCliCommandTest
     extends TestCase
