@@ -1,7 +1,9 @@
 package org.codehaus.continuum.builder;
 
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+
 /*
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstï¿½l
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,9 +26,10 @@ package org.codehaus.continuum.builder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuilder.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: AbstractContinuumBuilder.java,v 1.3 2004-10-27 22:03:24 jvanzyl Exp $
  */
 public abstract class AbstractContinuumBuilder
+    extends AbstractLogEnabled
     implements ContinuumBuilder
 {
 }
