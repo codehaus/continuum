@@ -33,13 +33,13 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.3 2005-03-09 00:14:27 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.4 2005-03-09 23:01:43 trygvis Exp $
  */
 public interface ContinuumBuilder
 {
     String ROLE = ContinuumBuilder.class.getName();
 
-    ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
+    ContinuumBuildResult build( ContinuumProject project )
         throws ContinuumException;
 
     ContinuumProject createProjectFromMetadata( URL metadata )

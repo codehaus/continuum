@@ -23,6 +23,7 @@ package org.codehaus.continuum.web.action;
  */
 
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProjectBuilds.java,v 1.2 2005-02-21 15:03:16 trygvis Exp $
+ * @version $Id: ShowProjectBuilds.java,v 1.3 2005-03-09 23:01:45 trygvis Exp $
  */
 public class ShowProjectBuilds
     extends AbstractAction
@@ -58,9 +59,9 @@ public class ShowProjectBuilds
 
         while ( it.hasNext() )
         {
-            Object o = it.next();
+            ContinuumBuild build = (ContinuumBuild) it.next();
 
-            builds.add( o );
+            builds.add( build );
         }
 
         vc.put( "builds", builds );

@@ -42,7 +42,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.2 2005-03-09 00:14:43 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.3 2005-03-09 23:01:44 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
@@ -60,10 +60,12 @@ public class Maven1Builder
     // Builder Implementation
     // ----------------------------------------------------------------------
 
-    public ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
+    public ContinuumBuildResult build( ContinuumProject project )
         throws ContinuumException
     {
         Properties configuration = project.getConfiguration();
+
+        File workingDirectory = new File( project.getWorkingDirectory() );
 
         String[] goals = StringUtils.split( configuration.getProperty( CONFIGURATION_GOALS ), "," );
 

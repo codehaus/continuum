@@ -28,32 +28,33 @@ import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
-import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.scm.ContinuumScm;
-import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
-import java.io.File;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.4 2005-03-09 20:06:37 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.5 2005-03-09 23:01:42 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
     implements BuildController
 {
+    /** @requirement */
     private BuilderManager builderManager;
 
+    /** @requirement */
     private ContinuumStore store;
 
+    /** @requirement */
     private ContinuumNotificationDispatcher notifier;
 
+    /** @requirement */
     private ContinuumScm scm;
 
     // ----------------------------------------------------------------------
@@ -76,15 +77,6 @@ public class DefaultBuildController
         try
         {
             buildProject( buildId );
-
-            if ( false )
-            {
-                throw new InterruptedException();
-            }
-        }
-        catch ( InterruptedException ex )
-        {
-            return;
         }
         catch ( ContinuumStoreException ex )
         {
@@ -150,8 +142,10 @@ public class DefaultBuildController
 
             getLogger().fatalError( "Error building the project, build id: '" + buildId + "'.", ex );
         }
-
-        notifier.buildComplete( build );
+        finally
+        {
+            notifier.buildComplete( build );
+        }
     }
 
     private ContinuumBuildResult build( ContinuumBuilder builder, ContinuumBuild build )
@@ -176,7 +170,7 @@ public class DefaultBuildController
 
         try
         {
-            result = runGoals( builder, project.getWorkingDirectory(), build );
+            result = runGoals( builder, project );
         }
         finally
         {
@@ -186,10 +180,10 @@ public class DefaultBuildController
         return result;
     }
 
-    private ContinuumBuildResult runGoals( ContinuumBuilder builder, String workingDirectory, ContinuumBuild build )
+    private ContinuumBuildResult runGoals( ContinuumBuilder builder, ContinuumProject project )
         throws ContinuumException
     {
-        ContinuumBuildResult result = builder.build( new File( workingDirectory ), build.getProject() );
+        ContinuumBuildResult result = builder.build( project );
 
         if ( result == null )
         {
