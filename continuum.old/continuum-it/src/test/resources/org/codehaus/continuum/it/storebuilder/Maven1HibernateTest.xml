@@ -1,0 +1,25 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+      <implementation>org.codehaus.continuum.store.hibernate.tx.HibernateStoreTransactionManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.hibernate.HibernateSessionService</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.store.ContinuumStore</role>
+      <implementation>org.codehaus.continuum.store.hibernate.HibernateContinuumStore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.hibernate.HibernateSessionService</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+</component-set>

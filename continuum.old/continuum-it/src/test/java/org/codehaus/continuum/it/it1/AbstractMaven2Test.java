@@ -18,7 +18,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractMaven2Test.java,v 1.4 2004-10-28 19:45:37 trygvis Exp $
+ * @version $Id: AbstractMaven2Test.java,v 1.5 2004-10-29 15:31:27 trygvis Exp $
  */
 public abstract class AbstractMaven2Test
     extends AbstractContinuumTest
@@ -111,9 +111,7 @@ public abstract class AbstractMaven2Test
 
         Maven2ProjectDescriptor descriptor = (Maven2ProjectDescriptor) project.getDescriptor();
 
-        assertEquals( pomName, descriptor.getName() );
-
-        // the pom should override the gived name
+        // the pom should override the given name
         assertEquals( pomName, project.getName() );
 
         // TODO: add asserts for scmUrl, nagEmailAddress and version
@@ -144,7 +142,7 @@ public abstract class AbstractMaven2Test
 
         assertNotNull( descriptor );
 
-        assertEquals( "Hibernate And Maven 2 Test Project - Changed", descriptor.getName() );
+        assertEquals( "Hibernate And Maven 2 Test Project - Changed", project.getName() );
 
         txManager.commit();
 

@@ -38,6 +38,11 @@
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
+      <artifactId>continuum-builder-shell</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
       <artifactId>continuum-test</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
