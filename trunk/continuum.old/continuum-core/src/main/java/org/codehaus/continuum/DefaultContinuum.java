@@ -4,7 +4,7 @@ import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.mail.MailMessage;
+import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
@@ -31,24 +31,11 @@ public class DefaultContinuum
 
     private Compiler compiler;
 
-    // Configuration
+    private ContinuumNotifier notifier;
 
-    /** Where all the sources get checked out to be built. */
     private String workingDirectory;
 
     private File storageDirectory;
-
-    // Anything mail related can be encapsualted in a separate
-    // communicatino module but it's what we'll be doing first so we'll
-    // get it working before abstracting it out.
-
-    /** Outgoing smtp server for messages. */
-    private String smtpServer;
-
-    /** Message to set as the reply to in the outgoing messages. */
-    private String replyTo;
-
-    // Internal helpers
 
     private Map builds;
 
@@ -121,7 +108,7 @@ public class DefaultContinuum
 
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-                while( is.available() > 0 )
+                while ( is.available() > 0 )
                 {
                     read = is.read( buffer, 0, buffer.length );
 
@@ -199,41 +186,6 @@ public class DefaultContinuum
         builds.put( project.getGroupId() + ":" + project.getArtifactId(), build );
     }
 
-    private void notifyAudience( MavenProject project, String message )
-    {
-        getLogger().info( "Sending message to: " + smtpServer );
-
-        try
-        {
-            MailMessage mailMessage = new MailMessage( smtpServer );
-
-            if ( replyTo != null )
-            {
-                mailMessage.from( replyTo );
-            }
-            else
-            {
-                mailMessage.from( project.getBuild().getNagEmailAddress() );
-            }
-
-            mailMessage.to( project.getBuild().getNagEmailAddress() );
-
-            mailMessage.setSubject( "Continuum: " + project.getName() );
-
-            mailMessage.getPrintStream().print( message );
-
-            mailMessage.sendAndClose();
-
-            getLogger().info( "The following message has been sent: " );
-
-            getLogger().info( message );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "Can't send notification message.", e );
-        }
-    }
-
     public void buildProject( String groupId, String artifactId )
         throws Exception
     {
@@ -267,10 +219,10 @@ public class DefaultContinuum
                 }
                 else
                 {
-                    message.append( "Build OK.");
+                    message.append( "Build OK." );
                 }
 
-                notifyAudience( projectBuild.getProject(), message.toString() );
+                notifier.notifyAudience( projectBuild.getProject(), message.toString() );
             }
             catch ( Exception e )
             {
@@ -282,7 +234,7 @@ public class DefaultContinuum
 
                 e.printStackTrace( w );
 
-                notifyAudience( projectBuild.getProject(), w.toString() );
+                notifier.notifyAudience( projectBuild.getProject(), w.toString() );
 
             }
         }
