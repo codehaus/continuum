@@ -43,7 +43,7 @@ cp ~/.maven/repository/classworlds/jars/classworlds-1.1-SNAPSHOT.jar $runtime/co
 cp ~/.maven/repository/plexus/jars/plexus-compiler-api-1.0.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-compiler-javac-1.0.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-compiler-javac-1.0.jar $runtime/apps/continuumweb/lib
-cp ~/.maven/repository/plexus/jars/plexus-hibernate-1.0-beta-1.jar $runtime/apps/continuumweb/lib
+cp ~/.maven/repository/plexus/jars/plexus-hibernate-1.0-beta-4-SNAPSHOT.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-i18n-1.0-beta-3.jar $runtime/apps/continuumweb/lib
 cp ~/.maven/repository/plexus/jars/plexus-jetty-1.0-beta-1.jar $runtime/apps/continuumweb/lib
 #cp ~/.maven/repository/plexus/jars/plexus-jetty-httpd-1.0-beta-1.jar $runtime/apps/continuumweb/lib
