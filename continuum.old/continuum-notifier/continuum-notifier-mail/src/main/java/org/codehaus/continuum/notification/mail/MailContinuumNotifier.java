@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.7 2004-07-29 04:23:09 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.8 2004-07-29 22:57:32 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -278,28 +278,28 @@ public class MailContinuumNotifier
 
         ContinuumProject project = build.getProject();
 
-        MavenProject mavenProject = getMavenProject( project );
+//        MavenProject mavenProject = getMavenProject( project );
 
         try
         {
             MailMessage mailMessage = new MailMessage( smtpServer, port );
 
-            String from = getFromAddress( mavenProject );
+            String from = getFromAddress( project );
 
             if ( from == null )
             {
-                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing, not sending mail." );
+                getLogger().warn( project.getName() + ": Project is missing nag email and global from address is missing, not sending mail." );
 
                 return;
             }
 
             mailMessage.from( from );
 
-            String to = getToAddress( mavenProject );
+            String to = getToAddress( project );
 
             if ( to == null )
             {
-                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing, not sending mail." );
+                getLogger().warn( project.getName() + ": Project is missing nag email and global from address is missing, not sending mail." );
 
                 return;
             }
@@ -338,9 +338,12 @@ public class MailContinuumNotifier
         }
     }
 
-    private String getFromAddress( MavenProject mavenProject )
+    private String getFromAddress( ContinuumProject project )
+        throws ContinuumException
     {
         String address;
+
+        MavenProject mavenProject = getMavenProject( project );
 
         if ( from != null )
         {
@@ -369,9 +372,12 @@ public class MailContinuumNotifier
         return address;
     }
 
-    private String getToAddress( MavenProject mavenProject )
+    private String getToAddress( ContinuumProject project )
+        throws ContinuumException
     {
         String address;
+
+        MavenProject mavenProject = getMavenProject( project );
 
         if ( to != null )
         {
