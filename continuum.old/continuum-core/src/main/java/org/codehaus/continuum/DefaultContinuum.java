@@ -4,20 +4,13 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
 
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.projectstorage.ContinuumProjectStorage;
-import org.codehaus.continuum.projectstorage.ContinuumProjectStorageException;
+import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -25,29 +18,19 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.29 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.30 2004-07-01 15:30:56 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
-    // configuration
-
-    private String mavenHome;
-
-    // requirements
-
     private ContinuumBuilder builder;
 
     private BuildQueue buildQueue;
 
-    private MavenProjectBuilder projectBuilder;
+    private ContinuumStore store;
 
-//    private Maven maven;
-
-    private ContinuumProjectStorage projectStorage;
-
-    private boolean shutdown;
+    private BuilderThread builderThread;
 
     ///////////////////////////////////////////////////////////////////////////
     // Component lifecycle
@@ -57,10 +40,11 @@ public class DefaultContinuum
     {
         getLogger().info( "Initializing continuum." );
 
-        PlexusUtils.assertRequirement( builder, ContinuumBuilder.class );
-        PlexusUtils.assertRequirement( buildQueue, BuildQueue.class );
-        PlexusUtils.assertRequirement( projectBuilder, MavenProjectBuilder.class );
-        PlexusUtils.assertRequirement( projectStorage, ContinuumProjectStorage.class );
+        PlexusUtils.assertRequirement( builder, ContinuumBuilder.ROLE );
+
+        PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
+
+        PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
 
         getLogger().info( "Continuum initialized." );
     }
@@ -70,31 +54,31 @@ public class DefaultContinuum
     {
         getLogger().info( "Starting continuum." );
 
-        PlexusUtils.assertConfiguration( mavenHome, "mavenHome" );
-
         // start the builder thread
-/*
-        Thread thread = new Thread( new BuilderThread() );
+        builderThread = new BuilderThread( buildQueue, getLogger(), builder );
+
+        Thread thread = new Thread( builderThread );
+
         thread.setDaemon( true );
+
         thread.start();
-*/
+
         getLogger().info( "Continuum started." );
     }
 
     public void stop()
         throws Exception
     {
-/*
         int maxSleep = 10 * 1000; // 10 seconds
         int interval = 1000;
         int slept = 0;
-*/
+
         getLogger().info( "Stopping continuum." );
 
         // signal the thread to stop
-        shutdown = true;
-/*
-        while( getState() != ContinuumConstants.IDLE )
+        builderThread.shutdown();
+
+        while( builderThread.isDone() )
         {
             if ( slept > maxSleep )
             {
@@ -108,7 +92,7 @@ public class DefaultContinuum
 
             slept += interval;
         }
-*/
+
         getLogger().info( "Continuum stopped." );
     }
 
@@ -124,9 +108,11 @@ public class DefaultContinuum
 
         try
         {
-            buildId = projectStorage.createBuild( project );
+            buildId = store.createBuildResult( project.getId() );
+
+            buildQueue.enqueue( buildId );
         }
-        catch( ContinuumProjectStorageException ex )
+        catch( ContinuumStoreException ex )
         {
             throw new ContinuumException( "Exception while creating build object.", ex );
         }
@@ -174,56 +160,7 @@ public class DefaultContinuum
 
     ///////////////////////////////////////////////////////////////////////////
     // Private
-/*
-    private class BuilderThread
-        implements Runnable
-    {
-        public void run()
-        {
-            while ( !shutdown )
-            {
-                MavenProject project = getProject();
 
-                if( project == null )
-                {
-                    getLogger().info( "Builder sleeping..." );
-
-                    sleep( 1000 );
-
-                    continue;
-                }
-
-                builder.build( project );
-            }
-        }
-
-        private void sleep( int interval )
-        {
-            try
-            {
-                Thread.sleep( interval );
-            }
-            catch( InterruptedException ex )
-            {
-                // ignore
-            }
-        }
-
-        private MavenProject getProject()
-        {
-            try
-            {
-                return buildQueue.dequeue();
-            }
-            catch( ContinuumException ex )
-            {
-                getLogger().fatalError( "Exception while dequeueing project.", ex );
-
-                return null;
-            }
-        }
-    }
-*/
     public String addProject( MavenProject project )
         throws ContinuumException
     {
@@ -231,7 +168,7 @@ public class DefaultContinuum
 
         try
         {
-            id = projectStorage.storeProject( project );
+            id = store.storeProject( project );
 
             getLogger().info( "Added project: " + project.getName() );
         }
@@ -255,14 +192,14 @@ public class DefaultContinuum
     {
         try
         {
-            ContinuumProject project = projectStorage.getProject( id );
-    
+            ContinuumProject project = store.getProject( id );
+
             if ( project == null )
                 throw new ContinuumException( "No such project: " + id + "." );
-    
+
             return project;
         }
-        catch( ContinuumProjectStorageException ex )
+        catch( ContinuumStoreException ex )
         {
             throw new ContinuumException( "Could not retrieve project #" + id, ex );
         }

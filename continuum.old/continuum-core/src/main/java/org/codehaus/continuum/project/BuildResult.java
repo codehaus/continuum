@@ -8,64 +8,124 @@ import java.util.Date;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResult.java,v 1.1 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: BuildResult.java,v 1.2 2004-07-01 15:30:58 trygvis Exp $
  */
 public class BuildResult
 {
     /** */
-    public final static int BUILD_RESULT_OK = 1;
+    public final static int BUILD_BUILDING = 1;
 
     /** */
-    public final static int BUILD_RESULT_FAILURE = 2;
+    public final static int BUILD_RESULT_OK = 2;
 
     /** */
-    public final static int BUILD_RESULT_ERROR = 3;
+    public final static int BUILD_RESULT_FAILURE = 3;
 
     /** */
-    private ContinuumProject project;
+    public final static int BUILD_RESULT_ERROR = 4;
 
     /** */
-    private Date timestamp;
+    private String buildId;
+
+    /** */
+    private String projectId;
+
+    /** */
+    private int state;
+
+    /** */
+    private Date startTime;
+
+    /** */
+    private Date endTime;
 
     /** */
     private Throwable error;
 
     /**
      */
-    public BuildResult()
+    public BuildResult( String buildId )
     {
     }
 
     /**
-     * @return Returns the project.
+     * @return Returns the buildId.
      */
-    public ContinuumProject getProject()
+    public String getBuildId()
     {
-        return project;
+        return buildId;
     }
 
     /**
-     * @param project The project to set.
+     * @param buildId The buildId to set.
      */
-    public void setProject(ContinuumProject project)
+    public void setBuildId( String buildId )
     {
-        this.project = project;
+        this.buildId = buildId;
     }
 
     /**
-     * @return Returns the timestamp.
+     * @return Returns the project id.
      */
-    public Date getTimestamp()
+    public String getProjectId()
     {
-        return timestamp;
+        return projectId;
     }
 
     /**
-     * @param timestamp The timestamp to set.
+     * @return Returns the state.
      */
-    public void setTimestamp(Date timestamp)
+    public int getState()
     {
-        this.timestamp = timestamp;
+        return state;
+    }
+
+    /**
+     * @param state The state to set.
+     */
+    public void setState( int state )
+    {
+        this.state = state;
+    }
+
+    /**
+     * @param projectId The project id to set.
+     */
+    public void setProjectId( String projectId )
+    {
+        this.projectId = projectId;
+    }
+
+    /**
+     * @return Returns the start time.
+     */
+    public Date getStartTime()
+    {
+        return startTime;
+    }
+
+    /**
+     * @param startTime The start time to set.
+     */
+    public void setStartTime( Date startTime )
+    {
+        this.startTime = startTime;
+    }
+
+    /**
+     * @return Returns the end time.
+     */
+    public Date getEndTime()
+    {
+        return endTime;
+    }
+
+    /**
+     * @param endTime The end time to set.
+     */
+    public void setEndTime( Date endTime )
+    {
+        this.endTime = endTime;
     }
 
     /**
@@ -82,5 +142,22 @@ public class BuildResult
     public void setError(Throwable error)
     {
         this.error = error;
+    }
+
+    public static String buildStateToString( int state )
+    {
+        switch( state )
+        {
+        case BUILD_BUILDING:
+            return "building";
+        case BUILD_RESULT_OK:
+            return "ok";
+        case BUILD_RESULT_FAILURE:
+            return "failure";
+        case BUILD_RESULT_ERROR:
+            return "error";
+        default:
+            return "UNKNOWN";
+        }
     }
 }

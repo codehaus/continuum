@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.5 2004-07-01 15:30:58 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -42,7 +42,7 @@ public class DefaultContinuumScm
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( scmManager, ScmManager.class );
+        PlexusUtils.assertRequirement( scmManager, ScmManager.ROLE );
 
         PlexusUtils.assertConfiguration( checkoutDirectory, "checkout-directory" );
 

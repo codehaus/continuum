@@ -1,4 +1,4 @@
-package org.codehaus.continuum.projectstorage;
+package org.codehaus.continuum.store;
 
 /*
  * LICENSE
@@ -8,31 +8,40 @@ import java.util.Iterator;
 
 import org.apache.maven.project.MavenProject;
 
+import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.6 2004-07-01 15:30:58 trygvis Exp $
  */
-public interface ContinuumProjectStorage {
+public interface ContinuumStore
+{
+    String ROLE = ContinuumStore.class.getName();
 
     // ----------------------------------------------------------------------
     // ContinuumProject
     // ----------------------------------------------------------------------
 
     String storeProject( MavenProject project )
-        throws ContinuumProjectStorageException;
+        throws ContinuumStoreException;
 
     Iterator getAllProjects()
-        throws ContinuumProjectStorageException;
+        throws ContinuumStoreException;
 
     ContinuumProject getProject( String projectId )
-        throws ContinuumProjectStorageException;
+        throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
     // Build
     // ----------------------------------------------------------------------
 
-    String createBuild( ContinuumProject project )
-        throws ContinuumProjectStorageException;
+    String createBuildResult( String projectId )
+        throws ContinuumStoreException;
+
+    void setBuildResult( String buildId, int state, Throwable error )
+        throws ContinuumStoreException;
+
+    BuildResult getBuildResult( String buildId )
+        throws ContinuumStoreException;
 }

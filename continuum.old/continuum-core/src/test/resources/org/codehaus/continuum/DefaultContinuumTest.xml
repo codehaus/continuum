@@ -1,0 +1,55 @@
+<plexus>
+  <resources>
+    <jar-repository>${maven.home}/plugins</jar-repository>
+  </resources>
+
+  <components>
+    <component>
+      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.MavenCore</role>
+        </requirement>
+      </requirements>
+      <configuration>
+        <maven-home>/home/trygvis/.m2</maven-home>
+        <maven-local-repository>/home/trygvis/.maven/repository</maven-local-repository>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.scm.ContinuumScm</role>
+      <implementation>org.codehaus.continuum.scm.DefaultContinuumScm</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.scm.manager.ScmManager</role>
+        </requirement>
+      </requirements>
+      <configuration>
+        <checkout-directory>/tmp/continuum/checkout</checkout-directory>
+      </configuration>
+    </component>
+
+<!-- Maven SCM -->
+    <component>
+      <role>org.apache.maven.scm.manager.ScmManager</role>
+      <implementation>org.apache.maven.scm.manager.DefaultScmManager</implementation>
+      <requirements>
+        <requirement>
+          <field-name>scmFactories</field-name>
+          <role>org.apache.maven.scm.Scm</role>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+</plexus>

@@ -19,9 +19,9 @@ import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.notification.NotifierWrapper;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.projectstorage.ContinuumProjectStorage;
-import org.codehaus.continuum.projectstorage.ContinuumProjectStorageException;
 import org.codehaus.continuum.scm.ContinuumScm;
+import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumBuilder.java,v 1.6 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: DefaultContinuumBuilder.java,v 1.7 2004-07-01 15:30:56 trygvis Exp $
  */
 public class DefaultContinuumBuilder
     extends AbstractLogEnabled
@@ -46,7 +46,7 @@ public class DefaultContinuumBuilder
 
     private ContinuumNotifier notifier;
 
-    private ContinuumProjectStorage projectStorage;
+    private ContinuumStore store;
 
     // configuration
 
@@ -87,9 +87,9 @@ public class DefaultContinuumBuilder
 
         try
         {
-            project = projectStorage.getProject( projectId );
+            project = store.getProject( projectId );
         }
-        catch( ContinuumProjectStorageException ex )
+        catch( ContinuumStoreException ex )
         {
             return;
         }
@@ -133,7 +133,7 @@ public class DefaultContinuumBuilder
 
             MavenProject pom;
 
-            pom = projectBuilder.build( file );
+            pom = projectBuilder.build( file, maven.getLocalRepository() );
 
             List goals = new ArrayList();
 

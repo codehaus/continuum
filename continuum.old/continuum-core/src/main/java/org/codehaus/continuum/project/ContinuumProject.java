@@ -4,13 +4,11 @@ package org.codehaus.continuum.project;
  * LICENSE
  */
 
-import java.util.List;
-
 import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.1 2004-06-27 22:20:27 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.2 2004-07-01 15:30:58 trygvis Exp $
  */
 public class ContinuumProject
 {
@@ -52,18 +50,35 @@ public class ContinuumProject
     public final static int PROJECT_STATE_BUILDING = 6;
 
     /** */
+    private String id;
+
+    /** */
     private MavenProject mavenProject;
 
     /** */
     private int projectState;
 
-    /** */
-    private List buildResults;
-
     /**
      */
-    public ContinuumProject()
+    public ContinuumProject( String id )
     {
+        this.id = id;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public String getId()
+    {
+        return id;
+    }
+
+    /**
+     * @param id The id to set.
+     */
+    public void setId( String id )
+    {
+        this.id = id;
     }
 
     /**
@@ -96,21 +111,5 @@ public class ContinuumProject
     public void setProjectState( int projectState )
     {
         this.projectState = projectState;
-    }
-
-    /**
-     * @return Returns the buildResults.
-     */
-    public List getBuildResults()
-    {
-        return buildResults;
-    }
-
-    /**
-     * @param buildResults The buildResults to set.
-     */
-    public void setBuildResults( List buildResults )
-    {
-        this.buildResults = buildResults;
     }
 }

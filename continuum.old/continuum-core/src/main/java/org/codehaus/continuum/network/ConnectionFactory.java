@@ -6,9 +6,9 @@ package org.codehaus.continuum.network;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConnectionFactory.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: ConnectionFactory.java,v 1.4 2004-07-01 15:30:57 trygvis Exp $
  */
 public interface ConnectionFactory
 {
-
+    String ROLE = ConnectionFactory.class.getName();
 }

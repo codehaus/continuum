@@ -1,4 +1,4 @@
-package org.codehaus.continuum.projectstorage;
+package org.codehaus.continuum.store;
 
 /*
  * LICENSE
@@ -17,11 +17,11 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FileContinuumStore.java,v 1.5 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: FileContinuumStore.java,v 1.6 2004-07-01 15:30:58 trygvis Exp $
  */
-public class ContinuumFileProjectStorage
+public abstract class FileContinuumStore
     extends AbstractLogEnabled
-    implements ContinuumProjectStorage, Initializable
+    implements ContinuumStore, Initializable
 {
     private String storageDirectory;
 
@@ -61,7 +61,7 @@ public class ContinuumFileProjectStorage
     // ----------------------------------------------------------------------
 
     public String storeProject( MavenProject project )
-        throws ContinuumProjectStorageException
+        throws ContinuumStoreException
     {
 /*
         File file;
@@ -83,7 +83,7 @@ public class ContinuumFileProjectStorage
     }
 
     public Iterator getAllProjects()
-        throws ContinuumProjectStorageException
+        throws ContinuumStoreException
     {
 /*
         List projects = new ArrayList();
@@ -119,7 +119,7 @@ public class ContinuumFileProjectStorage
     }
 
     public ContinuumProject getProject( String id )
-        throws ContinuumProjectStorageException
+        throws ContinuumStoreException
     {
 /*
         try

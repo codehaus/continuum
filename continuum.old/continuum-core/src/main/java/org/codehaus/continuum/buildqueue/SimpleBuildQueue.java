@@ -4,17 +4,14 @@ package org.codehaus.continuum.buildqueue;
  * LICENSE
  */
 
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.ContinuumException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleBuildQueue.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: SimpleBuildQueue.java,v 1.3 2004-07-01 15:30:57 trygvis Exp $
  */
 public class SimpleBuildQueue extends AbstractBuildQueue
 {
@@ -23,36 +20,24 @@ public class SimpleBuildQueue extends AbstractBuildQueue
      */
     List queue = new LinkedList();
 
-    /**
-     * The build id.
-     */
-    BigInteger nextId = BigInteger.ZERO;
-
-    public MavenProject dequeue()
+    public String dequeue()
     {
         synchronized( queue )
         {
             if ( queue.size() == 0 )
                 return null;
 
-            return (MavenProject)queue.remove( 0 );
+            return (String)queue.remove( 0 );
         }
     }
 
-    public String enqueue( MavenProject project )
+    public void enqueue( String buildId )
     {
         synchronized( queue )
         {
-            BigInteger id = nextId;
-
-            nextId = nextId.add( BigInteger.ONE );
-
-            queue.add( project );
-
-            return id.toString();
+            queue.add( buildId );
         }
     }
-
 
     /**
      * Returns the length of the queue.
@@ -61,7 +46,6 @@ public class SimpleBuildQueue extends AbstractBuildQueue
      * @throws ContinuumException
      */
     public int getLength()
-        throws ContinuumException
     {
         synchronized( queue )
         {
