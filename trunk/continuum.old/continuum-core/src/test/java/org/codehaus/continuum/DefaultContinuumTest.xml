@@ -8,7 +8,7 @@
         <requirement>org.apache.maven.project.ProjectBuilder</requirement>
       </requirements>
       <configuration>
-        <work-directory>${plexus.home}/continuum</work-directory>
+        <working-directory>${plexus.home}/continuum</working-directory>
         <build-interval>1</build-interval>
         <smtp-server>mail.maven.org</smtp-server>
         <reply-to>jason@maven.org</reply-to>
@@ -16,19 +16,28 @@
     </component>
     <component>
       <role>org.codehaus.plexus.compiler.Compiler</role>
-      <implementation>org.codehaus.plexus.compiler.ajc.AspectJCompiler</implementation>
+      <implementation>org.codehaus.plexus.compiler.javac.JavacCompiler</implementation>
     </component>
-    <component>
+      <component>
       <role>org.apache.maven.project.ProjectBuilder</role>
       <implementation>org.apache.maven.project.DefaultProjectBuilder</implementation>
+      <requirements>
+        <requirement>org.apache.maven.model.ModelUnmarshaller</requirement>
+        <requirement>org.apache.maven.model.ModelMarshaller</requirement>
+        <requirement>org.apache.maven.artifact.Artifactory</requirement>
+      </requirements>
     </component>
     <component>
-      <role>org.apache.maven.project.ModelUnmarshaller</role>
-      <implementation>org.apache.maven.project.DefaultModelUnmarshaller</implementation>
+      <role>org.apache.maven.model.ModelUnmarshaller</role>
+      <implementation>org.apache.maven.model.DefaultModelUnmarshaller</implementation>
     </component>
     <component>
-      <role>org.apache.maven.project.ModelMarshaller</role>
-      <implementation>org.apache.maven.project.DefaultModelMarshaller</implementation>
+      <role>org.apache.maven.model.ModelMarshaller</role>
+      <implementation>org.apache.maven.model.DefaultModelMarshaller</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.Artifactory</role>
+      <implementation>org.apache.maven.artifact.DefaultArtifactory</implementation>
     </component>
   </components>
 </plexus>

@@ -88,7 +88,13 @@
 
     <dependency>
       <groupId>maven</groupId>
-      <artifactId>maven-scm</artifactId>
+      <artifactId>scm-api</artifactId>
+      <version>1.0-beta-1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>scm-cvslib</artifactId>
       <version>1.0-beta-1-SNAPSHOT</version>
     </dependency>
 
