@@ -1,0 +1,8 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.continuum.scm.Scm</role>
+      <implementation>org.codehaus.plexus.continuum.scm.cvs.CvsScm</implementation>
+    </component>
+  </components>
+</plexus>
