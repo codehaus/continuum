@@ -33,11 +33,10 @@ import org.apache.maven.continuum.store.ContinuumStore;
 import org.apache.maven.continuum.utils.ContinuumUtils;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpc.java,v 1.2 2005-04-03 21:18:40 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpc.java,v 1.3 2005-04-04 15:25:13 trygvis Exp $
  */
 public class DefaultContinuumXmlRpc
     extends AbstractLogEnabled
