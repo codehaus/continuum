@@ -24,11 +24,11 @@
         <td>$build.startTime</td>
         <td>$build.endTime</td>
         <td>$build.state</td>
-#if( $build.state == "ok" || $build.state == "failed" || $build.state == "error" )
-        <td><a href="$link.addQueryData( "action", "showExternalMaven2BuildResult" ).addQueryData( "buildId", "$build.id" ).setPage('ExternalMaven2BuildResult.vm')">Output</a></td>
-#else
-        <td></td>
-#end
+###if( $build.state == "ok" || $build.state == "failed" || $build.state == "error" )
+##        <td><a href="$link.addQueryData( "action", "showExternalMaven2BuildResult" ).addQueryData( "buildId", "$build.id" ).setPage('ExternalMaven2BuildResult.vm')">Output</a></td>
+###else
+##        <td></td>
+###end
       </tr>
       #if ( $class == "a" )
         #set ( $class = "b" )

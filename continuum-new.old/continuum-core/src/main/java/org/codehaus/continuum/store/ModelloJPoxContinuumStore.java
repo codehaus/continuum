@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Collections;
 
 import javax.jdo.JDOHelper;
 
@@ -44,7 +43,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.2 2005-03-09 20:06:46 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.3 2005-03-09 23:01:44 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -90,9 +89,7 @@ public class ModelloJPoxContinuumStore
                               String workingDirectory, Properties configuration )
         throws ContinuumStoreException
     {
-        ContinuumProject project;
-
-        project = new ContinuumProject();
+        ContinuumProject project = new ContinuumProject();
 
         project.setName( name );
         project.setScmUrl( scmUrl );
@@ -158,7 +155,7 @@ public class ModelloJPoxContinuumStore
     {
         try
         {
-            Collection projects = store.getContinuumProjectCollection( true, "name ascending" );
+            Collection projects = store.getContinuumProjectCollection( true, null, "name ascending" );
 
             return projects.iterator();
         }
@@ -268,6 +265,8 @@ public class ModelloJPoxContinuumStore
 
             store.begin();
 
+            build = store.getContinuumBuild( buildId, false );
+
             build.setBuildResult( result );
 
             store.commit();
@@ -287,8 +286,10 @@ public class ModelloJPoxContinuumStore
 
             ContinuumBuild build = store.getContinuumBuild( buildId, false );
 
+            Object projectOId = JDOHelper.getObjectId( build.getProject() );
+
             // TODO: This loading of the project is a bit of a hack, there has to be a better way of doing his.
-            ContinuumProject project = store.getContinuumProjectByJdoId( JDOHelper.getObjectId( build.getProject() ), true );
+            ContinuumProject project = store.getContinuumProjectByJdoId( projectOId, true );
 
             store.commit();
 
@@ -329,19 +330,13 @@ public class ModelloJPoxContinuumStore
     {
         try
         {
-            List builds = store.getContinuumProject( projectId, true ).getBuilds();
-
-            Collections.reverse( builds );
+            Collection builds = store.getContinuumBuildCollection( true, "this.project.id == \"" + projectId + "\"", "startTime descending" );
 
             return builds.iterator();
         }
         catch ( Exception e )
         {
-            throw new ContinuumStoreException( "Error while builds for project id: '" + projectId + "'.", e );
+            throw new ContinuumStoreException( "Error while getting builds for project id: '" + projectId + "'.", e );
         }
     }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
 }

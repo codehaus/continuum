@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.4 2005-03-07 18:30:48 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.5 2005-03-09 23:01:44 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder
@@ -50,9 +50,11 @@ public abstract class ShellBuilder
     // ContinuumBuilder implementation
     // ----------------------------------------------------------------------
 
-    public synchronized ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
+    public synchronized ContinuumBuildResult build( ContinuumProject project )
         throws ContinuumException
     {
+        File workingDirectory = new File( project.getWorkingDirectory() );
+
         ExecutionResult executionResult;
 
         try

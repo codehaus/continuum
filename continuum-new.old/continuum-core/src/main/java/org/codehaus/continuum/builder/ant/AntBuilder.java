@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.2 2005-03-09 20:06:38 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.3 2005-03-09 23:01:44 trygvis Exp $
  */
 public class AntBuilder
     extends AbstractLogEnabled
@@ -56,10 +56,12 @@ public class AntBuilder
     // ContinuumBuilder Implementation
     // ----------------------------------------------------------------------
 
-    public ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
+    public ContinuumBuildResult build( ContinuumProject project )
         throws ContinuumException
     {
         Properties configuration = project.getConfiguration();
+
+        File workingDirectory = new File( project.getWorkingDirectory() );
 
         String executable = configuration.getProperty( CONFIGURATION_EXECUTABLE );
 

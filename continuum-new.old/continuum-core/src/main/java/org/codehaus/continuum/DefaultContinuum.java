@@ -51,7 +51,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.7 2005-03-09 20:06:36 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.8 2005-03-09 23:01:42 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -277,10 +277,10 @@ public class DefaultContinuum
         try
         {
             ContinuumProject project = store.getProject( projectId );
-
+//
 //            ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 //
-//            builder.build( new File( project.getWorkingDirectory() ), project );
+//            builder.build( project );
 
             getLogger().info( "Enqueuing '" + project.getName() + "'." );
 
