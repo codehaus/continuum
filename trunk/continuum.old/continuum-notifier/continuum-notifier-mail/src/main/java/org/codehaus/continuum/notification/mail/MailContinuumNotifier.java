@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.3 2004-07-11 20:05:30 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.4 2004-07-13 20:52:27 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -76,10 +76,18 @@ public class MailContinuumNotifier
         {
             getLogger().info( "To address is not configured, will use the nag email address from the project." );
         }
+        else
+        {
+            getLogger().info( "Using '" + to + "' as the to address for all emails." );
+        }
 
         if ( from == null )
         {
             getLogger().info( "From address is not configured, will use the nag email address from the project." );
+        }
+        else
+        {
+            getLogger().info( "Using '" + from + "' as the from address for all emails." );
         }
 
         if ( smtpPort == null )
@@ -134,24 +142,54 @@ public class MailContinuumNotifier
 
         if ( response == null )
         {
-            throw new ContinuumException( "The maven 2 execution response cannot be null." );
-        }
+            output.println( "BUILD ERROR" );
 
-        if ( !response.isExecutionFailure() )
-        {
-            output.println( "BUILD SUCCESSFUL" );
+            Throwable error = build.getError();
 
-            writeStats( output, build );
+            if ( error != null )
+            {
+                line( output );
+
+                output.println( "Build exeption:" );
+
+                line( output );
+
+                error.printStackTrace( output );
+
+                line( output );
+            }
+
+            if ( ex != null )
+            {
+                line( output );
+
+                output.println( "Build exeption:" );
+
+                line( output );
+
+                ex.printStackTrace( output );
+
+                line( output );
+            }
         }
         else
         {
-            output.println( "BUILD FAILURE" );
-
-            output.println( "Reason: " + response.getFailureResponse().shortMessage() );
-
-            output.println( response.getFailureResponse().longMessage() );
-
-            writeStats( output, build );
+            if ( !response.isExecutionFailure() )
+            {
+                output.println( "BUILD SUCCESSFUL" );
+    
+                writeStats( output, build );
+            }
+            else
+            {
+                output.println( "BUILD FAILURE" );
+    
+                output.println( "Reason: " + response.getFailureResponse().shortMessage() );
+    
+                output.println( response.getFailureResponse().longMessage() );
+    
+                writeStats( output, build );
+            }
         }
 
         output.close();
