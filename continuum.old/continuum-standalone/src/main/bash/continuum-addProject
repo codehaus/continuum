@@ -10,8 +10,7 @@ fi
 
 if [ -z "$scmConnection" ]
 then
-read -p "SCM connection string:" scmConnection
-  fatal "The SCM connection cannot be empty"
+  read -p "SCM connection string:" scmConnection
 fi
 
 type="maven2"
