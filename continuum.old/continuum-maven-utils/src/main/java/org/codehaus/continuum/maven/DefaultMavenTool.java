@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.6 2004-10-28 19:15:26 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.7 2004-10-28 21:19:28 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -225,7 +225,7 @@ public class DefaultMavenTool
         }
     }
 
-    public ExternalMavenExecutionResult executeExternal( File workingDirectory, MavenProject mavenProject, List goals )
+    public ExternalMavenExecutionResult executeExternal( File workingDirectory, List goals )
         throws ContinuumException
     {
         Commandline cl = getMaven2CommandLine( workingDirectory, goals );

@@ -34,7 +34,7 @@ import org.codehaus.continuum.ContinuumException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenTool.java,v 1.1.1.1 2004-10-28 16:08:17 trygvis Exp $
+ * @version $Id: MavenTool.java,v 1.2 2004-10-28 21:19:28 trygvis Exp $
  */
 public interface MavenTool
 {
@@ -62,6 +62,6 @@ public interface MavenTool
     ExecutionResponse execute( MavenProject project, List goals )
         throws ContinuumException;
 
-    ExternalMavenExecutionResult executeExternal( File workingDirectory, MavenProject mavenProject, List goals )
+    ExternalMavenExecutionResult executeExternal( File workingDirectory, List goals )
         throws ContinuumException;
 }

@@ -38,7 +38,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenToolTest.java,v 1.3 2004-10-28 18:38:40 trygvis Exp $
+ * @version $Id: MavenToolTest.java,v 1.4 2004-10-28 21:19:28 trygvis Exp $
  */
 public class MavenToolTest
     extends TestCase
@@ -111,8 +111,6 @@ public class MavenToolTest
 
         File workingDirectory = PlexusTestCase.getTestFile( "src/test/repository/external-maven" );
 
-        MavenProject mavenProject = mavenTool.getProject( new File( workingDirectory, "pom.xml" ) );
-
-        mavenTool.executeExternal( workingDirectory, mavenProject, goals );
+        mavenTool.executeExternal( workingDirectory, goals );
     }
 }
