@@ -1,0 +1,25 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-plexus-application</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-web</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  <plugins>
+    <plugin>
+      <id>plexus</id>
+      <configuration>
+        <applicationName>continuum</applicationName>
+        <configurationDirectory>src/conf</configurationDirectory>
+        <basedir>target</basedir>
+        <plexusConfiguration>src/conf/application.xml</plexusConfiguration>
+        <plexusConfigurationPropertiesFile>src/plexus.properties</plexusConfigurationPropertiesFile>
+      </configuration>
+    </plugin>
+  </plugins>
+</project>
