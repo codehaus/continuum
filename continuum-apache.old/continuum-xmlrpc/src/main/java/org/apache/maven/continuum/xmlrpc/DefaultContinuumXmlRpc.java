@@ -33,10 +33,11 @@ import org.apache.maven.continuum.store.ContinuumStore;
 import org.apache.maven.continuum.utils.ContinuumUtils;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpc.java,v 1.1.1.1 2005-03-29 20:42:10 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpc.java,v 1.2 2005-04-03 21:18:40 trygvis Exp $
  */
 public class DefaultContinuumXmlRpc
     extends AbstractLogEnabled
@@ -189,6 +190,20 @@ public class DefaultContinuumXmlRpc
         }
     }
 
+    public Hashtable removeProject( String projectId )
+    {
+        try
+        {
+            store.removeProject( projectId );
+
+            return makeHashtable();
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.removeProject(). Project id: '" + projectId + "'.", e );
+        }
+    }
+
     // ----------------------------------------------------------------------
     // Builds
     // ----------------------------------------------------------------------
@@ -294,11 +309,20 @@ public class DefaultContinuumXmlRpc
 
     private Hashtable handleException( String method, Throwable throwable )
     {
+        getLogger().error( "Error while executing '" + method + "'.", throwable );
+
         Hashtable hashtable = new Hashtable();
 
         hashtable.put( "result", "failure" );
 
-        hashtable.put( "message", throwable.getMessage() );
+        if ( throwable.getMessage() != null )
+        {
+            hashtable.put( "message", throwable.getMessage() );
+        }
+        else
+        {
+            hashtable.put( "message", "" );
+        }
 
         hashtable.put( "method", method );
 

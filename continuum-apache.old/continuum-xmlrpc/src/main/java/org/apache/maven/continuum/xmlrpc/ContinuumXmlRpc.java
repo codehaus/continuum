@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumXmlRpc.java,v 1.1.1.1 2005-03-29 20:42:10 trygvis Exp $
+ * @version $Id: ContinuumXmlRpc.java,v 1.2 2005-04-03 21:18:40 trygvis Exp $
  */
 public interface ContinuumXmlRpc
 {
@@ -42,6 +42,8 @@ public interface ContinuumXmlRpc
     Hashtable updateProjectConfiguration( String projectId, Hashtable configuration );
 
     Hashtable getAllProjects();
+
+    Hashtable removeProject( String projectId );
 
     // ----------------------------------------------------------------------
     //
