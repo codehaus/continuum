@@ -1,0 +1,17 @@
+<project
+  default="jar"
+  xmlns:plexus="plexus">
+
+  <goal name="cc">
+
+    <plexus:deploy
+      base="${basedir}/target/continuum"
+      conf="plexus.conf"
+      confDir="${basedir}/src/conf"
+      modelPom="${basedir}/project.xml"
+      plexusPomFile="${maven.repo.local}/plexus/poms/plexus-0.7.pom"
+      configurationProperties="${basedir}/project.properties"/>
+
+  </goal>
+
+</project>
