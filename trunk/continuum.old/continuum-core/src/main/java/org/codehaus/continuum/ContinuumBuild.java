@@ -1,27 +1,25 @@
 package org.codehaus.plexus.continuum;
 
 import org.apache.maven.project.Project;
-import org.apache.maven.genericscm.manager.ScmManager;
-import org.apache.maven.genericscm.manager.DefaultScmManager;
 
 /**
  *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumBuild.java,v 1.1 2004-01-16 15:02:16 jvanzyl Exp $
+ * @version $Id: ContinuumBuild.java,v 1.2 2004-01-16 17:57:17 jvanzyl Exp $
  */
 public class ContinuumBuild
 {
     private Project project;
 
-    private ScmManager scmManager;
+    private ProjectScm projectScm;
 
     public ContinuumBuild( Project project )
     {
         this.project = project;
 
-        scmManager = new DefaultScmManager( new MavenScmInfoAdapter( project ) );
+        projectScm = new ProjectScm( project );
     }
 
     public Project getProject()
@@ -29,8 +27,8 @@ public class ContinuumBuild
         return project;
     }
 
-    public ScmManager getScmManager()
+    public ProjectScm getProjectScm()
     {
-        return scmManager;
+        return projectScm;
     }
 }
