@@ -22,14 +22,15 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.hibernate.HibernateSessionService;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.3 2004-07-12 00:00:27 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.4 2004-07-14 05:32:30 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
-    implements Initializable
+    implements Initializable, Startable
 {
     private HibernateSessionService hibernate;
 
@@ -43,6 +44,24 @@ public class HibernateContinuumStore
         throws Exception
     {
         PlexusUtils.assertRequirement( hibernate, HibernateSessionService.ROLE );
+    }
+
+    public void start()
+        throws Exception
+    {
+        getLogger().info( "Testing connection." );
+
+        hibernate.getSession();
+
+        hibernate.closeSession();
+    }
+
+    public void stop()
+        throws Exception
+    {
+        getLogger().info( "Stopping the hibernate store." );
+
+        hibernate.closeSession();
     }
 
     // ----------------------------------------------------------------------
@@ -80,6 +99,8 @@ public class HibernateContinuumStore
         try
         {
             tx.commit();
+
+            hibernate.closeSession();
         }
         catch( HibernateException ex )
         {
@@ -102,6 +123,8 @@ public class HibernateContinuumStore
         try
         {
             tx.rollback();
+
+            hibernate.closeSession();
         }
         catch( HibernateException ex )
         {
