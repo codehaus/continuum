@@ -1,7 +1,25 @@
 package org.codehaus.continuum.store.hibernate;
 
 /*
- * LICENSE
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import java.sql.PreparedStatement;
@@ -18,7 +36,7 @@ import org.codehaus.continuum.project.ContinuumProjectState;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProjectStateType.java,v 1.1 2004-07-27 00:06:07 trygvis Exp $
+ * @version $Id: ContinuumProjectStateType.java,v 1.2 2004-07-27 05:42:15 trygvis Exp $
  */
 public class ContinuumProjectStateType
     implements UserType
@@ -168,7 +186,7 @@ public class ContinuumProjectStateType
             intIndex = new HashMap();
 
             intIndex.put( new Integer( 1 ), NEW );
-            intIndex.put( new Integer( 2 ), OK ); 
+            intIndex.put( new Integer( 2 ), OK );
             intIndex.put( new Integer( 3 ), FAILED );
             intIndex.put( new Integer( 4 ), ERROR );
             intIndex.put( new Integer( 5 ), BUILD_SIGNALED );
@@ -177,7 +195,7 @@ public class ContinuumProjectStateType
             stateIndex = new HashMap();
 
             stateIndex.put( NEW, new Integer( 1 ) );
-            stateIndex.put( OK, new Integer( 2 ) ); 
+            stateIndex.put( OK, new Integer( 2 ) );
             stateIndex.put( FAILED, new Integer( 3 ) );
             stateIndex.put( ERROR, new Integer( 4 ) );
             stateIndex.put( BUILD_SIGNALED, new Integer( 5 ) );
