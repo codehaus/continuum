@@ -86,12 +86,6 @@
           <role>org.apache.maven.scm.manager.ScmManager</role>
         </requirement>
       </requirements>
-      <configuration>
-        <!-- @TODO: change this to ${continuum.checkout} -->
-<!--
-        <checkout-directory>/tmp/continuum</checkout-directory>
--->
-      </configuration>
     </component>
 
     <component>

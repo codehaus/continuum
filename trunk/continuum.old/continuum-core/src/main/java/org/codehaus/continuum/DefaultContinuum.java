@@ -55,7 +55,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.49 2004-10-28 21:20:50 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.50 2004-10-29 15:18:12 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -260,13 +260,6 @@ public class DefaultContinuum
         {
             throw new ContinuumException( "Error while checking out the project.", ex );
         }
-
-//        File pom = new File( coDir, "pom.xml" );
-//
-//        if ( !pom.exists() )
-//        {
-//            throw new ContinuumException( "Could not find a pom.xml in the working directory (" + pom.getAbsolutePath() + ")." );
-//        }
 
         ContinuumBuilder builder = builderManager.getBuilder( builderType );
 
@@ -513,7 +506,8 @@ public class DefaultContinuum
                                                      project.getVersion(),
                                                      builderType );
 
-                File projectWorkingDirectory = new File( workingDirectory, project.getName() );
+                // TODO: Use the groupId + artifactId here
+                File projectWorkingDirectory = new File( workingDirectory, project.getName().replace( ' ', '-' ) );
 
                 if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
                 {
@@ -525,6 +519,8 @@ public class DefaultContinuum
                 ProjectDescriptor descriptor = project.getDescriptor();
 
                 project = store.getProject( projectId );
+
+                System.err.println( "descriptor: " + descriptor );
 
                 store.setProjectDescriptor( projectId, descriptor );
 

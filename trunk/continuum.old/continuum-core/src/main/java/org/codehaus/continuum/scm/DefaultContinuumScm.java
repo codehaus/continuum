@@ -23,7 +23,6 @@ package org.codehaus.continuum.scm;
  */
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
@@ -36,11 +35,10 @@ import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.15 2004-10-28 17:28:40 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.16 2004-10-29 15:18:12 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -64,19 +62,6 @@ public class DefaultContinuumScm
     // ----------------------------------------------------------------------
     // ContinuumScm implementation
     // ----------------------------------------------------------------------
-
-    public void clean( ContinuumProject project )
-        throws ContinuumScmException
-    {
-        try
-        {
-            FileUtils.deleteDirectory( project.getWorkingDirectory() );
-        }
-        catch ( IOException ex )
-        {
-            throw new ContinuumScmException( "Exception while cleaning the directory.", ex );
-        }
-    }
 
     public void checkOut( File workingDirectory, String scmUrl )
         throws ContinuumScmException
