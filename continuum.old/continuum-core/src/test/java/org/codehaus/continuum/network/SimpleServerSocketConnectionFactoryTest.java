@@ -12,15 +12,16 @@ import org.codehaus.continuum.AbstractContinuumTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.5 2004-07-02 03:27:07 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.6 2004-07-07 05:20:19 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends AbstractContinuumTest
 {
     private int port = 6789;
+
     private byte[] rawData = { 
-            (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe, 
-            (byte)0xde, (byte)0xad, (byte)0xbe, (byte)0xef
+        (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe, 
+        (byte)0xde, (byte)0xad, (byte)0xbe, (byte)0xef
     };
 
     public void testBasic()
@@ -43,7 +44,9 @@ public class SimpleServerSocketConnectionFactoryTest
         input = socket.getInputStream();
 
         for( i = 0; i < rawData.length; i++)
+        {
             output.write( rawData[i] );
+        }
 
         readData = new byte[ rawData.length ];
 
@@ -52,9 +55,12 @@ public class SimpleServerSocketConnectionFactoryTest
             data = input.read();
 
             if( data == -1 )
+            {
                 fail( "Unexpected end of stream." );
+            }
 
             System.err.println( "Read " + Integer.toHexString( data ) );
+
             readData[ i ] = (byte)data;
         }
 
@@ -73,6 +79,8 @@ public class SimpleServerSocketConnectionFactoryTest
         assertEquals( expected.length, actual.length );
 
         for( i = 0; i < expected.length; i++ )
+        {
             assertEquals( "Checking byte #" + i, expected[ i ], actual[ i ] );
+        }
     }
 }
