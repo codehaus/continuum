@@ -46,6 +46,11 @@
             <role>csstool</role>
             <scope>request</scope>
           </tool>
+          <tool>
+            <name>i18n</name>
+            <role>org.codehaus.plexus.i18n.I18N</role>
+            <scope>global</scope>
+          </tool>
         </tools>
       </configuration>
     </component>
@@ -130,14 +135,6 @@
       <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
       <role-hint>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</role-hint>
       <implementation>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.web.ContinuumWeb</role>
-        </requirement>
-      </requirements>
     </component>
 
     <component>
@@ -276,19 +273,5 @@
         </requirement>
       </requirements>
     </component>
-<!--
-    <component>
-      <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpc</role>
-      <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpc</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.Continuum</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.store.ContinuumStore</role>
-        </requirement>
-      </requirements>
-    </component>
--->
   </components>
 </component-set>
