@@ -29,7 +29,7 @@ import java.util.TimerTask;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.2 2003-10-12 00:55:39 pdonald Exp $
+ * @version $Id: DefaultContinuum.java,v 1.3 2003-10-12 01:14:55 pdonald Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -64,8 +64,8 @@ public class DefaultContinuum
     public void service( ServiceManager serviceManager )
         throws ServiceException
     {
-        projectBuilder = (ProjectBuilder) serviceManager.lookup( ProjectBuilder.class.getName() );
-        compiler = (Compiler) serviceManager.lookup( Compiler.class.getName() );
+        projectBuilder = (ProjectBuilder) serviceManager.lookup( ProjectBuilder.ROLE );
+        compiler = (Compiler) serviceManager.lookup( Compiler.ROLE );
     }
 
     /** @see Configurable#configure */

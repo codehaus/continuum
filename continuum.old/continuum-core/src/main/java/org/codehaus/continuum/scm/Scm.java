@@ -53,6 +53,9 @@ import java.util.Map;
  */
 public interface Scm
 {
+    /** Role for this component. */
+    static String ROLE = Scm.class.getName();
+
     List checkout( Map parameters )
         throws ContinuumException;
 
