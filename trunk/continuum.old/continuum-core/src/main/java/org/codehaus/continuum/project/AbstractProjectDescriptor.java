@@ -6,7 +6,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractProjectDescriptor.java,v 1.1 2004-07-07 02:34:35 trygvis Exp $
+ * @version $Id: AbstractProjectDescriptor.java,v 1.2 2004-07-08 01:13:35 trygvis Exp $
  */
 public abstract class AbstractProjectDescriptor
     implements ProjectDescriptor
@@ -16,9 +16,6 @@ public abstract class AbstractProjectDescriptor
 
     /** */
     private String projectId;
-
-    /** */
-    private String type;
 
     /**
      * @return Returns the project.
@@ -44,15 +41,5 @@ public abstract class AbstractProjectDescriptor
     public void setProjectId( String projectId )
     {
         this.projectId = projectId;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setType( String type )
-    {
-        this.type = type;
     }
 }

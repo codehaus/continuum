@@ -4,6 +4,8 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
+import java.util.Iterator;
+
 import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
@@ -18,7 +20,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.32 2004-07-07 02:34:33 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.33 2004-07-08 01:13:35 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -44,6 +46,15 @@ public class DefaultContinuum
         PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
+
+        getLogger().info( "Showing all projects:" );
+
+        for ( Iterator it = store.getAllProjects(); it.hasNext(); )
+        {
+            ContinuumProject project = (ContinuumProject) it.next();
+
+            getLogger().info( " " + project.getId() + ":" + project.getName() + ":" + project.getType() );
+        }
     }
 
     public void start()

@@ -13,7 +13,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.1 2004-07-07 02:34:38 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.2 2004-07-08 01:14:00 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends PlexusTestCase
@@ -43,9 +43,11 @@ public abstract class AbstractContinuumStoreTest
 
         String scmConnection = "scm:cvs:local:ignored:/cvsroot:module";
 
+        String type = "mock";
+
         connect();
 
-        String id = store.addProject( projectName, scmConnection, "maven2" );
+        String id = store.addProject( projectName, scmConnection, type );
 
         disconnect();
 
@@ -62,6 +64,8 @@ public abstract class AbstractContinuumStoreTest
         assertEquals( projectName, project.getName() );
 
         assertEquals( scmConnection, project.getScmConnection() );
+
+        assertEquals( type, project.getType() );
 
         assertEquals( ContinuumProject.PROJECT_STATE_NEW, project.getState() );
 
@@ -92,6 +96,8 @@ public abstract class AbstractContinuumStoreTest
         project = store.getProject( id );
 
         assertNotNull( project );
+
+//        assertEquals( type, project.getType() );
 
         ProjectDescriptor desc = project.getDescriptor();
 

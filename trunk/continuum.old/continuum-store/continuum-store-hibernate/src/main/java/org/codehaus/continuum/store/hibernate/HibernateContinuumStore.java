@@ -23,7 +23,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.1 2004-07-07 02:34:37 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.2 2004-07-08 01:13:59 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -108,7 +108,21 @@ public class HibernateContinuumStore
     public Iterator getAllProjects()
         throws ContinuumStoreException
     {
-        throw new ContinuumStoreException( "NOT IMPLEMENTED." );
+        Session session = getHibernateSession();
+
+        Iterator it;
+
+        try
+        {
+//          it = session.find( "select cp from ContinuumProject as cp where 1=1" ).iterator();
+            it = session.find( "from " + ContinuumProject.class.getName() ).iterator();
+        }
+        catch( HibernateException ex )
+        {
+            throw new ContinuumStoreException( "Error while querying database.", ex );
+        }
+
+        return it;
     }
 
     public ContinuumProject getProject( String projectId )

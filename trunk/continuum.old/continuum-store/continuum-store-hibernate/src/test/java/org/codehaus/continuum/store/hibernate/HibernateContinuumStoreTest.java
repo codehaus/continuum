@@ -15,7 +15,7 @@ import org.codehaus.plexus.hibernate.HibernateSessionService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStoreTest.java,v 1.1 2004-07-07 02:34:38 trygvis Exp $
+ * @version $Id: HibernateContinuumStoreTest.java,v 1.2 2004-07-08 01:14:00 trygvis Exp $
  */
 public class HibernateContinuumStoreTest
     extends AbstractContinuumStoreTest
@@ -59,6 +59,8 @@ public class HibernateContinuumStoreTest
         Configuration configuration = hibernate.getConfiguration();
 
         SchemaExport exporter = new SchemaExport( configuration );
+
+        exporter.setDelimiter( ";" );
 
         exporter.create( true, true );
     }

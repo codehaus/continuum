@@ -5,6 +5,8 @@ package org.codehaus.continuum.builder.maven2;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -28,10 +30,11 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.4 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.5 2004-07-08 01:13:35 trygvis Exp $
  */
 public class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -91,12 +94,35 @@ public class Maven2ContinuumBuilder
     // ----------------------------------------------------------------------
 
     public ProjectDescriptor createDescriptor( ContinuumProject project )
+        throws ContinuumException
     {
         Maven2ProjectDescriptor descriptor = new Maven2ProjectDescriptor();
 
         descriptor.getGoals().add( "clean:clean" );
 
         descriptor.getGoals().add( "jar:install" );
+
+        String basedir = scm.checkout( project );
+
+        String pom;
+
+        try
+        {
+            pom = IOUtil.toString( new FileReader( new File( basedir, "pom.xml" ) ) );
+        }
+        catch( FileNotFoundException ex )
+        {
+            throw new ContinuumException( "Could not find the file 'pom.xml' in the base directory of the checkout." );
+        }
+        catch( IOException ex )
+        {
+            throw new ContinuumException( "Error while reading the file 'pom.xml' in the base directory of the checkout." );
+        }
+
+        descriptor.setPom( pom );
+
+        // TODO: Pick out the email addresses from the pom and store it 
+        // in the generic project descriptor
 
         return descriptor;
     }
@@ -165,6 +191,8 @@ public class Maven2ContinuumBuilder
             MavenProject pom;
 
             pom = maven.getProject( file );
+
+            descriptor.setMavenProject( pom );
 
             List goals = descriptor.getGoals();
 

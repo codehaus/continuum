@@ -14,11 +14,12 @@
     <property name="name" type="java.lang.String" not-null="true"/>
     <property name="scmConnection" type="java.lang.String" not-null="true"/>
     <property name="state" type="int" not-null="true"/>
-<!--
     <property name="type" type="java.lang.String" not-null="true"/>
+<!--
+    <discriminator column="type" type="java.lang.String" force="true"/>
 -->
     <any name="descriptor" id-type="java.lang.String" meta-type="org.codehaus.continuum.project.ProjectDescriptor">
-      <column name="type"/>
+      <column name="subType"/>
       <column name="projectId"/>
     </any>
 <!--

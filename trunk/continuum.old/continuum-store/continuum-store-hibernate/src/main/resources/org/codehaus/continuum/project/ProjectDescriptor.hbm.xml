@@ -4,6 +4,8 @@
   "-//Hibernate/Hibernate Mapping DTD//EN"
   "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 
+INVALID - this file is not used.
+
 <hibernate-mapping>
   <class name="org.codehaus.continuum.project.AbstractProjectDescriptor">
     <id name="projectId" type="java.lang.String">
