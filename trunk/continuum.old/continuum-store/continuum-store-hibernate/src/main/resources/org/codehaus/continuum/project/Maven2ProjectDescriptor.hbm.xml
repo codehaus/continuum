@@ -27,11 +27,13 @@
     <id name="projectId" type="java.lang.String">
       <generator class="assigned"/>
     </id>
+<!--
     <property name="pom" type="java.lang.String" length="8000"/>
     <property name="name" type="java.lang.String" length="8000"/>
     <property name="scmUrl" type="java.lang.String" length="8000"/>
     <property name="nagEmailAddress" type="java.lang.String" length="8000"/>
     <property name="version" type="java.lang.String" length="8000"/>
+-->
 <!--
     <list
       name="goals"
