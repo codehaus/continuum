@@ -1,0 +1,21 @@
+#!/bin/bash
+
+CP=src/main/resources:apps/continuum/resources:target/classes
+
+if [ -d apps/continuum/lib/ ]
+then
+  for jar in `find apps/continuum/lib/ -name '*.jar'`
+  do
+    CP=$CP:$jar
+  done
+fi
+
+if [ -d generated-runtime/apps/continuum/lib ]
+then
+  for jar in `find generated-runtime/apps/continuum/lib -name '*.jar'`
+  do
+    CP=$CP:$jar
+  done
+fi
+
+java -classpath $CP org.codehaus.continuum.standalone.SetupTables "$@"
