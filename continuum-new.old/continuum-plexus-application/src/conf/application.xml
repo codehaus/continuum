@@ -147,7 +147,7 @@
             <value>Quiet</value>
           </property>
           <!-- JDBC connection configuration -->
-          <!--
+          <!-- -->
           <property>
           <name>javax.jdo.option.ConnectionDriverName</name>
           <value>org.hsqldb.jdbcDriver</value>
@@ -164,7 +164,7 @@
           <name>javax.jdo.option.ConnectionPassword</name>
           <value></value>
           </property>
-          -->
+          <!--
           <property>
             <name>javax.jdo.option.ConnectionDriverName</name>
             <value>org.postgresql.Driver</value>
@@ -177,6 +177,7 @@
             <name>javax.jdo.option.ConnectionUserName</name>
             <value>trygvis</value>
           </property>
+          -->
           <property>
             <name>javax.jdo.option.ConnectionPassword</name>
             <value></value>
