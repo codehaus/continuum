@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import cli
 import sys
@@ -23,7 +23,7 @@ import xmlrpclib
 # history.
 ##########################################################
 
-class TamboraXmlRpcClient(cli.cli):
+class ContinuumXmlRpcClient(cli.cli):
     def __init__(self):
         cli.cli.__init__(self)
         self.server = xmlrpclib.Server("http://localhost:8000")
@@ -45,18 +45,43 @@ class TamboraXmlRpcClient(cli.cli):
         """Add a Continuum project.
         Use this command to add a project to Continuum."""
 
-        print self.server.continuum.addProjectFromUrl( args[0], args[1] )
+        projectId = self.server.continuum.addProjectFromUrl( args[0], args[1] )
+
+        print "Added project, id: " + projectId
 
         return None
+
+    def do_showProject(self, args):
+        """Shows Continuum project.
+        Use this command to show the details of a Continuum project."""
+
+        project = self.server.continuum.getProject( args[0] )
+
+        print "Id: %(id)s" % project
+        print "Name: %(name)s" % project
+
+        return
+
+    def do_showProjects(self, args):
+        """Shows all Continuum projects registeret.
+        Use this command to list all Continuum projects."""
+
+        projects = self.server.continuum.getAllProjects()
+
+        for project in projects:
+            print "Id %(id)s, name: '%(name)s'" % project
+
+        return
 
     def do_buildProject(self, args):
         """Build a Continuum project.
         Use this command to signal a build for a Continuum project."""
 
-        self.server.continuum.buildProject( args[0] )
-        
+        buildId = self.server.continuum.buildProject( args[0] )
+
+        print "Enqueued project, build id: " + buildId
+
         return
-    
     
     def do_run(self, args):
         """Run a script of commands.
@@ -74,8 +99,7 @@ class TamboraXmlRpcClient(cli.cli):
 ##########################################################
 
 try:
-    TamboraXmlRpcClient().cmdloop()
+    ContinuumXmlRpcClient().cmdloop()
 
 except Exception, e:
     print "Error:", e
-
