@@ -14,7 +14,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.4 2004-07-01 15:30:57 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.5 2004-07-02 03:27:07 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactory
     extends AbstractLogEnabled
@@ -27,8 +27,6 @@ public class SimpleServerSocketConnectionFactory
     private int backlog;
 
     private ConnectionConsumer consumer;
-
-    private boolean running;
 
     private WorkerThread thread;
 
@@ -82,7 +80,7 @@ public class SimpleServerSocketConnectionFactory
     {
         getLogger().info( "Stopping socket listener on port " + port );
 
-        running = false;
+        thread.shutdown();
 
         if ( thread.getServerSocket() != null )
         {
@@ -97,10 +95,5 @@ public class SimpleServerSocketConnectionFactory
         }
 
         getLogger().info( "Stopped socket listener on port " + port );
-    }
-
-    public boolean isRunning()
-    {
-        return running;
     }
 }
