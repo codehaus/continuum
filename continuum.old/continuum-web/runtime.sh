@@ -82,7 +82,8 @@ copyDependency "xpp3" "xpp3" "1.1.3.3"
 mkdir -p $runtime/bin
 mkdir -p $runtime/conf
 cp src/runtime/bin/plexus.sh $runtime/bin
-cp src/runtime/bin/continuum-setupTables $runtime/bin
+cp src/runtime/bin/continuum-setupTables.sh $runtime/bin
+cp src/runtime/bin/continuum-addProject.sh $runtime/bin
 
 cp src/runtime/conf/plexus.conf $runtime/conf
 cp src/runtime/conf/classworlds.conf $runtime/conf
@@ -139,7 +140,8 @@ copyDependency "hibernate" "hibernate" "2.0.3"
 copyDependency "hsqldb" "hsqldb" "1.7.1"
 copyDependency "hsqldb" "hsqldb" "1.7.2.2"
 copyDependency "jdom" "jdom" "b10"
-copyDependency "jetty" "jetty" "4.2.10"
+#copyDependency "jetty" "jetty" "4.2.10"
+copyDependency "jetty" "org.mortbay.jetty" "4.2.22"
 copyDependency "log4j" "log4j" "1.2.8"
 copyDependency "marmalade" "marmalade-core" "0.1"
 copyDependency "marmalade" "marmalade-el-ognl" "0.1"
@@ -160,7 +162,8 @@ copyDependency "plexus" "plexus-compiler-javac" "1.0"
 copyDependency "plexus" "plexus-formica" "1.0-beta-2"
 copyDependency "plexus" "plexus-hibernate" "1.0-beta-4-SNAPSHOT"
 copyDependency "plexus" "plexus-i18n" "1.0-beta-3"
-copyDependency "plexus" "plexus-jetty" "1.0-beta-1"
+#copyDependency "plexus" "plexus-jetty" "1.0-beta-1"
+copyDependency "plexus" "plexus-jetty" "1.0-beta-2-SNAPSHOT"
 copyDependency "plexus" "plexus-log4j-logging" "1.0-SNAPSHOT"
 copyDependency "plexus" "plexus-servlet" "1.0-beta-2-SNAPSHOT"
 copyDependency "plexus" "plexus-summit" "1.0-beta-3"
