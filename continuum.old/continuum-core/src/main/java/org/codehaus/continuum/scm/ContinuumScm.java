@@ -4,24 +4,23 @@ package org.codehaus.continuum.scm;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.5 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.6 2004-07-03 03:21:16 trygvis Exp $
  */
 public interface ContinuumScm
 {
     String ROLE = ContinuumScm.class.getName();
 
-    void clean( MavenProject project )
+    void clean( ContinuumProject project )
         throws ContinuumException;
 
-    String checkout( MavenProject project )
+    String checkout( ContinuumProject project )
         throws ContinuumException;
 
-    String update( MavenProject project )
+    String update( ContinuumProject project )
         throws ContinuumException;
 }

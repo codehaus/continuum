@@ -4,7 +4,7 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import org.apache.maven.MavenCore;
+import org.apache.maven.Maven;
 import org.apache.maven.project.MavenProjectBuilder;
 
 import org.codehaus.continuum.builder.ContinuumBuilder;
@@ -17,7 +17,7 @@ import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.1 2004-07-01 15:30:59 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.2 2004-07-03 03:21:17 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends PlexusTestCase
@@ -71,16 +71,16 @@ public abstract class AbstractContinuumTest
         return (MavenProjectBuilder) lookupComponent( MavenProjectBuilder.ROLE );
     }
 
-    protected MavenCore getMavenCore()
+    protected Maven getMaven()
         throws Exception
     {
-        return (MavenCore) lookupComponent( MavenCore.ROLE );
+        return (Maven) lookupComponent( Maven.ROLE );
     }
 
     protected String getLocalRepository()
         throws Exception
     {
-        return getMavenCore().getLocalRepository();
+        return getMaven().getLocalRepository();
     }
 
     private Object lookupComponent( String role )

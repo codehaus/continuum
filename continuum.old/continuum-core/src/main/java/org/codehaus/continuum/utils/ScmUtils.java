@@ -4,15 +4,15 @@ package org.codehaus.continuum.utils;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.repository.RepositoryInfo;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ScmUtils.java,v 1.1 2004-06-27 19:28:43 trygvis Exp $
+ * @version $Id: ScmUtils.java,v 1.2 2004-07-03 03:21:16 trygvis Exp $
  */
 public class ScmUtils
 {
@@ -20,21 +20,16 @@ public class ScmUtils
     {
     }
 
-    public static RepositoryInfo createRepositoryInfo( MavenProject project )
+    public static RepositoryInfo createRepositoryInfo( ContinuumProject project )
         throws ContinuumException, ScmException
     {
         RepositoryInfo info = new RepositoryInfo();
 
-        String url = project.getScm().getDeveloperConnection();
+        String url = project.getScmConnection();
 
         if ( url == null )
         {
-            url = project.getScm().getConnection();
-
-            if ( url == null )
-            {
-                throw new ContinuumException( "Missing scm.developerConnection and scm.connection element from the project descriptor." );
-            }
+            throw new ContinuumException( "Missing scm.developerConnection and scm.connection element from the project descriptor." );
         }
 
         info.setUrl( url );

@@ -4,9 +4,8 @@ package org.codehaus.continuum.notification;
  * LICENSE
  */
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -17,7 +16,7 @@ import org.codehaus.plexus.logging.Logger;
  * <code>logger.fatalError( ex )</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierWrapper.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: NotifierWrapper.java,v 1.4 2004-07-03 03:21:15 trygvis Exp $
  */
 public class NotifierWrapper
 {
@@ -30,11 +29,11 @@ public class NotifierWrapper
         this.logger = logger;
     }
 
-    public void buildStarted( MavenProject project )
+    public void buildStarted( BuildResult build )
     {
         try
         {
-            notifier.buildStarted( project );
+            notifier.buildStarted( build );
         }
         catch( ContinuumException e )
         {
@@ -42,11 +41,11 @@ public class NotifierWrapper
         }
     }
 
-    public void checkoutStarted( MavenProject project )
+    public void checkoutStarted( BuildResult build )
     {
         try
         {
-            notifier.checkoutStarted( project );
+            notifier.checkoutStarted( build );
         }
         catch( ContinuumException e )
         {
@@ -54,11 +53,11 @@ public class NotifierWrapper
         }
     }
 
-    public void checkoutComplete( MavenProject project, Exception ex )
+    public void checkoutComplete( BuildResult build, Exception ex )
     {
         try
         {
-            notifier.checkoutComplete( project, ex );
+            notifier.checkoutComplete( build, ex );
         }
         catch( ContinuumException e )
         {
@@ -66,11 +65,11 @@ public class NotifierWrapper
         }
     }
 
-    public void runningGoals( MavenProject project )
+    public void runningGoals( BuildResult build )
     {
         try
         {
-            notifier.runningGoals( project );
+            notifier.runningGoals( build );
         }
         catch( ContinuumException e )
         {
@@ -78,11 +77,11 @@ public class NotifierWrapper
         }
     }
 
-    public void goalsCompleted( MavenProject project, Exception ex )
+    public void goalsCompleted( BuildResult build, Exception ex )
     {
         try
         {
-            notifier.goalsCompleted( project, ex );
+            notifier.goalsCompleted( build, ex );
         }
         catch( ContinuumException e )
         {
@@ -90,11 +89,11 @@ public class NotifierWrapper
         }
     }
 
-    public void buildComplete( MavenProject project, Exception ex )
+    public void buildComplete( BuildResult build, Exception ex )
     {
         try
         {
-            notifier.buildComplete( project, ex );
+            notifier.buildComplete( build, ex );
         }
         catch( ContinuumException e )
         {

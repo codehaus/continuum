@@ -10,7 +10,7 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.1 2004-07-01 15:30:56 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.2 2004-07-03 03:21:13 trygvis Exp $
  */
 class BuilderThread
     implements Runnable
@@ -47,9 +47,9 @@ class BuilderThread
 
             if ( buildId == null )
             {
-                logger.info( "Builder sleeping..." );
+//                logger.info( "Builder sleeping..." );
 
-                sleep( 1000 );
+                sleep( 100 );
 
                 continue;
             }

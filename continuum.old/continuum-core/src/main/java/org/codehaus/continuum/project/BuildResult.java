@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResult.java,v 1.2 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: BuildResult.java,v 1.3 2004-07-03 03:21:15 trygvis Exp $
  */
 public class BuildResult
 {
@@ -46,6 +46,7 @@ public class BuildResult
      */
     public BuildResult( String buildId )
     {
+        this.buildId = buildId;
     }
 
     /**

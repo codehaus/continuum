@@ -1,31 +1,22 @@
 package org.codehaus.continuum.registration.network;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-
 import org.codehaus.continuum.network.ConnectionConsumer;
 import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.8 2004-07-01 15:30:58 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.9 2004-07-03 03:21:16 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
     implements ConnectionConsumer
 {
-    /** @requirement */
-    private MavenProjectBuilder projectBuilder;
-
     /** @default ${maven.home}/repository */
     private String localRepository;
 
@@ -40,21 +31,15 @@ public class SimpleNetworkRegistrar
         {
             BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
 
-            String pom = IOUtil.toString( reader );
+            String name = reader.readLine();
 
-            File file = File.createTempFile( "continuum", "project" );
+            String scmConnection = reader.readLine();
 
-            file.deleteOnExit();
-
-            IOUtil.copy( pom, new FileWriter( file ) );
-
-            MavenProject project = projectBuilder.build( file, localRepository );
-
-            getContinuum().addProject( project );
-
-            file.delete();
+            String id = getContinuum().addProject( name, scmConnection );
 
             printer.println( "OK" );
+
+            printer.println( "id=" + id );
         }
         catch( Exception ex )
         {

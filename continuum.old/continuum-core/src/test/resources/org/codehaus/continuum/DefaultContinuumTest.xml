@@ -2,6 +2,7 @@
   <components>
     <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <role-hint>maven2</role-hint>
       <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
@@ -14,7 +15,7 @@
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.MavenCore</role>
+          <role>org.apache.maven.Maven</role>
         </requirement>
       </requirements>
       <configuration>
