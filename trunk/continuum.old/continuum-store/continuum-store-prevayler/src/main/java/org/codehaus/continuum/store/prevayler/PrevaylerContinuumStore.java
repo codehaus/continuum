@@ -28,7 +28,7 @@ import org.prevayler.TransactionWithQuery;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PrevaylerContinuumStore.java,v 1.4 2004-10-15 13:01:07 trygvis Exp $
+ * @version $Id: PrevaylerContinuumStore.java,v 1.5 2004-10-28 21:37:33 trygvis Exp $
  */
 public class PrevaylerContinuumStore
     extends AbstractContinuumStore
@@ -213,7 +213,7 @@ public class PrevaylerContinuumStore
             this.projectId = projectId;
             this.descriptor = descriptor;
         }
-    
+
         public void execute( ContinuumDatabase database )
             throws ContinuumStoreException
         {
@@ -250,6 +250,31 @@ public class PrevaylerContinuumStore
             throws ContinuumStoreException
         {
             database.updateProject( projectId, name, scmUrl, nagEmailAddress, version );
+        }
+    }
+
+    public void setWorkingDirectory(String projectId, String workingDirectory)
+        throws ContinuumStoreException
+    {
+        execute( new SetWorkingDirectoryTx( projectId, workingDirectory ) );
+    }
+
+    private static class SetWorkingDirectoryTx
+        extends AbstractContinuumPrevaylerTransaction
+    {
+        private String projectId;
+        private String workingDirectory;
+
+        public SetWorkingDirectoryTx( String projectId, String workingDirectory )
+        {
+            this.projectId = projectId;
+            this.workingDirectory = workingDirectory;
+        }
+
+        public void execute( ContinuumDatabase database )
+            throws ContinuumStoreException
+        {
+            database.setWorkingDirectory( projectId, workingDirectory );
         }
     }
 
@@ -436,7 +461,7 @@ public class PrevaylerContinuumStore
             return database.getBuildsForProject( projectId, start, end );
         }
     }
-    
+
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
