@@ -4,10 +4,10 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@plexus.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuumTest.java,v 1.1.1.1 2003-09-01 16:06:05 jvanzyl Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.2 2003-10-12 00:55:40 pdonald Exp $
  */
 public class DefaultContinuumTest
     extends PlexusTestCase
@@ -26,7 +26,7 @@ public class DefaultContinuumTest
     public void testContinuum()
         throws Exception
     {
-        Continuum continuum = (Continuum) lookup( Continuum.ROLE );
+        Continuum continuum = (Continuum) lookup( Continuum.class.getName() );
 
         assertNotNull( continuum );
     }
