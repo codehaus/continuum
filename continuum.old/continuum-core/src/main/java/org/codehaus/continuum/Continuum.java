@@ -1,12 +1,12 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    void addProject( Project project );
+    void addProject( MavenProject project );
 
     void addProject( String url );
 

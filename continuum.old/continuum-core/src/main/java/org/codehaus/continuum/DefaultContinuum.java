@@ -1,10 +1,10 @@
 package org.codehaus.plexus.continuum;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.artifact.MavenArtifact;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.notification.mail.MailMessage;
+import org.codehaus.plexus.continuum.mail.MailMessage;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
@@ -14,7 +14,6 @@ import org.codehaus.plexus.util.IOUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,7 +27,7 @@ public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
-    private ProjectBuilder projectBuilder;
+    private MavenProjectBuilder projectBuilder;
 
     private Compiler compiler;
 
@@ -106,7 +105,7 @@ public class DefaultContinuum
         // We will simply deal with POMs that can be retrieved from
         // the local file system or over http.
 
-        Project project = null;
+        MavenProject project = null;
 
         if ( projectUrl.startsWith( "http://" ) )
         {
@@ -182,7 +181,7 @@ public class DefaultContinuum
         }
     }
 
-    public void addProject( Project project )
+    public void addProject( MavenProject project )
     {
         MavenProjectBuild build = null;
 
@@ -200,7 +199,7 @@ public class DefaultContinuum
         builds.put( project.getGroupId() + ":" + project.getArtifactId(), build );
     }
 
-    private void notifyAudience( Project project, String message )
+    private void notifyAudience( MavenProject project, String message )
     {
         getLogger().info( "Sending message to: " + smtpServer );
 
@@ -308,13 +307,13 @@ public class DefaultContinuum
         return messages;
     }
 
-    private String[] classpathElements( Project project )
+    private String[] classpathElements( MavenProject project )
     {
         String[] classpathElements = new String[project.getArtifacts().size()];
 
         for ( int i = 0; i < classpathElements.length; i++ )
         {
-            classpathElements[i] = ( (Artifact) project.getArtifacts().get( i ) ).getPath();
+            classpathElements[i] = ( (MavenArtifact) project.getArtifacts().get( i ) ).getPath();
         }
 
         return classpathElements;

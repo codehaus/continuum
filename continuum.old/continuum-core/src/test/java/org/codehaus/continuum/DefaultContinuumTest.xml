@@ -14,7 +14,7 @@
           <role>org.codehaus.plexus.compiler.Compiler</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.project.ProjectBuilder</role>
+          <role>org.apache.maven.project.MavenProjectBuilder</role>
         </requirement>
       </requirements>
       <configuration>
@@ -28,8 +28,8 @@
       <implementation>org.codehaus.plexus.compiler.javac.JavacCompiler</implementation>
     </component>
       <component>
-      <role>org.apache.maven.project.ProjectBuilder</role>
-      <implementation>org.apache.maven.project.DefaultProjectBuilder</implementation>
+      <role>org.apache.maven.project.MavenProjectBuilder</role>
+      <implementation>org.apache.maven.project.DefaultMavenProjectBuilder</implementation>
       <requirements>
         <requirement>
           <role>org.apache.maven.model.ModelUnmarshaller</role>
@@ -38,7 +38,7 @@
           <role>org.apache.maven.model.ModelMarshaller</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.artifact.Artifactory</role>
+          <role>org.apache.maven.artifact.MavenArtifactory</role>
         </requirement>
       </requirements>
     </component>
@@ -51,8 +51,8 @@
       <implementation>org.apache.maven.model.DefaultModelMarshaller</implementation>
     </component>
     <component>
-      <role>org.apache.maven.artifact.Artifactory</role>
-      <implementation>org.apache.maven.artifact.DefaultArtifactory</implementation>
+      <role>org.apache.maven.artifact.MavenArtifactory</role>
+      <implementation>org.apache.maven.artifact.DefaultMavenArtifactory</implementation>
     </component>
     <!--
     <component>
