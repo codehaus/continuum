@@ -19,7 +19,7 @@
   <siteAddress>continuum.codehaus.org</siteAddress>
   <siteDirectory>/home/projects/continuum/public_html</siteDirectory>
   <scm>
-    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.codehaus.org:/scm/continuum:continuum</connection>
+    <connection>scm:cvs:pserver:anonymous@cvs.continuum.codehaus.org:/scm/continuum:continuum</connection>
     <url>http://cvs.continuum.codehaus.org/</url>
   </scm>
 
