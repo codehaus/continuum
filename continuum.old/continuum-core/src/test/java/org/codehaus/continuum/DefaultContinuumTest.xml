@@ -53,11 +53,25 @@
       <role>org.apache.maven.artifact.Artifactory</role>
       <implementation>org.apache.maven.artifact.DefaultArtifactory</implementation>
     </component>
+    <!--
     <component>
       <role>org.codehaus.plexus.continuum.trigger.ContinuumTrigger</role>
       <implementation>org.codehaus.plexus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
       <configuration>
         <interval>1</interval>
+      </configuration>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+    -->
+    <component>
+      <role>org.codehaus.plexus.continuum.trigger.ContinuumTrigger</role>
+      <implementation>org.codehaus.plexus.continuum.trigger.network.SimpleNetworkTrigger</implementation>
+      <configuration>
+        <port>10000</port>
       </configuration>
       <requirements>
         <requirement>

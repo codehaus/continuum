@@ -22,5 +22,7 @@ public class DefaultContinuumTest
         Continuum continuum = (Continuum) lookup( Continuum.ROLE );
 
         assertNotNull( continuum );
+
+        //while( true ){}
     }
 }
