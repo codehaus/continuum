@@ -23,4 +23,12 @@ To build continuum:
       goals="jar:install"/>
   </goal>
 
+  <goal name="eclipse">
+    <maven:reactor
+      basedir="${basedir}"
+      includes="*/project.xml"
+      excludes="parent/project.xml"
+      goals="eclipse"/>
+  </goal>
+
 </project>
