@@ -46,7 +46,7 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.2 2005-04-01 22:55:52 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.3 2005-04-02 21:40:04 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -218,7 +218,7 @@ public class MailContinuumNotifier
 
             // TODO: Make the build host a part of the build
 
-            context.put( "$buildHost", localHostName );
+            context.put( "buildHost", localHostName );
 
             // ----------------------------------------------------------------------
             //
@@ -292,6 +292,10 @@ public class MailContinuumNotifier
         MailMessage message = new MailMessage();
 
         message.addHeader( "X-Continuum-Host", localHostName );
+
+        message.addHeader( "X-Continuum-Project-Id", project.getId() );
+
+        message.addHeader( "X-Continuum-Project-Name", project.getName() );
 
         try
         {
