@@ -20,13 +20,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.CiManagement;
+import org.apache.maven.model.Notifier;
 import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -35,12 +37,17 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.3 2005-03-10 00:05:50 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.4 2005-03-13 22:30:28 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
 {
+    /** @requirement */
     private MavenProjectBuilder projectBuilder;
+
+    // ----------------------------------------------------------------------
+    // MavenBuilderHelper Implementation
+    // ----------------------------------------------------------------------
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
@@ -73,6 +80,51 @@ public class DefaultMavenBuilderHelper
         mapMetadataToProject( f, project );
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public String getProjectName( MavenProject project )
+    {
+        String name = project.getName();
+
+        if ( StringUtils.isEmpty( name ) )
+        {
+            name = project.getGroupId() + ":" + project.getArtifactId();
+        }
+
+        return name;
+    }
+
+    public String getScmUrl( MavenProject project )
+    {
+        return project.getScm().getConnection();
+    }
+
+    public String getNagEmailAddress( MavenProject project )
+    {
+        for ( Iterator it = project.getCiManagement().getNotifiers().iterator(); it.hasNext(); )
+        {
+            Notifier notifier = (Notifier) it.next();
+
+            if ( notifier.getType().equals( "mail" ) )
+            {
+                return notifier.getAddress();
+            }
+        }
+
+        return null;
+    }
+
+    public String getVersion( MavenProject project )
+    {
+        return project.getVersion();
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     protected File createMetadataFile( URL metadata )
         throws ContinuumException
     {
@@ -98,25 +150,18 @@ public class DefaultMavenBuilderHelper
         }
     }
 
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
     protected void mapMetadataToProject( File metadata, ContinuumProject project )
         throws ContinuumException
     {
         MavenProject mavenProject = getProject( metadata );
 
-        //project.setId( mavenProject.getId() );
+        project.setNagEmailAddress( getNagEmailAddress( mavenProject ) );
 
-        project.setNagEmailAddress( mavenProject.getCiManagement().getNagEmailAddress() );
+        project.setName( getProjectName( mavenProject ) );
 
-        project.setName( mavenProject.getName() );
+        project.setScmUrl( getScmUrl( mavenProject ) );
 
-        project.setScmUrl( mavenProject.getScm().getConnection() );
-
-        project.setVersion( mavenProject.getVersion() );
+        project.setVersion( getVersion( mavenProject ) );
     }
 
     protected MavenProject getProject( File file )
@@ -136,7 +181,7 @@ public class DefaultMavenBuilderHelper
         }
 
         // ----------------------------------------------------------------------
-        // Validate the MavenProject after some Continuum rules
+        // Validate the MavenProject using some Continuum rules
         // ----------------------------------------------------------------------
 
         // Nag email address
@@ -147,7 +192,7 @@ public class DefaultMavenBuilderHelper
             throw new ContinuumException( "Missing CiManagement from the project descriptor." );
         }
 
-        if ( StringUtils.isEmpty( ciManagement.getNagEmailAddress() ) )
+        if ( StringUtils.isEmpty( getNagEmailAddress( project ) ) )
         {
             throw new ContinuumException( "Missing nag email address from the continuous integration info." );
         }
@@ -174,32 +219,5 @@ public class DefaultMavenBuilderHelper
         }
 
         return project;
-    }
-
-    public String getProjectName( MavenProject project )
-    {
-        String name = project.getName();
-
-        if ( StringUtils.isEmpty( name ) )
-        {
-            name = project.getGroupId() + ":" + project.getArtifactId();
-        }
-
-        return name;
-    }
-
-    public String getScmUrl( MavenProject project )
-    {
-        return project.getScm().getConnection();
-    }
-
-    public String getNagEmailAddress( MavenProject project )
-    {
-        return project.getCiManagement().getNagEmailAddress();
-    }
-
-    public String getVersion( MavenProject project )
-    {
-        return project.getVersion();
     }
 }
