@@ -12,8 +12,10 @@
 # Build the JARs
 ( cd continuum-api && m2 jar:install )
 ( cd continuum-test && m2 jar:install )
+( cd continuum-maven-utils && m2 jar:install )
 ( cd continuum-core && m2 jar:install )
 ( cd continuum-builder/continuum-builder-maven2 && m2 jar:install )
+( cd continuum-builder/continuum-builder-shell && m2 jar:install )
 ( cd continuum-store/continuum-store-hibernate && m2 jar:install )
 ( cd continuum-store/continuum-store-hibernate-it && m2 jar:install )
 ( cd continuum-store/continuum-store-prevayler && m2 jar:install )
