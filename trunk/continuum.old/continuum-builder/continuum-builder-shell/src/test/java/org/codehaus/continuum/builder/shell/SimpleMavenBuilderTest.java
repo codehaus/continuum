@@ -19,7 +19,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMavenBuilderTest.java,v 1.1 2004-10-30 11:56:31 trygvis Exp $
+ * @version $Id: SimpleMavenBuilderTest.java,v 1.2 2004-10-30 14:45:24 trygvis Exp $
  */
 public class SimpleMavenBuilderTest
 	extends AbstractContinuumTest
@@ -64,6 +64,8 @@ public class SimpleMavenBuilderTest
         txManager.commit();
 
         String buildId = continuum.buildProject( projectId );
+
+        TestUtils.setBuildTimeout( 120 * 1000 ); // two minutes
 
         TestUtils.waitForSuccessfulBuild( buildId );
 
