@@ -113,6 +113,8 @@ def assertSuccessfulShellBuild( buildId, expectedStandardOutput ):
 def execute( workingDirectory, command ):
     cwd = os.getcwd()
     os.chdir( workingDirectory )
+#    print "workingDirectory: " + workingDirectory
+#    print "command: " + command
     file = os.popen( command )
     os.chdir( cwd )
 
@@ -159,7 +161,15 @@ def cvsImport( basedir, cvsroot, artifactId ):
 def svnImport( basedir, svnroot, artifactId ):
     return execute( basedir, "svn import -m '' . file://" + svnroot + "/" + artifactId )
 
-def initMaven1Project( basedir, cvsroot, artifactId ):
+def makeScmUrl( scm, scmroot, artifactId ):
+    if ( scm == "cvs" ):
+        return "scm:cvs:local:%(scmroot)s:%(module)s" % { "scmroot" : scmroot , "module" : artifactId }
+    elif ( scm == "svn" ):
+        return "scm:svn:file:%(scmroot)s/%(artifactId)s" % { "scmroot" : scmroot , "module" : artifactId }
+
+    raise Exception( "Unknown SCM type '" + scm + "'" )
+
+def initMaven1Project( basedir, scm, scmroot, artifactId ):
     cleanDirectory( basedir )
     os.makedirs( basedir )
     pom = file( basedir + "/project.xml", "w+" )
@@ -171,13 +181,18 @@ def initMaven1Project( basedir, cvsroot, artifactId ):
   <currentVersion>1.0</currentVersion>
   <name>Maven 1 Project</name>
   <repository>
-    <connection>scm:cvs:local:%(cvsroot)s:%(artifactId)s</connection>
+    <connection>%(scmUrl)s</connection>
   </repository>
   <build>
     <nagEmailAddress>%(email)s</nagEmailAddress>
   </build>
 </project>
-""" % { "artifactId" : artifactId, "cvsroot" : cvsroot, "email" : email } )
+""" % { 
+        "artifactId" : artifactId, 
+        "scm" : scm, 
+        "scmUrl" : makeScmUrl( scm, scmroot, artifactId ), 
+        "email" : email
+      } )
     pom.close()
 
     os.makedirs( basedir + "/src/main/java" )
@@ -220,7 +235,7 @@ def initMaven2Project( basedir, cvsroot, artifactId ):
 
     cvsImport( basedir, cvsroot, artifactId )
 
-def initAntProject( basedir, cvsroot, artifactId ):
+def initAntProject( basedir ):
     cleanDirectory( basedir )
     os.makedirs( basedir )
     buildXml = file( basedir + "/build.xml", "w+" )
@@ -242,9 +257,7 @@ def initAntProject( basedir, cvsroot, artifactId ):
     foo.write( "class Foo { }" )
     foo.close()
 
-    svnImport( basedir, svnroot, artifactId )
-
-def initShellProject( basedir, cvsroot, artifactId ):
+def initShellProject( basedir ):
     cleanDirectory( basedir )
     os.makedirs( basedir )
     script = file( basedir + "/script.sh", "w+" )
@@ -256,8 +269,6 @@ do
 """ )
     script.close()
     os.system( "chmod +x " + basedir + "/script.sh" )
-
-    cvsImport( basedir, cvsroot, artifactId )
 
 ############################################################
 # Start
@@ -287,11 +298,11 @@ startTime = int( time.time() )
 
 if 1:
     progress( "Initializing Maven 1 CVS project" )
-    initMaven1Project( maven1Project, cvsroot, "maven-1" )
+    initMaven1Project( maven1Project, "cvs", cvsroot, "maven-1" )
     progress( "Adding Maven 1 project" )
     maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
     maven1 = continuum.getProject( maven1Id )
-    assertProject( "1", "Maven 1 Project", email, continuum.STATE_NEW, "1.0", "maven-1", maven1 )
+    assertProject( maven1Id, "Maven 1 Project", email, continuum.STATE_NEW, "1.0", "maven-1", maven1 )
 
     progress( "Building Maven 1 project" )
     buildId = continuum.buildProject( maven1.id )
@@ -324,7 +335,7 @@ if 1:
     progress( "Adding Maven 2 project" )
     maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
     maven2 = continuum.getProject( maven2Id )
-    assertProject( "2", "Maven 2 Project", email, continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
+    assertProject( maven2Id, "Maven 2 Project", email, continuum.STATE_NEW, "2.0-SNAPSHOT", "maven2", maven2 )
 
     progress( "Building Maven 2 project" )
     build = continuum.buildProject( maven2.id )
@@ -336,28 +347,45 @@ if 1:
 
 if 1:
     progress( "Initializing Ant SVN project" )
-    initAntProject( antProject, svnroot, "ant" )
+    initAntProject( antProject )
+    svnImport( antProject, svnroot, "ant-svn" )
 
-    progress( "Adding Ant project" )
-    antId = continuum.addProjectFromScm( "scm:svn:file://" + svnroot + "/ant", "ant", "Ant Project", email, "3.0", 
+    progress( "Adding Ant SVN project" )
+    antSvnId = continuum.addProjectFromScm( "scm:svn:file://" + svnroot + "/ant-svn", "ant", "Ant SVN Project", email, "3.0", 
+                                            { 
+                                                "executable": "ant", 
+                                                "targets" : "clean, build" 
+                                            } )
+    antSvn = continuum.getProject( antSvnId )
+    assertProject( antSvnId, "Ant SVN Project", email, continuum.STATE_NEW, "3.0", "ant", antSvn )
+    progress( "Building SVN Ant project" )
+    build = continuum.buildProject( antSvn.id )
+    assertSuccessfulAntBuild( build )
+
+if 1:
+    progress( "Initializing Ant CVS project" )
+    initAntProject( antProject )
+    cvsImport( antProject, cvsroot, "ant-cvs" )
+    antCvsId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant-cvs", "ant", "Ant CVS Project", email, "3.0", 
                                          { "executable": "ant", "targets" : "clean, build"} )
-    ant = continuum.getProject( antId )
-    assertProject( "3", "Ant Project", email, continuum.STATE_NEW, "3.0", "ant", ant )
-    progress( "Building Ant project" )
-    build = continuum.buildProject( ant.id )
+    antCvs = continuum.getProject( antCvsId )
+    assertProject( antCvsId, "Ant CVS Project", email, continuum.STATE_NEW, "3.0", "ant", antCvs )
+    progress( "Building CVS Ant project" )
+    build = continuum.buildProject( antCvs.id )
     assertSuccessfulAntBuild( build )
 
 if 1:
     progress( "Initializing Shell CVS project" )
-    initShellProject( shellProject, cvsroot, "shell" )
+    initShellProject( shellProject )
+    cvsImport( shellProject, cvsroot, "shell" )
 
-    progress( "Adding Shell project" )
+    progress( "Adding CVS Shell project" )
     prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum/temp/Shell-Project/"
     shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", email, "3.0", 
                                            { "script": prefix + "script.sh", "arguments" : ""} )
 
     shell = continuum.getProject( shellId )
-    assertProject( "4", "Shell Project", email, continuum.STATE_NEW, "3.0", "shell", shell )
+    assertProject( shellId, "Shell Project", email, continuum.STATE_NEW, "3.0", "shell", shell )
 
     progress( "Building Shell project" )
     build = continuum.buildProject( shell.id )
