@@ -34,10 +34,11 @@ import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.3 2004-10-14 14:29:57 trygvis Exp $
  */
 public class ExternalMaven2ContinuumBuilder
     extends Maven2ContinuumBuilder
@@ -76,7 +77,16 @@ public class ExternalMaven2ContinuumBuilder
 
         CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
 
-        int exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
+        int exitCode;
+
+        try
+        {
+            exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
+        }
+        catch( Exception ex )
+        {
+            throw new ContinuumException( "Error while executing command.", ex );
+        }
 
         // ----------------------------------------------------------------------
         //
