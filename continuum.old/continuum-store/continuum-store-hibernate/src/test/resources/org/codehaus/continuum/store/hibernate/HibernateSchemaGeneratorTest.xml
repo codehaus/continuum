@@ -1,0 +1,11 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.hibernate.HibernateService</role>
+      <implementation>org.codehaus.plexus.hibernate.DefaultHibernateService</implementation>
+      <configuration>
+        <mapping>/hibernate-test.cfg.xml</mapping>
+      </configuration>
+    </component>
+  </components>
+</component-set>

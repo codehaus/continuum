@@ -22,7 +22,7 @@
     <property name="hibernate.connection.username">sa</property>
     <property name="hibernate.connection.password"></property>
 
-<!-- -->
+<!-- Misc configuration -->
     <property name="hibernate.connection.pool_size">10</property>
 
     <mapping resource="org/codehaus/continuum/project/ContinuumProject.hbm.xml"/>

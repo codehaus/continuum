@@ -7,6 +7,12 @@
 <hibernate-configuration>
   <session-factory>
     <property name="show_sql">true</property>
+<!--
+    <property name="dialect">net.sf.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.url">jdbc:postgresql:trygvis</property>
+    <property name="hibernate.connection.username">trygvis</property>
+-->
     <property name="dialect">net.sf.hibernate.dialect.HSQLDialect</property>
     <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
     <property name="hibernate.connection.url">jdbc:hsqldb:.</property>
@@ -16,9 +22,7 @@
 
     <mapping resource="org/codehaus/continuum/project/ContinuumProject.hbm.xml"/>
     <mapping resource="org/codehaus/continuum/project/BuildResult.hbm.xml"/>
-<!--
-    <mapping resource="org/codehaus/continuum/project/ProjectDescriptor.hbm.xml"/>
--->
     <mapping resource="org/codehaus/continuum/project/MockProjectDescriptor.hbm.xml"/>
+    <mapping resource="org/codehaus/continuum/project/Maven2ProjectDescriptor.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

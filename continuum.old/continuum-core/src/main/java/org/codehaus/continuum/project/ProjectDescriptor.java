@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ProjectDescriptor.java,v 1.1 2004-07-07 02:34:35 trygvis Exp $
+ * @version $Id: ProjectDescriptor.java,v 1.2 2004-07-08 01:13:35 trygvis Exp $
  */
 public interface ProjectDescriptor
     extends Serializable
@@ -27,7 +27,7 @@ public interface ProjectDescriptor
 
     void setProjectId( String projectId );
 
-    String getType();
+//    String getType();
 
-    void setType( String type );
+//    void setType( String type );
 }
