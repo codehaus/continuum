@@ -38,7 +38,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.16 2004-10-29 15:18:12 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.17 2004-10-29 17:30:39 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -133,6 +133,8 @@ public class DefaultContinuumScm
         try
         {
             File workingDirectory = new File( project.getWorkingDirectory() );
+
+            getLogger().info( workingDirectory.getAbsolutePath() );
 
             if ( !workingDirectory.exists() )
             {

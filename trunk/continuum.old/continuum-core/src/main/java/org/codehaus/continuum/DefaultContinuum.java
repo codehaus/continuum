@@ -55,7 +55,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.51 2004-10-29 15:29:16 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.52 2004-10-29 17:30:39 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -311,6 +311,18 @@ public class DefaultContinuum
             // ----------------------------------------------------------------------
             // Update the check out
             // ----------------------------------------------------------------------
+
+            File workingDirectory = new File( project.getWorkingDirectory() );
+
+            if ( !workingDirectory.exists() )
+            {
+                getLogger().warn( "Creating missing working directory for project '" + project.getName() + "'." );
+
+                if ( !workingDirectory.exists() )
+                {
+                    throw new ContinuumException( "Could not make missing working directory for project '" + project.getName() + "'." );
+                }
+            }
 
             scm.updateProject( project );
 
