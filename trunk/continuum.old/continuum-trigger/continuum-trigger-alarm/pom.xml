@@ -3,30 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>continuum</groupId>
-    <artifactId>continuum-parent</artifactId>
+    <artifactId>continuum-trigger</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <artifactId>continuum-trigger-alarm</artifactId>
   <groupId>continuum</groupId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Alarm Trigger</name>
-
-  <dependencies>
-    <dependency>
-      <groupId>continuum</groupId>
-      <artifactId>continuum-api</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>continuum</groupId>
-      <artifactId>continuum-test</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
-    <!-- testing -->
-    <dependency>
-      <groupId>continuum</groupId>
-      <artifactId>continuum-core</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
 </project>
