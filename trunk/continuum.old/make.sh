@@ -39,11 +39,11 @@ build "continuum-alarm-trigger"
 #build "continuum-xmlrpc-server"
 #build "continuum-xmlrpc-client"
 
-build "continuum-it"
-
 (
 #  cd continuum-standalone
   cd continuum-web
   sh make.sh
   cd ..
 )
+
+build "continuum-it"
