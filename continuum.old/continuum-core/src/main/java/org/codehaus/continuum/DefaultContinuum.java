@@ -148,7 +148,7 @@ public class DefaultContinuum
 
                 File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
 
-                FileUtils.copyFileToDirectory( file, pom );
+                FileUtils.copyFile( file, pom );
 
                 file.delete();
             }
@@ -167,7 +167,7 @@ public class DefaultContinuum
 
                 File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
 
-                FileUtils.copyFileToDirectory( file, pom );
+                FileUtils.copyFile( file, pom );
             }
             catch ( Exception e )
             {
@@ -189,6 +189,8 @@ public class DefaultContinuum
         try
         {
             build = new MavenProjectBuild( project );
+
+            getLogger().info( "Adding project: " + project.getName() );
         }
         catch ( Exception e )
         {
@@ -200,6 +202,8 @@ public class DefaultContinuum
 
     private void notifyAudience( Project project, String message )
     {
+        getLogger().info( "Sending message to: " + smtpServer );
+
         try
         {
             MailMessage mailMessage = new MailMessage( smtpServer );
@@ -225,7 +229,7 @@ public class DefaultContinuum
 
             getLogger().info( message );
         }
-        catch ( IOException e )
+        catch ( Exception e )
         {
             getLogger().error( "Can't send notification message.", e );
         }
@@ -250,21 +254,29 @@ public class DefaultContinuum
             {
                 List messages = buildProject( projectBuild );
 
+                StringBuffer message = new StringBuffer();
+
                 // Notification is there are failures.
                 if ( messages.size() > 0 )
                 {
-                    StringBuffer message = new StringBuffer();
-
                     for ( Iterator j = messages.iterator(); j.hasNext(); )
                     {
                         message.append( j.next() ).append( "\n" );
                     }
 
-                    notifyAudience( projectBuild.getProject(), message.toString() );
+                    getLogger().info( "Notifying!" );
                 }
+                else
+                {
+                    message.append( "Build OK.");
+                }
+
+                notifyAudience( projectBuild.getProject(), message.toString() );
             }
             catch ( Exception e )
             {
+                e.printStackTrace();
+
                 StringWriter writer = new StringWriter();
 
                 PrintWriter w = new PrintWriter( writer );
@@ -283,13 +295,15 @@ public class DefaultContinuum
         // We need to check out the sources
         build.getProjectScm().checkout( workingDirectory );
 
-        System.out.println( "build.getProject().getSourceDirectory() = " + build.getProject().getBuild().getSourceDirectory() );
+        getLogger().info( "Done checking out project!!!" );
 
         String destinationDirectory = workingDirectory + "/target/classes";
 
         List messages = compiler.compile( classpathElements( build.getProject() ),
                                           new String[]{build.getProject().getBuild().getSourceDirectory()},
                                           destinationDirectory );
+
+        getLogger().info( "Done compiling!" );
 
         return messages;
     }
