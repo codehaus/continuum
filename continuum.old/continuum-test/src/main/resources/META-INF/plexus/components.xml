@@ -1,9 +1,0 @@
-<component-set>
-  <components>
-    <component>
-      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
-      <role-hint>test</role-hint>
-      <implementation>org.codehaus.continuum.builder.test.TestContinuumBuilder</implementation>
-    </component>
-  </components>
-</component-set>
