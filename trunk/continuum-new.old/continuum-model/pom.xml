@@ -26,6 +26,17 @@
           <packageWithVersion>false</packageWithVersion>
           <model>src/main/resources/continuum.mdo</model>
         </configuration>
+        <goals>
+          <goal>
+            <id>java</id>
+          </goal>
+          <goal>
+            <id>jpox-jdo-mapping</id>
+          </goal>          
+          <goal>
+            <id>jpox-store</id>
+          </goal>                    
+        </goals>
       </plugin>
     </plugins>
   </build>
