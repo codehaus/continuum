@@ -34,11 +34,9 @@ import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.UserType;
 
-import org.apache.maven.ExecutionResponse;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExecutionResponseType.java,v 1.3 2004-07-29 04:35:02 trygvis Exp $
+ * @version $Id: ExecutionResponseType.java,v 1.4 2004-08-29 17:37:29 trygvis Exp $
  */
 public class ExecutionResponseType
     implements UserType, Serializable
@@ -50,9 +48,10 @@ public class ExecutionResponseType
         return false;
     }
 
+    // TODO: implement?
     public Object deepCopy( Object value )
     {
-        return (ExecutionResponse) value;
+        return value;
     }
 
     public boolean equals( Object x, Object y )
@@ -93,16 +92,16 @@ public class ExecutionResponseType
     public void nullSafeSet( PreparedStatement stmt, Object value, int index )
         throws HibernateException, SQLException
     {
-        ExecutionResponse executionResponse = (ExecutionResponse) value;
+//        ExecutionResponse executionResponse = (ExecutionResponse) value;
 
-        if ( executionResponse == null )
+        if ( value == null )
         {
             Hibernate.STRING.nullSafeSet( stmt, null, index );
 
             return;
         }
 
-        String stringValue = xStream.toXML( executionResponse );
+        String stringValue = xStream.toXML( value );
 
         Hibernate.CLOB.nullSafeSet( stmt, Hibernate.createClob( stringValue ), index );
     }

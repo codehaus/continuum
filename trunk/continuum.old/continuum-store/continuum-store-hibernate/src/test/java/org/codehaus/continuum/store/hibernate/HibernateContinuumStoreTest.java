@@ -27,15 +27,18 @@ import net.sf.hibernate.Transaction;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
 
+import org.apache.maven.MavenTestUtils;
+
 import org.codehaus.continuum.store.AbstractContinuumStoreTest;
 import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.hibernate.DefaultHibernateService;
 import org.codehaus.plexus.hibernate.HibernateService;
 import org.codehaus.plexus.hibernate.HibernateSessionService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStoreTest.java,v 1.5 2004-07-29 04:35:02 trygvis Exp $
+ * @version $Id: HibernateContinuumStoreTest.java,v 1.6 2004-08-29 17:37:29 trygvis Exp $
  */
 public class HibernateContinuumStoreTest
     extends AbstractContinuumStoreTest
@@ -47,6 +50,17 @@ public class HibernateContinuumStoreTest
     private Session session;
 
     private Transaction tx;
+
+    protected PlexusContainer getContainerInstance()
+    {
+        return MavenTestUtils.getContainerInstance();
+    }
+
+    protected void customizeContext()
+        throws Exception
+    {
+        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ) );
+    }
 
     protected String getRoleHint()
     {
