@@ -7,7 +7,7 @@
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-mail-notifier</artifactId>
+  <artifactId>continuum-notifier-mail</artifactId>
   <name>Continuum Mail Notifier</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>

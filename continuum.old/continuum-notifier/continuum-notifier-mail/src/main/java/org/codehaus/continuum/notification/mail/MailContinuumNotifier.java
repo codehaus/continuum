@@ -2,9 +2,14 @@ package org.codehaus.continuum.notification.mail;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.model.CiManagement;
@@ -16,6 +21,8 @@ import org.codehaus.continuum.mail.MailMessage;
 import org.codehaus.continuum.notification.AbstractContinuumNotifier;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
@@ -23,12 +30,17 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.9 2004-09-07 16:22:17 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.10 2004-09-09 14:04:41 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
     implements Initializable
 {
+    /**
+     * @requirement
+     */
+    private ContinuumStore store;
+
     /**
      * The hostname of the SMTP server.
      * 
@@ -69,6 +81,8 @@ public class MailContinuumNotifier
     //
     // ----------------------------------------------------------------------
 
+    private String fromName;
+
     private int port;
 
     /**
@@ -77,6 +91,11 @@ public class MailContinuumNotifier
      * Probably mostly useful for testing.
      */
     private String lastMessage;
+
+    /**
+     * The number of messages created (not necessary sent).
+     */
+    private int messageCount;
 
     private Map generators = new HashMap();
 
@@ -87,7 +106,13 @@ public class MailContinuumNotifier
     public void initialize()
         throws Exception
     {
+        PlexusUtils.assertRequirement( store, "store" );
+
         PlexusUtils.assertConfiguration( smtpServer, "smtp-server" );
+
+        // ----------------------------------------------------------------------
+        // Administrator
+        // ----------------------------------------------------------------------
 
         if ( administrator == null || administrator.trim().length() == 0 )
         {
@@ -95,6 +120,10 @@ public class MailContinuumNotifier
 
             administrator = null;
         }
+
+        // ----------------------------------------------------------------------
+        // To address
+        // ----------------------------------------------------------------------
 
         if ( to == null )
         {
@@ -105,6 +134,10 @@ public class MailContinuumNotifier
             getLogger().info( "Using '" + to + "' as the to address for all emails." );
         }
 
+        // ----------------------------------------------------------------------
+        // From address
+        // ----------------------------------------------------------------------
+
         if ( from == null )
         {
             getLogger().info( "From address is not configured, will use the nag email address from the project." );
@@ -113,6 +146,23 @@ public class MailContinuumNotifier
         {
             getLogger().info( "Using '" + from + "' as the from address for all emails." );
         }
+
+        try
+        {
+            InetAddress address = InetAddress.getLocalHost();
+
+            fromName = "Continuum@" + address.getCanonicalHostName();
+        }
+        catch( UnknownHostException ex )
+        {
+            fromName = "Continuum";
+        }
+
+        getLogger().info( "From name: " + fromName );
+
+        // ----------------------------------------------------------------------
+        // Smtp port
+        // ----------------------------------------------------------------------
 
         if ( smtpPort == null )
         {
@@ -124,6 +174,10 @@ public class MailContinuumNotifier
             port = smtpPort.intValue();
             getLogger().info( "Smtp port: " + port );
         }
+
+        // ----------------------------------------------------------------------
+        // 
+        // ----------------------------------------------------------------------
 
         generators.put( "maven2", new Maven2MailGenerator( getLogger() ) );
 
@@ -169,11 +223,48 @@ public class MailContinuumNotifier
             throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
         }
 
+        // ----------------------------------------------------------------------
+        // Check if the mail should be sent at all
+        // ----------------------------------------------------------------------
+
+        Iterator it;
+
+        try
+        {
+            it = store.getBuildsForProject( project.getId(), 0, 0 );
+        }
+        catch( ContinuumStoreException ex )
+        {
+            throw new ContinuumException( "Error while finding the last project build." );
+        }
+
+        ContinuumBuild lastBuild = null;
+
+        if ( it.hasNext() )
+        {
+            List list = new ArrayList();
+
+            while( it.hasNext() )
+            {
+                list.add( it.next() );
+            }
+
+            if ( list.size() > 1 )
+            {
+                lastBuild = (ContinuumBuild)list.get( list.size() - 2 );
+
+                if ( build.getState() == lastBuild.getState() )
+                {
+                    return;
+                }
+            }
+        }
+
         MailGenerator generator = (MailGenerator) generators.get( project.getType() );
 
-        lastMessage = generator.generateContent( project, build );
+        lastMessage = generator.generateContent( project, build, lastBuild );
 
-        String subject = generator.generateSubject( project, build );
+        String subject = generator.generateSubject( project, build, lastBuild );
 
         sendMessage( build, subject, lastMessage );
     }
@@ -183,6 +274,11 @@ public class MailContinuumNotifier
         return lastMessage;
     }
 
+    public int getMessageCount()
+    {
+        return messageCount;
+    }
+
     // ----------------------------------------------------------------------
     // Private
     // ----------------------------------------------------------------------
@@ -190,11 +286,9 @@ public class MailContinuumNotifier
     private void sendMessage( ContinuumBuild build, String subject, String message )
         throws ContinuumException
     {
-        getLogger().info( "Sending message to: " + smtpServer + ":" + port );
-
         ContinuumProject project = build.getProject();
 
-//        MavenProject mavenProject = getMavenProject( project );
+        messageCount++;
 
         try
         {
@@ -209,7 +303,14 @@ public class MailContinuumNotifier
                 return;
             }
 
-            mailMessage.from( from );
+            if ( fromName != null )
+            {
+                mailMessage.from( fromName + "<" + from + ">" );
+            }
+            else
+            {
+                mailMessage.from( from );
+            }
 
             String to = getToAddress( project );
 
@@ -221,32 +322,14 @@ public class MailContinuumNotifier
             }
 
             mailMessage.to( to );
-/*
-            ExecutionResponse response = (ExecutionResponse)build.getBuildResult();
 
-            if ( response == null )
-            {
-                mailMessage.setSubject( "[continuum] BUILD ERROR: " + project.getName() );
-            }
-            else if ( response.isExecutionFailure() )
-            {
-                mailMessage.setSubject( "[continuum] BUILD UNSUCCESSFUL: " + project.getName() );
-            }
-            else
-            {
-                mailMessage.setSubject( "[continuum] BUILD SUCCESSFUL: " + project.getName() );
-            }
-*/
+            getLogger().info( "Sending message to: " + to + ", to the SMPT host at: " + smtpServer + ":" + port );
+
             mailMessage.setSubject( subject );
 
             mailMessage.getPrintStream().print( message );
 
             mailMessage.sendAndClose();
-
-            // TODO: remove me
-//            getLogger().info( "The following message has been sent: " );
-
-//            getLogger().info( message );
         }
         catch( IOException ex )
         {

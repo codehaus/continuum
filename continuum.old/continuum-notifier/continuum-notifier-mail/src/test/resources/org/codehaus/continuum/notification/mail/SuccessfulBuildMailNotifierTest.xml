@@ -4,6 +4,11 @@
       <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
       <role-hint>mail</role-hint>
       <implementation>org.codehaus.continuum.notification.mail.MailContinuumNotifier</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+      </requirements>
       <configuration>
         <smtp-server>localhost</smtp-server>
         <smtp-port>25</smtp-port>
@@ -24,7 +29,8 @@
       </requirements>
       <configuration>
         <maven-home>/home/trygvis/.m2/</maven-home>
-        <maven-home-local>/home/trygvis/.maven/repository</maven-home-local>
+        <maven-home-local>/home/trygvis/.maven</maven-home-local>
+        <maven-repository>/home/trygvis/.maven/repository</maven-repository>
       </configuration>
     </component>
   </components>
