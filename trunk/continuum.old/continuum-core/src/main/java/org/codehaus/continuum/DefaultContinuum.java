@@ -55,7 +55,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.50 2004-10-29 15:18:12 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.51 2004-10-29 15:29:16 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -308,7 +308,21 @@ public class DefaultContinuum
 
             ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
 
+            // ----------------------------------------------------------------------
+            // Update the check out
+            // ----------------------------------------------------------------------
+
+            scm.updateProject( project );
+
+            // ----------------------------------------------------------------------
+            // Make a new descriptor
+            // ----------------------------------------------------------------------
+
             project = builder.createProject( new File( project.getWorkingDirectory() ) );
+
+            // ----------------------------------------------------------------------
+            // Store the new descriptor
+            // ----------------------------------------------------------------------
 
             store.updateProject( projectId, project.getName(), project.getScmUrl(), project.getNagEmailAddress(), project.getVersion() );
 
@@ -317,6 +331,14 @@ public class DefaultContinuum
             txManager.leave();
 
             getLogger().info( "Updated project: " + project.getName() );
+        }
+        catch ( ContinuumScmException ex )
+        {
+            txManager.rollback();
+
+            getLogger().error( "Error while updating project.", ex );
+
+            throw new ContinuumException( "Error while updating project.", ex );
         }
         catch ( ContinuumStoreException ex )
         {
