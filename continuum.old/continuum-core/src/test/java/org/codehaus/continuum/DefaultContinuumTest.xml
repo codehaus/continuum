@@ -10,9 +10,6 @@
       <configuration>
         <work-directory>${plexus.home}/continuum</work-directory>
         <build-interval>1</build-interval>
-        <moms>
-          <mom>${basedir}/src/test-input/project.xml</mom>
-        </moms>
       </configuration>
     </component>
     <component>
