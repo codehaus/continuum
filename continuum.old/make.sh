@@ -14,10 +14,6 @@ continuum-notifier/pom.xml,\
 continuum-trigger/pom.xml,\
 continuum-builder/pom.xml pom:install
 
-# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** pom:install
-# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** eclipse:eclipse
-# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** idea:idea
-
 # Build the JARs
 ( cd continuum-api && m2 jar:install )
 ( cd continuum-test && m2 jar:install )
@@ -40,7 +36,3 @@ continuum-builder/pom.xml pom:install
   sh runtime.sh
 )
 
-#( cd continuum-it && m2 jar:install )
-
-# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/** eclipse:eclipse
-# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/** pom:install
