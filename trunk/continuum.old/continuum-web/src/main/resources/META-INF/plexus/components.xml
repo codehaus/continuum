@@ -57,6 +57,13 @@
     <!-- addProjectPomUrl -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addShellProjectPomUrl</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddShellProjectPomUrl</implementation>
+    </component>
+
+    <!-- addProjectPomUrl -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addProjectPomUrl</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
       <requirements>
