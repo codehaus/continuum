@@ -51,13 +51,13 @@ import org.apache.maven.model.Site;
 import org.apache.maven.model.SourceModification;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.apache.maven.model.v300.io.xpp3.MavenV300Xpp3Reader;
+import org.apache.maven.model.v300.io.xpp3.MavenXpp3Reader;
 
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PomV3ToV4Converter.java,v 1.2 2004-07-27 05:42:14 trygvis Exp $
+ * @version $Id: PomV3ToV4Converter.java,v 1.3 2004-08-26 10:13:22 trygvis Exp $
  */
 public class PomV3ToV4Converter
 {
@@ -787,13 +787,13 @@ public class PomV3ToV4Converter
     private org.apache.maven.model.v300.Model loadV3Pom( File inputFile )
         throws Exception
     {
-        MavenV300Xpp3Reader v3Reader = new MavenV300Xpp3Reader();
+        MavenXpp3Reader v3Reader = new MavenXpp3Reader();
 
         org.apache.maven.model.v300.Model model;
 
         model = v3Reader.read( new FileReader( inputFile ) );
-
-        String id = model.getId();
+/*
+//        String id = model.get.getId();
 
         String groupId = model.getGroupId();
 
@@ -838,7 +838,7 @@ public class PomV3ToV4Converter
                 model.setArtifactId( artifactId );
             }
         }
-
+*/
         return model;
     }
 

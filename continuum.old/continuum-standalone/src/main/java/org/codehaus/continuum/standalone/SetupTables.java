@@ -22,24 +22,51 @@ package org.codehaus.continuum.standalone;
  * SOFTWARE.
  */
 
+import java.io.File;
 import java.net.URL;
 
 import org.codehaus.continuum.store.hibernate.HibernateUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SetupTables.java,v 1.2 2004-07-29 04:31:58 trygvis Exp $
+ * @version $Id: SetupTables.java,v 1.3 2004-08-26 10:13:49 trygvis Exp $
  */
 public class SetupTables
 {
     public static void main( String[] args )
         throws Exception
     {
-        URL configuration;
+        URL configuration = null;
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        configuration = classLoader.getResource( "/hibernate.cfg.xml" );
+        if ( args.length > 0 )
+        {
+            String fileName = args[0];
+
+            File file = new File( fileName );
+
+            if ( !file.exists() )
+            {
+                System.err.println( "No such file: " + file );
+
+                return;
+            }
+
+            configuration = file.toURL();
+        }
+
+        if ( configuration == null )
+        {
+            configuration = classLoader.getResource( "/hibernate.cfg.xml" );
+
+            if ( configuration == null )
+            {
+                System.err.println( "Could not find hibernate configuration." );
+
+                return;
+            }
+        }
 
         HibernateUtils.createDatabase( configuration );
     }

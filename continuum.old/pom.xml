@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
   <artifactId>continuum-parent</artifactId>
-  <version>0.1</version>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <type>pom</type>
   <name>Continuum Parent Project</name>
 
@@ -18,6 +18,12 @@
   <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10540</issueTrackingUrl>
   <siteAddress>continuum.codehaus.org</siteAddress>
   <siteDirectory>/home/projects/continuum/public_html</siteDirectory>
+  <distributionManagement>
+    <repository>
+      <id>trygvis</id>
+      <url>scp://beaver.codehaus.org//home/users/trygvis/public_html</url>
+    </repository>
+  </distributionManagement>
   <scm>
     <connection>scm:cvs:pserver:anonymous@cvs.continuum.codehaus.org:/scm/continuum:continuum</connection>
     <url>http://cvs.continuum.codehaus.org/</url>
@@ -60,7 +66,7 @@
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus</artifactId>
-      <version>0.16-SNAPSHOT</version>
+      <version>0.16</version>
     </dependency>
   </dependencies>
 </project>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>continuum</groupId>
     <artifactId>continuum-parent</artifactId>
-    <version>0.1</version>
+    <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <artifactId>continuum-alarm-trigger</artifactId>
   <groupId>continuum</groupId>

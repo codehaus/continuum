@@ -4,7 +4,7 @@
   <parent>
     <groupId>continuum</groupId>
     <artifactId>continuum-parent</artifactId>
-    <version>0.1</version>
+    <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-web</artifactId>
@@ -20,6 +20,11 @@
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-test</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-standalone</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>

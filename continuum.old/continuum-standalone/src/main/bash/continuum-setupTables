@@ -6,9 +6,11 @@ basedir=`cd "$PRGDIR/.." ; pwd`
 
 CP=src/main/resources:apps/continuum/resources:target/classes
 
-for jar in `find $basedir -path '*/apps/*/lib/*.jar' -or -path '*/core/*.jar'|sort`
-do
-  CP=$CP:$jar
-done
+#for jar in `find $basedir -path '*/apps/*/lib/*.jar' -or -path '*/core/*.jar'|sort`
+#do
+#  CP=$CP:$jar
+#done
+
+CP=$CP:`find $basedir -printf "%p:" -path '*/apps/*/lib/*.jar' -or -path '*/core/*.jar'`
 
 java -classpath $CP org.codehaus.continuum.standalone.SetupTables "$@"

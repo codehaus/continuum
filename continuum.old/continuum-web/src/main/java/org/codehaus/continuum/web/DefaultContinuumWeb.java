@@ -25,9 +25,11 @@ package org.codehaus.continuum.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.trigger.ContinuumTrigger;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.continuum.web.action.ActionManager;
 import org.codehaus.plexus.PlexusConstants;
@@ -41,7 +43,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumWeb.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: DefaultContinuumWeb.java,v 1.3 2004-08-26 10:14:00 trygvis Exp $
  */
 public class DefaultContinuumWeb
     extends AbstractLogEnabled
@@ -50,6 +52,8 @@ public class DefaultContinuumWeb
     private ActionManager actionManager;
 
     private ServletContainer servletContainer;
+
+    private List triggers;
 
     private ContinuumStore store;
 
@@ -105,6 +109,8 @@ public class DefaultContinuumWeb
         actionManager = (ActionManager) container.lookup( ActionManager.ROLE );
 
         servletContainer = (ServletContainer) container.lookup( ServletContainer.ROLE );
+
+        triggers = container.lookupList( ContinuumTrigger.ROLE );
     }
 
     public void stop()
@@ -116,6 +122,8 @@ public class DefaultContinuumWeb
         container.release( actionManager );
 
         container.release( store );
+
+        container.release( triggers );
 */
     }
 

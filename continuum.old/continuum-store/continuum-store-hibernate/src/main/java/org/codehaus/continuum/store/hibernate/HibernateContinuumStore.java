@@ -47,12 +47,13 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.8 2004-07-29 04:35:02 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.9 2004-08-26 10:13:29 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
     implements Initializable, Startable
 {
+    /** @requirement */
     private HibernateSessionService hibernate;
 
     private ThreadLocal tx = new ThreadLocal();
