@@ -26,7 +26,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.13 2004-10-24 22:21:04 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.14 2004-10-28 21:21:41 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -210,7 +210,9 @@ public class MailContinuumNotifier
 
         if ( !generators.containsKey( project.getType() ) )
         {
-            throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
+            getLogger().warn( "Uknown project type: '" + project.getType() + "'." );
+
+            return;
         }
 
         // ----------------------------------------------------------------------
