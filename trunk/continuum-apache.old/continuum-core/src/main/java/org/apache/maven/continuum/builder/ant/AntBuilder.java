@@ -30,7 +30,7 @@ import org.apache.maven.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.1.1.1 2005-03-29 20:42:00 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.2 2005-04-03 21:22:11 trygvis Exp $
  */
 public class AntBuilder
     extends AbstractContinuumBuilder
@@ -93,6 +93,16 @@ public class AntBuilder
     public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
-        // Not much to do.
+        Properties configuration = new Properties();
+
+        if ( !configuration.containsKey( CONFIGURATION_EXECUTABLE ) )
+        {
+            configuration.setProperty( CONFIGURATION_EXECUTABLE, "ant" );
+        }
+
+        if ( !configuration.containsKey( CONFIGURATION_TARGETS ) )
+        {
+            configuration.setProperty( CONFIGURATION_TARGETS, "" );
+        }
     }
 }
