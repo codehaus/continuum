@@ -22,12 +22,11 @@ import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.6 2005-03-10 00:05:50 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.7 2005-03-23 16:24:21 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder
@@ -37,6 +36,23 @@ public abstract class ShellBuilder
 
     /** @configuration */
     private String shellCommand;
+
+    /** @configuration */
+    private String[] arguments;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    protected String[] getArguments( ContinuumProject project )
+    {
+        if ( arguments == null )
+        {
+            arguments = new String[ 0 ];
+        }
+
+        return arguments;
+    }
 
     // ----------------------------------------------------------------------
     // ContinuumBuilder implementation
@@ -49,9 +65,11 @@ public abstract class ShellBuilder
 
         ExecutionResult executionResult;
 
+        String[] arguments = getArguments( project );
+
         try
         {
-            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, shellCommand, new String[ 0 ] );
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, shellCommand, arguments );
         }
         catch ( Exception e )
         {
@@ -73,22 +91,24 @@ public abstract class ShellBuilder
         return result;
     }
 
-    protected Commandline createCommandline( File workingDirectory, ContinuumProject project )
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    protected Commandline createCommandline( ContinuumProject project, String executable, String[] arguments )
     {
         Commandline cl = new Commandline();
 
-        String[] s = StringUtils.split( shellCommand );
+        cl.setExecutable( executable );
 
-        cl.setExecutable( s[0] );
+        cl.setWorkingDirectory( new File( project.getWorkingDirectory() ).getAbsolutePath() );
 
-        cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
-
-        for ( int i = 1; i < s.length; i++ )
+        for ( int i = 1; i < arguments.length; i++ )
         {
-            cl.createArgument().setValue( s[i] );
+            cl.createArgument().setValue( arguments[i] );
         }
 
-        getLogger().warn( "Executing external command '" + shellCommand + "'." );
+        getLogger().warn( "Executing external command '" + executable + "'." );
 
         getLogger().warn( "Executing external command. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
 

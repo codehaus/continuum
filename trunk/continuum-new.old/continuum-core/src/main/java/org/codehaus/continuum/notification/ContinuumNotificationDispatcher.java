@@ -20,7 +20,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumNotificationDispatcher.java,v 1.2 2005-03-10 00:05:51 trygvis Exp $
+ * @version $Id: ContinuumNotificationDispatcher.java,v 1.3 2005-03-23 16:24:21 trygvis Exp $
  */
 public interface ContinuumNotificationDispatcher
 {
@@ -41,6 +41,8 @@ public interface ContinuumNotificationDispatcher
     String CONTEXT_BUILD = "build";
 
     String CONTEXT_PROJECT = "project";
+
+    Object CONTEXT_BUILD_RESULT = "result";
 
     void buildStarted( ContinuumBuild build );
 

@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.4 2005-03-10 00:05:49 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
@@ -130,7 +130,7 @@ public class Maven1Builder
         // ----------------------------------------------------------------------
 
         // Name
-        String name = mavenProject.getChild( "name" ).getValue();
+        String name = getValue( mavenProject, "name" );
 
         if ( StringUtils.isEmpty( name ) )
         {
@@ -138,18 +138,18 @@ public class Maven1Builder
         }
 
         // Scm
-        Xpp3Dom scm = mavenProject.getChild( "repository" );
+        Xpp3Dom repository = mavenProject.getChild( "repository" );
 
-        if ( scm == null )
+        if ( repository == null )
         {
             throw new ContinuumException( "The project descriptor is missing the SCM information." );
         }
 
-        String scmConnection = scm.getChild( "connection" ).getValue();
+        String scmConnection = getValue( repository, "connection" );
 
         if ( StringUtils.isEmpty( scmConnection ) )
         {
-            scmConnection = scm.getChild( "developerConnection" ).getValue();
+            scmConnection = getValue( repository, "developerConnection" );
         }
 
         if ( StringUtils.isEmpty( scmConnection ) )
@@ -160,7 +160,12 @@ public class Maven1Builder
         // Nag email address
         Xpp3Dom build = mavenProject.getChild( "build" );
 
-        String nagEmailAddress = build.getChild( "nagEmailAddress" ).getValue();
+        if ( build == null )
+        {
+            throw new ContinuumException( "Missing build section." );
+        }
+
+        String nagEmailAddress = getValue( build, "nagEmailAddress" );
 
         if ( StringUtils.isEmpty( nagEmailAddress ) )
         {
@@ -168,7 +173,7 @@ public class Maven1Builder
         }
 
         // Version
-        String version = mavenProject.getChild( "currentVersion" ).getValue();
+        String version = getValue( mavenProject, "currentVersion" );
 
         if ( StringUtils.isEmpty( version ) )
         {
@@ -195,11 +200,13 @@ public class Maven1Builder
         project.setConfiguration( configuration );
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     private File getProjectXmlFile( File basedir )
         throws ContinuumException
     {
-        System.err.println( "basedir: " + basedir );
-
         File projectXmlFile = new File( basedir, "project.xml" );
 
         if ( !projectXmlFile.isFile() )
@@ -208,5 +215,17 @@ public class Maven1Builder
         }
 
         return projectXmlFile;
+    }
+
+    private String getValue( Xpp3Dom dom, String key )
+    {
+        Xpp3Dom child = dom.getChild( key );
+
+        if ( child == null )
+        {
+            return null;
+        }
+
+        return child.getValue();
     }
 }

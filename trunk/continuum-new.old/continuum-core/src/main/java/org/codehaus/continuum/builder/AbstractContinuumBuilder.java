@@ -27,22 +27,22 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuilder.java,v 1.2 2005-03-10 00:05:31 trygvis Exp $
+ * @version $Id: AbstractContinuumBuilder.java,v 1.3 2005-03-23 16:24:17 trygvis Exp $
  */
 public abstract class AbstractContinuumBuilder
     extends AbstractLogEnabled
     implements ContinuumBuilder
 {
-    protected File createMetadataFile( URL metadata )
+    protected static File createMetadataFile( URL metadata )
         throws ContinuumException
     {
         try
         {
             InputStream is = metadata.openStream();
 
-            File f = File.createTempFile( "continuum", "tmp" );
+            File file = File.createTempFile( "continuum", "tmp" );
 
-            FileWriter writer = new FileWriter( f );
+            FileWriter writer = new FileWriter( file );
 
             IOUtil.copy( is, writer );
 
@@ -50,7 +50,7 @@ public abstract class AbstractContinuumBuilder
 
             writer.close();
 
-            return f;
+            return file;
         }
         catch ( Exception e )
         {

@@ -46,7 +46,7 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.6 2005-03-22 11:32:00 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.7 2005-03-23 16:24:21 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -135,15 +135,17 @@ public class MailContinuumNotifier
     public void sendNotification( String source, Set recipients, Map context )
         throws NotificationException
     {
+        ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
+
         ContinuumBuild build = (ContinuumBuild) context.get( ContinuumNotificationDispatcher.CONTEXT_BUILD );
 
-        ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
+        ContinuumBuildResult result = (ContinuumBuildResult) context.get( ContinuumNotificationDispatcher.CONTEXT_BUILD_RESULT );
 
         try
         {
             if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_COMPLETE ) )
             {
-                buildComplete( project, build, source, recipients );
+                buildComplete( project, build, result, source, recipients );
             }
         }
         catch ( ContinuumException e )
@@ -152,7 +154,7 @@ public class MailContinuumNotifier
         }
     }
 
-    private void buildComplete( ContinuumProject project, ContinuumBuild build, String source, Set recipients )
+    private void buildComplete( ContinuumProject project, ContinuumBuild build, ContinuumBuildResult result, String source, Set recipients )
         throws ContinuumException
     {
         // ----------------------------------------------------------------------
@@ -201,7 +203,7 @@ public class MailContinuumNotifier
         // Send the mail
         // ----------------------------------------------------------------------
 
-        String subject = generateSubject( project, build );
+        String subject = generateSubject( project, build, result );
 
         sendMessage( project, recipients, subject, writer.getBuffer().toString() );
     }
@@ -210,10 +212,8 @@ public class MailContinuumNotifier
     //
     // ----------------------------------------------------------------------
 
-    private static String generateSubject( ContinuumProject project, ContinuumBuild build )
+    private static String generateSubject( ContinuumProject project, ContinuumBuild build, ContinuumBuildResult result )
     {
-        ContinuumBuildResult result = build.getBuildResult();
-
         int state = build.getState();
 
         if ( state == ContinuumProjectState.ERROR )
