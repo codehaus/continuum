@@ -17,12 +17,14 @@
         <th>Project Name</th>
         <th>State</th>
         <th>Details</th>
+        <th>Build</th>
       </tr>
       #foreach ( $project in $projects )
       <tr class="$class">
         <td>$project.name</td>
         <td>$project.state</td>
         <td><a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Details</a></td>
+        <td><a href="$link.addQueryData( "action", "enqueueProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Build</a></td>
       </tr>
       #if ( $class == "a" )
         #set ( $class = "b" )
