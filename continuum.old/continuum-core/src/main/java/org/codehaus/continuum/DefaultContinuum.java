@@ -55,7 +55,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.52 2004-10-29 17:30:39 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.53 2004-10-30 13:03:16 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -553,8 +553,6 @@ public class DefaultContinuum
                 ProjectDescriptor descriptor = project.getDescriptor();
 
                 project = store.getProject( projectId );
-
-                System.err.println( "descriptor: " + descriptor );
 
                 store.setProjectDescriptor( projectId, descriptor );
 
