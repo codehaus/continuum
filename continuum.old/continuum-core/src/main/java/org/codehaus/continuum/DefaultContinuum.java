@@ -8,19 +8,21 @@ import org.codehaus.plexus.continuum.notification.mail.MailMessage;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -34,6 +36,8 @@ public class DefaultContinuum
 
     /** Where all the sources get checked out to be built. */
     private String workingDirectory;
+
+    private File storageDirectory;
 
     // Anything mail related can be encapsualted in a separate
     // communicatino module but it's what we'll be doing first so we'll
@@ -59,6 +63,31 @@ public class DefaultContinuum
         if ( !f.exists() )
         {
             f.mkdirs();
+        }
+
+        storageDirectory = new File( workingDirectory, "storage" );
+
+        if ( !f.exists() )
+        {
+            f.mkdirs();
+        }
+
+        // Now lets bring up all the projects that we have stored, if there are any.
+
+        List poms = FileUtils.getFiles( storageDirectory, "*.pom", null );
+
+        for ( Iterator i = poms.iterator(); i.hasNext(); )
+        {
+            File pom = (File) i.next();
+
+            try
+            {
+                addProject( projectBuilder.build( pom ) );
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "Cannot process pom: " + pom, e );
+            }
         }
     }
 
@@ -111,6 +140,17 @@ public class DefaultContinuum
                 // can read it because the project builder can only deal with
                 // files because of configuration stuff.
 
+                File file = new File( workingDirectory, "project.xml" );
+
+                IOUtil.copy( pomContents, new FileWriter( file ) );
+
+                project = projectBuilder.build( file );
+
+                File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
+
+                FileUtils.copyFileToDirectory( file, pom );
+
+                file.delete();
             }
             catch ( Exception e )
             {
@@ -121,7 +161,13 @@ public class DefaultContinuum
         {
             try
             {
-                project = projectBuilder.build( new File( projectUrl ) );
+                File file = new File( projectUrl );
+
+                project = projectBuilder.build( file );
+
+                File pom = new File( storageDirectory, project.getGroupId() + "-" + project.getArtifactId() + ".pom" );
+
+                FileUtils.copyFileToDirectory( file, pom );
             }
             catch ( Exception e )
             {
