@@ -43,11 +43,13 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestUtils.java,v 1.3 2004-10-06 13:33:49 trygvis Exp $
+ * @version $Id: TestUtils.java,v 1.4 2004-10-30 14:43:36 trygvis Exp $
  */
 public class TestUtils
 {
     private static PlexusContainer container;
+
+    private static int buildTimeout = 30 * 1000;
 
     public static void setContainer( PlexusContainer container )
     {
@@ -67,6 +69,10 @@ public class TestUtils
 
         return container;
     }
+
+    // ----------------------------------------------------------------------
+    // Wait for build
+    // ----------------------------------------------------------------------
 
     public final static ContinuumBuild waitForSuccessfulBuild( String buildId )
         throws Exception
@@ -91,7 +97,7 @@ public class TestUtils
     public final static ContinuumBuild waitForBuild( String buildId )
         throws Exception
     {
-        int time = 30 * 1000;
+        int time = buildTimeout;
 
         int interval = 100;
 
@@ -126,6 +132,15 @@ public class TestUtils
 
         return null; // will never happen
     }
+
+    public static void setBuildTimeout( int buildTimeout )
+    {
+        TestUtils.buildTimeout = buildTimeout;
+    }
+
+    // ----------------------------------------------------------------------
+    // Lookups
+    // ----------------------------------------------------------------------
 
     public static ContinuumStore getContinuumStore()
         throws Exception
