@@ -45,7 +45,7 @@ class TamboraXmlRpcClient(cli.cli):
         """Add a Continuum project.
         Use this command to add a project to Continuum."""
 
-        print self.server.tambora.viewTpi( args[0] )
+        print self.server.continuum.addProjectFromUrl( args[0], args[1] )
 
         return None
 
@@ -53,10 +53,7 @@ class TamboraXmlRpcClient(cli.cli):
         """Build a Continuum project.
         Use this command to signal a build for a Continuum project."""
 
-        activityId = args[0]
-        entity = open( args[1], "r" ).read()
-        
-        self.server.tambora.executeActivity( activityId, entity )
+        self.server.continuum.buildProject( args[0] )
         
         return
     
