@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.7 2004-10-15 13:00:57 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.8 2004-10-28 17:17:38 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -66,6 +66,9 @@ public interface ContinuumStore
 
     void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException;
+
+    void setWorkingDirectory( String projectId, String workingDirectory )
+    	throws ContinuumStoreException;
 
     Iterator getAllProjects()
         throws ContinuumStoreException;
