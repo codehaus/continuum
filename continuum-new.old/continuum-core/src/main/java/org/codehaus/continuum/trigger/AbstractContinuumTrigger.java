@@ -21,12 +21,13 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: AbstractContinuumTrigger.java,v 1.2 2005-03-10 00:05:54 trygvis Exp $
+ * @version $Id: AbstractContinuumTrigger.java,v 1.3 2005-03-29 16:41:34 trygvis Exp $
  */
 public class AbstractContinuumTrigger
     extends AbstractLogEnabled
     implements ContinuumTrigger
 {
+    /** @requirement */
     private Continuum continuum;
 
     public Continuum getContinuum()
