@@ -1,9 +1,13 @@
 <model>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>continuum</groupId>
   <artifactId>continuum-runtime</artifactId>
+  <parent>
+    <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
+    <version>1.0-alpha-1-SNAPSHOT</version>
+  </parent>
+  <name>Continuum Runtime</name>
   <packaging>jar</packaging>
-  <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
@@ -25,6 +29,7 @@
       <plugin>
         <groupId>maven</groupId>
         <artifactId>maven-plexus-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
         <configuration>
           <configurationDirectory>src/conf</configurationDirectory>
           <applicationName>continuum</applicationName>
