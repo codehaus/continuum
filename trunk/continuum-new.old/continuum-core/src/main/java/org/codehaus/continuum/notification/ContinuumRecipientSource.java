@@ -30,14 +30,14 @@ import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumRecipientSource.java,v 1.2 2005-03-10 00:05:51 trygvis Exp $
+ * @version $Id: ContinuumRecipientSource.java,v 1.3 2005-03-22 11:32:00 trygvis Exp $
  */
 public class ContinuumRecipientSource
     extends AbstractLogEnabled
     implements RecipientSource, Initializable
 {
     /** @configuration */
-    private String to;
+    private String toOverride;
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
@@ -50,13 +50,13 @@ public class ContinuumRecipientSource
         // To address
         // ----------------------------------------------------------------------
 
-        if ( StringUtils.isEmpty( to ) )
+        if ( StringUtils.isEmpty( toOverride ) )
         {
-            getLogger().info( "To address is not configured, will use the nag email address from the project." );
+            getLogger().info( "To override address is not configured, will use the nag email address from the project." );
         }
         else
         {
-            getLogger().info( "Using '" + to + "' as the to address for all emails." );
+            getLogger().warn( "Using '" + toOverride + "' as the to address for all emails." );
         }
     }
 
@@ -69,7 +69,7 @@ public class ContinuumRecipientSource
     {
         if ( notifierType.equals( "console" ) )
         {
-            return getConsoleRecipients();
+            return Collections.EMPTY_SET;
         }
         else if ( notifierType.equals( "mail" ) )
         {
@@ -85,20 +85,15 @@ public class ContinuumRecipientSource
     //
     // ----------------------------------------------------------------------
 
-    private Set getConsoleRecipients()
-    {
-        return Collections.EMPTY_SET;
-    }
-
     private Set getMailRecipients( Map context )
     {
         ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
 
         Set recipients = new HashSet();
 
-        if ( to != null )
+        if ( !StringUtils.isEmpty( toOverride ) )
         {
-            recipients.add( to );
+            recipients.add( toOverride );
         }
         else if ( !StringUtils.isEmpty( project.getNagEmailAddress() ) )
         {

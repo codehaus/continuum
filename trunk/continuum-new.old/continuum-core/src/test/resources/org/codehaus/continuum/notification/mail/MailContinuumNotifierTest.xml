@@ -1,0 +1,22 @@
+<plexus>
+  <components>
+
+    <component>
+      <role>org.codehaus.plexus.mailsender.MailSender</role>
+      <implementation>org.codehaus.plexus.mailsender.simple.SimpleMailSender</implementation>
+      <configuration>
+        <smtp-host>localhost</smtp-host>
+        <smtp-port>4000</smtp-port>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.mailsender.test.SmtpServer</role>
+      <implementation>org.codehaus.plexus.mailsender.test.MockSmtpServer</implementation>
+      <configuration>
+        <port>4000</port>
+      </configuration>
+    </component>
+
+  </components>
+</plexus>
