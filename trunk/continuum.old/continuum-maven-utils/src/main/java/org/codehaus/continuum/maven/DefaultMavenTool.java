@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.4 2004-10-28 18:54:47 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.5 2004-10-28 19:10:23 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -89,13 +89,22 @@ public class DefaultMavenTool
         if ( mavenHome.equals( "${maven.home}" ) || !mavenHomeFile.isDirectory()  )
         {
             mavenHomeFile = locateMavenHome();
+
+            mavenHome = mavenHomeFile.getAbsolutePath();
 //            throw new ContinuumException( "Maven home isn't properly set: it's not a directory (" + mavenHome + ")." );
         }
 
         if ( mavenHomeLocal.equals( "${maven.home.local}" ) || !mavenHomeLocalFile.isDirectory() )
         {
             mavenHomeLocalFile = locateMavenHomeLocal();
+
+            mavenHomeLocal = mavenHomeLocalFile.getAbsolutePath();
 //            throw new ContinuumException( "Maven home local isn't properly set: it's not a directory (" + mavenHomeLocal + ")." );
+        }
+
+        if ( mavenRepository.equals( "${maven.repo.local}" ) )
+        {
+            mavenRepository = null;
         }
 
         maven.setMavenHome( mavenHomeFile );
@@ -103,7 +112,7 @@ public class DefaultMavenTool
 
         getLogger().info( "Using " + maven.getMavenHome().getAbsolutePath() + " as maven.home." );
         getLogger().info( "Using " + maven.getMavenHomeLocal().getAbsolutePath() + " as maven.home.local." );
-//        getLogger().info( "Using " + mavenRepository + " as maven.repo." );
+//        getLogger().info( "Using " + mavenRepository + " as maven.repo.local" );
 
         // ----------------------------------------------------------------------
         // Component Lifecycle
