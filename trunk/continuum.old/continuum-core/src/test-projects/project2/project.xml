@@ -10,10 +10,10 @@
 
   <package>org.codehaus.plexus</package>
 
-  <repository>
+  <scm>
     <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-components/native/continuum/src/test-projects/project2</connection>
     <url>http://cvs.plexus.codehaus.org/plexus-components/native/continuum/src/test-projects/project2</url>
-  </repository>
+  </scm>
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
