@@ -24,26 +24,40 @@ package org.codehaus.continuum.web.model;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildModel.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: BuildModel.java,v 1.3 2004-10-06 14:24:26 trygvis Exp $
  */
 public class BuildModel
 {
+    private String id;
+
     private String startTime;
 
     private String endTime;
 
     private String state;
 
+    private BuildResultModel buildResult;
+
     /**
      * @param startTime
      * @param endTime
      * @param state
      */
-    public BuildModel( String startTime, String endTime, String state )
+    public BuildModel( String id, String startTime, String endTime, String state, BuildResultModel buildResult )
     {
+        this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.state = state;
+        this.buildResult = buildResult;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public String getId()
+    {
+        return id;
     }
 
     /**
@@ -55,27 +69,11 @@ public class BuildModel
     }
 
     /**
-     * @param startTime The startTime to set.
-     */
-    public void setStartTime( String startTime )
-    {
-        this.startTime = startTime;
-    }
-
-    /**
      * @return Returns the endTime.
      */
     public String getEndTime()
     {
         return endTime;
-    }
-
-    /**
-     * @param endTime The endTime to set.
-     */
-    public void setEndTime( String endTime )
-    {
-        this.endTime = endTime;
     }
 
     /**
@@ -87,10 +85,10 @@ public class BuildModel
     }
 
     /**
-     * @param state The state to set.
+     * @return Returns the build result.
      */
-    public void setState( String state )
+    public BuildResultModel getResult()
     {
-        this.state = state;
+        return buildResult;
     }
 }

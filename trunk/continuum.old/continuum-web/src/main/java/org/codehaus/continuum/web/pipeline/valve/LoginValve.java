@@ -30,7 +30,7 @@ import org.codehaus.plexus.summit.rundata.RunData;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: LoginValve.java,v 1.2 2004-07-29 04:38:10 trygvis Exp $
+ * @version $Id: LoginValve.java,v 1.3 2004-10-06 14:24:26 trygvis Exp $
  */
 public class LoginValve
     extends AbstractValve
@@ -38,6 +38,13 @@ public class LoginValve
     public void invoke( RunData data )
         throws IOException, SummitException
     {
+        String skip = data.getRequest().getParameter( "skipLogin" );
+
+        if ( skip != null && skip.equals( "true" ) )
+        {
+            return;
+        }
+
         String loggedIn = (String) data.getRequest().getSession().getAttribute( "loggedIn" );
 
         if ( loggedIn == null )

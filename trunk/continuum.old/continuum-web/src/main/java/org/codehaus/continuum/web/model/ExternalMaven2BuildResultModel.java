@@ -1,4 +1,4 @@
-package org.codehaus.continuum.web.action;
+package org.codehaus.continuum.web.model;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
@@ -22,26 +22,41 @@ package org.codehaus.continuum.web.action;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.AbstractContinuumTest;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrlTest.java,v 1.3 2004-09-07 16:22:21 trygvis Exp $
+ * @version $Id: ExternalMaven2BuildResultModel.java,v 1.1 2004-10-06 14:25:24 trygvis Exp $
  */
-public class AddProjectPomUrlTest
-    extends AbstractContinuumTest
+public class ExternalMaven2BuildResultModel
+    extends BuildResultModel
 {
-    public void testExecute()
-        throws Exception
+    private String standardOutput;
+
+    private String standardError;
+
+    /**
+     * @param startTime
+     * @param endTime
+     * @param state
+     */
+    public ExternalMaven2BuildResultModel( String standardOutput, String standardError )
     {
-/*
-        AddProjectPomUrl action = (AddProjectPomUrl) lookup( Action.ROLE, "addProjectPomUrl" );
+        this.standardOutput = standardOutput;
+        this.standardError = standardError;
+    }
 
-        Map params = new HashMap();
+    /**
+     * @return Returns the standardOutput.
+     */
+    public String getStandardOutput()
+    {
+        return standardOutput;
+    }
 
-        params.put( "addProject.pomUrl", "file://" + getTestFile( "src/test/resources/actions/addProject/pom.xml" ) );
-
-        action.execute( params );
-*/
+    /**
+     * @return Returns the standardError.
+     */
+    public String getStandardError()
+    {
+        return standardError;
     }
 }

@@ -5,9 +5,9 @@
    </tr>
    <tr>
       <td>
-         $processingException
-         <hr>
-	 $stackTrace         
+<pre>
+$exceptionStackTrace
+</pre>
       </td>
    </tr>
 </table>

@@ -1,4 +1,4 @@
-package org.codehaus.continuum.web.action;
+package org.codehaus.continuum.web.model;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
@@ -22,40 +22,10 @@ package org.codehaus.continuum.web.action;
  * SOFTWARE.
  */
 
-import java.util.Map;
-
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.summit.SummitConstants;
-import org.codehaus.plexus.summit.rundata.RunData;
-import org.codehaus.plexus.summit.view.ViewContext;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: EnqueueProject.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
+ * @version $Id: BuildResultModel.java,v 1.1 2004-10-06 14:25:24 trygvis Exp $
  */
-public class EnqueueProject
-    extends AbstractAction
+public class BuildResultModel
 {
-    public void execute( Map map )
-        throws Exception
-    {
-        RunData data = (RunData) map.get( "data" );
-
-        String id = (String) map.get( "id" );
-
-        ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
-
-        getStoreTransactionManager().commit();
-
-        String buildId = getContinuum().buildProject( id );
-
-        getStoreTransactionManager().begin();
-
-        vc.put( "buildId", buildId );
-
-        ContinuumProject project = getContinuumStore().getProject( id );
-
-        vc.put( "project", WebUtils.projectToProjectModel( getI18N(), project ) );
-    }
 }

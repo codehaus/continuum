@@ -18,17 +18,17 @@
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
-      <artifactId>continuum-hibernate-store</artifactId>
+      <artifactId>continuum-store-hibernate</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
-      <artifactId>continuum-mail-notifier</artifactId>
+      <artifactId>continuum-notifier-mail</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>continuum</groupId>
-      <artifactId>continuum-alarm-trigger</artifactId>
+      <artifactId>continuum-trigger-alarm</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>

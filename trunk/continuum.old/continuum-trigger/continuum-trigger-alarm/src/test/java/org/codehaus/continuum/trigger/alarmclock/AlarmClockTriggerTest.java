@@ -25,18 +25,17 @@ package org.codehaus.continuum.trigger.alarmclock;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
-import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.test.TestContinuumBuilder;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
-import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.6 2004-09-07 16:22:20 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.7 2004-10-06 14:18:59 trygvis Exp $
  */
 public class AlarmClockTriggerTest
-    extends PlexusTestCase
+    extends AbstractContinuumTest
 {
     /**
      * This test is pretty timing critical so if it fails try to increase the delays.
@@ -48,12 +47,18 @@ public class AlarmClockTriggerTest
 
         assertEquals( 0, continuum.getBuildQueueLength() );
 
+        TestContinuumBuilder testContinuumBuilder = (TestContinuumBuilder) getContinuumBuilder( "test" );
+
+        getStoreTransactionManager().begin();
+
         continuum.addProject( "Test Project 1", "scm:test:src/test/repository:simple", "test" );
 
         continuum.addProject( "Test Project 2", "scm:test:src/test/repository:simple", "test" );
 
+        getStoreTransactionManager().commit();
+
         // The lookup starts the trigger
-        AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, "alarm-clock-test" );
+        AlarmClockTrigger trigger = (AlarmClockTrigger) getContinuumTrigger( "alarm-clock-test" );
 
         // before any of the builds is triggered
         assertEquals( 0, continuum.getBuildQueueLength() );
@@ -63,8 +68,6 @@ public class AlarmClockTriggerTest
         Thread.sleep( 2000 );
 
         assertEquals( 0, continuum.getBuildQueueLength() );
-
-        TestContinuumBuilder testContinuumBuilder = (TestContinuumBuilder) lookup( ContinuumBuilder.ROLE, "test" );
 
         assertEquals( 2, testContinuumBuilder.getBuildCount() );
 

@@ -29,18 +29,20 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.web.action.Action;
 import org.codehaus.continuum.web.action.ActionManager;
-import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.hibernate.HibernateSessionService;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.exception.SummitException;
 import org.codehaus.plexus.summit.pipeline.valve.AbstractValve;
 import org.codehaus.plexus.summit.rundata.RunData;
+import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ActionValve.java,v 1.2 2004-07-29 04:38:10 trygvis Exp $
+ * @version $Id: ActionValve.java,v 1.3 2004-10-06 14:24:26 trygvis Exp $
  */
 public class ActionValve
     extends AbstractValve
@@ -56,69 +58,89 @@ public class ActionValve
         {
             Action action = null;
 
-            ContinuumStore store = null;
-
             PlexusContainer container = getServiceManager();
+
+            StoreTransactionManager txManager;
+
+            try
+            {
+                txManager = (StoreTransactionManager) container.lookup( StoreTransactionManager.ROLE );
+            }
+            catch( ComponentLookupException ex )
+            {
+                throw new SummitException( "Error while looking up the store transaction manager.", ex );
+            }
+
+            Map request = buildRequest( data );
 
             try
             {
                 ActionManager actionManager = (ActionManager) container.lookup( ActionManager.ROLE );
 
-                store = (ContinuumStore) container.lookup( ContinuumStore.ROLE );
-
-                HibernateSessionService hibernate = (HibernateSessionService) container.lookup( HibernateSessionService.ROLE );
-
-                store.beginTransaction();
-
                 action = actionManager.lookupAction( actionId.trim() );
-
-                store.commitTransaction();
-
-                hibernate.closeSession();
             }
             catch ( Exception ex )
             {
-                try
-                {
-                    if ( store != null )
-                    {
-                        store.rollbackTransaction();
-                    }
-                }
-                catch( Exception ex2 )
-                {
-                    // ignore
-                }
-
-                handleException( actionId, ex );
+                handleException( request, actionId, ex );
             }
 
             try
             {
-                // The parameter map in the request consists of an array of values for
-                // the given key so this is why this is being done.
+                txManager.begin();
 
-                Map m = new HashMap();
+                action.execute( request );
 
-                for ( Enumeration e = data.getRequest().getParameterNames(); e.hasMoreElements(); )
-                {
-                    String key = (String) e.nextElement();
-
-                    m.put( key, data.getRequest().getParameter( key ) );
-                }
-
-                m.put( "data", data );
-
-                action.execute( m );
+                txManager.commit();
             }
             catch ( Exception ex )
             {
-                handleException( actionId, ex );
+                txManager.rollback();
+
+                handleException( request, actionId, ex );
             }
         }
     }
 
-    private void handleException( String actionId, Exception ex )
+    private Map buildRequest( RunData data )
+    {
+        Map request = new HashMap();                
+
+        // The parameter map in the request consists of an array of values for
+        // the given key so this is why this is being done.
+        for ( Enumeration e = data.getRequest().getParameterNames(); e.hasMoreElements(); )
+        {
+            String key = (String) e.nextElement();
+
+            request.put( key, data.getRequest().getParameter( key ) );
+        }
+
+        request.put( "data", data );
+
+        return request;
+    }
+
+    private void handleException( Map request, String actionId, Exception ex )
+    {
+        RunData data = (RunData) request.get( "data" );
+
+        ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
+
+        vc.put( "actionId", actionId );
+
+        vc.put( "exceptionMessage", ex.getMessage() );
+
+        StringWriter string = new StringWriter();
+
+        ex.printStackTrace( new PrintWriter( string ) );
+
+        vc.put( "exceptionStackTrace", string.toString() );
+
+        data.setTarget( "Error.vm" );
+
+        handleException2( actionId, ex );
+    }
+
+    private void handleException2( String actionId, Exception ex )
     {
         Throwable t = ex;
 
@@ -126,6 +148,7 @@ public class ActionValve
 
         PrintWriter output = new PrintWriter( msg );
 
+        output.println();
         output.println( "-------------------------------------------------------------------------------" );
         output.println( "Exception while executing the action: '" + actionId + "'." );
 
@@ -137,6 +160,7 @@ public class ActionValve
         }
 
         output.println( "-------------------------------------------------------------------------------" );
+        output.println();
 
         output.flush();
 

@@ -26,21 +26,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProjects.java,v 1.1 2004-07-29 15:57:50 trygvis Exp $
+ * @version $Id: ShowProjects.java,v 1.2 2004-10-06 14:24:24 trygvis Exp $
  */
 public class ShowProjects
     extends AbstractAction
 {
-    /** @requirement */
-    private I18N i18n;
-
     public void execute( Map request )
         throws Exception
     {
@@ -50,6 +46,6 @@ public class ShowProjects
 
         Iterator projects = getContinuumStore().getAllProjects();
 
-        vc.put( "projects", WebUtils.projectsToProjectModels( i18n, projects ) );
+        vc.put( "projects", WebUtils.projectsToProjectModels( getI18N(), projects ) );
     }
 }

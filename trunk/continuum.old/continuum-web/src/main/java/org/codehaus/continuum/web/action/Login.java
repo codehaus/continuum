@@ -28,7 +28,7 @@ import org.codehaus.plexus.summit.rundata.RunData;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Login.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: Login.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
  */
 public class Login
     extends AbstractAction
@@ -47,6 +47,8 @@ public class Login
             RunData data = (RunData) map.get( "data" );
 
             data.getRequest().getSession().setAttribute( "loggedIn", "true" );
+
+            data.setTarget( "Index.vm" );
         }
     }
 }

@@ -3,6 +3,13 @@
 ##  $builds List of BuildResults
 <div class="app">
   <h3>Build results for $project.name</h3>
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+      <tr>
+        <td>
+          <a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.id" ).setPage('projectDetails.vm')">Back to project details.</a>
+        </td>
+      </tr>
+    </table>
   <p>
     #set ( $class = "a" )
     <table border="1" cellspacing="2" cellpadding="3" width="100%">
@@ -10,6 +17,7 @@
         <th>Start Time</th>
         <th>End Time</th>
         <th>State</th>
+        <th>Output</th>
       </tr>
 
       #foreach ( $build in $builds )
@@ -17,6 +25,7 @@
         <td>$build.startTime</td>
         <td>$build.endTime</td>
         <td>$build.state</td>
+        <td><a href="$link.addQueryData( "action", "showExternalMaven2BuildResult" ).addQueryData( "buildId", "$build.id" ).setPage('ExternalMaven2BuildResult.vm')">Output</a></td>
       </tr>
       #if ( $class == "a" )
         #set ( $class = "b" )

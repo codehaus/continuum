@@ -52,11 +52,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addProjectScm</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddProjectScm</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
     </component>
 
     <!-- addProjectPomUrl -->
@@ -66,10 +61,8 @@
       <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
       <requirements>
         <requirement>
-          <role>org.apache.maven.Maven</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
+          <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+          <role-hint>maven2</role-hint>
         </requirement>
       </requirements>
     </component>
@@ -79,11 +72,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProjects</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProjects</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
     </component>
 
     <!-- showProject -->
@@ -91,11 +79,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProject</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
     </component>
 
     <!-- updateProject -->
@@ -103,11 +86,13 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>updateProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
+    </component>
+
+    <!-- updateProjectDescriptor -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>updateProjectDescriptor</role-hint>
+      <implementation>org.codehaus.continuum.web.action.UpdateProjectDescriptor</implementation>
     </component>
 
     <!-- removeProject -->
@@ -115,11 +100,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>removeProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
     </component>
 
     <!-- showProjectBuilds -->
@@ -127,11 +107,13 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProjectBuilds</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProjectBuilds</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
+    </component>
+
+    <!-- showExternalMaven2BuildResult -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showExternalMaven2BuildResult</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowExternalMaven2BuildResultAction</implementation>
     </component>
 
     <!-- enqueueProject -->
@@ -139,11 +121,6 @@
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>enqueueProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.EnqueueProject</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.i18n.I18N</role>
-        </requirement>
-      </requirements>
     </component>
 
   </components>

@@ -23,21 +23,18 @@ package org.codehaus.continuum.web.action;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.maven.Maven;
 import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.builder.ContinuumBuilder;
+import org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder;
 import org.codehaus.continuum.web.utils.WebUtils;
-import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
@@ -46,19 +43,26 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrl.java,v 1.2 2004-07-29 04:38:09 trygvis Exp $
+ * @version $Id: AddProjectPomUrl.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
  */
 public class AddProjectPomUrl
     extends AbstractAction
+    implements Initializable
 {
     /** @requirement */
-    private I18N i18n;
+    private ContinuumBuilder m2Builder;
 
-    /** @requirement */
-    private Maven maven;
+    public void initialize()
+        throws Exception
+    {
+        if ( !( m2Builder instanceof Maven2ContinuumBuilder ) )
+        {
+            throw new Exception( "The builder has to be a Maven2ContinuumBuilder." );
+        }
+    }
 
     public void execute( Map request )
-        throws ContinuumException
+        throws Exception
     {
         String urlString = (String) request.get( "addProject.pomUrl" );
 
@@ -66,8 +70,8 @@ public class AddProjectPomUrl
 
         File pomFile;
 
-        try
-        {
+//        try
+//        {
             // download the pom.
             URL url = new URL( urlString );
 
@@ -76,44 +80,38 @@ public class AddProjectPomUrl
             pomFile = File.createTempFile( "continuum-", "-pom-download" );
 
             FileUtils.fileWrite( pomFile.getAbsolutePath(), pom );
-        }
-        catch( MalformedURLException ex )
-        {
-            handleError( request, "The URL is not correct." );
+//        }
+//        catch( MalformedURLException ex )
+//        {
+//            handleError( request, "The URL is not correct." );
+//
+//            return;
+//        }
+//        catch( FileNotFoundException ex )
+//        {
+//            handleError( request, "Could not download the pom: The file doesn't exist." );
+//
+//            return;
+//        }
+//        catch( Exception ex )
+//        {
+//            handleError( request, "Could not download the pom.", ex );
+//
+//            return;
+//        }
 
-            return;
-        }
-        catch( FileNotFoundException ex )
-        {
-            handleError( request, "Could not download the pom: The file doesn't exist." );
-
-            return;
-        }
-        catch( Exception ex )
-        {
-            handleError( request, "Could not download the pom.", ex );
-
-            return;
-        }
-
-        try
-        {
-            MavenProject project = maven.getProject( pomFile );
+//        try
+//        {
+            MavenProject project = ((Maven2ContinuumBuilder) m2Builder).getProject( pomFile );
 
             getContinuum().addProject( getName( project ), getScmUrl( project ), "maven2" );
-        }
-        catch( ProjectBuildingException ex )
-        {
-            handleError( request, "Error while building the pom.", ex );
-
-            return;
-        }
-        catch( ContinuumException ex )
-        {
-            handleError( request, "Error while adding the project.", ex );
-
-            return;
-        }
+//        }
+//        catch( ContinuumException ex )
+//        {
+//            handleError( request, "Error while adding the project.", ex );
+//
+//            return;
+//        }
 
         RunData data = (RunData) request.get( "data" );
 
@@ -121,18 +119,18 @@ public class AddProjectPomUrl
 
         Iterator projects;
 
-        try
-        {
+//        try
+//        {
             projects = getContinuumStore().getAllProjects();
-        }
-        catch( ContinuumStoreException ex )
-        {
-            handleError( request, "Error while getting projects.", ex );
+//        }
+//        catch( ContinuumStoreException ex )
+//        {
+//            handleError( request, "Error while getting projects.", ex );
+//
+//            return;
+//        }
 
-            return;
-        }
-
-        vc.put( "projects", WebUtils.projectsToProjectModels( i18n, projects ) );
+        vc.put( "projects", WebUtils.projectsToProjectModels( getI18N(), projects ) );
     }
 
     private String getName( MavenProject project )

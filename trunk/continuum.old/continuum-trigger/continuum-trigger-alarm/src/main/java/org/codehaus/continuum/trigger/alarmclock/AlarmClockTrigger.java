@@ -26,8 +26,10 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.trigger.AbstractContinuumTrigger;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.Logger;
@@ -37,7 +39,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.7 2004-07-27 05:42:08 trygvis Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.8 2004-10-06 14:18:59 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger
@@ -81,7 +83,8 @@ public class AlarmClockTrigger
             throw new ContinuumException( "Invalid value for 'delay': the delay must be bigger that 0." );
         }
 
-        PlexusUtils.assertRequirement( getContinuum(), "continuum" );
+        PlexusUtils.assertRequirement( getContinuum(), Continuum.ROLE );
+        PlexusUtils.assertRequirement( getStoreTransactionManager(), StoreTransactionManager.ROLE );
 
         timer = new Timer();
     }
@@ -112,7 +115,11 @@ public class AlarmClockTrigger
 
             try
             {
+                getStoreTransactionManager().begin();
+
                 it = getContinuum().getAllProjects( 0, 0 );
+
+                getStoreTransactionManager().commit();
             }
             catch ( Exception e )
             {
@@ -133,7 +140,7 @@ public class AlarmClockTrigger
                 {
                     getLogger().error( "Could not build project: " + project.getId() + " (" + project.getName() + ").", ex);
 
-                    return;
+                    continue;
                 }
             }
         }
