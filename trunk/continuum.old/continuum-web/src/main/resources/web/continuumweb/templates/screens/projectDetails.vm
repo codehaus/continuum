@@ -1,0 +1,70 @@
+<div class="app">
+  <h3>Project Details: $project.name</h3>
+#if ( $buildId )
+  <p>
+    Build enqueued, build id: $buildId.
+  </p>
+#end
+  <p>
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+      <tr class="a">
+        <td>Project Name</td>
+        <td>$project.name</td>
+      </tr>
+      <tr class="b">
+        <td>Current State</td>
+        <td>$project.state</td>
+      </tr>
+      <tr class="a">
+        <td>Project type</td>
+        <td>$project.type</td>
+      </tr>
+      <tr class="b">
+        <td>Scm connection string</td>
+        <td>$project.scmConnection</td>
+      </tr>
+<!--
+    </table>
+  </p>
+## Include project type specific info
+#if ( $project.type == "maven2" )
+#set ( $desc = $project.descriptor )
+  <h4>Maven 2 Descriptor</h4>
+  <p>
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+-->
+      <tr class="a">
+        <td>Goals</td>
+        <td>
+#foreach( $goal in $desc.goals)
+            $goal<br>
+#end
+        </td>
+      </tr>
+#else
+      <tr class="b">
+        <td><font color="red">UNKNOWN PROJECT TYPE '$project.type'</td>
+        <td>&nbsp;</td>
+      </tr>
+#end
+<!--
+    </table>
+  </p>
+  <p>
+  <h4>Actions</h4>
+  <p>
+    <table border="1" cellspacing="2" cellpadding="3" width="100%">
+-->
+      <tr class="b">
+        <td>Actions</td>
+        <td>
+            <a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.Id" ).setPage('editProject.vm')">Edit project</a> |
+            <a href="$link.addQueryData( "action", "enqueueProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Enqueue for build</a> |
+            <a href="$link.addQueryData( "action", "showProjectBuilds" ).addQueryData( "id", "$project.Id" ).setPage('projectBuilds.vm')">Builds</a>
+        </td>
+      </tr>
+    </table>
+<!--
+  </p>
+-->
+</div>
