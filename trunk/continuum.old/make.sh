@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -x ""`which m2` ]
+then
+  echo "m2 has to be in the PATH"
+  exit
+fi
+
 # Install the POMs
 ( m2 pom:install )
 m2 -r -Dmaven.reactor.includes=\
