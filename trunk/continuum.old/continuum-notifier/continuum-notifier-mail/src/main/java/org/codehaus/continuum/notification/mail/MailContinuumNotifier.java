@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.4 2004-07-13 20:52:27 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.5 2004-07-19 16:40:59 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -236,7 +236,7 @@ public class MailContinuumNotifier
 
             mailMessage.to( to );
 
-            if ( build.getMaven2Result().isExecutionFailure() )
+            if ( build.getMaven2Result() != null || build.getMaven2Result().isExecutionFailure() )
             {
                 mailMessage.setSubject( "[continuum] BUILD UNSUCCESSFUL: " + project.getName() );
             }
@@ -247,12 +247,12 @@ public class MailContinuumNotifier
 
             mailMessage.getPrintStream().print( message );
 
-//            mailMessage.sendAndClose();
+            mailMessage.sendAndClose();
 
             // TODO: remove me
-            getLogger().info( "The following message has been sent: " );
+//            getLogger().info( "The following message has been sent: " );
 
-            getLogger().info( message );
+//            getLogger().info( message );
         }
         catch( IOException ex )
         {
