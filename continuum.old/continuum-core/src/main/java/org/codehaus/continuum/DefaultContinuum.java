@@ -31,7 +31,7 @@ public class DefaultContinuum
     // Configuration
 
     /** Where all the sources get checked out to be built. */
-    private String workDirectory;
+    private String workingDirectory;
 
     /** How often are we going to attempt to build the project. */
     private int buildInterval;
@@ -57,14 +57,14 @@ public class DefaultContinuum
     {
         builds = new LinkedHashMap();
 
-        File f = new File ( workDirectory );
+        File f = new File ( workingDirectory );
 
         if ( !f.exists() )
         {
             f.mkdirs();
         }
 
-        timer = new Timer();
+        //timer = new Timer();
     }
 
     public void start()
@@ -72,7 +72,12 @@ public class DefaultContinuum
     {
         getLogger().info( "Starting Continuum!" );
 
-        timer.schedule( new BuildTask(), 0, buildInterval * 60 * 1000 );
+        //timer.schedule( new BuildTask(), 0, buildInterval * 60 * 1000 );
+
+        //addProject( projectBuilder.build( new File( "/home/jvanzyl/js/org.codehaus/plexus/plexus-container/project.xml" ) ) );
+        addProject( projectBuilder.build( new File( "/home/jvanzyl/js/org.apache.maven/maven-components/maven-model/project.xml" ) ) );
+
+        buildProjects();
     }
 
     public void stop()
@@ -82,13 +87,26 @@ public class DefaultContinuum
 
     public void addProject( Project project )
     {
-        MavenProjectBuild build = new MavenProjectBuild( project );
+        MavenProjectBuild build = null;
+
+        try
+        {
+            build = new MavenProjectBuild( project );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
 
         builds.put( project.getId(), build );
     }
 
     private void notifyAudience( Project project, String message )
     {
+
+        System.out.println( "message = " + message );
+
+        /*
         try
         {
             MailMessage mailMessage = new MailMessage( smtpServer );
@@ -118,7 +136,9 @@ public class DefaultContinuum
         {
             getLogger().error( "Can't send notification message.", e );
         }
+        */
     }
+
 
     private void buildProjects()
     {
@@ -159,12 +179,24 @@ public class DefaultContinuum
         }
     }
 
+    // How to get the initial POM!!!!!
+
+
     private List buildProject( MavenProjectBuild build )
         throws Exception
     {
+        System.out.println( "workingDirectory = " + workingDirectory );
+
+        // We need to check out the sources
+        build.getProjectScm().checkout( workingDirectory );
+
+        System.out.println( "build.getProject().getSourceDirectory() = " + build.getProject().getBuild().getSourceDirectory() );
+
+        String destinationDirectory = workingDirectory + "/target/classes";
+
         List messages = compiler.compile( classpathElements( build.getProject() ),
                                           new String[]{ build.getProject().getBuild().getSourceDirectory() },
-                                          build.getProject().getProperty( "maven.build.dest" ) );
+                                          destinationDirectory );
 
         return messages;
     }

@@ -7,7 +7,7 @@ import org.apache.maven.project.Project;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MavenProjectBuild.java,v 1.1 2004-01-16 19:38:33 jvanzyl Exp $
+ * @version $Id: MavenProjectBuild.java,v 1.2 2004-01-16 21:25:16 jvanzyl Exp $
  */
 public class MavenProjectBuild
 {
@@ -16,6 +16,7 @@ public class MavenProjectBuild
     private MavenProjectScm projectScm;
 
     public MavenProjectBuild( Project project )
+        throws Exception
     {
         this.project = project;
 
