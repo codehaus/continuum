@@ -34,7 +34,7 @@
 
     <!--
      |
-     | Services
+     | Plexus services
      |
      |-->
     <dependency>
@@ -52,7 +52,7 @@
 
     <!--
      |
-     | Implementation of required services
+     | Implementations of required services
      |
      |-->
 
@@ -61,11 +61,13 @@
       <groupId>maven</groupId>
       <artifactId>maven-scm-provider-cvs</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-scm-provider-svn</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- Maven Wagons -->
@@ -73,6 +75,7 @@
       <groupId>maven</groupId>
       <artifactId>wagon-http-lightweight</artifactId>
       <version>1.0-alpha-2-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- -->
@@ -80,11 +83,13 @@
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-simple</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>7.4.1-jdbc3</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <build>
