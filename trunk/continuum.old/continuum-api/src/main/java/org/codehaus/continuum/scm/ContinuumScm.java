@@ -24,23 +24,25 @@ package org.codehaus.continuum.scm;
 
 import java.io.File;
 
-import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.3 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.4 2004-10-28 17:17:38 trygvis Exp $
  */
 public interface ContinuumScm
 {
     String ROLE = ContinuumScm.class.getName();
 
     void clean( ContinuumProject project )
-        throws ContinuumException;
+        throws ContinuumScmException;
 
-    File checkout( ContinuumProject project )
-        throws ContinuumException;
+    void checkOut( File workingDirectory, String scmUrl )
+        throws ContinuumScmException;
 
-    File update( ContinuumProject project )
-        throws ContinuumException;
+    void checkOutProject( ContinuumProject project )
+        throws ContinuumScmException;
+
+    boolean updateProject( ContinuumProject project )
+        throws ContinuumScmException;
 }

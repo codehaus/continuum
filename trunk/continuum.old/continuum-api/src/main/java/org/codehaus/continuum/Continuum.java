@@ -23,6 +23,7 @@ package org.codehaus.continuum;
  */
 
 import java.util.Iterator;
+import java.net.URL;
 
 import org.codehaus.continuum.project.ContinuumProject;
 
@@ -30,7 +31,13 @@ public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
+//    String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
+//        throws ContinuumException;
+
+    String addProjectFromUrl( URL url, String builder )
+        throws ContinuumException;
+
+    String addProjectFromScm( String scmUrl, String builder )
         throws ContinuumException;
 
     void removeProject( String projectId )
@@ -48,11 +55,14 @@ public interface Continuum
     /**
      * Signals continuum to build a specific project.
      *
-     * @param id The project id
+     * @param projectId The project id
      * @return Returns the build id of the job.
      * @throws ContinuumException
      */
-    String buildProject( String id )
+    String buildProject( String projectId )
+        throws ContinuumException;
+
+    boolean checkIfProjectNeedsToBeBuilt( String projectId )
         throws ContinuumException;
 
     /**

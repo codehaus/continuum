@@ -24,7 +24,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumProject.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
+ * @version $Id: AbstractContinuumProject.java,v 1.6 2004-10-28 17:17:38 trygvis Exp $
  */
 public abstract class AbstractContinuumProject
     implements ContinuumProject
@@ -46,6 +46,9 @@ public abstract class AbstractContinuumProject
 
     /** */
     private String version;
+
+    /** */
+    private String workingDirectory;
 
     /** */
     private ContinuumProjectState state;
@@ -147,6 +150,22 @@ public abstract class AbstractContinuumProject
     public void setVersion( String version )
     {
         this.version = version;
+    }
+
+    /**
+     * @return Returns the working directory.
+     */
+    public String getWorkingDirectory()
+    {
+        return workingDirectory;
+    }
+
+    /**
+     * @param workingDirectory The working directory to set.
+     */
+    public void setWorkingDirectory( String workingDirectory )
+    {
+        this.workingDirectory = workingDirectory;
     }
 
     /**

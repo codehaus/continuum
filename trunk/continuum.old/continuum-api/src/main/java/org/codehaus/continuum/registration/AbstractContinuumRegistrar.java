@@ -23,23 +23,50 @@ package org.codehaus.continuum.registration;
  */
 
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AbstractContinuumRegistrar.java,v 1.2 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: AbstractContinuumRegistrar.java,v 1.3 2004-10-28 17:17:38 trygvis Exp $
  */
 public abstract class AbstractContinuumRegistrar
     extends AbstractLogEnabled
-    implements ContinuumRegistrar
+    implements ContinuumRegistrar, Initializable
 {
+    /** @requirement */
     private Continuum continuum;
+
+    /** @requirement */
+    private StoreTransactionManager txManager;
+
+    // ----------------------------------------------------------------------
+    // 
+    // ----------------------------------------------------------------------
+
+    public void initialize()
+    	throws Exception
+    {
+        PlexusUtils.assertRequirement( continuum, Continuum.ROLE );
+        PlexusUtils.assertRequirement( txManager, StoreTransactionManager.ROLE );
+    }
+
+    // ----------------------------------------------------------------------
+    // 
+    // ----------------------------------------------------------------------
 
     public Continuum getContinuum()
     {
         return continuum;
+    }
+
+    public StoreTransactionManager getStoreTransactionManager()
+    {
+        return txManager;
     }
 }

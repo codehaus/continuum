@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.6 2004-10-28 17:17:38 trygvis Exp $
  */
 public interface ContinuumProject
     extends Serializable
@@ -78,6 +78,10 @@ public interface ContinuumProject
     String getVersion();
 
     void setVersion( String version );
+
+    String getWorkingDirectory();
+
+    void setWorkingDirectory( String workingDirectory );
 
     /**
      * @return Returns the state.
