@@ -52,7 +52,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.codehaus.plexus.continuum.scm.cvs;
+package org.codehaus.plexus.continuum.scm.cvsimpl;
 
 import java.util.Vector;
 import java.io.File;

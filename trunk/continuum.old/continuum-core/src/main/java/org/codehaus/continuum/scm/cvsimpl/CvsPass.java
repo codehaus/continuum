@@ -52,7 +52,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.codehaus.plexus.continuum.scm.cvs;
+package org.codehaus.plexus.continuum.scm.cvsimpl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,7 +65,7 @@ import java.io.PrintWriter;
  * Adds an new entry to a CVS password file.
  *
  * @author <a href="jeff@custommonkey.org">Jeff Martin</a>
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.1 $
  *
  * @since Ant 1.4
  */
