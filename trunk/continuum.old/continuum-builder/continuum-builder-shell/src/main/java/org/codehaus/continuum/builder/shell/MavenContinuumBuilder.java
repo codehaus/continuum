@@ -32,23 +32,17 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.2 2004-10-28 15:24:46 jvanzyl Exp $
+ * @version $Id: MavenContinuumBuilder.java,v 1.3 2004-10-28 16:00:18 jvanzyl Exp $
  */
 public class MavenContinuumBuilder
     extends ShellContinuumBuilder
 {
-    private String mavenHome;
-
-    private String mavenHomeLocal;
-
-    private String mavenRepository;
-
     public ProjectDescriptor createDescriptor( ContinuumProject project )
         throws ContinuumException
     {
@@ -189,7 +183,7 @@ public class MavenContinuumBuilder
     {
         Commandline cl = new Commandline();
 
-        cl.setExecutable( "maven" );
+        cl.setExecutable( shellCommand );
 
         cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
 

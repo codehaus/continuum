@@ -34,7 +34,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellContinuumBuilder.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
+ * @version $Id: ShellContinuumBuilder.java,v 1.2 2004-10-28 16:00:18 jvanzyl Exp $
  */
 public abstract class ShellContinuumBuilder
     extends AbstractContinuumBuilder
@@ -44,6 +44,12 @@ public abstract class ShellContinuumBuilder
     // ----------------------------------------------------------------------
 
     protected ContinuumScm scm;
+
+    // ----------------------------------------------------------------------
+    // Configuration
+    // ----------------------------------------------------------------------
+
+    protected String shellCommand;
 
     // ----------------------------------------------------------------------
     //
