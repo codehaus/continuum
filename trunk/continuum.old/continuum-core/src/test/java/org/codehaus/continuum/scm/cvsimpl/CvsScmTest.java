@@ -8,10 +8,10 @@ import java.util.Map;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@plexus.org">Jason van Zyl</a>
  *
- * @version $Id: CvsScmTest.java,v 1.1 2003-09-02 16:08:21 jvanzyl Exp $
+ * @version $Id: CvsScmTest.java,v 1.2 2003-10-12 00:55:40 pdonald Exp $
  */
 public class CvsScmTest
     extends PlexusTestCase
@@ -30,7 +30,7 @@ public class CvsScmTest
     public void testContinuum()
         throws Exception
     {
-        Scm scm = (Scm) lookup( Scm.ROLE );
+        Scm scm = (Scm) lookup( Scm.class.getName() );
 
         Map parameters = new HashMap();
 
