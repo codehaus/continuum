@@ -23,7 +23,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.2 2004-10-28 17:28:39 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.3 2004-10-29 15:18:12 trygvis Exp $
  */
 public class DefaultBuildController
 	extends AbstractLogEnabled
@@ -171,7 +171,7 @@ public class DefaultBuildController
         {
             notifier.checkoutStarted( build );
 
-            checkOut( project );
+            update( project );
         }
         finally
         {
@@ -194,12 +194,10 @@ public class DefaultBuildController
         return result;
     }
 
-    private void checkOut( ContinuumProject project )
+    private void update( ContinuumProject project )
         throws ContinuumScmException
     {
-        scm.clean( project );
-
-        scm.checkOutProject( project );
+        scm.updateProject( project );
     }
 
     private ContinuumBuildResult runGoals( ContinuumBuilder builder, String workingDirectory, ContinuumBuild build )
