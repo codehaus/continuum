@@ -1,15 +1,14 @@
-<model>
+<project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>continuum-parent</artifactId>
     <groupId>continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
   <artifactId>continuum-core</artifactId>
-  <packaging>jar</packaging>
-  <name>Continuum Core</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
+  <name>Continuum Core</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
@@ -35,6 +34,7 @@
       <groupId>maven</groupId>
       <artifactId>maven-scm-provider-local</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>maven</groupId>
@@ -60,11 +60,13 @@
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-simple</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-test</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
@@ -95,36 +97,43 @@
       <groupId>obie</groupId>
       <artifactId>stash</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jdbm</groupId>
       <artifactId>jdbm</artifactId>
       <version>0.20-dev</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>prevayler</groupId>
       <artifactId>prevayler</artifactId>
       <version>2.02.005</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jpox</groupId>
       <artifactId>jpox</artifactId>
       <version>1.0.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.7.3.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>7.4.1-jdbc3</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>modello</groupId>
       <artifactId>modello-plugin-prevayler</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-</model>
+</project>
