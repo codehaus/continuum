@@ -1,8 +1,8 @@
 <component-set>
   <components>
     <component>
-      <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcInterface</role>
-      <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpcInterface</implementation>
+      <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcServer</role>
+      <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpcServer</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
