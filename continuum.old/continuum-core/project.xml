@@ -5,6 +5,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-continuum</artifactId>
   <id>plexus-continuum</id>
+  <name>Plexus Continuum Component</name>
   <currentVersion>1.0-SNAPSHOT</currentVersion>
 
   <organization>
