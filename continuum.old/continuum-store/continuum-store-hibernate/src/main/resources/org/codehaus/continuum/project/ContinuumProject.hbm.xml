@@ -5,7 +5,7 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 
 <hibernate-mapping>
-  <class 
+  <class
     name="org.codehaus.continuum.project.GenericContinuumProject"
     table="Project">
     <id name="id" type="java.lang.String">
@@ -27,6 +27,10 @@
       name="version"
       type="java.lang.String"
       not-null="true"/>
+    <property
+      name="workingDirectory"
+      type="java.lang.String"
+      not-null="false"/>
     <property
       name="state"
       type="org.codehaus.continuum.store.hibernate.ContinuumProjectStateType"
