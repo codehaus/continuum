@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
+ * @version $Id: MavenContinuumBuilder.java,v 1.2 2004-10-28 15:24:46 jvanzyl Exp $
  */
 public class MavenContinuumBuilder
     extends ShellContinuumBuilder
@@ -167,15 +167,23 @@ public class MavenContinuumBuilder
     private File getPomFile( File basedir )
         throws ContinuumException
     {
-        File pomFile = new File( basedir, "pom.xml" );
+        File pomFile = new File( basedir, "project.xml" );
 
         if ( !pomFile.isFile() )
         {
-            throw new ContinuumException( "Could not find Maven 2 project descriptor." );
+            throw new ContinuumException( "Could not find Maven project descriptor." );
         }
 
         return pomFile;
     }
+
+    // ----------------------------------------------------------------------
+    // Create the command line:
+    //
+    // This should be generally configurable from a properties file or
+    // some form of configuration so that it can be controlled from a
+    // web interface.
+    // ----------------------------------------------------------------------
 
     protected Commandline createCommandline( File workingDirectory, ShellProjectDescriptor projectDescriptor )
     {
