@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.6 2004-07-27 00:06:08 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.7 2004-07-29 04:23:09 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractContinuumNotifier
@@ -78,7 +78,13 @@ public class MailContinuumNotifier
         throws Exception
     {
         PlexusUtils.assertConfiguration( smtpServer, "smtp-server" );
-        PlexusUtils.assertConfiguration( administrator, "administrator" );
+
+        if ( administrator == null || administrator.trim().length() == 0 )
+        {
+            getLogger().warn( "No administrator email address configured." );
+
+            administrator = null;
+        }
 
         if ( to == null )
         {
