@@ -3,3 +3,5 @@ target
 .project
 generated-runtime
 rg*
+*.tar.gz
+continuumdb.*
