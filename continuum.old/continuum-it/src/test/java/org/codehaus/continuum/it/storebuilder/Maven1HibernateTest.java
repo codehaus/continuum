@@ -15,7 +15,7 @@ import org.codehaus.continuum.store.hibernate.HibernateContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1HibernateTest.java,v 1.1 2004-10-29 15:31:27 trygvis Exp $
+ * @version $Id: Maven1HibernateTest.java,v 1.2 2004-10-31 17:07:41 trygvis Exp $
  */
 public class Maven1HibernateTest
 	extends AbstractStoreBuilderTest
@@ -41,7 +41,7 @@ public class Maven1HibernateTest
     {
         assertEquals( project.getDescriptor().getClass(), ShellProjectDescriptor.class );
 
-        assertEquals( "The project name isn't correct", "Hibernate And Maven 1 Test Project", project.getName() );
+        assertEquals( "The project name isn't correct", "Maven 1 And Hibernate Test Project", project.getName() );
     }
 
     protected void assertBuild( ContinuumBuild build )
