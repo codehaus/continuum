@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2BuildResult.java,v 1.3 2004-10-09 13:03:19 trygvis Exp $
+ * @version $Id: Maven2BuildResult.java,v 1.4 2004-10-14 13:59:59 trygvis Exp $
  */
 public class Maven2BuildResult
     extends AbstractContinuumBuildResult
@@ -81,17 +81,17 @@ public class Maven2BuildResult
         return success;
     }
 
-//    private void setSuccess( boolean success )
-//    {
-//        this.success = success;
-//    }
+    protected void setSuccess( boolean success )
+    {
+        this.success = success;
+    }
 
 //    public ExecutionResponse getExecutionResponse()
 //    {
 //        return executionResponse;
 //    }
 
-//    private void setExecutionResponse( ExecutionResponse executionResponse )
+//    protected void setExecutionResponse( ExecutionResponse executionResponse )
 //    {
 //        this.executionResponse = executionResponse;
 //    }
@@ -101,10 +101,10 @@ public class Maven2BuildResult
         return executionResponse;
     }
 
-//    private void setExecutionResponse( String executionResponse )
-//    {
-//        this.executionResponse = executionResponse;
-//    }
+    protected void setExecutionResponse( String executionResponse )
+    {
+        this.executionResponse = executionResponse;
+    }
 
     public String getShortFailureResponse()
     {
