@@ -28,6 +28,27 @@
 
     <!--
      |
+     | Customized PullTools Service
+     |
+     -->
+
+    <component>
+      <role>org.codehaus.plexus.summit.pull.PullService</role>
+      <implementation>org.codehaus.plexus.summit.pull.DefaultPullService</implementation>
+      <configuration>
+        <tools>
+          <!-- The component descriptor for this tool is in the summit components.xml -->
+          <tool>
+            <name>link</name>
+            <role>linktool</role>
+            <scope>request</scope>
+          </tool>
+        </tools>
+      </configuration>
+    </component>
+
+    <!--
+     |
      | Valves
      |
      |-->
