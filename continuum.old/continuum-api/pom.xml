@@ -4,17 +4,22 @@
   <parent>
     <groupId>continuum</groupId>
     <artifactId>continuum-parent</artifactId>
-    <version>1.0-alpha-1-SNAPSHOT</version>
+    <version>0.1</version>
   </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-api</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Continuum API</name>
+  <version>0.1-SNAPSHOT</version>
+  <name>Continuum APIs</name>
   <dependencies>
     <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus</artifactId>
+      <version>0.14-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>maven</groupId>
-      <artifactId>maven-scm-api</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
+      <artifactId>scm-api</artifactId>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

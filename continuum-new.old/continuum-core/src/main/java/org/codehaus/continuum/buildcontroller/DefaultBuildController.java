@@ -1,54 +1,59 @@
 package org.codehaus.continuum.buildcontroller;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
-import java.io.File;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
-import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
+import org.codehaus.continuum.notification.NotifierManager;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.scm.ContinuumScm;
+import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
+import java.io.File;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.11 2005-03-28 11:27:51 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
     implements BuildController
 {
-    /** @requirement */
     private BuilderManager builderManager;
 
-    /** @requirement */
     private ContinuumStore store;
 
-    /** @requirement */
-    private ContinuumNotificationDispatcher notifier;
+    private NotifierManager notifier;
 
-    /** @requirement */
     private ContinuumScm scm;
 
     // ----------------------------------------------------------------------
@@ -71,6 +76,15 @@ public class DefaultBuildController
         try
         {
             buildProject( buildId );
+
+            if ( false )
+            {
+                throw new InterruptedException();
+            }
+        }
+        catch ( InterruptedException ex )
+        {
+            return;
         }
         catch ( ContinuumStoreException ex )
         {
@@ -107,11 +121,9 @@ public class DefaultBuildController
         // if these calls fail we're screwed anyway
         // and it will only be logged through the logger.
 
+        ContinuumBuilder builder = builderManager.getBuilderForBuild( buildId );
+
         ContinuumBuild build = store.getBuild( buildId );
-
-        ContinuumProject project = store.getProjectByBuild( buildId );
-
-        ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
         try
         {
@@ -119,7 +131,7 @@ public class DefaultBuildController
 
             ContinuumBuildResult result = build( builder, build );
 
-            int state;
+            ContinuumProjectState state;
 
             if ( result.isSuccess() )
             {
@@ -136,7 +148,9 @@ public class DefaultBuildController
         {
             store.setBuildResult( buildId, ContinuumProjectState.ERROR, null, ex );
 
-            getLogger().fatalError( "Error building the project, build id: '" + buildId + "'.", ex );
+            getLogger().fatalError( "Error building the project.", ex );
+
+            return;
         }
         finally
         {
@@ -147,34 +161,18 @@ public class DefaultBuildController
     private ContinuumBuildResult build( ContinuumBuilder builder, ContinuumBuild build )
         throws Exception
     {
-        ContinuumProject project = store.getProjectByBuild( build.getId() );
-
-        // TODO: Update the metadata files and then update the project descriptor
-        // before updating the project itself. This will make it possible to migrate
-        // a project from one SCM to another.
+        ContinuumProject project = build.getProject();
 
         try
         {
             notifier.checkoutStarted( build );
 
-            scm.updateProject( project );
+            update( project );
         }
         finally
         {
             notifier.checkoutComplete( build );
         }
-
-        String id = project.getId();
-
-        builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
-
-        store.updateProject( id,
-                             project.getName(),
-                             project.getScmUrl(),
-                             project.getNagEmailAddress(),
-                             project.getVersion() );
-
-        store.updateProjectConfiguration( id, project.getConfiguration() );
 
         notifier.runningGoals( build );
 
@@ -182,7 +180,7 @@ public class DefaultBuildController
 
         try
         {
-            result = runGoals( builder, project );
+            result = runGoals( builder, project.getWorkingDirectory(), build );
         }
         finally
         {
@@ -192,10 +190,16 @@ public class DefaultBuildController
         return result;
     }
 
-    private ContinuumBuildResult runGoals( ContinuumBuilder builder, ContinuumProject project )
+    private void update( ContinuumProject project )
+        throws ContinuumScmException
+    {
+        scm.updateProject( project );
+    }
+
+    private ContinuumBuildResult runGoals( ContinuumBuilder builder, String workingDirectory, ContinuumBuild build )
         throws ContinuumException
     {
-        ContinuumBuildResult result = builder.build( project );
+        ContinuumBuildResult result = builder.build( new File( workingDirectory ), build.getProject() );
 
         if ( result == null )
         {

@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.11 2004-10-31 15:28:45 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.1.1.1 2004-10-28 16:08:17 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -55,16 +55,20 @@ public class DefaultMavenTool
     // Maven has a bit of a odd name just because getMaven() should be used
     // as it's required that the instance is lazily initialized.
     /** @requirement */
-    private Maven maven;
-
-    /** @configuration default="m2" */
-	private String mavenBin;
+    private Maven mavenInstance;
 
     /** @configuration default ${maven.home} */
     private String mavenHome;
 
     /** @configuration default ${maven.home.local} */
     private String mavenHomeLocal;
+
+    /** @configuration default ${maven.home}/repository */
+    private String mavenRepository;
+
+    private boolean mavenInitialized;
+
+    private File classWorldsJar;
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
@@ -73,39 +77,26 @@ public class DefaultMavenTool
     public void initialize()
         throws Exception
     {
-        PlexusUtils.assertRequirement( maven, Maven.ROLE );
-
-        PlexusUtils.assertConfiguration( mavenBin, "maven-bin" );
+        PlexusUtils.assertRequirement( mavenInstance, Maven.ROLE );
 
         PlexusUtils.assertConfiguration( mavenHome, "maven-home" );
         PlexusUtils.assertConfiguration( mavenHomeLocal, "maven-home-local" );
+        PlexusUtils.assertConfiguration( mavenRepository, "maven-repository" );
 
-        // TODO: assert that mavenHome, mavenHomelocal exists.
+        // TODO: assert that mavenHome, mavenHomelocal and mavenRepository exists.
 
-        File mavenHomeFile = new File( mavenHome );
-        File mavenHomeLocalFile = new File( mavenHomeLocal );
+        getMaven();
 
-        if ( mavenHome.equals( "${maven.home}" ) || !mavenHomeFile.isDirectory()  )
+        // ----------------------------------------------------------------------
+        // Component Lifecycle
+        // ----------------------------------------------------------------------
+
+        classWorldsJar = new File( getMavenHome(), "/core/boot/classworlds-1.1-SNAPSHOT.jar" );
+
+        if ( !classWorldsJar.exists() )
         {
-            mavenHomeFile = locateMavenHome();
-
-            mavenHome = mavenHomeFile.getAbsolutePath();
+            throw new ContinuumException( "Maven isn't installed correctly, could not find the classworlds jar (" + classWorldsJar.getAbsolutePath() + ")." );
         }
-
-        if ( mavenHomeLocal.equals( "${maven.home.local}" ) || !mavenHomeLocalFile.isDirectory() )
-        {
-            mavenHomeLocalFile = locateMavenHomeLocal();
-
-            mavenHomeLocal = mavenHomeLocalFile.getAbsolutePath();
-        }
-
-        maven.setMavenHome( mavenHomeFile );
-        maven.setMavenHomeLocal( mavenHomeLocalFile );
-
-        getLogger().info( "Using " + maven.getMavenHome().getAbsolutePath() + " as maven.home." );
-        getLogger().info( "Using " + maven.getMavenHomeLocal().getAbsolutePath() + " as maven.home.local." );
-
-        getLogger().info( "Using '" + mavenBin + "' as the maven 2 executable" );
     }
 
     // ----------------------------------------------------------------------
@@ -119,7 +110,7 @@ public class DefaultMavenTool
 
         try
         {
-            project = maven.getProject( file );
+            project = getMaven().getProject( file );
         }
         catch( ProjectBuildingException ex )
         {
@@ -199,7 +190,7 @@ public class DefaultMavenTool
     {
         try
         {
-            return maven.execute( project, goals );
+            return getMaven().execute( project, goals );
         }
         catch ( GoalNotFoundException ex )
         {
@@ -207,7 +198,7 @@ public class DefaultMavenTool
         }
     }
 
-    public ExternalMavenExecutionResult executeExternal( File workingDirectory, List goals )
+    public ExternalMavenExecutionResult executeExternal( File workingDirectory, MavenProject mavenProject, List goals )
         throws ContinuumException
     {
         Commandline cl = getMaven2CommandLine( workingDirectory, goals );
@@ -246,21 +237,26 @@ public class DefaultMavenTool
     {
         Commandline cl = new Commandline();
 
-        cl.setExecutable( mavenBin );
+        cl.setExecutable( "java" );
 
         cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
 
-//        cl.createArgument().setValue( "-classpath" );
-//
-//        cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
-//
-//        cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
-//
-//        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
-//
-//        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
+        cl.createArgument().setValue( "-classpath" );
 
-//        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
+        cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
+
+        cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
+
+        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
+
+        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
+
+        if ( !StringUtils.isEmpty( getMavenRepository() ) )
+        {
+            cl.createArgument().setValue( "-Dmaven.repo.local=" + getMavenRepository() );
+        }
+
+        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
 
         for ( Iterator it = goals.iterator(); it.hasNext(); )
         {
@@ -285,6 +281,38 @@ public class DefaultMavenTool
         return cl;
     }
 
+    private Maven getMaven()
+    {
+        if ( mavenInitialized )
+        {
+            return mavenInstance;
+        }
+
+        synchronized( mavenInstance )
+        {
+            if ( mavenInitialized )
+            {
+                return mavenInstance;
+            }
+            else
+            {
+                getLogger().info( "Using " + mavenHome + " as maven.home." );
+
+                getLogger().info( "Using " + mavenHomeLocal + " as maven.home.local." );
+
+                getLogger().info( "Using " + mavenRepository + " as maven.repo.local." );
+
+                mavenInstance.setMavenHome( new File( mavenHome ) );
+
+                mavenInstance.setMavenHomeLocal( new File( mavenHomeLocal ) );
+
+                mavenInitialized = true;
+
+                return mavenInstance;
+            }
+        }
+    }
+
     // ----------------------------------------------------------------------
     // Getters
     // ----------------------------------------------------------------------
@@ -299,47 +327,8 @@ public class DefaultMavenTool
         return mavenHomeLocal;
     }
 
-    // ----------------------------------------------------------------------
-    // This should really go away
-    // ----------------------------------------------------------------------
-
-    public static File locateMavenHome()
-    	throws ContinuumException
+    public String getMavenRepository()
     {
-        String mavenHome = System.getProperty( "maven.home" );
-
-        if ( mavenHome != null )
-        {
-            return new File( mavenHome );
-        }
-
-        File tmp = new File( System.getProperty( "user.home" ), "m2" );
-
-        if ( !tmp.isDirectory() )
-        {
-            throw new ContinuumException( "Could not find maven.home in '" + tmp.getAbsolutePath() + "'." );
-        }
-
-        return tmp;
-    }
-
-    public static File locateMavenHomeLocal()
-    	throws ContinuumException
-    {
-        String mavenHomeLocal = System.getProperty( "maven.home.local" );
-
-        if ( mavenHomeLocal != null )
-        {
-            return new File( mavenHomeLocal );
-        }
-
-        File tmp = new File( System.getProperty( "user.home" ), ".m2" );
-
-        if ( !tmp.isDirectory() )
-        {
-            throw new ContinuumException( "Could not find maven.home.local in '" + tmp.getAbsolutePath() + "'." );
-        }
-
-        return tmp;
+        return mavenRepository;
     }
 }

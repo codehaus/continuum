@@ -1,123 +1,93 @@
 package org.codehaus.continuum;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Properties;
-
 import org.codehaus.continuum.buildcontroller.BuildController;
-import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
+import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
-import org.codehaus.continuum.buildqueue.BuildQueueException;
-import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
+import org.codehaus.continuum.scm.DefaultContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.14 2005-03-28 11:27:53 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.1.1.1 2005-02-17 22:23:48 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
-    implements Continuum, Initializable, Startable
+    implements Continuum, Initializable, Startable, Contextualizable
 {
-    private final static String DATABASE_INITIALIZED = "database.initialized";
-
-    private final static String CONTINUUM_VERSION = "1.0-alpha-1-SNAPSHOT";
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    // TODO: look up these requiremetns in start() to have better control of the
-    //       application initialization sequence. The application should make sure
-    //       that the database is properly initialized before starting the store.
-
-    /** @requirement */
     private BuilderManager builderManager;
 
-    /** @requirement */
     private BuildController buildController;
 
-    /** @requirement */
     private BuildQueue buildQueue;
 
-    /** @requirement */
     private ContinuumStore store;
 
-    /** @requirement */
     private ContinuumScm scm;
 
-    /** @configuration */
-    private String appHome;
-
-    /** @configuration */
     private String workingDirectory;
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
+    private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
 
     private BuilderThread builderThread;
 
     private Thread builderThreadThread;
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
+    String plexusHome;
 
-    public Iterator getProjects()
-        throws ContinuumStoreException
-    {
-        return store.getAllProjects();
-    }
-
-    public ContinuumBuild getLatestBuildForProject( String id )
-        throws ContinuumStoreException
-    {
-        return store.getLatestBuildForProject( id );
-    }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
+    DefaultPlexusContainer container;
 
     // ----------------------------------------------------------------------
     // Here it would probably be possible to tell from looking at the meta
     // data what type of project handler would be required. We could
     // definitely tell if we were looking at a Maven POM, So for the various
     // POM versions we would know what builder to use, and for an arbitrary
+    //
     // ----------------------------------------------------------------------
 
     // add project meta data
@@ -127,7 +97,7 @@ public class DefaultContinuum
     // -> check out from scm
     // -> update the project metadata
 
-    public String addProjectFromUrl( URL url, String builderType )
+    public String addProject( URL url, String builderType )
         throws ContinuumException
     {
         File pomFile;
@@ -162,68 +132,67 @@ public class DefaultContinuum
 
         getLogger().info( "done creating continuum project" );
 
-        // TODO: Update from metadata in the initial checkout?
-
-        project = addProjectAndCheckOutSources( project, builderType );
-
-        return project.getId();
+        return setupProject( addProject( project, builderType ) );
     }
 
-    public String addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
-                                     String version, Properties configuration )
+    // ----------------------------------------------------------------------
+    // o take the metadata
+    // o create a continuum project
+    // o setup/initialize the project
+    //   -> check it out
+    //   -> update project metadata if necessary
+    // ----------------------------------------------------------------------
+
+    public String setupProject( ContinuumProject project )
         throws ContinuumException
     {
-        // ----------------------------------------------------------------------
-        // Create the stub project
-        // ----------------------------------------------------------------------
+        File checkoutDirectory = new File( workingDirectory, "temp-project" );
 
-        ContinuumProject project = new ContinuumProject();
-
-        project.setScmUrl( scmUrl );
-
-        project.setBuilderId( builderType );
-
-        project.setName( projectName );
-
-        project.setNagEmailAddress( nagEmailAddress );
-
-        project.setVersion( version );
-
-        project.setConfiguration( configuration );
-
-        // ----------------------------------------------------------------------
-        // Make sure that the builder id is correct before starting to check
-        // stuff out
-        // ----------------------------------------------------------------------
-
-        if( !builderManager.hasBuilder( builderType ) )
+        if ( checkoutDirectory.exists() )
         {
-            throw new ContinuumException( "No such builder '" + builderType + "'." );
+            try
+            {
+                FileUtils.cleanDirectory( checkoutDirectory );
+            }
+            catch ( IOException ex )
+            {
+                throw new ContinuumException( "Error while cleaning out " + checkoutDirectory.getAbsolutePath() );
+            }
+        }
+        else
+        {
+            if ( !checkoutDirectory.mkdirs() )
+            {
+                throw new ContinuumException( "Could not make the check out directory (" + checkoutDirectory.getAbsolutePath() + ")." );
+            }
         }
 
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
+        try
+        {
+            scm.checkOut( checkoutDirectory, project.getScmUrl() );
+        }
+        catch ( ContinuumScmException ex )
+        {
+            throw new ContinuumException( "Error while checking out the project.", ex );
+        }
 
-        doTempCheckOut( project );
-
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
-        project = addProjectAndCheckOutSources( project, builderType );
-
-        updateProjectFromCheckOut( project );
+        updateProject( project.getId() );
 
         return project.getId();
     }
 
-    public void updateProjectFromScm( String projectId )
+    public void updateProject( String projectId )
         throws ContinuumException
     {
         try
         {
             ContinuumProject project = store.getProject( projectId );
+
+            ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
+
+            // ----------------------------------------------------------------------
+            // Update the check out
+            // ----------------------------------------------------------------------
 
             File workingDirectory = new File( project.getWorkingDirectory() );
 
@@ -237,41 +206,38 @@ public class DefaultContinuum
                 }
             }
 
+            scm.updateProject( project );
+
             // ----------------------------------------------------------------------
-            // Update the source code
+            // Make a new descriptor
             // ----------------------------------------------------------------------
 
-            try
-            {
-                scm.updateProject( project );
-            }
-            catch ( ContinuumScmException e )
-            {
-                throw new ContinuumException( "Error while updating project.", e );
-            }
+            builder.updateProjectFromMetadata( new File( project.getWorkingDirectory() ), project );
 
-            updateProjectFromCheckOut( project );
+            // ----------------------------------------------------------------------
+            // Store the new descriptor
+            // ----------------------------------------------------------------------
+
+            store.updateProject( projectId,
+                                 project.getName(),
+                                 project.getScmUrl(),
+                                 project.getNagEmailAddress(),
+                                 project.getVersion(),
+                                 project.getConfiguration() );
+
+            getLogger().info( "Updated project: " + project.getName() );
+        }
+        catch ( ContinuumScmException ex )
+        {
+            getLogger().error( "Error while updating project.", ex );
+
+            throw new ContinuumException( "Error while updating project.", ex );
         }
         catch ( ContinuumStoreException ex )
         {
             getLogger().error( "Error while updating project.", ex );
 
-            throw new ContinuumException( "Error while updating project from SCM.", ex );
-        }
-    }
-
-    public void updateProjectConfiguration( String projectId, Properties configuration )
-        throws ContinuumException
-    {
-        try
-        {
-            store.updateProjectConfiguration( projectId, configuration );
-        }
-        catch ( ContinuumStoreException ex )
-        {
-            getLogger().error( "Error while updating project configuration.", ex );
-
-            throw new ContinuumException( "Error while updating project configuration.", ex );
+            throw new ContinuumException( "Error while updating project.", ex );
         }
     }
 
@@ -331,27 +297,25 @@ public class DefaultContinuum
         {
             ContinuumProject project = store.getProject( projectId );
 
-            getLogger().info( "Enqueuing '" + project.getName() + "'." );
+            ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
-            String buildId = store.createBuild( project.getId() );
+            builder.build( new File( project.getWorkingDirectory() ), project );
 
-            getLogger().info( "Build id: '" + buildId + "'." );
+            //String buildId = store.createBuild( project.getId() );
 
-            buildQueue.enqueue( projectId, buildId );
+            String buildId = "100";
+
+            getLogger().info( "Enqueuing " + project.getName() + ", projet projectId: " + project.getId() + ", build projectId: " + buildId + "..." );
+
+            //buildQueue.enqueue( buildId );
 
             return buildId;
         }
-        catch ( ContinuumStoreException e )
+        catch ( ContinuumStoreException ex )
         {
-            getLogger().error( "Error while building project.", e );
+            getLogger().error( "Exception while building project.", ex );
 
-            throw new ContinuumException( "Error while creating build object.", e );
-        }
-        catch ( BuildQueueException e )
-        {
-            getLogger().error( "Error while enqueuing project.", e );
-
-            throw new ContinuumException( "Error while creating enqueuing object.", e );
+            throw new ContinuumException( "Exception while creating build object.", ex );
         }
     }
 
@@ -383,11 +347,17 @@ public class DefaultContinuum
         }
     }
 
+    public int getBuildQueueLength()
+        throws ContinuumException
+    {
+        return buildQueue.getLength();
+    }
+
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    private ContinuumProject addProjectAndCheckOutSources( ContinuumProject project, String builderType )
+    private ContinuumProject addProject( ContinuumProject project, String builderType )
         throws ContinuumException
     {
         try
@@ -396,21 +366,12 @@ public class DefaultContinuum
             // Store the project
             // ----------------------------------------------------------------------
 
-            if ( StringUtils.isEmpty( project.getName() ) )
-            {
-                throw new ContinuumException( "The name of the project cannot be empty" );
-            }
-
             File projectWorkingDirectory = new File( workingDirectory, project.getName().replace( ' ', '-' ) );
 
             if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
             {
                 throw new ContinuumException( "Could not make the working directory for the project (" + projectWorkingDirectory.getAbsolutePath() + ")." );
             }
-
-            project.setWorkingDirectory( projectWorkingDirectory.getAbsolutePath() );
-
-            scm.checkOutProject( project );
 
             String projectId = store.addProject( project.getName(),
                                                  project.getScmUrl(),
@@ -421,6 +382,10 @@ public class DefaultContinuum
                                                  project.getConfiguration() );
 
             project = store.getProject( projectId );
+
+            System.out.println( project );
+
+            scm.checkOutProject( project );
 
             return project;
         }
@@ -438,86 +403,30 @@ public class DefaultContinuum
         }
     }
 
-    private void doTempCheckOut( ContinuumProject project )
-        throws ContinuumException
-    {
-        File checkoutDirectory = new File( workingDirectory, "temp-project" );
-
-        if ( checkoutDirectory.exists() )
-        {
-            try
-            {
-                FileUtils.cleanDirectory( checkoutDirectory );
-            }
-            catch ( IOException ex )
-            {
-                throw new ContinuumException( "Error while cleaning out " + checkoutDirectory.getAbsolutePath() );
-            }
-        }
-        else
-        {
-            if ( !checkoutDirectory.mkdirs() )
-            {
-                throw new ContinuumException( "Could not make the check out directory (" + checkoutDirectory.getAbsolutePath() + ")." );
-            }
-        }
-
-        // TODO: Get the list of files to check out from the builder.
-        // Maven 2: pom.xml, Maven 1: project.xml, Ant: all? build.xml?
-
-        try
-        {
-            scm.checkOut( project, checkoutDirectory);
-        }
-        catch ( ContinuumScmException ex )
-        {
-            throw new ContinuumException( "Error while checking out the project.", ex );
-        }
-    }
-
-    private void updateProjectFromCheckOut( ContinuumProject project )
-        throws ContinuumException
-    {
-        // ----------------------------------------------------------------------
-        // Make a new descriptor
-        // ----------------------------------------------------------------------
-
-        ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
-
-        String id = project.getId();
-
-        builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
-
-        // ----------------------------------------------------------------------
-        // Store the new descriptor
-        // ----------------------------------------------------------------------
-
-        try
-        {
-            store.updateProject( id,
-                                 project.getName(),
-                                 project.getScmUrl(),
-                                 project.getNagEmailAddress(),
-                                 project.getVersion() );
-
-            store.updateProjectConfiguration( id, project.getConfiguration() );
-        }
-        catch ( ContinuumStoreException e )
-        {
-            throw new ContinuumException( "Error while storing the updated project.", e );
-        }
-
-        getLogger().info( "Updated project: " + project.getName() );
-    }
-
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
+    public void contextualize( Context context )
+        throws Exception
+    {
+        plexusHome = (String) context.get( "plexus.home" );
+
+        container = (DefaultPlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+    }
+
     public void initialize()
         throws Exception
     {
-        getLogger().info( "Initializing Continuum." );
+        getLogger().info( "Initializing continuum." );
+
+        PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
+
+        PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
+
+        PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
+
+        PlexusUtils.assertConfiguration( workingDirectory, "working-directory" );
 
         File wdFile = new File( workingDirectory );
 
@@ -549,7 +458,7 @@ public class DefaultContinuum
     public void start()
         throws Exception
     {
-        getLogger().info( "Starting Continuum." );
+        getLogger().info( "Starting continuum." );
 
         // start the builder thread
         builderThread = new BuilderThread( buildController, buildQueue, getLogger() );
@@ -560,43 +469,11 @@ public class DefaultContinuum
 
         builderThreadThread.start();
 
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
-
-        PlexusUtils.assertConfiguration( appHome, "app-home" );
-
-        // check to see if the tables exists or not.
-        File file = new File( appHome, "continuum.properties" );
-
-        Properties properties = new Properties();
-
-        if ( !file.exists() )
-        {
-            initializeStore( file );
-        }
-        else
-        {
-            properties.load( new FileInputStream( file ) );
-
-            String state = properties.getProperty( DATABASE_INITIALIZED );
-
-            if ( !state.equals( "true" ) )
-            {
-                initializeStore( file );
-            }
-        }
-
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
-        String banner = StringUtils.repeat( "-", CONTINUUM_VERSION.length() );
+        String banner = StringUtils.repeat( "-", continuumVersion.length() );
 
         getLogger().info( "" );
         getLogger().info( "" );
-        getLogger().info( "< Continuum " + CONTINUUM_VERSION + " started! >" );
+        getLogger().info( "< Continuum " + continuumVersion + " started! >" );
         getLogger().info( "-----------------------" + banner );
         getLogger().info( "       \\   ^__^" );
         getLogger().info( "        \\  (oo)\\_______" );
@@ -614,7 +491,7 @@ public class DefaultContinuum
         int interval = 1000;
         int slept = 0;
 
-        getLogger().info( "Stopping Continuum." );
+        getLogger().info( "Stopping continuum." );
 
         // signal the thread to stop
         builderThread.shutdown();
@@ -625,12 +502,12 @@ public class DefaultContinuum
         {
             if ( slept > maxSleep )
             {
-                getLogger().warn( "Timeout, stopping Continuum." );
+                getLogger().warn( "Timeout, stopping continuum." );
 
                 break;
             }
 
-            getLogger().info( "Waiting until Continuum is idling..." );
+            getLogger().info( "Waiting until continuum is idling..." );
 
             try
             {
@@ -649,19 +526,5 @@ public class DefaultContinuum
         }
 
         getLogger().info( "Continuum stopped." );
-    }
-
-    private void initializeStore( File file )
-        throws Exception
-    {
-        Properties properties = new Properties();
-
-        getLogger().warn( "This system isn't configured. Configuring." );
-
-        store.createDatabase();
-
-        properties.setProperty( DATABASE_INITIALIZED, "true" );
-
-        properties.store( new FileOutputStream( file ), null );
     }
 }

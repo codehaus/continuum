@@ -1,19 +1,27 @@
 package org.codehaus.continuum.scm;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import org.apache.maven.scm.ScmException;
@@ -23,9 +31,8 @@ import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
-
-import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
@@ -33,13 +40,15 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.6 2005-03-21 12:53:32 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.1.1.1 2005-02-17 22:23:52 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
     implements ContinuumScm, Initializable
 {
-    /** @requirement */
+    /**
+     * @requirement
+     */
     private ScmManager scmManager;
 
     // ----------------------------------------------------------------------
@@ -56,16 +65,12 @@ public class DefaultContinuumScm
     // ContinuumScm implementation
     // ----------------------------------------------------------------------
 
-    public void checkOut( ContinuumProject project, File workingDirectory )
+    public void checkOut( File workingDirectory, String scmUrl )
         throws ContinuumScmException
     {
         try
         {
-            getLogger().info( "Checking out project: '" + project.getName() + "', " +
-                              "id: '" + project.getId() + "' " +
-                              "to '" + workingDirectory + "'." );
-
-            ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
 
             CheckOutScmResult result;
 
@@ -88,12 +93,6 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
-                getLogger().warn( "Error while checking out the code for project: '" + project.getName() + "', id: '" + project.getId() + "' to '" + workingDirectory.getAbsolutePath() + "'." );
-
-                getLogger().warn( "Command output: " + result.getCommandOutput() );
-
-                getLogger().warn( "Provider message: " + result.getProviderMessage());
-
                 throw new ContinuumScmException( "Error while checking out the project.", result );
             }
         }
@@ -116,14 +115,14 @@ public class DefaultContinuumScm
     public void checkOutProject( ContinuumProject project )
         throws ContinuumScmException
     {
-        String workingDirectory = project.getWorkingDirectory();
+        String wd = project.getWorkingDirectory();
 
-        if ( workingDirectory == null )
+        if ( wd == null )
         {
-            throw new ContinuumScmException( "The working directory for the project has to be set. Project: '" + project.getName() + "', id: '" + project.getId() + "'.");
+            throw new ContinuumScmException( "The working directory for the project has to be set." );
         }
 
-        checkOut( project, new File( workingDirectory ) );
+        checkOut( new File( wd ), project.getScmUrl() );
     }
 
     /**
@@ -137,11 +136,9 @@ public class DefaultContinuumScm
     {
         try
         {
-            getLogger().info( "Updating project: id: '" + project.getId() + "', name '" + project.getName() + "'." );
-
             File workingDirectory = new File( project.getWorkingDirectory() );
 
-            getLogger().info( "Working directory '" + workingDirectory.getAbsolutePath() + "'." );
+            getLogger().info( workingDirectory.getAbsolutePath() );
 
             if ( !workingDirectory.exists() )
             {
@@ -163,13 +160,7 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
-                getLogger().warn( "Error while updating the code for project: '" + project.getName() + "', id: '" + project.getId() + "' to '" + workingDirectory.getAbsolutePath() + "'." );
-
-                getLogger().warn( "Command output: " + result.getCommandOutput() );
-
-                getLogger().warn( "Provider message: " + result.getProviderMessage() );
-
-                throw new ContinuumScmException( "Error while checking out the project.", result );
+                throw new ContinuumScmException( "Error while updating project.", result );
             }
 
             return result.getUpdatedFiles().size() > 0;

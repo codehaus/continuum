@@ -1,13 +1,13 @@
-<model>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>continuum-parent</artifactId>
     <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
-  <artifactId>continuum-site</artifactId>
-  <packaging>jar</packaging>
-  <name>Continuum Site</name>
+  <artifactId>continuum-core</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-</model>
+  <name>Continuum Site</name>
+</project>

@@ -21,7 +21,7 @@ import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumXmlRpc.java,v 1.4 2005-03-28 16:06:14 trygvis Exp $
+ * @version $Id: ContinuumXmlRpc.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
  */
 public interface ContinuumXmlRpc
 {
@@ -31,28 +31,28 @@ public interface ContinuumXmlRpc
     //
     // ----------------------------------------------------------------------
 
-    Hashtable addProjectFromUrl( String url, String builderType );
+    String addProjectFromUrl( String url, String builderType )
+        throws Exception;
 
-    Hashtable addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
-                              String version, Hashtable configuration );
+    String addProjectFromUrl( String scmUrl, String builderType, String projectName, String nagEmailAddress,
+                              String version, Hashtable configuration )
+        throws Exception;
 
-    Hashtable getProject( String projectId );
+    Hashtable getProject( String projectId )
+        throws Exception;
 
-    Hashtable updateProjectFromScm( String projectId );
-
-    Hashtable updateProjectConfiguration( String projectId, Hashtable configuration );
-
-    Hashtable getAllProjects();
-
+    Vector getAllProjects()
+        throws Exception;
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    Hashtable buildProject( String projectId );
+    String buildProject( String projectId )
+        throws Exception;
 
-    Hashtable getBuildsForProject( String projectId, int start, int end );
+    Vector getBuildsForProject( String projectId, int start, int end )
+        throws Exception;
 
-    Hashtable getBuild( String buildId );
-
-    Hashtable getBuildResult( String buildId );
+    Hashtable getBuild( String buildId )
+        throws Exception;
 }

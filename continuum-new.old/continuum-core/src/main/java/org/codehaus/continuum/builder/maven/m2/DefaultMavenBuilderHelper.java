@@ -1,71 +1,55 @@
 package org.codehaus.continuum.builder.maven.m2;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+import org.apache.maven.model.CiManagement;
+import org.apache.maven.model.Scm;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.DefaultContinuumProject;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Properties;
-
-import org.apache.maven.model.CiManagement;
-import org.apache.maven.model.Notifier;
-import org.apache.maven.model.Scm;
-import org.apache.maven.model.Repository;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
-import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
-import org.apache.maven.settings.MavenSettings;
-import org.apache.maven.settings.MavenSettingsBuilder;
-
-import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.7 2005-03-28 12:11:43 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
 {
-    /** @requirement */
     private MavenProjectBuilder projectBuilder;
-
-    /** @requirement */
-    private ArtifactRepositoryFactory artifactRepositoryFactory;
-
-    /** @requirement */
-    private MavenSettingsBuilder settingsBuilder;
-
-    /** @requirement */
-    private ArtifactRepositoryLayout repositoryLayout;
-
-    /** @configuration */
-    private String localRepository;
-
-    // ----------------------------------------------------------------------
-    // MavenBuilderHelper Implementation
-    // ----------------------------------------------------------------------
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
@@ -74,13 +58,17 @@ public class DefaultMavenBuilderHelper
         // We need to roll the project data into a file so that we can use it
         // ----------------------------------------------------------------------
 
-        ContinuumProject project = new ContinuumProject();
+        ContinuumProject project = new DefaultContinuumProject();
 
         try
         {
-            File file = createMetadataFile( metadata );
+            File f = createMetadataFile( metadata );
 
-            mapMetadataToProject( file, project );
+            mapMetadataToProject( f, project );
+
+            project.setState( ContinuumProjectState.NEW );
+
+            project.setBuilderId( "maven2" );
         }
         catch ( Exception e )
         {
@@ -97,51 +85,6 @@ public class DefaultMavenBuilderHelper
 
         mapMetadataToProject( f, project );
     }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    public String getProjectName( MavenProject project )
-    {
-        String name = project.getName();
-
-        if ( StringUtils.isEmpty( name ) )
-        {
-            name = project.getGroupId() + ":" + project.getArtifactId();
-        }
-
-        return name;
-    }
-
-    public String getScmUrl( MavenProject project )
-    {
-        return project.getScm().getConnection();
-    }
-
-    public String getNagEmailAddress( MavenProject project )
-    {
-        for ( Iterator it = project.getCiManagement().getNotifiers().iterator(); it.hasNext(); )
-        {
-            Notifier notifier = (Notifier) it.next();
-
-            if ( notifier.getType().equals( "mail" ) )
-            {
-                return notifier.getAddress();
-            }
-        }
-
-        return null;
-    }
-
-    public String getVersion( MavenProject project )
-    {
-        return project.getVersion();
-    }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
 
     protected File createMetadataFile( URL metadata )
         throws ContinuumException
@@ -168,35 +111,37 @@ public class DefaultMavenBuilderHelper
         }
     }
 
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     protected void mapMetadataToProject( File metadata, ContinuumProject project )
         throws ContinuumException
     {
         MavenProject mavenProject = getProject( metadata );
 
-        project.setNagEmailAddress( getNagEmailAddress( mavenProject ) );
+        //project.setId( mavenProject.getId() );
 
-        project.setName( getProjectName( mavenProject ) );
+        project.setNagEmailAddress( mavenProject.getCiManagement().getNagEmailAddress() );
 
-        project.setScmUrl( getScmUrl( mavenProject ) );
+        project.setName( mavenProject.getName() );
 
-        project.setVersion( getVersion( mavenProject ) );
+        project.setScmUrl( mavenProject.getScm().getConnection() );
 
-        Properties configuration = project.getConfiguration();
-
-        if ( !configuration.containsKey( MavenShellBuilder.CONFIGURATION_GOALS ) )
-        {
-            configuration.setProperty( MavenShellBuilder.CONFIGURATION_GOALS, "clean:clean, install" );
-        }
+        project.setVersion( mavenProject.getVersion() );
     }
 
     protected MavenProject getProject( File file )
         throws ContinuumException
     {
+        ArtifactRepository r = new ArtifactRepository( "local", "file:///home/jvanzyl/maven-repo-local" );
+
         MavenProject project = null;
 
         try
         {
-            project = projectBuilder.build( file, getRepository() );
+            project = projectBuilder.build( file, r );
         }
         catch ( ProjectBuildingException e )
         {
@@ -204,7 +149,7 @@ public class DefaultMavenBuilderHelper
         }
 
         // ----------------------------------------------------------------------
-        // Validate the MavenProject using some Continuum rules
+        // Validate the MavenProject after some Continuum rules
         // ----------------------------------------------------------------------
 
         // Nag email address
@@ -215,7 +160,7 @@ public class DefaultMavenBuilderHelper
             throw new ContinuumException( "Missing CiManagement from the project descriptor." );
         }
 
-        if ( StringUtils.isEmpty( getNagEmailAddress( project ) ) )
+        if ( StringUtils.isEmpty( ciManagement.getNagEmailAddress() ) )
         {
             throw new ContinuumException( "Missing nag email address from the continuous integration info." );
         }
@@ -244,26 +189,30 @@ public class DefaultMavenBuilderHelper
         return project;
     }
 
-    private ArtifactRepository getRepository()
-        throws ContinuumException
+    public String getProjectName( MavenProject project )
     {
-        MavenSettings settings;
+        String name = project.getName();
 
-        try
+        if ( StringUtils.isEmpty( name ) )
         {
-            settings = settingsBuilder.buildSettings();
-        }
-        catch ( Exception e )
-        {
-            throw new ContinuumException( "Error while building settings.", e );
+            name = project.getGroupId() + ":" + project.getArtifactId();
         }
 
-        Repository repository = new Repository();
+        return name;
+    }
 
-        repository.setId( "local" );
+    public String getScmUrl( MavenProject project )
+    {
+        return project.getScm().getConnection();
+    }
 
-        repository.setUrl( "file://" + localRepository );
+    public String getNagEmailAddress( MavenProject project )
+    {
+        return project.getCiManagement().getNagEmailAddress();
+    }
 
-        return artifactRepositoryFactory.createArtifactRepository( repository, settings, repositoryLayout );
+    public String getVersion( MavenProject project )
+    {
+        return project.getVersion();
     }
 }

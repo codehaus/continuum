@@ -1,131 +1,110 @@
 package org.codehaus.continuum.builder.shell;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
-import java.io.File;
-import java.net.URL;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
+
+import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.9 2005-03-28 14:10:58 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.1.1.1 2005-02-17 22:23:50 trygvis Exp $
  */
-public class ShellBuilder
+public abstract class ShellBuilder
     extends AbstractContinuumBuilder
 {
-    private static final String CONFIGURATION_SCRIPT = "script";
-
-    public final static String CONFIGURATION_ARGUMENTS = "arguments";
-
-    /** @requirement */
-    private ShellCommandHelper shellCommandHelper;
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    protected String getExecutable( ContinuumProject project )
-        throws ContinuumException
-    {
-        return getConfigurationString( project.getConfiguration(), CONFIGURATION_SCRIPT );
-    }
-
-    protected String[] getArguments( ContinuumProject project )
-        throws ContinuumException
-    {
-        return getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_ARGUMENTS, " ", new String[ 0 ] );
-    }
+    protected String shellCommand;
 
     // ----------------------------------------------------------------------
     // ContinuumBuilder implementation
     // ----------------------------------------------------------------------
 
-    public synchronized ContinuumBuildResult build( ContinuumProject project )
+    public synchronized ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
-        File workingDirectory = new File( project.getWorkingDirectory() );
+        Commandline cl = createCommandline( workingDirectory, project );
 
-        ExecutionResult executionResult;
+        CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
 
-        String executable = getExecutable( project );
+        CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
 
-        String[] arguments = getArguments( project );
+        int exitCode;
+
+        getLogger().info( "executing: " + cl );
 
         try
         {
-            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, executable, arguments );
+            exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
         }
-        catch ( Exception e )
+        catch ( Exception ex )
         {
-            throw new ContinuumException( "Error while executing shell command.", e );
+            throw new ContinuumException( "Error while executing command.", ex );
         }
 
-        boolean success = executionResult.getExitCode() == 0;
+        String out = stdout.getOutput();
 
-        ShellBuildResult result = new ShellBuildResult();
+        String err = stderr.getOutput();
 
-        result.setSuccess( success );
+        boolean success = exitCode == 0;
 
-        result.setStandardOutput( executionResult.getStandardOutput() );
+        if ( project != null )
+        {
+            ShellBuildResult result = new ShellBuildResult( success, out, err, exitCode );
 
-        result.setStandardError( executionResult.getStandardError() );
-
-        result.setExitCode( executionResult.getExitCode() );
-
-        return result;
+            return result;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public ContinuumProject createProjectFromMetadata( URL metadata )
-        throws ContinuumException
-    {
-        throw new ContinuumException( "The Ant builder cannot create metadata from a URL." );
-    }
-
-    public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
-        throws ContinuumException
-    {
-        // Not much to do.
-    }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    protected Commandline createCommandline( ContinuumProject project, String executable, String[] arguments )
+    protected Commandline createCommandline( File workingDirectory, ContinuumProject project )
     {
         Commandline cl = new Commandline();
 
-        cl.setExecutable( executable );
+        String[] s = StringUtils.split( shellCommand );
 
-        cl.setWorkingDirectory( new File( project.getWorkingDirectory() ).getAbsolutePath() );
+        cl.setExecutable( s[0] );
 
-        for ( int i = 1; i < arguments.length; i++ )
+        cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
+
+        for ( int i = 1; i < s.length; i++ )
         {
-            cl.createArgument().setValue( arguments[i] );
+            cl.createArgument().setValue( s[i] );
         }
 
-        getLogger().warn( "Executing external command '" + executable + "'." );
+        getLogger().warn( "Executing external maven. Commandline: " + shellCommand );
 
-        getLogger().warn( "Executing external command. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
+        getLogger().warn( "Executing external maven. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
 
         return cl;
     }

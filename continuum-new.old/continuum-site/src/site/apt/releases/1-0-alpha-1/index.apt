@@ -1,7 +1,7 @@
  -----
  Continuum 1.0 Alpha 1
  -----
- Trygve Laugst&oslash;l
+ Trygve Laugstøl
  -----
 
 Installing Continuum
@@ -27,7 +27,7 @@ from the host running continuum!
 This will in most cases be the standard port for SMTP servers; 25.
 
  [<<< <from> >>>] If set this value will be used as the from address for all
-notification mails sent. If not set the nag email address for the project
+notification mails sent. If not set the nag email address for the project 
 will be used.
 
  [<<< <to> >>>] If set this value will be used as the to address for all
@@ -46,7 +46,7 @@ interval. It has two parameters that can be configured:
 
 *Setting up the database
 
- Continuum is using hibernate as it's persistence layer and the hibernate
+ Continuum is using hibernate as it's persistence layer and the hibernate 
 configuration is in <<<apps/continuumweb/resources/hibernate.cfg.xml>>>.
 
  This is a normal hibernate configuration file and the different configuration
@@ -61,7 +61,7 @@ configuration file as a argument.
 tables and create them again. This means that you will loose all data and will
 have to register all the projects all over again.
 
- [<<<continuum-createDdl>>>] This util will simply create a file with both
+ [<<<continuum-createDdl>>>] This util will simply create a file with both 
 <<<DROP TABLE>>> and <<<CREATE TABLE>>> statements that will clean and recreate
 a database.
 

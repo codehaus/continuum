@@ -1,12 +1,13 @@
-<model>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>continuum-project1</artifactId>
-  <packaging>jar</packaging>
-  <name>Continuum Test Project 1</name>
   <version>1.0</version>
+  <name>Continuum Test Project 1</name>
   <scm>
     <connection>scm:cvs:local:ignored:/cvs/root:project1</connection>
     <url>http://cvs.plexus.codehaus.org/plexus-components/native/continuum/src/test-projects/project1</url>
   </scm>
-</model>
+</project>

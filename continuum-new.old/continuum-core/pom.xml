@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>continuum-parent</artifactId>
     <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
@@ -11,128 +12,53 @@
   <name>Continuum Core</name>
   <dependencies>
     <dependency>
-      <groupId>continuum</groupId>
-      <artifactId>continuum-model</artifactId>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-provider-local</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
-
-    <!--
-     |
-     | Plexus Dependencies
-     |
-     |-->
+    <!-- Maven builder -->
     <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-jdo</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
+      <groupId>maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-velocity</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-taskqueue</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-notification</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
+    <!-- Mail sender -->
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-api</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
-
-    <!--
-     |
-     | Maven Dependencies
-     |
-     |-->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>wagon-provider-api</artifactId>
-      <version>1.0-alpha-2-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-scm-api</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>jdo</groupId>
-      <artifactId>jdo</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>1.4</version>
-    </dependency>
-
-    <!--
-     |
-     | Test Dependencies
-     |
-     |-->
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-scm-provider-local</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-simple</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-mail-sender-test</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
+    <!-- Maven SCM -->
     <dependency>
-      <groupId>jpox</groupId>
-      <artifactId>jpox</artifactId>
-      <version>1.0.4</version>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-api</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
+    <!-- Store -->
     <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.7.3.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>7.4.1-jdbc3</version>
-      <scope>test</scope>
-    </dependency>
+      <groupId>obie</groupId>
+      <artifactId>stash</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>    
   </dependencies>
+  <plugins>
+    <plugin>
+      <id>modello</id>
+      <configuration>
+        <version>1.0</version>
+        <model>src/main/resources/continuum.mdo</model>
+        <packageWithVersion>false</packageWithVersion>
+      </configuration>
+    </plugin>
+  </plugins>
 </project>

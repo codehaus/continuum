@@ -56,7 +56,7 @@ Verbatim text not contained in list item 3
 
 +-------------------------------+
 Verbatim text
-                        in a box
+                        in a box        
 +-------------------------------+
 
   --- instead of +-- suppresses the box around verbatim text.
@@ -88,7 +88,7 @@ Table caption
 
   <Italic> font. <<Bold>> font. <<<Monospaced>>> font.
 
-  {Anchor}. Link to {{anchor}}. Link to {{http://www.pixware.fr}}.
+  {Anchor}. Link to {{anchor}}. Link to {{http://www.pixware.fr}}. 
   Link to {{{anchor}showing alternate text}}.
   Link to {{{http://www.pixware.fr}Pixware home page}}.
 

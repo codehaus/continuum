@@ -1,47 +1,44 @@
 package org.codehaus.continuum.builder.maven.m2;
 
 /*
- * Copyright 2004-2005 The Apache Software Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.builder.shell.ShellBuilder;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.continuum.project.ContinuumProject;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.8 2005-03-28 15:35:48 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
 {
-    public final static String CONFIGURATION_GOALS = "goals";
-
-    /** @requirement */
     private MavenBuilderHelper builderHelper;
-
-    /** @configuration */
-    private String executable;
-
-    /** @configuration */
-    private String arguments;
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
@@ -49,33 +46,9 @@ public class MavenShellBuilder
         return builderHelper.createProjectFromMetadata( metadata );
     }
 
-    public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
+    public void updateProjectFromMetadata( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
         builderHelper.updateProjectFromMetadata( workingDirectory, project );
-    }
-
-    protected String getExecutable( ContinuumProject project )
-        throws ContinuumException
-    {
-        return executable;
-    }
-
-    protected String[] getArguments( ContinuumProject project )
-        throws ContinuumException
-    {
-        String[] a = splitAndTrimString( this.arguments, " " );
-
-        String[] goals = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS, "," );
-
-        String[] arguments = new String[ a.length + goals.length ];
-
-        System.arraycopy( a, 0, arguments, 0, a.length );
-
-        System.arraycopy( goals, 0, arguments, a.length, goals.length );
-
-        System.err.println( "arguments: " + Arrays.asList( arguments ) );
-
-        return arguments;
     }
 }

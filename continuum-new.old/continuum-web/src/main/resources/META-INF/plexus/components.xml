@@ -10,146 +10,26 @@
     <component>
       <role>org.codehaus.plexus.summit.pipeline.Pipeline</role>
       <implementation>org.codehaus.plexus.summit.pipeline.SummitPipeline</implementation>
-      <lifecycle-handler>plexus-configurable</lifecycle-handler>
       <configuration>
         <valves>
-          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
-          <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
-          <valve>org.codehaus.plexus.action.web.ActionValve</valve>
-          <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
-          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</valve>
-          <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
-          <valve>org.codehaus.plexus.summit.pull.PullToolValve</valve>
-          <valve>org.codehaus.plexus.summit.pipeline.valve.DisplayValve</valve>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve"/>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.LoginValve"/>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ActionValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.ResolverValve"/>
+          <value implementation="org.codehaus.plexus.summit.pull.PullToolValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DisplayValve"/>
         </valves>
       </configuration>
     </component>
 
-    <!--
-     |
-     | Customized PullTools Service
-     |
-     -->
-
     <component>
-      <role>org.codehaus.plexus.summit.pull.PullService</role>
-      <implementation>org.codehaus.plexus.summit.pull.DefaultPullService</implementation>
-      <configuration>
-        <tools>
-          <tool>
-            <name>link</name>
-            <role>linktool</role>
-            <scope>request</scope>
-          </tool>
-          <tool>
-            <name>css</name>
-            <role>csstool</role>
-            <scope>request</scope>
-          </tool>
-          <tool>
-            <name>i18n</name>
-            <role>org.codehaus.plexus.i18n.I18N</role>
-            <scope>global</scope>
-          </tool>
-        </tools>
-      </configuration>
-    </component>
-
-    <component>
-      <role>csstool</role>
-      <implementation>org.codehaus.continuum.web.tool.CssTool</implementation>
-      <instantiation-strategy>per-lookup</instantiation-strategy>
-      <configuration/>
-    </component>
-
-    <!--
-     |
-     | Valves
-     |
-     |-->
-
-    <component>
-      <role>org.codehaus.continuum.web.context.ViewContextPopulator</role>
-      <implementation>org.codehaus.continuum.web.context.DefaultViewContextPopulator</implementation>
-      <configuration>
-        <views>
-          <view>
-            <id>projectOverview</id>
-            <scalars>
-              <scalar>
-                <id>projects</id>
-                <expression>getProjects()</expression>
-              </scalar>
-            </scalars>
-          </view>
-          <view>
-            <id>projectDetails</id>
-            <scalars>
-              <scalar>
-                <id>project</id>
-                <expression>getProject(#id)</expression>
-              </scalar>
-              <scalar>
-                <id>latestBuild</id>
-                <expression>getLatestBuildForProject(#id)</expression>
-              </scalar>
-            </scalars>
-          </view>
-          <view>
-            <id>editProject</id>
-            <scalars>
-              <scalar>
-                <id>project</id>
-                <expression>getProject(#id)</expression>
-              </scalar>
-            </scalars>
-          </view>
-          <view>
-            <id>confirmRemoveProject</id>
-            <scalars>
-              <scalar>
-                <id>project</id>
-                <expression>getProject(#id)</expression>
-              </scalar>
-            </scalars>
-          </view>
-        </views>
-      </configuration>
-    </component>
-
-    <component>
-      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
-      <role-hint>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</role-hint>
-      <implementation>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</implementation>
+      <role>org.codehaus.continuum.web.action.ActionManager</role>
+      <implementation>org.codehaus.continuum.web.action.DefaultActionManager</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.web.context.ViewContextPopulator</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.Continuum</role>
-        </requirement>
-      </requirements>
-    </component>
-
-    <component>
-      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
-      <role-hint>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</role-hint>
-      <implementation>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
-      <role-hint>org.codehaus.continuum.web.pipeline.valve.LoginValve</role-hint>
-      <implementation>org.codehaus.continuum.web.pipeline.valve.LoginValve</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
-      <role-hint>org.codehaus.continuum.web.pipeline.valve.ActionValve</role-hint>
-      <implementation>org.codehaus.continuum.web.pipeline.valve.ActionValve</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.web.action.ActionManager</role>
+          <field-name>actions</field-name>
+          <role>org.codehaus.continuum.web.action.Action</role>
         </requirement>
       </requirements>
     </component>
@@ -160,10 +40,117 @@
      |
      |-->
 
+    <!-- login -->
     <component>
-      <role>org.codehaus.plexus.action.Action</role>
+      <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>login</role-hint>
       <implementation>org.codehaus.continuum.web.action.Login</implementation>
+    </component>
+
+    <!-- addProjectPomUrl -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addProjectPomUrl</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
+    </component>
+
+    <!-- showProjects -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProjects</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProjects</implementation>
+    </component>
+
+    <!-- showProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProject</implementation>
+    </component>
+
+    <!-- updateProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>updateProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
+    </component>
+
+    <!-- updateProjectDescriptor -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>updateProjectDescriptor</role-hint>
+      <implementation>org.codehaus.continuum.web.action.UpdateProjectDescriptor</implementation>
+    </component>
+
+    <!-- removeProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>removeProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
+    </component>
+
+    <!-- showProjectBuilds -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProjectBuilds</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProjectBuilds</implementation>
+    </component>
+
+    <!-- showExternalMaven2BuildResult -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showExternalMaven2BuildResult</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowExternalMaven2BuildResultAction</implementation>
+    </component>
+
+    <!-- enqueueProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>enqueueProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.EnqueueProject</implementation>
+    </component>
+
+    <!--
+     |
+     | Socket listeners
+     |
+     -->
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>url-registrar-server</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>url-registrar</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>6790</port>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <role-hint>scm-registrar</role-hint>
+      <implementation>org.codehaus.continuum.registration.socket.ScmSocketRegistrar</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <role-hint>url-registrar</role-hint>
+      <implementation>org.codehaus.continuum.registration.socket.UrlSocketRegistrar</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
     </component>
 
   </components>

@@ -1,13 +1,13 @@
  -----
  Continuum
  -----
- Trygve Laugst&oslash;l
+ Trygve Laugstøl
  -----
 
 What is it?
 
- Continuum is a continous intergration server for building Java based
-projects. Currently it only supports Maven 2 projects.
+ Continuum is a continous intergration server for building java based
+projects. Currently it only supports maven 2 projects.
 
 Contact us
 
@@ -21,4 +21,4 @@ Releases
 
  * {{{releases/1-0-alpha-1/index.html}1.0-alpha-1}}
 
-~~ * {{{releases/1.0-alpha-2/index.html}1.0-alpha-2}}
+ * {{{releases/1.0-alpha-2/index.html}1.0-alpha-2}}
