@@ -1,0 +1,35 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2004.06.24.00.25.24;	author trygvis;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@*** empty log message ***
+@
+text
+@<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
+  <artifactId>continuum-project2</artifactId>
+  <groupId>plexus</groupId>
+  <version>1.0</version>
+  <name>Continuum Test Project 2</name>
+  <scm>
+    <connection>scm:cvs:local:ignores:/cvs/root:project2</connection>
+    <url>http://cvs.plexus.codehaus.org/plexus-components/native/continuum/src/test-projects/project2</url>
+  </scm>
+</project>
+@

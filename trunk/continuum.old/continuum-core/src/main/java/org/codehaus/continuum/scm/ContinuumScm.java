@@ -8,13 +8,16 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.3 2004-06-27 19:28:43 trygvis Exp $
  */
 public interface ContinuumScm
 {
-    String checkout( MavenProject project, String checkoutDirectory )
+    void clean( MavenProject project )
         throws ContinuumException;
 
-    String update( MavenProject project, String checkoutDirectory )
+    String checkout( MavenProject project )
+        throws ContinuumException;
+
+    String update( MavenProject project )
         throws ContinuumException;
 }

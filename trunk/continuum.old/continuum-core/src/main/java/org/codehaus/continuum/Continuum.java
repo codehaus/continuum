@@ -2,13 +2,15 @@ package org.codehaus.continuum;
 
 import java.util.List;
 
+import org.apache.maven.project.MavenProject;
+
 public interface Continuum
 {
     String ROLE = Continuum.class.getName();
-/*
+
     void addProject( MavenProject project )
         throws ContinuumException;
-*/
+
     /**
      * Adds the project. Continuum will download the project and
      * persist it.
@@ -16,9 +18,10 @@ public interface Continuum
      * @param url
      * @throws ContinuumException
      */
+/*
     void addProject( String url )
         throws ContinuumException;
-
+*/
     /**
      * Signals continuum to build a specific project.
      *

@@ -69,13 +69,13 @@
   </mailingLists>
 
   <dependencies>
-
+<!--
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.0-SNAPSHOT</version>
     </dependency>
-
+-->
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-model</artifactId>
@@ -83,15 +83,27 @@
     </dependency>
 
     <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus</artifactId>
-      <version>0.14-SNAPSHOT</version>
+      <groupId>maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>2.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0-SNAPSHOT</version>
+    </dependency>
+<!-- -->
     <dependency>
       <groupId>avalon</groupId>
       <artifactId>avalon-framework</artifactId>
       <version>4.1.4</version>
+    </dependency>
+<!-- -->
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus</artifactId>
+      <version>0.14-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -130,7 +142,7 @@
     <nagEmailAddress>dev@continuum.codehaus.org</nagEmailAddress>
     <sourceDirectory>src/main/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
-<!--
+<!-- -->
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
@@ -141,46 +153,24 @@
 
       <resources>
         <resource>
-          <directory>src/test</directory>
+          <directory>src/test/java</directory>
           <includes>
             <include>**/*.xml</include>
-            <include>**/*.xsd</include>
-            <include>**/*.vm</include>
-            <include>**/*.txt</include>
-            <include>**/*.properties</include>
           </includes>
         </resource>
       </resources>
-    </unitTest>
 
+      <resources>
+        <resource>
+          <directory>src/test/resources</directory>
+        </resource>
+      </resources>
+    </unitTest>
     <resources>
       <resource>
-       <directory>src/main</directory>
-        <includes>
-          <include>**/*.properties</include>
-          <include>**/*.vsl</include>
-          <include>**/*.css</include>
-          <include>**/*.gif</include>
-          <include>**/*.xml</include>
-        </includes>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
--->
   </build>
-<!--
-  <reports>
-    <report>maven-changelog-plugin</report>
-    <report>maven-changes-plugin</report>
-    <report>maven-checkstyle-plugin</report>
-    <report>maven-developer-activity-plugin</report>
-    <report>maven-file-activity-plugin</report>
-    <report>maven-javadoc-plugin</report>
-    <report>maven-jdepend-plugin</report>
-    <report>maven-jcoverage-plugin</report>
-    <report>maven-junit-report-plugin</report>
-    <report>maven-jxr-plugin</report>
-    <report>maven-license-plugin</report>
-  </reports>
--->
 
 </project>

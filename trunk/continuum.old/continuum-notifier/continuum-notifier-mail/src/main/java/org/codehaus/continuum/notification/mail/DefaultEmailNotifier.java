@@ -17,7 +17,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultEmailNotifier.java,v 1.5 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: DefaultEmailNotifier.java,v 1.6 2004-06-27 19:28:45 trygvis Exp $
  */
 public class DefaultEmailNotifier
     extends AbstractLogEnabled
@@ -182,7 +182,7 @@ public class DefaultEmailNotifier
         if ( from != null )
             return from;
 
-        address = StringUtils.trim( project.getBuild().getNagEmailAddress() );
+        address = StringUtils.trim( project.getInterpolatedModel().getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
             return null;
@@ -197,7 +197,7 @@ public class DefaultEmailNotifier
         if ( to != null )
             return to;
 
-        address = StringUtils.trim( project.getBuild().getNagEmailAddress() );
+        address = StringUtils.trim( project.getInterpolatedModel().getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
             return null;
