@@ -2,6 +2,8 @@
 
 # Install the POMs
 ( m2 pom:install )
+( cd continuum-store && m2 pom:install )
+( cd continuum-notifier && m2 pom:install )
 ( cd continuum-trigger && m2 pom:install )
 ( cd continuum-builder && m2 pom:install )
 # m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** pom:install
