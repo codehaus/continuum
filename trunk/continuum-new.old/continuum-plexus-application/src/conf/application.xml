@@ -4,11 +4,6 @@
     <component>
       <role>org.codehaus.continuum.Continuum</role>
     </component>
-    <!--
-    <component>
-      <role>org.codehaus.continuum.web.ContinuumWeb</role>
-    </component>
--->
   </load-on-start>
 
   <resources>
@@ -213,26 +208,7 @@
         <app-home>${plexus.home}</app-home>
       </configuration>
     </component>
-<!--
-    <component>
-      <role>org.codehaus.plexus.summit.pull.PullService</role>
-      <implementation>org.codehaus.plexus.summit.pull.DefaultPullService</implementation>
-      <configuration>
-        <tools>
-          <tool>
-            <name>link</name>
-            <role>linktool</role>
-            <scope>request</scope>
-          </tool>
-        </tools>
-      </configuration>
-    </component>
 
-    <component>
-      <role>linktool</role>
-      <implementation>org.codehaus.plexus.summit.pull.tools.TemplateLink</implementation>
-    </component>
--->
     <component>
       <role>org.codehaus.plexus.velocity.VelocityComponent</role>
       <implementation>org.codehaus.plexus.velocity.DefaultVelocityComponent</implementation>
@@ -357,36 +333,16 @@
               </property>
               <property>
                 <name>maxFileSize</name>
-                <value>20</value>
+                <value>100KB</value>
               </property>
             </properties>
           </appender>
-          <!--
-          <appender>
-            <id>file</id>
-            <threshold>DEBUG</threshold>
-            <type>org.apache.log4j.FileAppender</type>
-            <conversion-pattern>%d [%t] %-5p %c - %m%n</conversion-pattern>
-            <properties>
-              <property>
-                <name>file</name>
-                <value>${plexus.home}/logs/plexus.log</value>
-              </property>
-              <property>
-                <name>append</name>
-                <value>true</value>
-              </property>
-            </properties>
-          </appender>
-          -->
         </appenders>
         <levels>
-<!--
           <level>
             <hierarchy>org.codehaus.plexus.velocity</hierarchy>
             <level>WARN</level>
           </level>
--->
           <level>
             <hierarchy>JPOX</hierarchy>
             <level>INFO</level>
