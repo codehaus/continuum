@@ -10,18 +10,69 @@
     <component>
       <role>org.codehaus.plexus.summit.pipeline.Pipeline</role>
       <implementation>org.codehaus.plexus.summit.pipeline.SummitPipeline</implementation>
+      <lifecycle-handler>plexus-configurable</lifecycle-handler>
       <configuration>
         <valves>
-          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve"/>
-          <valve implementation="org.codehaus.continuum.web.pipeline.valve.LoginValve"/>
-          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ActionValve"/>
-          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve"/>
-          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.ResolverValve"/>
-          <value implementation="org.codehaus.plexus.summit.pull.PullToolValve"/>
-          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DisplayValve"/>
+          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
+          <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
+          <valve>org.codehaus.continuum.web.pipeline.valve.ActionValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
+          <valve>org.codehaus.plexus.summit.pull.PullToolValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.DisplayValve</valve>
         </valves>
       </configuration>
     </component>
+
+    <!--
+     |
+     | Valves
+     |
+     |-->
+
+    <!-- TODO: this should be moved to summit -->
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
+      <role-hint>org.codehaus.plexus.summit.pull.PullToolValve</role-hint>
+      <implementation>org.codehaus.plexus.summit.pull.PullToolValve</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
+      <role-hint>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</role-hint>
+      <implementation>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.web.ContinuumWeb</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
+      <role-hint>org.codehaus.continuum.web.pipeline.valve.LoginValve</role-hint>
+      <implementation>org.codehaus.continuum.web.pipeline.valve.LoginValve</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.valve.Valve</role>
+      <role-hint>org.codehaus.continuum.web.pipeline.valve.ActionValve</role-hint>
+      <implementation>org.codehaus.continuum.web.pipeline.valve.ActionValve</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.web.action.ActionManager</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!--
+     |
+     | Actions
+     |
+     |-->
 
     <component>
       <role>org.codehaus.continuum.web.action.ActionManager</role>
@@ -33,12 +84,6 @@
         </requirement>
       </requirements>
     </component>
-
-    <!--
-     |
-     | Actions
-     |
-     |-->
 
     <!-- login -->
     <component>

@@ -1,7 +1,7 @@
 package org.codehaus.continuum.web.pipeline.valve;
 
 /*
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugst?l
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -32,7 +32,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.1.1.1 2005-02-17 22:23:57 trygvis Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.2 2005-02-21 15:03:16 trygvis Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
@@ -41,25 +41,20 @@ public class ContinuumViewContextValve
 
     private CssTool css = new CssTool();
 
+    private ContinuumWeb continuum;
+
+    private I18N i18n;
+
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     protected void populateViewContext( RunData data, ViewContext context )
     {
-        ContinuumWeb continuum;
-
-        I18N i18n;
-
-        try
-        {
-            continuum = (ContinuumWeb) getServiceManager().lookup( ContinuumWeb.ROLE );
-
-            i18n = (I18N) getServiceManager().lookup( I18N.ROLE );
-        }
-        catch ( Exception e )
-        {
-            getLogger().error( "Cannot place docorama model in the context.", e );
-
-            return;
-        }
-
         context.put( "continuum", continuum );
 
         context.put( "css", css );
