@@ -25,15 +25,15 @@ package org.codehaus.continuum.builder.maven.m2;
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.builder.shell.ShellBuilder;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.builder.shell.ShellBuilder;
 
 import java.io.File;
 import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder

@@ -24,9 +24,9 @@ package org.codehaus.continuum.notification;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultNotifierManager.java,v 1.1.1.1 2005-02-17 22:23:50 trygvis Exp $
+ * @version $Id: DefaultNotifierManager.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class DefaultNotifierManager
     extends AbstractLogEnabled

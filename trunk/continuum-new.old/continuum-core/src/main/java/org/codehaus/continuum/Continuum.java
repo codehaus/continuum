@@ -24,10 +24,10 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.ContinuumProject;
-
 import java.net.URL;
 import java.util.Iterator;
+
+import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * This is the main entry point for Continuum. Projects are added to Continuum

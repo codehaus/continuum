@@ -31,8 +31,9 @@ import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
-import org.codehaus.continuum.project.ContinuumProject;
+
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
@@ -40,7 +41,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.1.1.1 2005-02-17 22:23:52 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled

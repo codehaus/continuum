@@ -50,6 +50,16 @@
       <artifactId>stash</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>    
+    <dependency>
+      <groupId>prevayler</groupId>
+      <artifactId>prevayler</artifactId>
+      <version>2.02.005</version>
+    </dependency>    
+    <dependency>
+      <groupId>modello</groupId>
+      <artifactId>modello-plugin-prevayler</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>    
   </dependencies>
   <plugins>
     <plugin>

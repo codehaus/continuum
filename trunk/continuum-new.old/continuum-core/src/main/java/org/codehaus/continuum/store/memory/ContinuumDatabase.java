@@ -24,16 +24,6 @@ package org.codehaus.continuum.store.memory;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumBuildResult;
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
-import org.codehaus.continuum.project.DefaultContinuumBuild;
-import org.codehaus.continuum.project.DefaultContinuumProject;
-import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.continuum.store.ContinuumStoreException;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,9 +38,18 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.continuum.store.AbstractContinuumStore;
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.1.1.1 2005-02-17 22:23:53 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -199,7 +198,7 @@ public class ContinuumDatabase
         buildIdIndex = null;
     }
 
-    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type, String workingDirectory, Properties p )
+    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String builderId, String workingDirectory, Properties p )
         throws ContinuumStoreException
     {
         if ( StringUtils.isEmpty( name ) )
@@ -222,7 +221,7 @@ public class ContinuumDatabase
             throw new ContinuumStoreException( "version cannot be null." );
         }
 
-        if ( type == null )
+        if ( builderId == null )
         {
             throw new ContinuumStoreException( "type cannot be null." );
         }
@@ -236,7 +235,7 @@ public class ContinuumDatabase
 
         String projectId = Integer.toString( projectSerial++ );
 
-        project = new DefaultContinuumProject();
+        project = new ContinuumProject();
 
         project.setId( projectId );
 
@@ -248,7 +247,7 @@ public class ContinuumDatabase
 
         project.setVersion( version );
 
-        project.setBuilderId( type );
+        project.setBuilderId( builderId );
 
         project.setState( ContinuumProjectState.NEW );
 
@@ -291,7 +290,7 @@ public class ContinuumDatabase
     public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version, Properties p )
         throws ContinuumStoreException
     {
-        DefaultContinuumProject project = getGenericProject( projectId );
+        ContinuumProject project = getGenericProject( projectId );
 
         if ( StringUtils.isEmpty( name ) )
         {
@@ -406,43 +405,59 @@ public class ContinuumDatabase
     public String createBuild( String projectId )
         throws ContinuumStoreException
     {
-        ContinuumProject project = getProject( projectId );
+        try
+        {
+            ContinuumProject project = getProject( projectId );
 
-        String buildId = Integer.toString( buildSerial++ );
+            String buildId = Integer.toString( buildSerial++ );
 
-        DefaultContinuumBuild build = new DefaultContinuumBuild( buildId );
+            ContinuumBuild build = new ContinuumBuild();
 
-        build.setProject( project );
+            build.setId( buildId );
 
-        project.setState( ContinuumProjectState.BUILD_SIGNALED );
+            build.setProject( project );
 
-        build.setState( ContinuumProjectState.BUILD_SIGNALED );
+            project.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        build.setStartTime( new Date().getTime() );
+            build.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        buildList.add( build );
+            build.setStartTime( new Date().getTime() );
 
-        buildIdIndex.put( buildId, new Integer( buildList.size() - 1 ) );
+            buildList.add( build );
 
-        return buildId;
+            buildIdIndex.put( buildId, new Integer( buildList.size() - 1 ) );
+
+            return buildId;
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumStoreException( "Exception while creating the build for project '" + projectId + "'.", e );
+        }
     }
 
-    public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )
+    public void setBuildResult( String id, int state, ContinuumBuildResult buildResult, Throwable error )
         throws ContinuumStoreException
     {
-        DefaultContinuumBuild build = getGenericBuild( id );
+        try
+        {
+            ContinuumBuild build = getGenericBuild( id );
 
-        DefaultContinuumProject project = (DefaultContinuumProject) build.getProject();
+            ContinuumProject project = (ContinuumProject) build.getProject();
 
-        project.setState( state );
+            project.setState( state );
 
-        build.setState( state );
+            build.setState( state );
 
-        build.setEndTime( new Date().getTime() );
+            build.setEndTime( new Date().getTime() );
 
-        build.setBuildResult( buildResult );
+            build.setBuildResult( buildResult );
 
-        build.setError( error );
+            build.setError( AbstractContinuumStore.throwableToString( error ) );
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumStoreException( "Error while setting the build result for build " + id + "'.", e );
+        }
     }
 
     public ContinuumBuild getBuild( String id )
@@ -473,7 +488,7 @@ public class ContinuumDatabase
         ContinuumBuild max = (ContinuumBuild) it.next();
 
         while( it.hasNext() )
-        {   
+        {
             ContinuumBuild current = (ContinuumBuild) it.next();
 
             if ( current.getStartTime() > max.getStartTime() )
@@ -569,15 +584,15 @@ public class ContinuumDatabase
     //
     // ----------------------------------------------------------------------
 
-    protected DefaultContinuumProject getGenericProject( String id )
+    protected ContinuumProject getGenericProject( String id )
         throws ContinuumStoreException
     {
-        return (DefaultContinuumProject) getProject( id );
+        return (ContinuumProject) getProject( id );
     }
 
-    protected DefaultContinuumBuild getGenericBuild( String id )
+    protected ContinuumBuild getGenericBuild( String id )
         throws ContinuumStoreException
     {
-        return (DefaultContinuumBuild) getBuild( id );
+        return (ContinuumBuild) getBuild( id );
     }
 }

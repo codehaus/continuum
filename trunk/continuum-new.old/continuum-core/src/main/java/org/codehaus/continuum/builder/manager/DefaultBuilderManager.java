@@ -25,9 +25,9 @@ package org.codehaus.continuum.builder.manager;
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuilderManager.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: DefaultBuilderManager.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class DefaultBuilderManager
     extends AbstractLogEnabled

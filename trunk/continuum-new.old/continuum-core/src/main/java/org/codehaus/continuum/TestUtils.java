@@ -25,8 +25,9 @@ package org.codehaus.continuum;
  */
 
 import junit.framework.Assert;
-import org.codehaus.continuum.project.ContinuumBuild;
+
 import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.DefaultArtifactEnabledContainer;
 import org.codehaus.plexus.PlexusContainer;
@@ -43,7 +44,7 @@ import java.util.Locale;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestUtils.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: TestUtils.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class TestUtils
 {

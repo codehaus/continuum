@@ -24,27 +24,26 @@ package org.codehaus.continuum.builder.maven.m2;
  * SOFTWARE.
  */
 
-import org.apache.maven.model.CiManagement;
-import org.apache.maven.model.Scm;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumProjectState;
-import org.codehaus.continuum.project.DefaultContinuumProject;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.CiManagement;
+import org.apache.maven.model.Scm;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenBuilderHelper.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: DefaultMavenBuilderHelper.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public class DefaultMavenBuilderHelper
     implements MavenBuilderHelper
@@ -58,17 +57,13 @@ public class DefaultMavenBuilderHelper
         // We need to roll the project data into a file so that we can use it
         // ----------------------------------------------------------------------
 
-        ContinuumProject project = new DefaultContinuumProject();
+        ContinuumProject project = new ContinuumProject();
 
         try
         {
             File f = createMetadataFile( metadata );
 
             mapMetadataToProject( f, project );
-
-            project.setState( ContinuumProjectState.NEW );
-
-            project.setBuilderId( "maven2" );
         }
         catch ( Exception e )
         {

@@ -25,9 +25,9 @@ package org.codehaus.continuum.builder.shell;
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -36,7 +36,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.1.1.1 2005-02-17 22:23:50 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder

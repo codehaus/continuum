@@ -25,10 +25,10 @@ package org.codehaus.continuum.notification.mail;
  */
 
 import org.codehaus.continuum.builder.shell.ShellBuildResult;
-import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumBuildResult;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.plexus.logging.Logger;
 
 import java.io.PrintWriter;
@@ -38,7 +38,7 @@ import java.util.Date;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2MailGenerator.java,v 1.1.1.1 2005-02-17 22:23:51 trygvis Exp $
+ * @version $Id: ExternalMaven2MailGenerator.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
  */
 public class ExternalMaven2MailGenerator
     extends AbstractMailGenerator
@@ -60,7 +60,7 @@ public class ExternalMaven2MailGenerator
 
         writeStats( output, build, lastBuild );
 
-        ContinuumProjectState state = build.getState();
+        int state = build.getState();
 
         if ( state == ContinuumProjectState.OK ||
             state == ContinuumProjectState.FAILED )
@@ -88,7 +88,7 @@ public class ExternalMaven2MailGenerator
     {
         ContinuumBuildResult result = build.getBuildResult();
 
-        ContinuumProjectState state = build.getState();
+        int state = build.getState();
 
         if ( state == ContinuumProjectState.ERROR )
         {
@@ -115,7 +115,7 @@ public class ExternalMaven2MailGenerator
     {
         long fullDiff = build.getEndTime() - build.getStartTime();
 
-        ContinuumProjectState state = build.getState();
+        int state = build.getState();
 
         line( output );
 
@@ -139,7 +139,7 @@ public class ExternalMaven2MailGenerator
         line( output );
     }
 
-    protected String decodeState( ContinuumProjectState state )
+    protected String decodeState( int state )
     {
         if ( state == ContinuumProjectState.ERROR )
         {

@@ -4,11 +4,10 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Properties;
 
-import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumBuildResult;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
-import org.codehaus.continuum.project.DefaultContinuumProject;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.store.AbstractContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -18,7 +17,7 @@ import org.codehaus.stash.obie.ObjectStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: StashContinuumStore.java,v 1.1.1.1 2005-02-17 22:23:53 trygvis Exp $
+ * @version $Id: StashContinuumStore.java,v 1.2 2005-02-21 14:58:11 trygvis Exp $
  */
 public class StashContinuumStore
     extends AbstractContinuumStore
@@ -95,7 +94,7 @@ public class StashContinuumStore
     // ----------------------------------------------------------------------
 
     public String addProject( String name,
-                              String scmConnection,
+                              String scmUrl,
                               String nagEmailAddress,
                               String version,
                               String builderType,
@@ -103,11 +102,11 @@ public class StashContinuumStore
                               Properties configuration )
         throws ContinuumStoreException
     {
-        ContinuumProject project = new DefaultContinuumProject();
+        ContinuumProject project = new ContinuumProject();
 
         project.setName( name );
 
-        project.setScmUrl( scmConnection );
+        project.setScmUrl( scmUrl );
 
         project.setNagEmailAddress( nagEmailAddress );
 
@@ -232,7 +231,7 @@ public class StashContinuumStore
         return null;
     }
 
-    public void setBuildResult( String buildId, ContinuumProjectState state, ContinuumBuildResult result, Throwable error )
+    public void setBuildResult( String buildId, int state, ContinuumBuildResult result, Throwable error )
         throws ContinuumStoreException
     {
     }

@@ -101,6 +101,25 @@
       <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
     </component>
 
+    <component>
+      <role>org.codehaus.continuum.store.ContinuumStore</role>
+      <role-hint>modello-prevayler</role-hint>
+      <implementation>org.codehaus.continuum.store.ModelloPrevaylerContinuumStore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.project.ContinuumPrevaylerStore</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.project.ContinuumPrevaylerStore</role>
+      <implementation>org.codehaus.continuum.project.ContinuumPrevaylerStore</implementation>
+      <configuration>
+        <database-directory>${plexus.home}</database-directory>
+      </configuration>
+    </component>
+
     <!-- Triggers -->
 
     <component>

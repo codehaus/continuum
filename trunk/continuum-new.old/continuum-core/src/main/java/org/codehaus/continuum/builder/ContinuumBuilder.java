@@ -25,16 +25,15 @@ package org.codehaus.continuum.builder;
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 
 import java.io.File;
 import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
  */
 public interface ContinuumBuilder
 {

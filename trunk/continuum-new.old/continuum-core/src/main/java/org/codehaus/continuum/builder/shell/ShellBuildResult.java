@@ -24,11 +24,10 @@ package org.codehaus.continuum.builder.shell;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.project.AbstractContinuumBuildResult;
-import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 
 public class ShellBuildResult
-    extends AbstractContinuumBuildResult
+    extends ContinuumBuildResult
 {
     private boolean success;
 
