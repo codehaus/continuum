@@ -8,10 +8,11 @@ import java.util.Iterator;
 
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.7 2004-07-03 03:21:16 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.8 2004-07-07 02:34:36 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -21,7 +22,10 @@ public interface ContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    String addProject( String name, String scmConnection )
+    String addProject( String name, String scmConnection, String type )
+        throws ContinuumStoreException;
+
+    void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
         throws ContinuumStoreException;
 
     Iterator getAllProjects()

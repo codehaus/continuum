@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.6 2004-07-03 03:21:16 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.7 2004-07-07 02:34:35 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -36,8 +36,9 @@ public class DefaultContinuumScm
     /** */
     private ScmManager scmManager;
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Lifecycle
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
@@ -57,8 +58,9 @@ public class DefaultContinuumScm
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // ContinuumScm implementation
+    // ----------------------------------------------------------------------
 
     public void clean( ContinuumProject project )
         throws ContinuumException
@@ -135,8 +137,9 @@ public class DefaultContinuumScm
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Private
+    // ----------------------------------------------------------------------
 
     private String getProjectScmDirectory( ContinuumProject project, String checkoutDirectory )
     {

@@ -11,8 +11,32 @@
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
+          <role>org.codehaus.continuum.builder.BuilderManager</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.builder.BuilderManager</role>
+      <implementation>org.codehaus.continuum.builder.DefaultBuilderManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+        <requirement>
           <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
-          <role-hint>maven2</role-hint>
+          <field-name>builders</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.notification.NotifierManager</role>
+      <implementation>org.codehaus.continuum.notification.DefaultNotifierManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+          <field-name>notifiers</field-name>
         </requirement>
       </requirements>
     </component>
@@ -75,7 +99,7 @@
       <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+          <role>org.codehaus.continuum.notification.NotifierManager</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
@@ -88,8 +112,8 @@
         </requirement>
       </requirements>
       <configuration>
-        <maven-home>${maven.home}/</maven-home>
-        <maven-local-repository>${maven.home}/repository</maven-local-repository>
+<!--        <maven-home>${maven.home}/</maven-home>-->
+<!--        <maven-local-repository>${maven.home}/repository</maven-local-repository>-->
       </configuration>
     </component>
     <component>
@@ -111,10 +135,14 @@
     </component>
     <component>
       <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+      <role-hint>console</role-hint>
       <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
     </component>
     <component>
       <role>org.codehaus.continuum.store.ContinuumStore</role>
+<!--
+      <role-hint>memory</role-hint>
+-->
       <implementation>org.codehaus.continuum.store.MemoryContinuumStore</implementation>
     </component>
   </components>

@@ -4,13 +4,14 @@ package org.codehaus.continuum.project;
  * LICENSE
  */
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResult.java,v 1.3 2004-07-03 03:21:15 trygvis Exp $
+ * @version $Id: BuildResult.java,v 1.4 2004-07-07 02:34:35 trygvis Exp $
  */
-public class BuildResult
+public interface BuildResult
+    extends Serializable
 {
     /** */
     public final static int BUILD_BUILDING = 1;
@@ -24,141 +25,63 @@ public class BuildResult
     /** */
     public final static int BUILD_RESULT_ERROR = 4;
 
-    /** */
-    private String buildId;
-
-    /** */
-    private String projectId;
-
-    /** */
-    private int state;
-
-    /** */
-    private Date startTime;
-
-    /** */
-    private Date endTime;
-
-    /** */
-    private Throwable error;
-
-    /**
-     */
-    public BuildResult( String buildId )
-    {
-        this.buildId = buildId;
-    }
-
     /**
      * @return Returns the buildId.
      */
-    public String getBuildId()
-    {
-        return buildId;
-    }
+    public String getBuildId();
 
     /**
      * @param buildId The buildId to set.
      */
-    public void setBuildId( String buildId )
-    {
-        this.buildId = buildId;
-    }
+    public void setBuildId( String buildId );
 
     /**
-     * @return Returns the project id.
+     * @return Returns the project.
      */
-    public String getProjectId()
-    {
-        return projectId;
-    }
+    public ContinuumProject getProject();
+
+    /**
+     * @param project The project to set.
+     */
+    public void setProject( ContinuumProject project );
 
     /**
      * @return Returns the state.
      */
-    public int getState()
-    {
-        return state;
-    }
+    public int getState();
 
     /**
      * @param state The state to set.
      */
-    public void setState( int state )
-    {
-        this.state = state;
-    }
-
-    /**
-     * @param projectId The project id to set.
-     */
-    public void setProjectId( String projectId )
-    {
-        this.projectId = projectId;
-    }
+    public void setState( int state );
 
     /**
      * @return Returns the start time.
      */
-    public Date getStartTime()
-    {
-        return startTime;
-    }
+    public long getStartTime();
 
     /**
      * @param startTime The start time to set.
      */
-    public void setStartTime( Date startTime )
-    {
-        this.startTime = startTime;
-    }
+    public void setStartTime( long startTime );
 
     /**
      * @return Returns the end time.
      */
-    public Date getEndTime()
-    {
-        return endTime;
-    }
+    public long getEndTime();
 
     /**
      * @param endTime The end time to set.
      */
-    public void setEndTime( Date endTime )
-    {
-        this.endTime = endTime;
-    }
+    public void setEndTime( long endTime );
 
     /**
      * @return Returns the error.
      */
-    public Throwable getError()
-    {
-        return error;
-    }
+    public Throwable getError();
 
     /**
      * @param error The error to set.
      */
-    public void setError(Throwable error)
-    {
-        this.error = error;
-    }
-
-    public static String buildStateToString( int state )
-    {
-        switch( state )
-        {
-        case BUILD_BUILDING:
-            return "building";
-        case BUILD_RESULT_OK:
-            return "ok";
-        case BUILD_RESULT_FAILURE:
-            return "failure";
-        case BUILD_RESULT_ERROR:
-            return "error";
-        default:
-            return "UNKNOWN";
-        }
-    }
+    public void setError( Throwable Error );
 }

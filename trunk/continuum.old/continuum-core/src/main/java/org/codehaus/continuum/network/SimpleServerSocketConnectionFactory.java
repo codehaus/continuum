@@ -14,7 +14,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.5 2004-07-02 03:27:07 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.6 2004-07-07 02:34:34 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactory
     extends AbstractLogEnabled
@@ -30,8 +30,9 @@ public class SimpleServerSocketConnectionFactory
 
     private WorkerThread thread;
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Component Lifecycle
+    // ----------------------------------------------------------------------
     
     public void initialize()
         throws Exception
@@ -72,8 +73,6 @@ public class SimpleServerSocketConnectionFactory
         thread = new WorkerThread( serverSocket, consumer, getLogger() );
 
         thread.start();
-
-        getLogger().info( "Started socket listener on port " + port );
     }
 
     public void stop()

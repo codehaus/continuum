@@ -10,6 +10,7 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.notification.NotifierManager;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusTestCase;
@@ -17,7 +18,7 @@ import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.2 2004-07-03 03:21:17 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.3 2004-07-07 02:34:36 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends PlexusTestCase
@@ -51,6 +52,12 @@ public abstract class AbstractContinuumTest
         throws Exception
     {
         return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE );
+    }
+
+    protected NotifierManager getNotifierManager()
+        throws Exception
+    {
+        return (NotifierManager) lookupComponent( NotifierManager.ROLE );
     }
 
     protected ContinuumScm getContinuumScm()

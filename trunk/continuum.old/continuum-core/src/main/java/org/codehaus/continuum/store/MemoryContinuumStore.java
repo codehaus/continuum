@@ -12,10 +12,13 @@ import java.util.Random;
 
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.GenericBuildResult;
+import org.codehaus.continuum.project.GenericContinuumProject;
+import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.2 2004-07-03 03:21:16 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.3 2004-07-07 02:34:36 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -37,7 +40,7 @@ public class MemoryContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection )
+    public String addProject( String name, String scmConnection, String type )
         throws ContinuumStoreException
     {
         ContinuumProject project = findProjectByName( name );
@@ -47,17 +50,27 @@ public class MemoryContinuumStore
 
         String id = Integer.toString( projectSerial++ );
 
-        project = new ContinuumProject( id );
+        project = new GenericContinuumProject( id );
 
         project.setName( name );
 
         project.setScmConnection( scmConnection );
 
-        project.setProjectState( ContinuumProject.PROJECT_STATE_NEW );
+        project.setState( ContinuumProject.PROJECT_STATE_NEW );
+
+        project.setType( type );
 
         projects.put( id, project );
 
         return id;
+    }
+
+    public void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
+        throws ContinuumStoreException
+    {
+        ContinuumProject project = getProject( projectId );
+
+        project.setDescriptor( descriptor );
     }
 
     public Iterator getAllProjects()
@@ -108,18 +121,17 @@ public class MemoryContinuumStore
     public String createBuildResult( String projectId )
         throws ContinuumStoreException
     {
-        // assert that the project exists
-        getProject( projectId );
+        ContinuumProject project = getProject( projectId );
 
         String buildId = Integer.toString( buildResultSerial++ );
 
-        BuildResult buildResult = new BuildResult( buildId );
+        GenericBuildResult buildResult = new GenericBuildResult( buildId );
 
-        buildResult.setProjectId( projectId );
+        buildResult.setProject( project );
 
         buildResult.setState( BuildResult.BUILD_BUILDING );
 
-        buildResult.setStartTime( new Date() );
+        buildResult.setStartTime( new Date().getTime() );
 
         buildResults.put( buildId, buildResult );
 
@@ -133,7 +145,7 @@ public class MemoryContinuumStore
 
         buildResult.setState( state );
 
-        buildResult.setEndTime( new Date() );
+        buildResult.setEndTime( new Date().getTime() );
 
         buildResult.setError( error );
     }

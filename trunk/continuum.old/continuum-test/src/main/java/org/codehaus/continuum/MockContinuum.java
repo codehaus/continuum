@@ -18,7 +18,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  * If this class gets to big, concider using <code>DefaultContinuum</code>.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MockContinuum.java,v 1.1.1.1 2004-05-19 22:10:45 trygvis Exp $
+ * @version $Id: MockContinuum.java,v 1.2 2004-07-07 02:34:41 trygvis Exp $
  */
 public class MockContinuum
     extends AbstractLogEnabled
@@ -30,8 +30,9 @@ public class MockContinuum
 
     int jobId = 1;
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Continuum Implementation
+    // ----------------------------------------------------------------------
 
     public void addProject( String url )
         throws ContinuumException
@@ -85,8 +86,9 @@ public class MockContinuum
         throw new UnsupportedOperationException();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Extra
+    // ----------------------------------------------------------------------
 
     public void addProject( String groupId, String artifactId, String url )
     {

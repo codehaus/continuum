@@ -1,0 +1,16 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.xmlrpc.XmlRpcComponent</role>
+      <implementation>org.codehaus.plexus.xmlrpc.DefaultXmlRpcComponent</implementation>
+      <configuration>
+        <handlers>
+          <handler>
+            <name>continuum</name>
+            <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcInterface</role>
+          </handler>
+        </handlers>
+      </configuration>
+    </component>
+  </components>
+</plexus>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.codehaus.continuum.project.AbstractProjectDescriptor">
+    <id name="projectId" type="java.lang.String">
+      <generator class="assigned"/>
+    </id>
+    <discriminator column="type" type="java.lang.String" force="true"/>
+    <!--
+    <property name="type" type="java.lang.String" not-null="true"/>
+    <one-to-one name="project" class="org.codehaus.continuum.project.GenericContinuumProject" constrained="true"/>
+    -->
+  </class>
+</hibernate-mapping>

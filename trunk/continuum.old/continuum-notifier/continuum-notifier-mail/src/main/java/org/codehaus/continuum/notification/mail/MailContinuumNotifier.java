@@ -6,10 +6,12 @@ import java.io.StringWriter;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.mail.MailMessage;
 import org.codehaus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
@@ -17,42 +19,53 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultEmailNotifier.java,v 1.6 2004-06-27 19:28:45 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.1 2004-07-07 02:34:40 trygvis Exp $
  */
-public class DefaultEmailNotifier
+public class MailContinuumNotifier
     extends AbstractLogEnabled
     implements Initializable, ContinuumNotifier
 {
-    // configuration
-
+    /**
+     * The hostname of the SMTP server.
+     * 
+     * @default localhost
+     */
     private String smtpServer;
 
     /**
      * If set; all emails will be send to this address. If not all the nag email
      * address from the pom will be used.
+     * 
+     * @default
      */
     private String to;
 
     /**
      * If set; all emails will be send from this address. If not all the nag email
      * address from the pom will be used.
+     * 
+     * @default
      */
     private String from;
 
+    /**
+     * 
+     * @default 25
+     */
     private Integer smtpPort;
 
     // members
 
     private int port;
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Lifecycle
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
     {
-        if ( smtpServer == null )
-            throw new PlexusConfigurationException( "Missing configuration element: smtp server." );
+        PlexusUtils.assertConfiguration( smtpServer, "smtp-server" );
 
         if ( to == null )
             getLogger().info( "To address is not configured, will use the nag email address from the project." );
@@ -63,7 +76,7 @@ public class DefaultEmailNotifier
         if ( smtpPort == null )
         {
             port = 25;
-            getLogger().info( "Smtp port is not configured, will port 25." );
+            getLogger().info( "Smtp port is not configured, will use port 25." );
         }
         else
         {
@@ -72,35 +85,36 @@ public class DefaultEmailNotifier
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Notifier implementation
+    // ----------------------------------------------------------------------
+    // Notifier Implementation
+    // ----------------------------------------------------------------------
 
-    public void buildStarted(MavenProject project)
+    public void buildStarted( BuildResult build )
         throws ContinuumException
     {
     }
 
-    public void checkoutStarted(MavenProject project)
+    public void checkoutStarted( BuildResult build )
         throws ContinuumException
     {
     }
 
-    public void checkoutComplete(MavenProject project, Exception ex)
+    public void checkoutComplete( BuildResult build, Exception ex)
         throws ContinuumException
     {
     }
 
-    public void runningGoals(MavenProject project)
+    public void runningGoals( BuildResult build )
         throws ContinuumException
     {
     }
 
-    public void goalsCompleted(MavenProject project, Exception ex)
+    public void goalsCompleted( BuildResult build, Exception ex)
         throws ContinuumException
     {
     }
 
-    public void buildComplete(MavenProject project, Exception ex)
+    public void buildComplete( BuildResult build, Exception ex)
         throws ContinuumException
     {
         StringWriter message = new StringWriter();
@@ -120,13 +134,14 @@ public class DefaultEmailNotifier
 
         output.close();
 
-        sendMessage( project, message.toString() );
+        sendMessage( build.getProject(), message.toString() );
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Private
+    // ----------------------------------------------------------------------
 
-    private void sendMessage( MavenProject project, String message )
+    private void sendMessage( ContinuumProject project, String message )
         throws ContinuumException
     {
         getLogger().info( "Sending message to: " + smtpServer + ":" + port );
@@ -137,9 +152,11 @@ public class DefaultEmailNotifier
 
             String from = getFromAddress( project );
 
+            MavenProject mavenProject = getMavenProject( project );
+
             if ( from == null )
             {
-                getLogger().warn( project.getGroupId() + ":" + project.getArtifactId() + ": Project is missing nag email and global from address is missing." );
+                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing." );
 
                 return;
             }
@@ -150,7 +167,7 @@ public class DefaultEmailNotifier
 
             if ( to == null )
             {
-                getLogger().warn( project.getGroupId() + ":" + project.getArtifactId() + ": Project is missing nag email and global from address is missing." );
+                getLogger().warn( mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ": Project is missing nag email and global from address is missing." );
 
                 return;
             }
@@ -175,14 +192,16 @@ public class DefaultEmailNotifier
         }
     }
 
-    private String getFromAddress( MavenProject project )
+    private String getFromAddress( ContinuumProject project )
     {
         String address;
 
         if ( from != null )
             return from;
 
-        address = StringUtils.trim( project.getInterpolatedModel().getCiManagement().getNagEmailAddress() );
+        MavenProject mavenProject = getMavenProject( project );
+
+        address = StringUtils.trim( mavenProject.getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
             return null;
@@ -190,18 +209,27 @@ public class DefaultEmailNotifier
         return address;
     }
 
-    private String getToAddress( MavenProject project )
+    private String getToAddress( ContinuumProject project )
     {
         String address;
+
+        MavenProject mavenProject = getMavenProject( project );
 
         if ( to != null )
             return to;
 
-        address = StringUtils.trim( project.getInterpolatedModel().getCiManagement().getNagEmailAddress() );
+        address = StringUtils.trim( mavenProject.getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
             return null;
 
         return address;
+    }
+
+    private MavenProject getMavenProject( ContinuumProject project )
+    {
+        MavenProject mavenProject = (MavenProject) project.getDescriptor();
+
+        return mavenProject;
     }
 }

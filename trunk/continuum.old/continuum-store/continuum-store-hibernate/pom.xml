@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>continuum-parent</artifactId>
+    <groupId>continuum</groupId>
+    <version>0.1</version>
+  </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-hibernate-store</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>Continuum Hibernate Store</name>
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-hibernate</artifactId>
+      <version>1.0-beta-1</version>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>7.4.1-jdbc3</version>
+    </dependency>
+  </dependencies>
+</project>

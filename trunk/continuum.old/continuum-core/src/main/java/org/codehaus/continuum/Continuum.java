@@ -4,7 +4,7 @@ public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    String addProject( String name, String scmConnection )
+    String addProject( String name, String scmConnection, String type )
         throws ContinuumException;
 
     /**
