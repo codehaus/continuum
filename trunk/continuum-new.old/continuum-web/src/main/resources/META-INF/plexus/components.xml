@@ -199,7 +199,7 @@
         </requirement>
       </requirements>
     </component>
-
+<!--
     <component>
       <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpc</role>
       <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpc</implementation>
@@ -212,5 +212,6 @@
         </requirement>
       </requirements>
     </component>
+-->
   </components>
 </component-set>
