@@ -16,5 +16,10 @@
       <artifactId>continuum-api</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-scm-provider-local</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

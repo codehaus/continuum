@@ -8,6 +8,6 @@
     <nagEmailAddress>foo@bar</nagEmailAddress>
   </ciManagement>
   <scm>
-    <connection>scm:test:src/test/repository:maven2</connection>
+    <connection>scm:local:src/test/repository:maven2</connection>
   </scm>
 </project>

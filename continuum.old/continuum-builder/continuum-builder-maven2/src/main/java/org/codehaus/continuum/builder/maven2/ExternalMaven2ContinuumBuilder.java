@@ -32,18 +32,36 @@ import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.4 2004-10-15 13:00:58 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
  */
 public class ExternalMaven2ContinuumBuilder
     extends Maven2ContinuumBuilder
-    implements ContinuumBuilder
+    implements ContinuumBuilder, Initializable
 {
+    private File classWorldsJar;
+
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
+
+    public void initialize()
+    	throws Exception
+    {
+        classWorldsJar = new File( getMavenHome(), "/core/boot/classworlds-1.1-SNAPSHOT.jar" );
+
+        if ( !classWorldsJar.exists() )
+        {
+            throw new ContinuumException( "Maven isn't installed correctly, could not find the classworlds jar (" + classWorldsJar.getAbsolutePath() + ")." );
+        }
+    }
+
     // ----------------------------------------------------------------------
     // ContinuumBuilder implementation
     // ----------------------------------------------------------------------
@@ -117,8 +135,6 @@ public class ExternalMaven2ContinuumBuilder
         cl.setExecutable( "java" );
 
         cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
-
-        File classWorldsJar = new File( getMavenHome(), "/core/classworlds-1.1-SNAPSHOT.jar" );
 
         cl.createArgument().setValue( "-classpath" );
 

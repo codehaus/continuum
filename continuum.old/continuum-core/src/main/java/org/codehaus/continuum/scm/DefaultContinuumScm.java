@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.13 2004-10-24 14:22:31 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.14 2004-10-24 20:39:07 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -103,7 +103,7 @@ public class DefaultContinuumScm
         {
             File workingDirectory = getProjectScmDirectory( project );
 
-            ScmRepository repository = scmManager.makeScmRepository( project.getScmConnection() );
+            ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
 
             CheckOutScmResult result;
 
@@ -125,9 +125,9 @@ public class DefaultContinuumScm
             }
 
             // TODO: yes, this is CVS specific and pure bad
-            String connection = repository.getScmSpecificUrl2();
+            String url = repository.getScmSpecificUrl2();
 
-            return new File( workingDirectory, connection.substring( connection.lastIndexOf( ":" ) + 1 ) );
+            return new File( workingDirectory, url.substring( url.lastIndexOf( ":" ) + 1 ) );
         }
         catch ( Exception e )
         {
@@ -148,7 +148,7 @@ public class DefaultContinuumScm
         {
             File dir = getProjectScmDirectory( project );
 
-            ScmRepository repository = scmManager.makeScmRepository( project.getScmConnection() );
+            ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
 
             String tag = null;
 

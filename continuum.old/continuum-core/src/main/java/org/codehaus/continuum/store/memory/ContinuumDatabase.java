@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.4 2004-10-20 19:48:23 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.5 2004-10-24 20:39:07 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -179,7 +179,7 @@ public class ContinuumDatabase
         buildIdIndex = null;
     }
 
-    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
+    public String addProject( String name, String scmUrl, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
         if ( StringUtils.isEmpty( name ) )
@@ -187,9 +187,9 @@ public class ContinuumDatabase
             throw new ContinuumStoreException( "name cannot be null." );
         }
 
-        if ( StringUtils.isEmpty( scmConnection ) )
+        if ( StringUtils.isEmpty( scmUrl ) )
         {
-            throw new ContinuumStoreException( "scmConnection cannot be null." );
+            throw new ContinuumStoreException( "scmUrl cannot be null." );
         }
 
         if ( StringUtils.isEmpty( nagEmailAddress ) )
@@ -220,7 +220,7 @@ public class ContinuumDatabase
 
         project.setName( name );
 
-        project.setScmConnection( scmConnection );
+        project.setScmUrl( scmUrl );
 
         project.setNagEmailAddress( nagEmailAddress );
 
@@ -314,7 +314,7 @@ public class ContinuumDatabase
 
         project.setName( name );
 
-        project.setScmConnection( scmUrl );
+        project.setScmUrl( scmUrl );
 
         project.setNagEmailAddress( nagEmailAddress );
 

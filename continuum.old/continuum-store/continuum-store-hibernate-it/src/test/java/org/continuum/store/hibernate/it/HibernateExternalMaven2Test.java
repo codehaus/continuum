@@ -25,14 +25,14 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateExternalMaven2Test.java,v 1.2 2004-10-15 13:01:07 trygvis Exp $
+ * @version $Id: HibernateExternalMaven2Test.java,v 1.3 2004-10-24 20:39:09 trygvis Exp $
  */
 public class HibernateExternalMaven2Test
     extends AbstractContinuumTest
 {
     private String name = "Test Project";
 
-    private String scmUrl = "scm:test:src/test/repository:maven2";
+    private String scmUrl = "scm:local:src/test/repository:maven2";
 
     private String nagEmailAddress = "given nag email address";
 
@@ -123,9 +123,9 @@ public class HibernateExternalMaven2Test
         assertEquals( "foo@bar", project.getNagEmailAddress() );
 
         // Scm Url
-        assertEquals( "scm:test:src/test/repository:maven2", descriptor.getScmConnection() );
+        assertEquals( "scm:local:src/test/repository:maven2", descriptor.getScmUrl() );
 
-        assertEquals( "scm:test:src/test/repository:maven2", project.getScmConnection() );
+        assertEquals( "scm:local:src/test/repository:maven2", project.getScmUrl() );
 
         // Version
         assertEquals( "1.0", descriptor.getVersion() );

@@ -17,7 +17,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.7 2004-10-20 19:29:35 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.8 2004-10-24 20:39:11 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends AbstractContinuumTest
@@ -49,7 +49,7 @@ public abstract class AbstractContinuumStoreTest
     {
         String projectName = "Foo Project";
 
-        String scmConnection = "scm:cvs:local:ignored:/cvsroot:module";
+        String scmUrl = "scm:cvs:local:ignored:/cvsroot:module";
 
         String nagEmailAddress = "foo@bar";
 
@@ -61,7 +61,7 @@ public abstract class AbstractContinuumStoreTest
 
         txManager.begin();
 
-        String id = store.addProject( projectName, scmConnection, nagEmailAddress, version, type );
+        String id = store.addProject( projectName, scmUrl, nagEmailAddress, version, type );
 
         assertNotNull( id );
 
@@ -81,7 +81,7 @@ public abstract class AbstractContinuumStoreTest
 
         assertEquals( projectName, project.getName() );
 
-        assertEquals( scmConnection, project.getScmConnection() );
+        assertEquals( scmUrl, project.getScmUrl() );
 
         assertEquals( type, project.getType() );
 
@@ -254,7 +254,7 @@ public abstract class AbstractContinuumStoreTest
     {
         String name1 = "Foo Project";
 
-        String scmConnection1 = "scm:test:";
+        String scmUrl1 = "scm:test:";
 
         String type = "maven2";
 
@@ -266,7 +266,7 @@ public abstract class AbstractContinuumStoreTest
 
         txManager.begin();
 
-        String projectId = store.addProject( name1, scmConnection1, nagEmailAddress1, version1, type );
+        String projectId = store.addProject( name1, scmUrl1, nagEmailAddress1, version1, type );
 
         txManager.commit();
 
@@ -276,21 +276,21 @@ public abstract class AbstractContinuumStoreTest
 
         ContinuumProject project = store.getProject( projectId );
 
-        assertProject( projectId, name1, scmConnection1, nagEmailAddress1, type, project );
+        assertProject( projectId, name1, scmUrl1, nagEmailAddress1, type, project );
 
         String name2 = "Bar Project";
 
-        String scmConnection2 = "Bar Project";
+        String scmUrl2 = "Bar Project";
 
         String nagEmailAddress2 = "Nag Address 2";
 
         String version2 = "2.0";
 
-        store.updateProject( projectId, name2, scmConnection2, nagEmailAddress2, version2 );
+        store.updateProject( projectId, name2, scmUrl2, nagEmailAddress2, version2 );
 
         project = store.getProject( projectId );
 
-        assertProject( projectId, name2, scmConnection2, nagEmailAddress2, type, project );
+        assertProject( projectId, name2, scmUrl2, nagEmailAddress2, type, project );
 
         txManager.commit();
     }
@@ -487,7 +487,7 @@ public abstract class AbstractContinuumStoreTest
     // Assertions
     // ----------------------------------------------------------------------
 
-    private void assertProject( String id, String name, String scmConnection, String nagEmailAddress, String type, ContinuumProject project )
+    private void assertProject( String id, String name, String scmUrl, String nagEmailAddress, String type, ContinuumProject project )
     {
         assertNotNull( project );
 
@@ -495,7 +495,7 @@ public abstract class AbstractContinuumStoreTest
 
         assertEquals( name, project.getName() );
 
-        assertEquals( scmConnection, project.getScmConnection() );
+        assertEquals( scmUrl, project.getScmUrl() );
 
         assertEquals( nagEmailAddress, project.getNagEmailAddress() );
 

@@ -8,10 +8,15 @@
         <requirement>
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.mailsender.MailSender</role>
+        </requirement>
       </requirements>
       <configuration>
+<!--
         <smtp-server>localhost</smtp-server>
         <smtp-port>25</smtp-port>
+-->
         <administrator>nobody@localhost</administrator>
       </configuration>
     </component>
