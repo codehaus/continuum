@@ -40,7 +40,6 @@ import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.GenericContinuumProject;
-import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.FileUtils;
@@ -48,15 +47,12 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.10 2004-10-28 21:23:30 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.11 2004-10-29 14:48:04 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
     implements ContinuumBuilder
 {
-    /** @requirement */
-    private ContinuumScm scm;
-
     /** @requirement */
     private MavenTool mavenTool;
 
@@ -68,7 +64,6 @@ public abstract class Maven2ContinuumBuilder
         throws Exception
     {
         PlexusUtils.assertRequirement( mavenTool, MavenTool.ROLE );
-        PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
     }
 
     // ----------------------------------------------------------------------

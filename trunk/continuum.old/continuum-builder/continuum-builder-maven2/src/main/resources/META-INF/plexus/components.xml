@@ -9,9 +9,6 @@
       <implementation>org.codehaus.continuum.builder.maven2.ExternalMaven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.scm.ContinuumScm</role>
-        </requirement>
-        <requirement>
             <role>org.codehaus.continuum.maven.MavenTool</role>
         </requirement>
       </requirements>
