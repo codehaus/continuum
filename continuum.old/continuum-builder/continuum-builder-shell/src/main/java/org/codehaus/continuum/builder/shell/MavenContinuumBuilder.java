@@ -22,39 +22,43 @@ package org.codehaus.continuum.builder.shell;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.io.FileReader;
+
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ProjectDescriptor;
+import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.4 2004-10-28 16:14:34 jvanzyl Exp $
+ * @version $Id: MavenContinuumBuilder.java,v 1.5 2004-10-28 21:23:59 trygvis Exp $
  */
 public class MavenContinuumBuilder
     extends ShellContinuumBuilder
 {
-    public ProjectDescriptor createDescriptor( ContinuumProject project )
+    public ContinuumProject createProject( File workingDirectory )
         throws ContinuumException
     {
         ShellProjectDescriptor descriptor = new ShellProjectDescriptor();
 
-        File basedir = scm.checkout( project );
+//        try
+//        {
+//            scm.checkOutProject( project );
+//        }
+//        catch( ContinuumScmException ex )
+//        {
+//            throw new ContinuumException( "Error while checking out the project.", ex );
+//        }
 
         Xpp3Dom mavenProject;
 
         try
         {
-            File pomFile = getPomFile( basedir );
+            File pomFile = getPomFile( workingDirectory );
 
             mavenProject = Xpp3DomBuilder.build( new FileReader( pomFile ) );
         }
@@ -74,23 +78,6 @@ public class MavenContinuumBuilder
 
         Xpp3Dom build = mavenProject.getChild( "build" );
 
-        boolean isPom = true;
-
-        if ( build != null )
-        {
-            String sourceDirectory = build.getChild( "sourceDirectory" ).getValue();
-
-            if ( sourceDirectory != null && sourceDirectory.trim().length() > 0 )
-            {
-                if ( new File( sourceDirectory ).isDirectory() )
-                {
-                    isPom = false;
-                }
-            }
-        }
-
-        descriptor.setName( mavenProject.getName() );
-
         Xpp3Dom scm = mavenProject.getChild( "repository" );
 
         String scmConnection = scm.getChild( "connection" ).getValue();
@@ -105,16 +92,12 @@ public class MavenContinuumBuilder
             throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
         }
 
-        descriptor.setScmConnection( scmConnection );
-
         String nagEmailAddress = build.getChild( "nagEmailAddress" ).getValue();
 
         if ( StringUtils.isEmpty( nagEmailAddress ) )
         {
             throw new ContinuumException( "Missing nag email address from the ci section of the project descriptor." );
         }
-
-        descriptor.setNagEmailAddress( nagEmailAddress );
 
         String version = mavenProject.getChild( "currentVersion" ).getValue();
 
@@ -123,11 +106,11 @@ public class MavenContinuumBuilder
             throw new ContinuumException( "Missing version from the project descriptor." );
         }
 
-        descriptor.setVersion( version );
+        // ----------------------------------------------------------------------
+        // Make the project
+        // ----------------------------------------------------------------------
 
-        // ----------------------------------------------------------------------
-        // Update the project
-        // ----------------------------------------------------------------------
+        ContinuumProject project = new GenericContinuumProject();
 
         if ( !StringUtils.isEmpty( mavenProject.getName() ) )
         {
@@ -140,7 +123,9 @@ public class MavenContinuumBuilder
 
         project.setVersion( version );
 
-        return descriptor;
+        project.setDescriptor( descriptor );
+
+        return project;
     }
 
     private File getPomFile( File basedir )

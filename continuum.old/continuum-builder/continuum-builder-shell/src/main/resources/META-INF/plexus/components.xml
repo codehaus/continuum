@@ -8,9 +8,6 @@
         <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
-        <requirement>
-          <role>org.apache.maven.Maven</role>
-        </requirement>
       </requirements>
       <configuration>
         <shell-command>maven pom:install jar:install</shell-command>

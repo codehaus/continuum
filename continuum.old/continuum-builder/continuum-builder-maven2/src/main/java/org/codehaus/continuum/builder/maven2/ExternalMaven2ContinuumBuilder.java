@@ -25,8 +25,6 @@ package org.codehaus.continuum.builder.maven2;
 import java.io.File;
 import java.util.List;
 
-import org.apache.maven.project.MavenProject;
-
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.maven.ExternalMavenExecutionResult;
@@ -36,7 +34,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.6 2004-10-28 17:45:49 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.7 2004-10-28 21:23:30 trygvis Exp $
  */
 public class ExternalMaven2ContinuumBuilder
     extends Maven2ContinuumBuilder
@@ -59,19 +57,19 @@ public class ExternalMaven2ContinuumBuilder
         // Build it
         // ----------------------------------------------------------------------
 
-        return execute( workingDirectory, descriptor.getMavenProject(), build, goals );
+        return execute( workingDirectory, build, goals );
     }
 
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
-    protected Maven2BuildResult execute( File workingDirectory, MavenProject project, ContinuumBuild build, List goals )
+    protected Maven2BuildResult execute( File workingDirectory, ContinuumBuild build, List goals )
         throws ContinuumException
     {
         ExternalMavenExecutionResult externalResult;
 
-        externalResult = getMavenTool().executeExternal( workingDirectory, project, goals );
+        externalResult = getMavenTool().executeExternal( workingDirectory, goals );
 
         int exitCode = externalResult.getExitCode();
 
