@@ -47,7 +47,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.13 2004-10-07 13:14:08 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.14 2004-10-08 09:10:46 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -492,17 +492,17 @@ public class HibernateContinuumStore
     public ContinuumBuild getBuild( String id )
         throws ContinuumStoreException
     {
-        ContinuumBuild buildResult;
-
         try
         {
             Session session = getHibernateSession();
 
             txManager.enter();
 
-            buildResult = (ContinuumBuild) session.load( GenericContinuumBuild.class, id );
+            ContinuumBuild build = (ContinuumBuild) session.load( GenericContinuumBuild.class, id );
 
             txManager.leave();
+
+            return build;
         }
         catch( HibernateException ex )
         {
@@ -510,8 +510,38 @@ public class HibernateContinuumStore
 
             throw new ContinuumStoreException( "Error while loading build.", ex );
         }
+    }
 
-        return buildResult;
+    public ContinuumBuild getLatestBuildForProject( String projectId )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            Session session = getHibernateSession();
+
+            txManager.enter();
+
+//            List list = session.find( "from " + GenericContinuumBuild.class.getName() + " b where b.id=(select max(b2.startTime) from " + GenericContinuumBuild.class.getName() + " b2 where b2.project.id=?)", projectId, Hibernate.STRING );
+            // TODO: fix the above query
+            List list = session.find( "from " + GenericContinuumBuild.class.getName() + " where projectId=? order by startTime desc", projectId, Hibernate.STRING );
+
+            txManager.leave();
+
+            if ( list.size() == 0 )
+            {
+                return null;
+            }
+            else
+            {
+                return (ContinuumBuild) list.get( 0 );
+            }
+        }
+        catch( HibernateException ex )
+        {
+            txManager.rollback();
+
+            throw new ContinuumStoreException( "Error while loading build.", ex );
+        }
     }
 
     // TODO: Implement start and end

@@ -25,7 +25,7 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.1 2004-10-06 13:52:43 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.2 2004-10-08 09:11:32 trygvis Exp $
  */
 public class ContinuumDatabase
     implements Serializable
@@ -353,8 +353,35 @@ public class ContinuumDatabase
         return (ContinuumBuild) buildList.get( index.intValue() );
     }
 
+    public ContinuumBuild getLatestBuildForProject( String projectId )
+        throws ContinuumStoreException
+    {
+        List builds = getBuildsForProject( projectId, 0, 0);
+
+        Iterator it = builds.iterator();
+
+        if ( !it.hasNext() )
+        {
+            return null;
+        }
+
+        ContinuumBuild max = (ContinuumBuild) it.next();
+
+        while( it.hasNext() )
+        {   
+            ContinuumBuild current = (ContinuumBuild) it.next();
+
+            if ( current.getStartTime() > max.getStartTime() )
+            {
+                max = current;
+            }
+        }
+
+        return max;
+    }
+
     // TODO: Implement start and end
-    public Iterator getBuildsForProject( String projectId, int start, int end )
+    public List getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
     {
         ContinuumProject project = getProject( projectId );
@@ -371,7 +398,7 @@ public class ContinuumDatabase
             }
         }
 
-        return result.iterator();
+        return result;
     }
 
     // ----------------------------------------------------------------------

@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.5 2004-10-06 13:37:14 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.6 2004-10-08 09:13:24 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -562,6 +562,31 @@ public class MemoryContinuumStore
 
             throw ex;
         }
+    }
+
+    public ContinuumBuild getLatestBuildForProject( String projectId )
+        throws ContinuumStoreException
+    {
+        Iterator it = getBuildsForProject( projectId, 0, 0);
+
+        if ( !it.hasNext() )
+        {
+            return null;
+        }
+
+        ContinuumBuild max = (ContinuumBuild) it.next();
+
+        while( it.hasNext() )
+        {   
+            ContinuumBuild current = (ContinuumBuild) it.next();
+
+            if ( current.getStartTime() > max.getStartTime() )
+            {
+                max = current;
+            }
+        }
+
+        return max;
     }
 
     // TODO: Implement start and end

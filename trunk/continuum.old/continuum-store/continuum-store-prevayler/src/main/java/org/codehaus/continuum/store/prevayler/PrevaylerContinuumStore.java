@@ -27,7 +27,7 @@ import org.prevayler.TransactionWithQuery;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PrevaylerContinuumStore.java,v 1.1 2004-10-06 13:52:43 trygvis Exp $
+ * @version $Id: PrevaylerContinuumStore.java,v 1.2 2004-10-08 09:11:33 trygvis Exp $
  */
 public class PrevaylerContinuumStore
     extends AbstractContinuumStore
@@ -393,6 +393,15 @@ public class PrevaylerContinuumStore
         }
     }
 
+    public ContinuumBuild getLatestBuildForProject( String projectId )
+        throws ContinuumStoreException
+    {
+        synchronized( database )
+        {
+            return database.getLatestBuildForProject( projectId );
+        }
+    }
+
     /** */
     public Iterator getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
@@ -417,7 +426,7 @@ public class PrevaylerContinuumStore
         public Object execute( ContinuumDatabase database )
             throws ContinuumStoreException
         {
-            return database.getBuildsForProject( projectId, start, end );
+            return database.getBuildsForProject( projectId, start, end ).iterator();
         }
     }
     
