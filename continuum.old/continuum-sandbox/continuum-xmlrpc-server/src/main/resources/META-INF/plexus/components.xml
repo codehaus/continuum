@@ -1,0 +1,13 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcInterface</role>
+      <implementation>org.codehaus.continuum.xmlrpc.DefaultContinuumXmlRpcInterface</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+</component-set>

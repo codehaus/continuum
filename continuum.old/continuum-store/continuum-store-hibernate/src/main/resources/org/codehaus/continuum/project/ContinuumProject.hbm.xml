@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class 
+    name="org.codehaus.continuum.project.GenericContinuumProject"
+    table="Project">
+    <id name="id" type="java.lang.String">
+      <generator class="uuid.hex"/>
+    </id>
+    <property name="name" type="java.lang.String" not-null="true"/>
+    <property name="scmConnection" type="java.lang.String" not-null="true"/>
+    <property name="state" type="int" not-null="true"/>
+<!--
+    <property name="type" type="java.lang.String" not-null="true"/>
+-->
+    <any name="descriptor" id-type="java.lang.String" meta-type="org.codehaus.continuum.project.ProjectDescriptor">
+      <column name="type"/>
+      <column name="projectId"/>
+    </any>
+<!--
+    <one-to-one
+        name="descriptor"
+        class="org.codehaus.continuum.project.AbstractProjectDescriptor"
+        cascade="none"/>
+-->
+  </class>
+</hibernate-mapping>

@@ -4,9 +4,11 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
+import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -16,13 +18,13 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.31 2004-07-03 03:21:13 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.32 2004-07-07 02:34:33 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
-    private ContinuumBuilder builder;
+    private BuilderManager builderManager;
 
     private BuildQueue buildQueue;
 
@@ -30,21 +32,18 @@ public class DefaultContinuum
 
     private BuilderThread builderThread;
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Component lifecycle
+    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
     {
         getLogger().info( "Initializing continuum." );
 
-        PlexusUtils.assertRequirement( builder, ContinuumBuilder.ROLE );
-
+        PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
-
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
-
-        getLogger().info( "Continuum initialized." );
     }
 
     public void start()
@@ -53,7 +52,7 @@ public class DefaultContinuum
         getLogger().info( "Starting continuum." );
 
         // start the builder thread
-        builderThread = new BuilderThread( buildQueue, getLogger(), builder );
+        builderThread = new BuilderThread( builderManager, buildQueue, getLogger() );
 
         Thread thread = new Thread( builderThread );
 
@@ -94,28 +93,35 @@ public class DefaultContinuum
         getLogger().info( "Continuum stopped." );
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Continuum implementation
+    // ----------------------------------------------------------------------
+    // Continuum Implementation
+    // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection )
+    public String addProject( String name, String scmConnection, String type )
         throws ContinuumException
     {
-        String id;
+        String projectId;
 
         try
         {
-            id = store.addProject( name, scmConnection );
+            projectId = store.addProject( name, scmConnection, type );
+
+            ContinuumProject project = store.getProject( projectId );
+
+            ContinuumBuilder builder = builderManager.getBuilderForProject( projectId );
+
+            ProjectDescriptor descriptor = builder.createDescriptor( project );
+
+            store.setProjectDescriptor( projectId, descriptor );
 
             getLogger().info( "Added project: " + name );
         }
         catch ( Exception ex )
         {
-            getLogger().error( "Cannot add project!", ex );
-
             throw new ContinuumException( "Exception while building project.", ex );
         }
 
-        return id;
+        return projectId;
     }
 
     public String buildProject( String id )
@@ -177,8 +183,9 @@ public class DefaultContinuum
         return buildQueue.getLength();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Private
+    // ----------------------------------------------------------------------
 
 /*
     private boolean hasProject( String groupId, String artifactId )

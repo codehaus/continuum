@@ -4,42 +4,61 @@ package org.codehaus.continuum.xmlrpc;
  * LICENSE
  */
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-
 import org.codehaus.continuum.Continuum;
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpcInterface.java,v 1.1 2004-06-27 19:28:46 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpcInterface.java,v 1.2 2004-07-07 02:34:42 trygvis Exp $
  */
 public class DefaultContinuumXmlRpcInterface
-    implements ContinuumXmlRpcInterface
+    implements ContinuumXmlRpcInterface, Initializable
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Requirements
-
-    private MavenProjectBuilder projectBuilder;
-
     private Continuum continuum;
 
-    ///////////////////////////////////////////////////////////////////////////
-    // ContinuumXmlRpcInterface Implementation
+    // ----------------------------------------------------------------------
+    // Component Lifecycle
+    // ----------------------------------------------------------------------
 
-    public String registerProject( String pom )
+    public void initialize()
+        throws Exception
+    {
+        PlexusUtils.assertRequirement( continuum, Continuum.ROLE );
+    }
+
+    // ----------------------------------------------------------------------
+    // Continuum Implementation
+    // ----------------------------------------------------------------------
+
+    public String addProject( String name, String scmConnection, String type )
+        throws ContinuumException
+    {
+        return continuum.addProject( name, scmConnection, type );
+    }
+
+    public String buildProject( String id )
+        throws ContinuumException
+    {
+        return continuum.buildProject( id );
+    }
+
+    public int getBuildQueueLength()
+        throws ContinuumException
+    {
+        return continuum.getBuildQueueLength();
+    }
+
+    // ----------------------------------------------------------------------
+    // ContinuumXmlRpcInterface Implementation
+    // ----------------------------------------------------------------------
+/*
+    public String registerProject( String name, String scmConnection, String type )
     {
         try
         {
-            File pomFile = stringToFile( pom );
-
-            MavenProject project = projectBuilder.build( pomFile );
-
-            continuum.addProject( project );
+            continuum.addProject( name, scmConnection, type );
 
             return "OK";
         }
@@ -48,21 +67,5 @@ public class DefaultContinuumXmlRpcInterface
             return "FAILURE";
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Private
-
-    private File stringToFile( String string )
-        throws IOException
-    {
-        File file = File.createTempFile( "continuum", "xmlrpc" );
-
-        FileWriter writer = new FileWriter( file );
-
-        IOUtil.copy( string, writer );
-
-        writer.close();
-
-        return file;
-    }
+*/
 }

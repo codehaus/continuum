@@ -6,7 +6,7 @@
       <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+          <role>org.codehaus.continuum.notification.NotifierManager</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>

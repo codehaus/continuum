@@ -16,11 +16,12 @@ import org.codehaus.plexus.logging.Logger;
  * <code>logger.fatalError( ex )</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierWrapper.java,v 1.4 2004-07-03 03:21:15 trygvis Exp $
+ * @version $Id: NotifierWrapper.java,v 1.5 2004-07-07 02:34:34 trygvis Exp $
  */
 public class NotifierWrapper
 {
     private ContinuumNotifier notifier;
+
     private Logger logger;
 
     public NotifierWrapper( ContinuumNotifier notifier, Logger logger )

@@ -4,17 +4,21 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
+import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.2 2004-07-03 03:21:13 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.3 2004-07-07 02:34:33 trygvis Exp $
  */
 class BuilderThread
     implements Runnable
 {
+    /** */
+    private BuilderManager builderManager;
+
     /** */
     private BuildQueue buildQueue;
 
@@ -22,21 +26,18 @@ class BuilderThread
     private Logger logger;
 
     /** */
-    private ContinuumBuilder builder;
-
-    /** */
     private boolean shutdown;
 
     /** */
     private boolean done;
 
-    public BuilderThread( BuildQueue buildQueue, Logger logger, ContinuumBuilder builder )
+    public BuilderThread( BuilderManager builderManager, BuildQueue buildQueue, Logger logger )
     {
+        this.builderManager = builderManager;
+
         this.buildQueue = buildQueue;
 
         this.logger = logger;
-
-        this.builder = builder;
     }
 
     public void run()
@@ -47,14 +48,21 @@ class BuilderThread
 
             if ( buildId == null )
             {
-//                logger.info( "Builder sleeping..." );
-
                 sleep( 100 );
 
                 continue;
             }
 
-            builder.build( buildId );
+            try
+            {
+                ContinuumBuilder builder = builderManager.getBuilderForBuild( buildId );
+
+                builder.build( buildId );
+            }
+            catch( ContinuumException ex )
+            {
+                getLogger().error( "Internal error while building project.", ex );
+            }
         }
 
         done = true;
@@ -68,6 +76,11 @@ class BuilderThread
     public boolean isDone()
     {
         return done;
+    }
+
+    private Logger getLogger()
+    {
+        return logger;
     }
 
     private void sleep( int interval )

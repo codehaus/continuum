@@ -11,7 +11,7 @@ import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.9 2004-07-03 03:21:16 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.10 2004-07-07 02:34:35 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -35,7 +35,9 @@ public class SimpleNetworkRegistrar
 
             String scmConnection = reader.readLine();
 
-            String id = getContinuum().addProject( name, scmConnection );
+            String type = reader.readLine();
+
+            String id = getContinuum().addProject( name, scmConnection, type );
 
             printer.println( "OK" );
 

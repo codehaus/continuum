@@ -11,7 +11,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.3 2004-05-19 22:19:13 trygvis Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.4 2004-07-07 02:34:33 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger
@@ -23,8 +23,9 @@ public class AlarmClockTrigger
 
     private Timer timer;
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Plexus Component Implementation
+    // ----------------------------------------------------------------------
 
     public void initialize()
         throws Exception
@@ -57,8 +58,9 @@ public class AlarmClockTrigger
     {
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // ----------------------------------------------------------------------
     // Alarm Clock Trigger implementation
+    // ----------------------------------------------------------------------
 
     private class BuildTask
         extends TimerTask

@@ -4,12 +4,14 @@ package org.codehaus.continuum.project;
  * LICENSE
  */
 
+import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.3 2004-07-03 03:21:15 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.4 2004-07-07 02:34:35 trygvis Exp $
  */
-public class ContinuumProject
+public interface ContinuumProject
+    extends Serializable
 {
     /**
      * This state indicates that the project is new and has never been build.
@@ -48,99 +50,59 @@ public class ContinuumProject
      */
     public final static int PROJECT_STATE_BUILDING = 6;
 
-    /** */
-    private String id;
-
-    /** */
-    private String name;
-
-    /** */
-    private String scmConnection;
-
-    /** */
-    private int projectState;
-
-    /** */
-    private Object projectDescriptor;
-
-    /**
-     */
-    public ContinuumProject( String id )
-    {
-        this.id = id;
-    }
-
     /**
      * @return Returns the id.
      */
-    public String getId()
-    {
-        return id;
-    }
+    public String getId();
 
     /**
      * @param id The id to set.
      */
-    public void setId( String id )
-    {
-        this.id = id;
-    }
+    public void setId( String id );
+
+    /**
+     * @return Returns the type.
+     */
+    public String getType();
+
+    /**
+     * @param type The type to set.
+     */
+    public void setType( String type );
 
     /**
      * @return Returns the name.
      */
-    public String getName()
-    {
-        return name;
-    }
+    public String getName();
 
     /**
      * @param name The name to set.
      */
-    public void setName( String name )
-    {
-        this.name = name;
-    }
+    public void setName( String name );
 
     /**
      * @return Returns the scm connection.
      */
-    public String getScmConnection()
-    {
-        return scmConnection;
-    }
+    public String getScmConnection();
 
     /**
      * @param ccmConnection The ccmConnection to set.
      */
-    public void setScmConnection( String scmConnection)
-    {
-        this.scmConnection = scmConnection;
-    }
+    public void setScmConnection( String scmConnection );
 
     /**
-     * @return Returns the projectState.
+     * @return Returns the state.
      */
-    public int getProjectState()
-    {
-        return projectState;
-    }
+    public int getState();
 
     /**
-     * @param projectState The projectState to set.
+     * @param state The state to set.
      */
-    public void setProjectState( int projectState )
-    {
-        this.projectState = projectState;
-    }
+    public void setState( int state );
 
-    public Object getProjectDescriptor()
-    {
-        return projectDescriptor;
-    }
+    public ProjectDescriptor getDescriptor();
 
-    public void setProjectDescriptor( Object projectDescriptor )
-    {
-        this.projectDescriptor = projectDescriptor;
-    }
+    public void setDescriptor( ProjectDescriptor descriptor );
+
+//    public List getBuilds();
 }
