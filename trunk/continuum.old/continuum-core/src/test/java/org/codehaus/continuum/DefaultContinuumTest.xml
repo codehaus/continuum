@@ -16,11 +16,12 @@
         <requirement>
           <role>org.apache.maven.project.MavenProjectBuilder</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
+        </requirement>
       </requirements>
       <configuration>
         <working-directory>${plexus.home}/continuum</working-directory>
-        <smtp-server>mail.maven.org</smtp-server>
-        <reply-to>jason@maven.org</reply-to>
       </configuration>
     </component>
     <component>
@@ -93,6 +94,15 @@
           <role>org.codehaus.plexus.continuum.Continuum</role>
         </requirement>
       </requirements>
+    </component>
+    <!-- Notifier -->
+    <component>
+      <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
+      <implementation>org.codehaus.plexus.continuum.notification.mail.DefaultEmailNotifier</implementation>
+      <configuration>
+        <smtp-server>mail.maven.org</smtp-server>
+        <reply-to>jason@maven.org</reply-to>
+      </configuration>
     </component>
   </components>
 </plexus>
