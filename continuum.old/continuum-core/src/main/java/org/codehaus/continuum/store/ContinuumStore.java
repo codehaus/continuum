@@ -14,7 +14,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.9 2004-07-12 00:00:27 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.10 2004-07-19 16:28:17 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -60,5 +60,8 @@ public interface ContinuumStore
         throws ContinuumStoreException;
 
     BuildResult getBuildResult( String buildId )
+        throws ContinuumStoreException;
+
+    Iterator getBuildResultsForProject( String projectId, int start, int end )
         throws ContinuumStoreException;
 }

@@ -4,17 +4,54 @@ package org.codehaus.continuum.notification;
  * LICENSE
  */
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.maven.project.MavenProject;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifier.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: AbstractNotifier.java,v 1.3 2004-07-19 16:28:17 trygvis Exp $
  */
-public class AbstractNotifier
+public abstract class AbstractNotifier
+    extends AbstractLogEnabled
+    implements ContinuumNotifier
 {
+
+    // ----------------------------------------------------------------------
+    // ContinuumNotifier Implementation
+    // ----------------------------------------------------------------------
+
+    public void buildStarted( BuildResult build )
+        throws ContinuumException
+    {
+    }
+
+    public void checkoutStarted( BuildResult build )
+        throws ContinuumException
+    {
+    }
+
+    public void checkoutComplete( BuildResult build, Exception ex )
+        throws ContinuumException
+    {
+    }
+
+    public void runningGoals( BuildResult build )
+        throws ContinuumException
+    {
+    }
+
+    public void goalsCompleted( BuildResult build, Exception ex )
+        throws ContinuumException
+    {
+    }
+
+    public void buildComplete( BuildResult build, Exception ex )
+        throws ContinuumException
+    {
+    }
+
+/*
     protected String createMessage( List messages, MavenProject project )
     {
         StringBuffer message = new StringBuffer();
@@ -34,4 +71,5 @@ public class AbstractNotifier
 
         return message.toString();
     }
+*/
 }

@@ -20,20 +20,16 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.7 2004-07-07 02:34:35 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.8 2004-07-19 16:28:17 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
     implements ContinuumScm, Initializable
 {
-    // configuration
-
-    /** */
+    /** @default */
     private String checkoutDirectory;
 
-    // requirements
-
-    /** */
+    /** @requirement */
     private ScmManager scmManager;
 
     // ----------------------------------------------------------------------

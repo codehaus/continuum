@@ -4,9 +4,11 @@ package org.codehaus.continuum.store;
  * LICENSE
  */
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -20,7 +22,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.4 2004-07-12 00:00:27 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.5 2004-07-19 16:28:17 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -64,6 +66,21 @@ public class MemoryContinuumStore
     public String addProject( String name, String scmConnection, String type )
         throws ContinuumStoreException
     {
+        if ( name == null )
+        {
+            throw new ContinuumStoreException( "name cannot be null." );
+        }
+
+        if ( scmConnection == null )
+        {
+            throw new ContinuumStoreException( "scmConnection cannot be null." );
+        }
+
+        if ( type == null )
+        {
+            throw new ContinuumStoreException( "type cannot be null." );
+        }
+
         ContinuumProject project = findProjectByName( name );
 
         if ( project != null )
@@ -184,5 +201,26 @@ public class MemoryContinuumStore
         }
 
         return result;
+    }
+
+    // TODO: Implement start and end
+    public Iterator getBuildResultsForProject( String projectId, int start, int end )
+        throws ContinuumStoreException
+    {
+        ContinuumProject project = getProject( projectId );
+
+        List builds = new ArrayList();
+
+        for ( Iterator it = buildResults.values().iterator(); it.hasNext(); )
+        {
+            BuildResult buildResult = (BuildResult) it.next();
+
+            if ( buildResult.getProject() == project )
+            {
+                builds.add( buildResult );
+            }
+        }
+
+        return builds.iterator();
     }
 }
