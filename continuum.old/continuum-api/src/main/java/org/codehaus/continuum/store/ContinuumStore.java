@@ -1,7 +1,7 @@
 package org.codehaus.continuum.store;
 
 /*
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstï¿½l
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.8 2004-10-28 17:17:38 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.9 2004-11-02 14:25:53 jvanzyl Exp $
  */
 public interface ContinuumStore
 {
@@ -42,10 +42,10 @@ public interface ContinuumStore
     // Database methods
     // ----------------------------------------------------------------------
 
-    public void createDatabase()
+    void createDatabase()
         throws ContinuumStoreException;
 
-    public void deleteDatabase()
+    void deleteDatabase()
         throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
