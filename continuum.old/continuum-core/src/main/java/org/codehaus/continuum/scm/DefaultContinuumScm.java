@@ -25,6 +25,8 @@ package org.codehaus.continuum.scm;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.scm.command.checkout.CheckOutScmResult;
+import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.repository.ScmRepository;
 
@@ -37,7 +39,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.12 2004-10-20 19:50:09 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.13 2004-10-24 14:22:31 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -103,6 +105,8 @@ public class DefaultContinuumScm
 
             ScmRepository repository = scmManager.makeScmRepository( project.getScmConnection() );
 
+            CheckOutScmResult result;
+
             synchronized( this )
             {
                 if ( !workingDirectory.exists() )
@@ -112,7 +116,12 @@ public class DefaultContinuumScm
 
                 String tag = null;
 
-                scmManager.checkOut( repository, workingDirectory, tag );
+                result = scmManager.checkOut( repository, workingDirectory, tag );
+            }
+
+            if ( !result.isSuccess() )
+            {
+                throw new ContinuumException( "Error while checking out the project: " + result.getMessage() );
             }
 
             // TODO: yes, this is CVS specific and pure bad
@@ -143,16 +152,23 @@ public class DefaultContinuumScm
 
             String tag = null;
 
+            UpdateScmResult result;
+
             synchronized( this )
             {
-                scmManager.update( repository, dir, tag );
+                result = scmManager.update( repository, dir, tag );
+            }
+
+            if ( !result.isSuccess() )
+            {
+                throw new ContinuumException( "Error while updating repository: " + result.getMessage() );
             }
 
             return dir;
         }
-        catch ( Exception e )
+        catch ( Exception ex )
         {
-            throw new ContinuumException( "Cannot update sources.", e );
+            throw new ContinuumException( "Error while update sources.", ex );
         }
     }
 
