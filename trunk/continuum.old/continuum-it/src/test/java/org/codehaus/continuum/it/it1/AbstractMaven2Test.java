@@ -1,4 +1,4 @@
- package org.codehaus.continuum.it.it1;
+package org.codehaus.continuum.it.it1;
 
 /*
  * LICENSE
@@ -18,7 +18,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractMaven2Test.java,v 1.1 2004-10-06 14:27:04 trygvis Exp $
+ * @version $Id: AbstractMaven2Test.java,v 1.2 2004-10-08 12:37:23 trygvis Exp $
  */
 public abstract class AbstractMaven2Test
     extends AbstractContinuumTest
@@ -101,13 +101,22 @@ public abstract class AbstractMaven2Test
 
         txManager.begin();
 
-        String projectId = continuum.addProject( "Hibernate Maven 2 Test Project", "scm:test:target/repositories:hibernate-maven2", "maven2" );
+        String projectName = "Hibernate And Maven 2 Test Project - Project - Original";
+
+        String pomName = "Hibernate And Maven 2 Test Project - POM - Original";
+
+        String projectScmConnection = "scm:test:target/repositories:hibernate-maven2";
+
+        String projectId = continuum.addProject( projectName, projectScmConnection, "maven2" );
 
         ContinuumProject project = store.getProject( projectId );
 
         Maven2ProjectDescriptor descriptor = (Maven2ProjectDescriptor) project.getDescriptor();
 
-        assertEquals( "Hibernate And Maven 2 Test Project - Original", descriptor.getName() );
+        assertEquals( pomName, descriptor.getName() );
+
+        // the pom should override the gived name
+        assertEquals( pomName, project.getName() );
 
         projects = continuum.getAllProjects( 0, 0);
 
