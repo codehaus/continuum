@@ -65,7 +65,7 @@ import java.io.IOException;
  * report 5273</a>.</p>
  *
  * @author <a href="mailto:stefan.bodewig@epost.de">Stefan Bodewig</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class ErrorInQuitException
     extends IOException
