@@ -2,89 +2,32 @@
 <project version="3" relativePaths="false">
   <component name="FileEditorManager">
     <history>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl/PumpStreamHandler.java" line="69" column="13" vertical-scroll-proportion="0.33333334" horizontal-scroll-proportion="0.09330144">
+      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/Continuum.java" line="4" column="0" vertical-scroll-proportion="0.050485436" horizontal-scroll-proportion="0.0" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/DefaultContinuum.java" line="97" column="13" vertical-scroll-proportion="0.4" horizontal-scroll-proportion="0.0724234">
         <folding>
           <element signature="imports" expanded="true" />
         </folding>
       </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/util/Commandline.java" line="120" column="13" vertical-scroll-proportion="-6.40048" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/Scm.java" line="57" column="0" vertical-scroll-proportion="0.81294966" horizontal-scroll-proportion="0.0">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/svn/SvnScm.java" line="143" column="49" vertical-scroll-proportion="0.34892085" horizontal-scroll-proportion="0.35167465">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/ModificationSet.java" line="123" column="22" vertical-scroll-proportion="0.25539568" horizontal-scroll-proportion="0.15789473">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/conf/plexus.conf" line="19" column="0" vertical-scroll-proportion="0.29616308" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/Continuum.java" line="4" column="0" vertical-scroll-proportion="0.06235012" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/DefaultContinuum.java" line="97" column="13" vertical-scroll-proportion="0.39208633" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml" line="9" column="10" vertical-scroll-proportion="0.14028777" horizontal-scroll-proportion="0.07125891" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/test-input/project.xml" line="7" column="0" vertical-scroll-proportion="0.10911271" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/project.xml" line="0" column="0" vertical-scroll-proportion="0.0" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl/CvsPass.java" line="71" column="13" vertical-scroll-proportion="0.34172663" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl/CvsScm.java" line="72" column="13" vertical-scroll-proportion="0.34172663" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm/cvs/CvsScmTest.java" line="15" column="13" vertical-scroll-proportion="0.23381294" horizontal-scroll-proportion="0.09263658">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm/cvs/CvsScmTest.xml" line="6" column="44" vertical-scroll-proportion="0.09352518" horizontal-scroll-proportion="0.3135392" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/test-input/project.xml" line="7" column="0" vertical-scroll-proportion="0.08834951" horizontal-scroll-proportion="0.0" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/conf/plexus.conf" line="19" column="0" vertical-scroll-proportion="0.23980583" horizontal-scroll-proportion="0.0" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml" line="9" column="10" vertical-scroll-proportion="0.11359223" horizontal-scroll-proportion="0.05540166" />
+      <source-position-entry url="file://$PROJECT_DIR$/project.xml" line="75" column="0" vertical-scroll-proportion="0.7699029" horizontal-scroll-proportion="0.0" />
     </history>
     <open-files>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl/CvsScm.java" line="72" column="13" vertical-scroll-proportion="0.34172663" horizontal-scroll-proportion="0.09330144">
+      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/DefaultContinuum.java" line="97" column="13" vertical-scroll-proportion="0.4" horizontal-scroll-proportion="0.0724234">
         <folding>
           <element signature="imports" expanded="true" />
         </folding>
       </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/DefaultContinuum.java" line="97" column="13" vertical-scroll-proportion="0.39208633" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml" line="9" column="10" vertical-scroll-proportion="0.14028777" horizontal-scroll-proportion="0.07125891" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/test-input/project.xml" line="7" column="0" vertical-scroll-proportion="0.10911271" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/project.xml" line="0" column="0" vertical-scroll-proportion="0.0" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm/cvs/CvsScmTest.xml" line="6" column="44" vertical-scroll-proportion="0.09352518" horizontal-scroll-proportion="0.3135392" selected="true" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/Continuum.java" line="4" column="0" vertical-scroll-proportion="0.06235012" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm/cvs/CvsScmTest.java" line="15" column="13" vertical-scroll-proportion="0.23381294" horizontal-scroll-proportion="0.09263658">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
-      <source-position-entry url="file://$PROJECT_DIR$/src/conf/plexus.conf" line="19" column="0" vertical-scroll-proportion="0.29616308" horizontal-scroll-proportion="0.0" />
-      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl/CvsPass.java" line="71" column="13" vertical-scroll-proportion="0.34172663" horizontal-scroll-proportion="0.09330144">
-        <folding>
-          <element signature="imports" expanded="true" />
-        </folding>
-      </source-position-entry>
+      <source-position-entry url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml" line="9" column="10" vertical-scroll-proportion="0.11359223" horizontal-scroll-proportion="0.05540166" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/test-input/project.xml" line="7" column="0" vertical-scroll-proportion="0.08834951" horizontal-scroll-proportion="0.0" />
+      <source-position-entry url="file://$PROJECT_DIR$/project.xml" line="75" column="0" vertical-scroll-proportion="0.7699029" horizontal-scroll-proportion="0.0" selected="true" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/Continuum.java" line="4" column="0" vertical-scroll-proportion="0.050485436" horizontal-scroll-proportion="0.0" />
+      <source-position-entry url="file://$PROJECT_DIR$/src/conf/plexus.conf" line="19" column="0" vertical-scroll-proportion="0.23980583" horizontal-scroll-proportion="0.0" />
     </open-files>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="0" width="1288" height="1025" extended-state="0" />
+    <frame x="-4" y="0" width="1608" height="1201" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.25" order="1" />
@@ -92,7 +35,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.25" order="2" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.33" order="6" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="sliding" type="sliding" visible="false" weight="0.4" order="0" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="true" weight="0.24959743" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="true" weight="0.2490397" order="0" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.4" order="3" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.25" order="1" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.33039647" order="1" />
@@ -298,27 +241,22 @@
   <component name="ProjectViewSettings">
     <navigator currentView="ProjectPane" flattenPackages="false" showMembers="false" showStructure="false" autoscrollToSource="false" splitterProportion="0.5" />
     <view id="ProjectPane">
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org" />
       <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/mail" />
       <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test-input" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/cvsimpl" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm/svn" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/conf" />
       <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm" />
       <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/scm" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum/scm/cvs" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus/continuum/util" />
-      <expanded_node type="directory" url="file://$PROJECT_DIR$" />
       <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus/continuum" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org/codehaus/plexus" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus/plexus" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/conf" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test-input" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/test/org" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$" />
+      <expanded_node type="directory" url="file://$PROJECT_DIR$/src/main/org/codehaus" />
     </view>
     <view id="SourcepathPane" />
     <view id="ClasspathPane" />
