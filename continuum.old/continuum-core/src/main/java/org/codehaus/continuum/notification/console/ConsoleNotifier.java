@@ -6,53 +6,53 @@ package org.codehaus.plexus.continuum.notification.console;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.continuum.ContinuumException;
 import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.3 2004-04-26 00:21:43 trygvis Exp $
  */
 public class ConsoleNotifier
     implements ContinuumNotifier
 {
-/*
-    public void notifyAudience(MavenProject project, String message)
-        throws Exception
-    {
-        System.out.println( "Build of " + project.getName() + " complete!" );
-        System.out.println( "Message: " + message );
-    }
-*/
     public void buildStarted(MavenProject project)
-        throws ContinuumException
     {
+        out( project, "Build started." );
     }
 
     public void checkoutStarted(MavenProject project)
-        throws ContinuumException
     {
+        out( project, "Checkout started." );
     }
 
     public void checkoutComplete(MavenProject project, Exception ex)
-        throws ContinuumException
     {
+        out( project, "Checkout complete.", ex );
     }
 
     public void runningGoals(MavenProject project)
-        throws ContinuumException
     {
+        out( project, "Running goals." );
     }
 
     public void goalsCompleted(MavenProject project, Exception ex)
-        throws ContinuumException
     {
+        out( project, "Goals completed.", ex );
     }
 
     public void buildComplete(MavenProject project, Exception ex)
-        throws ContinuumException
     {
-        System.out.println( "Build of " + project.getName() + " complete!" );
+        out( project, "Build complete.", ex );
+    }
+
+    private void out( MavenProject project, String msg )
+    {
+        out( project, msg, null );
+    }
+
+    private void out( MavenProject project, String msg, Exception ex )
+    {
+        System.out.println( project.getId() + ":" + msg );
 
         if ( ex != null )
         {
