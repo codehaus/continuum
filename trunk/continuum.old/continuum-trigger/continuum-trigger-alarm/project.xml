@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <extend>${maven.repo.local}/continuum/poms/continuum-parent-1.0.pom</extend>
+  <extend>${maven.repo.local}/continuum/poms/continuum-parent-0.1.pom</extend>
   <artifactId>continuum-alarm-trigger</artifactId>
+  <groupId>continuum</groupId>
   <name>Continuum Alarm Trigger</name>
-  <currentVersion>1.0-SNAPSHOT</currentVersion>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
 
   <dependencies>
 
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-test</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
 
