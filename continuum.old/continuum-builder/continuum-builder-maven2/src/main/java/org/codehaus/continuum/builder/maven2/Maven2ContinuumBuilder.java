@@ -50,7 +50,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.5 2004-10-14 13:59:47 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.6 2004-10-14 14:29:57 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -300,29 +300,9 @@ public abstract class Maven2ContinuumBuilder
     {
         File pomFile = new File( basedir, "pom.xml" );
 
-        if ( pomFile.isFile() )
+        if ( !pomFile.isFile() )
         {
-            return pomFile;
-        }
-
-        File projectXmlFile = new File( basedir, "project.xml" );
-
-        if( !projectXmlFile.isFile() )
-        {
-            throw new ContinuumException( "Could not find either Maven 1 or Maven 2 project descriptor." );
-        }
-
-        getLogger().info( "Found Maven 1 descriptor." );
-
-        PomV3ToV4Converter converter = new PomV3ToV4Converter();
-
-        try
-        {
-            converter.convertFile( projectXmlFile );
-        }
-        catch( Exception ex )
-        {
-            throw new ContinuumException( "Could not convert the Maven 1 project descriptor.", ex );
+            throw new ContinuumException( "Could not find Maven 2 project descriptor." );
         }
 
         return pomFile;
