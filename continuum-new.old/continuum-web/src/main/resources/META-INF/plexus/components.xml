@@ -16,7 +16,12 @@
           <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.ActionValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
-          <!-- If i put this after the PullToolValve the tools placed in the context vanish -->
+          <!--
+           |
+           | If i put this after the PullToolValve the tools placed in the context vanish ...
+           | that's because the
+           |
+           -->
           <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
           <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextPopulatorValve</valve>
           <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
