@@ -36,7 +36,7 @@ public class ShellBuildResult
 
     private int exitCode;
 
-    protected ShellBuildResult()
+    public ShellBuildResult()
     {
     }
 
