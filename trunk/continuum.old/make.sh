@@ -2,12 +2,15 @@
 
 # Install the POMs
 ( m2 pom:install )
-( cd continuum-store && m2 pom:install )
-( cd continuum-notifier && m2 pom:install )
-( cd continuum-trigger && m2 pom:install )
-( cd continuum-builder && m2 pom:install )
+m2 -r -Dmaven.reactor.includes=\
+continuum-store/pom.xml,\
+continuum-notifier/pom.xml,\
+continuum-trigger/pom.xml,\
+continuum-builder/pom.xml pom:install
+
 # m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** pom:install
 # m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** eclipse:eclipse
+# m2 -r -Dmaven.reactor.excludes=continuum-sandbox/**,**/apps/** idea:idea
 
 # Build the JARs
 ( cd continuum-api && m2 jar:install )
