@@ -1,4 +1,4 @@
-package org.codehaus.continuum.notification.mail;
+package org.codehaus.continuum.notification;
 
 /*
  * The MIT License
@@ -24,31 +24,41 @@ package org.codehaus.continuum.notification.mail;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.logging.Logger;
-
-import java.io.PrintWriter;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractMailGenerator.java,v 1.1.1.1 2005-02-17 22:23:51 trygvis Exp $
+ * @version $Id: ContinuumNotificationDispatcher.java,v 1.1 2005-03-09 20:06:42 trygvis Exp $
  */
-public abstract class AbstractMailGenerator
-    implements MailGenerator
+public interface ContinuumNotificationDispatcher
 {
-    private Logger logger;
+    String ROLE = ContinuumNotificationDispatcher.class.getName();
 
-    public AbstractMailGenerator( Logger logger )
-    {
-        this.logger = logger;
-    }
+    String MESSAGE_ID_BUILD_STARTED = "BuildStarted";
 
-    protected Logger getLogger()
-    {
-        return logger;
-    }
+    String MESSAGE_ID_CHECKOUT_STARTED = "CheckoutStarted";
 
-    protected void line( PrintWriter output )
-    {
-        output.println( "****************************************************************************" );
-    }
+    String MESSAGE_ID_CHECKOUT_COMPLETE = "CheckoutComplete";
+
+    String MESSAGE_ID_RUNNING_GOALS = "RunningGoals";
+
+    String MESSAGE_ID_GOALS_COMPLETED = "GoalsCompleted";
+
+    String MESSAGE_ID_BUILD_COMPLETE = "BuildComplete";
+
+    String CONTEXT_BUILD = "build";
+
+    String CONTEXT_PROJECT = "project";
+
+    void buildStarted( ContinuumBuild build );
+
+    void checkoutStarted( ContinuumBuild build );
+
+    void checkoutComplete( ContinuumBuild build );
+
+    void runningGoals( ContinuumBuild build );
+
+    void goalsCompleted( ContinuumBuild build );
+
+    void buildComplete( ContinuumBuild build );
 }

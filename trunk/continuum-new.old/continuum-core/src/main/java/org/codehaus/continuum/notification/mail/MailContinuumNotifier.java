@@ -24,42 +24,61 @@ package org.codehaus.continuum.notification.mail;
  * SOFTWARE.
  */
 
+import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.exception.ResourceNotFoundException;
+
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.notification.AbstractContinuumNotifier;
-import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.notification.ContinuumNotificationDispatcher;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.mailsender.MailMessage;
 import org.codehaus.plexus.mailsender.MailSender;
 import org.codehaus.plexus.mailsender.MailSenderException;
+import org.codehaus.plexus.notification.NotificationException;
+import org.codehaus.plexus.notification.notifier.Notifier;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MailContinuumNotifier.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.3 2005-03-09 20:06:45 trygvis Exp $
  */
 public class MailContinuumNotifier
-    extends AbstractContinuumNotifier
-    implements Initializable
+    extends AbstractLogEnabled
+    implements Initializable, Notifier
 {
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    /** @requirement */
+    private VelocityComponent velocity;
+
+    /** @configuration */
     private ContinuumStore store;
 
+    /** @configuration */
     private MailSender mailSender;
 
-    private String to;
-
-    private String administrator;
-
+    /** @configuration */
     private String from;
+
+    /** @configuration */
+    private String administrator;
 
     // ----------------------------------------------------------------------
     //
@@ -68,8 +87,6 @@ public class MailContinuumNotifier
     private String fromName;
 
     private String localHostName;
-
-    private Map generators = new HashMap();
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
@@ -91,19 +108,6 @@ public class MailContinuumNotifier
             getLogger().warn( "No administrator email address configured." );
 
             administrator = null;
-        }
-
-        // ----------------------------------------------------------------------
-        // To address
-        // ----------------------------------------------------------------------
-
-        if ( StringUtils.isEmpty( to ) )
-        {
-            getLogger().info( "To address is not configured, will use the nag email address from the project." );
-        }
-        else
-        {
-            getLogger().info( "Using '" + to + "' as the to address for all emails." );
         }
 
         // ----------------------------------------------------------------------
@@ -133,78 +137,118 @@ public class MailContinuumNotifier
         fromName = "continuum@" + localHostName;
 
         getLogger().info( "From name: " + fromName );
-
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
-        generators.put( "maven2", new ExternalMaven2MailGenerator( getLogger() ) );
     }
 
     // ----------------------------------------------------------------------
     // Notifier Implementation
     // ----------------------------------------------------------------------
 
-    public void buildStarted( ContinuumBuild build )
-        throws ContinuumException
+    public void sendNotification( String source, Set recipients, Map context )
+        throws NotificationException
     {
-    }
+        ContinuumBuild build = (ContinuumBuild) context.get( ContinuumNotificationDispatcher.CONTEXT_BUILD );
 
-    public void checkoutStarted( ContinuumBuild build )
-        throws ContinuumException
-    {
-    }
+        ContinuumProject project = (ContinuumProject) context.get( ContinuumNotificationDispatcher.CONTEXT_PROJECT );
 
-    public void checkoutComplete( ContinuumBuild build )
-        throws ContinuumException
-    {
-    }
-
-    public void runningGoals( ContinuumBuild build )
-        throws ContinuumException
-    {
-    }
-
-    public void goalsCompleted( ContinuumBuild build )
-        throws ContinuumException
-    {
-    }
-
-    public void buildComplete( ContinuumBuild build )
-        throws ContinuumException
-    {
-        ContinuumProject project = build.getProject();
-
-        if ( !generators.containsKey( project.getBuilderId() ) )
+        try
         {
-            getLogger().warn( "Uknown project type: '" + project.getBuilderId() + "'." );
-
-            return;
+            if ( source.equals( ContinuumNotificationDispatcher.MESSAGE_ID_BUILD_COMPLETE ) )
+            {
+                buildComplete( project, build, source, recipients );
+            }
         }
+        catch ( ContinuumException e )
+        {
+            throw new NotificationException( "Error while notifiying.", e );
+        }
+    }
 
+    private void buildComplete( ContinuumProject project, ContinuumBuild build, String source, Set recipients )
+        throws ContinuumException
+    {
         // ----------------------------------------------------------------------
         // Check if the mail should be sent at all
         // ----------------------------------------------------------------------
 
-        ContinuumBuild lastBuild = getLastBuild( project, build );
+        ContinuumBuild lastBuild = getPreviousBuild( project, build );
 
-        if ( shouldNotify( project, build, lastBuild ) )
+        if ( !shouldNotify( build, lastBuild ) )
         {
-            MailGenerator generator = (MailGenerator) generators.get( project.getBuilderId() );
-
-            String message = generator.generateContent( project, build, lastBuild );
-
-            String subject = generator.generateSubject( project, build, lastBuild );
-
-            sendMessage( build, subject, message );
+            return;
         }
+
+        // ----------------------------------------------------------------------
+        // Generate the mail contents
+        // ----------------------------------------------------------------------
+
+        String packageName = this.getClass().getPackage().getName().replace( '.', '/' );
+
+        String templateName = "/" + packageName + "/templates/" + project.getBuilderId() + "/" + source + ".vm";
+
+        StringWriter writer = new StringWriter();
+
+        try
+        {
+            VelocityContext context = new VelocityContext();
+
+            context.put( "build", build );
+
+            context.put( "project", project );
+
+            velocity.getEngine().mergeTemplate( templateName, context, writer );
+        }
+        catch ( ResourceNotFoundException e )
+        {
+            getLogger().info( "No such template: '" + templateName + "'." );
+
+            return;
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumException( "Error while generating mail contents." , e );
+        }
+
+        // ----------------------------------------------------------------------
+        // Send the mail
+        // ----------------------------------------------------------------------
+
+        String subject = generateSubject( project, build );
+
+        sendMessage( build, recipients, subject, writer.getBuffer().toString() );
     }
 
     // ----------------------------------------------------------------------
-    // Private
+    //
     // ----------------------------------------------------------------------
 
-    private void sendMessage( ContinuumBuild build, String subject, String message )
+    private String generateSubject( ContinuumProject project, ContinuumBuild build )
+    {
+        ContinuumBuildResult result = build.getBuildResult();
+
+        int state = build.getState();
+
+        if ( state == ContinuumProjectState.ERROR )
+        {
+            return "[continuum] BUILD ERROR: " + project.getName();
+        }
+        else if ( state == ContinuumProjectState.OK || state == ContinuumProjectState.FAILED )
+        {
+            if ( !result.isSuccess() )
+            {
+                return "[continuum] BUILD FAILURE: " + project.getName();
+            }
+            else
+            {
+                return "[continuum] BUILD SUCCESSFUL: " + project.getName();
+            }
+        }
+        else
+        {
+            return "[continuum] ERROR: Unknown build state";
+        }
+    }
+
+    private void sendMessage( ContinuumBuild build, Set recipients, String subject, String content )
         throws ContinuumException
     {
         ContinuumProject project = build.getProject();
@@ -218,24 +262,33 @@ public class MailContinuumNotifier
             return;
         }
 
-        String toAddress = getToAddress( project );
+        getLogger().info( "Sending message: From '" + from + "'." );
 
-        if ( toAddress == null )
-        {
-            getLogger().warn( project.getName() + ": Project is missing nag email and global from address is missing, not sending mail." );
+        MailMessage message = new MailMessage();
 
-            return;
-        }
-
-        getLogger().info( "Sending message: From '" + from + "'. To '" + toAddress + "'." );
-
-        Map headers = new HashMap();
-
-        headers.put( "X-Continuum-Host", localHostName );
+        message.addHeader( "X-Continuum-Host", localHostName );
 
         try
         {
-            mailSender.send( subject, message, toAddress, null, fromAddress, fromName, headers );
+            message.setSubject( subject );
+
+            message.setContent( content );
+
+            message.setFromAddress( fromAddress );
+
+            message.setFromName( fromName );
+
+            for ( Iterator it = recipients.iterator(); it.hasNext(); )
+            {
+                String recipient = (String) it.next();
+
+                // TODO: set a proper name
+                String name = recipient;
+
+                message.addTo( name, recipient );
+            }
+
+            mailSender.send( message );
         }
         catch ( MailSenderException ex )
         {
@@ -244,7 +297,6 @@ public class MailContinuumNotifier
     }
 
     private String getFromAddress( ContinuumProject project )
-        throws ContinuumException
     {
         if ( from != null )
         {
@@ -259,24 +311,7 @@ public class MailContinuumNotifier
         return project.getNagEmailAddress();
     }
 
-    private String getToAddress( ContinuumProject project )
-        throws ContinuumException
-    {
-        if ( to != null )
-        {
-            return to;
-        }
-
-        if ( StringUtils.isEmpty( project.getNagEmailAddress() ) )
-        {
-            return administrator;
-        }
-
-        return project.getNagEmailAddress();
-    }
-
-    private boolean shouldNotify( ContinuumProject project, ContinuumBuild build, ContinuumBuild lastBuild )
-        throws ContinuumException
+    private boolean shouldNotify( ContinuumBuild build, ContinuumBuild lastBuild )
     {
         // Always send if the project failed
         if ( build.getState() == ContinuumProjectState.FAILED )
@@ -303,7 +338,7 @@ public class MailContinuumNotifier
         return false;
     }
 
-    private ContinuumBuild getLastBuild( ContinuumProject project, ContinuumBuild currentBuild )
+    private ContinuumBuild getPreviousBuild( ContinuumProject project, ContinuumBuild currentBuild )
         throws ContinuumException
     {
         Iterator it;
@@ -316,7 +351,7 @@ public class MailContinuumNotifier
         }
         catch ( ContinuumStoreException ex )
         {
-            throw new ContinuumException( "Error while finding the last project build." );
+            throw new ContinuumException( "Error while finding the last project build.", ex );
         }
 
         if ( !it.hasNext() )
@@ -326,9 +361,11 @@ public class MailContinuumNotifier
 
         ContinuumBuild build = (ContinuumBuild) it.next();
 
-        if ( build.getId() != currentBuild.getId() )
+        if ( !build.getId().equals( currentBuild.getId() ) )
         {
-            throw new ContinuumException( "INTERNAL ERROR: The current build wasn't the first in the build list" );
+            throw new ContinuumException( "INTERNAL ERROR: The current build wasn't the first in the build list. " +
+                                          "Current build: '" + currentBuild.getId() + "', " +
+                                          "first build: '" + build.getId() + "'." );
         }
 
         if ( !it.hasNext() )

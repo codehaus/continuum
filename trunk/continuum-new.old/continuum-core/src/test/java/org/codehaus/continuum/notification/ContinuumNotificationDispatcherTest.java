@@ -3,7 +3,7 @@ package org.codehaus.continuum.notification;
 /*
  * The MIT License
  *
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
+ * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,31 +24,33 @@ package org.codehaus.continuum.notification;
  * SOFTWARE.
  */
 
+import java.util.Properties;
+
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierManager.java,v 1.1.1.1 2005-02-17 22:23:50 trygvis Exp $
+ * @version $Id: ContinuumNotificationDispatcherTest.java,v 1.1 2005-03-09 20:06:48 trygvis Exp $
  */
-public interface NotifierManager
+public class ContinuumNotificationDispatcherTest
+    extends PlexusTestCase
 {
-    String ROLE = NotifierManager.class.getName();
+    public void testConfiguration()
+        throws Exception
+    {
+        ContinuumNotificationDispatcher notificationDispatcher =
+            (ContinuumNotificationDispatcher) lookup( ContinuumNotificationDispatcher.ROLE );
 
-    void buildStarted( ContinuumBuild build );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
-    void checkoutStarted( ContinuumBuild build );
+        String projectId = store.addProject( "Test Project", "scm:local:foo", "foo@bar", "1.0", "ant", "/tmp", new Properties() );
 
-    /**
-     * This method is called upon a completed checkout. If a error ocurred
-     * <code>ex</code> will be non-null.
-     *
-     * @param build
-     */
-    void checkoutComplete( ContinuumBuild build );
+        String buildId = store.createBuild( projectId );
 
-    void runningGoals( ContinuumBuild build );
+        ContinuumBuild build = store.getBuild( buildId );
 
-    void goalsCompleted( ContinuumBuild build );
-
-    void buildComplete( ContinuumBuild build );
+        notificationDispatcher.buildComplete( build );
+    }
 }
