@@ -16,6 +16,8 @@ package org.codehaus.continuum.buildcontroller;
  * limitations under the License.
  */
 
+import java.io.File;
+
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
@@ -31,7 +33,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.8 2005-03-21 12:53:25 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.9 2005-03-22 12:42:26 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -148,6 +150,10 @@ public class DefaultBuildController
     {
         ContinuumProject project = store.getProjectByBuild( build.getId() );
 
+        // TODO: Update the metadata files and then update the project descriptor
+        // before updating the project itself. This will make it possible to migrate
+        // a project from one SCM to another.
+
         try
         {
             notifier.checkoutStarted( build );
@@ -158,6 +164,15 @@ public class DefaultBuildController
         {
             notifier.checkoutComplete( build );
         }
+
+        builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
+
+        store.updateProject( project.getId(),
+                             project.getName(),
+                             project.getScmUrl(),
+                             project.getNagEmailAddress(),
+                             project.getVersion(),
+                             project.getConfiguration() );
 
         notifier.runningGoals( build );
 
