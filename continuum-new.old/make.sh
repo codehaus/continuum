@@ -8,6 +8,9 @@ then
   exit
 fi
 
+# Clean out any old builds
+find -name target|xargs rm -rf
+
 m2 pom:install
 ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
