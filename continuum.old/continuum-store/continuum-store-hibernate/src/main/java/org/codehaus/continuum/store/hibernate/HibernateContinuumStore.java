@@ -48,7 +48,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.18 2004-10-30 11:55:56 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.19 2004-10-30 16:59:51 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -422,13 +422,13 @@ public class HibernateContinuumStore
     {
         Session session = getHibernateSession();
 
-        ContinuumProject continuumProject;
+        ContinuumProject project;
 
         try
         {
             txManager.enter();
 
-            continuumProject = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
+            project = (ContinuumProject) session.load( GenericContinuumProject.class, projectId );
 
             txManager.leave();
         }
@@ -439,7 +439,7 @@ public class HibernateContinuumStore
             throw new ContinuumStoreException( "Error while loading project.", ex );
         }
 
-        return continuumProject;
+        return project;
     }
 
     // ----------------------------------------------------------------------
