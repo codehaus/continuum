@@ -29,10 +29,12 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProjectBuilds.java,v 1.1.1.1 2005-02-17 22:23:56 trygvis Exp $
+ * @version $Id: ShowProjectBuilds.java,v 1.2 2005-02-21 15:03:16 trygvis Exp $
  */
 public class ShowProjectBuilds
     extends AbstractAction
@@ -50,7 +52,16 @@ public class ShowProjectBuilds
 
         vc.put( "project", project );
 
-        Iterator builds = getContinuumStore().getBuildsForProject( id, 0, 0 );
+        Iterator it = getContinuumStore().getBuildsForProject( id, 0, 0 );
+
+        List builds = new ArrayList();
+
+        while ( it.hasNext() )
+        {
+            Object o = it.next();
+
+            builds.add( o );
+        }
 
         vc.put( "builds", builds );
     }

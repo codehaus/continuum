@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.codehaus.continuum.web.action.Action;
 import org.codehaus.continuum.web.action.ActionManager;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.summit.SummitConstants;
 import org.codehaus.plexus.summit.exception.SummitException;
 import org.codehaus.plexus.summit.pipeline.valve.AbstractValve;
@@ -40,11 +39,13 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ActionValve.java,v 1.1.1.1 2005-02-17 22:23:57 trygvis Exp $
+ * @version $Id: ActionValve.java,v 1.2 2005-02-21 15:03:16 trygvis Exp $
  */
 public class ActionValve
     extends AbstractValve
 {
+    private ActionManager actionManager;
+
     public void invoke( RunData data )
         throws IOException, SummitException
     {
@@ -54,14 +55,10 @@ public class ActionValve
         {
             Action action = null;
 
-            PlexusContainer container = getServiceManager();
-
             Map request = buildRequest( data );
 
             try
             {
-                ActionManager actionManager = (ActionManager) container.lookup( ActionManager.ROLE );
-
                 action = actionManager.lookupAction( actionId.trim() );
             }
             catch ( Exception ex )
@@ -82,7 +79,7 @@ public class ActionValve
 
     private Map buildRequest( RunData data )
     {
-        Map request = new HashMap();                
+        Map request = new HashMap();
 
         // The parameter map in the request consists of an array of values for
         // the given key so this is why this is being done.

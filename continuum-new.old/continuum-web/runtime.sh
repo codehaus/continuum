@@ -146,11 +146,13 @@ copyDependency "commons-collections" "commons-collections" "2.0"
 copyDependency "qdox" "qdox" "1.2"
 copyDependency "servletapi" "servletapi" "2.3"
 copyDependency "velocity" "velocity" "1.4"
-copyDependency "obie" "obie" "1.0-alpha-1-SNAPSHOT"
+copyDependency "obie" "stash" "1.0-alpha-1-SNAPSHOT"
 copyDependency "jdbm" "jdbm" "0.20"
 copyDependency "oro" "oro" "2.0.7"
 copyDependency "ognl" "ognl" "2.5.1"
 
+# For the Prevayler store
+copyDependency "prevayler" "prevayler" "2.02.005"
 
 mkdir -p $maven2
 mkdir -p $runtime/apps/maven2
