@@ -1,7 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <project
   default="jar"
   xmlns:ant="jelly:ant"
-  xmlns:plexus="plexus">
+  xmlns:core="jelly:core"
+  xmlns:plexus="plexus"
+  xmlns:velocity="jelly:velocity">
+
+  <preGoal name="java:compile">
+    <plexus:cdc/>
+  </preGoal>
 
   <preGoal name="test:test-resources">
     <ant:copy todir="target/plexus-home/continuum/storage/">
@@ -9,15 +16,11 @@
     </ant:copy>
   </preGoal>
 
-  <goal name="cc">
-
-    <plexus:deploy
-      base="${basedir}/target/continuum"
-      mavenRepoLocal="${maven.repo.local}"
-      application="continuum"
-      plexusVersion="0.14-SNAPSHOT"
-      plexusConfiguration="${basedir}/src/test/org/codehaus/plexus/continuum/DefaultContinuumTest.xml"/>
-
+  <goal name="make-run.sh">
+    <velocity:merge
+      name="run.sh"
+      basedir="${basedir}"
+      template="src/resources/run-sh.vm"/>
   </goal>
 
 </project>

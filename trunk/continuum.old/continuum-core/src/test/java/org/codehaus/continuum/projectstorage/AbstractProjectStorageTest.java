@@ -1,7 +1,7 @@
 package org.codehaus.plexus.continuum.projectstorage;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import java.io.FileReader;
@@ -15,7 +15,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractProjectStorageTest.java,v 1.1 2004-04-07 15:56:56 trygvis Exp $
+ * @version $Id: AbstractProjectStorageTest.java,v 1.2 2004-04-24 23:54:14 trygvis Exp $
  */
 public abstract class AbstractProjectStorageTest
     extends PlexusTestCase
@@ -29,6 +29,21 @@ public abstract class AbstractProjectStorageTest
         MavenProject p;
 
         store = (ProjectStorage)lookup( ProjectStorage.class.getName() );
+
+        i = store.getAllProjects();
+
+        while ( i.hasNext() )
+        {
+            p = (MavenProject)i.next();
+
+            projects.put(p.getGroupId() + "/" + p.getArtifactId(), p);
+        }
+
+        assertHasProject( projects, "plexus", "plexus-bayesian" );
+        assertHasProject( projects, "plexus", "plexus-i18n" );
+        assertHasProject( projects, "inamo", "accountmanager" );
+
+        assertEquals( 0, projects.size() );
 
         store.storeProject( "maven","maven-ajc-plugin", new FileReader( getTestFile( "src/test-input/project.xml" ) ) );
 

@@ -5,20 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
+import org.codehaus.plexus.continuum.ContinuumException;
 import org.codehaus.plexus.continuum.network.ConnectionConsumer;
-import org.codehaus.plexus.continuum.network.NetworkUtils;
 import org.codehaus.plexus.continuum.registration.AbstractContinuumRegistrar;
 
 /**
- * This trigger listens on a specified port and takes one line
- * of input which contains the the groupId and artifactId of the
- * project to build or the special word "all" to indicate building
- * all the projects.
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id: SimpleNetworkRegistrar.java,v 1.4 2004-04-07 15:56:56 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.5 2004-04-24 23:54:13 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -31,6 +26,7 @@ public class SimpleNetworkRegistrar
     public void consumeConnection( InputStream input, OutputStream output )
     {
         String instruction;
+        PrintWriter printer = new PrintWriter( output );
 
         try
         {
@@ -41,12 +37,23 @@ public class SimpleNetworkRegistrar
         catch( IOException ex )
         {
             getLogger().fatalError( "Exception while reading instruction.", ex );
+            printer.println( "ERROR" );
             return;
         }
 
-        NetworkUtils.closeInput( input );
-        NetworkUtils.closeOutput( output );
+        try
+        {
+            getContinuum().addProject( instruction );
 
-        getContinuum().addProject( instruction );
+            printer.println( "OK" );
+        }
+        catch( ContinuumException ex )
+        {
+            printer.println( "ERROR" );
+            printer.println( "Error adding project: " + ex.getMessage() );
+            ex.printStackTrace( printer );
+        }
+
+        printer.flush();
     }
 }

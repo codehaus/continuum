@@ -1,7 +1,7 @@
 package org.codehaus.plexus.continuum.network;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.1 2004-04-07 15:56:55 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactory
     extends AbstractLogEnabled
@@ -110,6 +110,7 @@ public class SimpleServerSocketConnectionFactory
     {
         public void run()
         {
+//            getLogger().info( "Worker thread for port " + port + " is running" );
             while( isRunning() )
             {
                 Socket socket;
@@ -128,6 +129,8 @@ public class SimpleServerSocketConnectionFactory
                     return;
                 }
 
+//                getLogger().info( "Got connection from: " + socket.getInetAddress() );
+
                 try
                 {
                     input = socket.getInputStream();
@@ -145,38 +148,15 @@ public class SimpleServerSocketConnectionFactory
                 }
                 catch( IOException ex )
                 {
-                    getLogger().warn( "Exception while consuming connection.", ex );
+                    getLogger().fatalError( "Exception while consuming connection.", ex );
                 }
 
-                try
-                {
-                    input.close();
-                }
-                catch( IOException ex )
-                {
-                    // ignore.
-                }
-
-                try
-                {
-                    output.close();
-                }
-                catch( IOException ex )
-                {
-                    // ignore.
-                }
-
-                try
-                {
-                    socket.close();
-                }
-                catch( IOException ex )
-                {
-                    // ignore.
-                }
+                NetworkUtils.closeInput( input );
+                NetworkUtils.closeOutput( output );
+                NetworkUtils.closeSocket( socket );
             }
 
-            getLogger().info( "Worker thread for port " + port + " exiting." );
+//            getLogger().info( "Worker thread for port " + port + " exiting." );
         }
     }
 

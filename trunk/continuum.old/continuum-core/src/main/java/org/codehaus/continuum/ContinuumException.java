@@ -39,23 +39,13 @@ package org.codehaus.plexus.continuum;
 
 public class ContinuumException extends Exception
 {
-    public ContinuumException()
-    {
-        super();
-    }
-
     public ContinuumException( String message )
     {
         super( message );
     }
 
-    public ContinuumException( Throwable cause )
-    {
-        super( cause.getMessage() );
-    }
-
     public ContinuumException( String message, Throwable cause )
     {
-        super( message + " : " + cause.getMessage() );
+        super( message, cause );
     }
 }
