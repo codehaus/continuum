@@ -22,12 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.maven.continuum.builder.shell.ShellBuildResult;
 import org.apache.maven.continuum.notification.ContinuumNotificationDispatcher;
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.project.ContinuumProject;
+import org.apache.maven.continuum.project.ContinuumProjectState;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.mailsender.test.SmtpServer;
+import org.codehaus.plexus.mailsender.test.MockMailSender;
+import org.codehaus.plexus.mailsender.MailMessage;
 import org.codehaus.plexus.notification.notifier.Notifier;
 import org.codehaus.plexus.util.CollectionUtils;
 
@@ -35,7 +39,7 @@ import com.dumbster.smtp.SmtpMessage;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MailContinuumNotifierTest.java,v 1.1.1.1 2005-03-29 20:42:04 trygvis Exp $
+ * @version $Id: MailContinuumNotifierTest.java,v 1.2 2005-04-01 22:55:53 trygvis Exp $
  */
 public class MailContinuumNotifierTest
     extends PlexusTestCase
@@ -45,7 +49,7 @@ public class MailContinuumNotifierTest
     {
         Notifier notifier = (Notifier) lookup( Notifier.ROLE, "mail" );
 
-        SmtpServer smtpServer = (SmtpServer) lookup( SmtpServer.ROLE );
+        MockMailSender mailSender = (MockMailSender) lookup( MockMailSender.ROLE );
 
         // ----------------------------------------------------------------------
         //
@@ -59,6 +63,10 @@ public class MailContinuumNotifierTest
 
         Map context =  new HashMap();
 
+        // ----------------------------------------------------------------------
+        // ContinuumProject
+        // ----------------------------------------------------------------------
+
         ContinuumProject project = new ContinuumProject();
 
         project.setName( "Test Project" );
@@ -67,11 +75,37 @@ public class MailContinuumNotifierTest
 
         context.put( ContinuumNotificationDispatcher.CONTEXT_PROJECT, project );
 
+        // ----------------------------------------------------------------------
+        // ContinuumBuild
+        // ----------------------------------------------------------------------
+
         ContinuumBuild build = new ContinuumBuild();
 
         build.setId( "17" );
 
+        build.setStartTime( System.currentTimeMillis() );
+
+        build.setEndTime( System.currentTimeMillis() + 1234567 );
+
+        build.setError( null );
+
+        build.setState( ContinuumProjectState.OK );
+
         context.put( ContinuumNotificationDispatcher.CONTEXT_BUILD, build );
+
+        // ----------------------------------------------------------------------
+        // ShellBuildResult
+        // ----------------------------------------------------------------------
+
+        ShellBuildResult buildResult = new ShellBuildResult();
+
+        buildResult.setExitCode( 0 );
+
+        buildResult.setStandardOutput( "HABBA HABBA" );
+
+        buildResult.setStandardError( "HUBBA HUBBA" );
+
+        context.put( ContinuumNotificationDispatcher.CONTEXT_BUILD_RESULT, buildResult );
 
         // ----------------------------------------------------------------------
         //
@@ -83,16 +117,22 @@ public class MailContinuumNotifierTest
         //
         // ----------------------------------------------------------------------
 
-        assertEquals( 1, smtpServer.getReceievedEmailSize() );
+        assertEquals( 1, mailSender.getReceivedEmailSize() );
 
-        List mails = CollectionUtils.iteratorToList( smtpServer.getReceivedEmail() );
+        List mails = CollectionUtils.iteratorToList( mailSender.getReceivedEmail() );
 
-        SmtpMessage mailMessage = (SmtpMessage) mails.get( 0 );
+        MailMessage mailMessage = (MailMessage) mails.get( 0 );
 
-        assertEquals( "Continuum<continuum@localhost>", mailMessage.getHeaderValue( "From" ) );
+        assertEquals( "continuum@localhost", mailMessage.getFrom().getMailbox() );
 
-        assertEquals( "foo@bar<foo@bar>", mailMessage.getHeaderValue( "To") );
+        assertEquals( "Continuum", mailMessage.getFrom().getName() );
 
-//        System.err.println( mailMessage.getBody() );
+        List to = mailMessage.getToAddresses();
+
+        assertEquals( 1, to.size() );
+
+        assertEquals( "foo@bar", ( (MailMessage.Address) to.get( 0 ) ).getMailbox() );
+
+        assertNull( ( (MailMessage.Address) to.get( 0 ) ).getName() );
     }
 }

@@ -70,14 +70,6 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.notification.RecipientSource</role>
-      <implementation>org.apache.maven.continuum.notification.ContinuumRecipientSource</implementation>
-      <configuration>
-        <toOverride>nobody@localhost</toOverride>
-      </configuration>
-    </component>
-
-    <component>
       <role>org.apache.maven.continuum.scm.ContinuumScm</role>
       <implementation>org.apache.maven.continuum.scm.DefaultContinuumScm</implementation>
       <requirements>
@@ -188,27 +180,6 @@
       <role>org.codehaus.plexus.notification.notifier.Notifier</role>
       <role-hint>console</role-hint>
       <implementation>org.apache.maven.continuum.notification.console.ConsoleNotifier</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.plexus.notification.notifier.Notifier</role>
-      <role-hint>mail</role-hint>
-      <implementation>org.apache.maven.continuum.notification.mail.MailContinuumNotifier</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.continuum.store.ContinuumStore</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.plexus.mailsender.MailSender</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.plexus.velocity.VelocityComponent</role>
-        </requirement>
-      </requirements>
-      <configuration>
-        <fromAddress>continuum@localhost</fromAddress>
-        <fromName>Continuum</fromName>
-      </configuration>
     </component>
 
     <!-- Builder -->
@@ -369,6 +340,27 @@
           <property>
             <name>org.jpox.autoStartMechanismMode</name>
             <value>Quiet</value>
+          </property>
+        </properties>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.velocity.VelocityComponent</role>
+      <implementation>org.codehaus.plexus.velocity.DefaultVelocityComponent</implementation>
+      <configuration>
+        <properties>
+          <property>
+            <name>resource.loader</name>
+            <value>threadContext</value>
+          </property>
+          <property>
+            <name>threadContext.resource.loader.class</name>
+            <value>org.codehaus.plexus.velocity.ContextClassLoaderResourceLoader</value>
+          </property>
+          <property>
+            <name>velocimacro.library</name>
+            <value>/org/apache/maven/continuum/notification/mail/templates/common.vm</value>
           </property>
         </properties>
       </configuration>
