@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.codehaus.continuum.network.ConnectionFactory;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -43,7 +44,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumWeb.java,v 1.3 2004-08-26 10:14:00 trygvis Exp $
+ * @version $Id: DefaultContinuumWeb.java,v 1.4 2004-10-07 11:47:46 trygvis Exp $
  */
 public class DefaultContinuumWeb
     extends AbstractLogEnabled
@@ -54,6 +55,8 @@ public class DefaultContinuumWeb
     private ServletContainer servletContainer;
 
     private List triggers;
+
+    private List connectionFactories;
 
     private ContinuumStore store;
 
@@ -111,6 +114,8 @@ public class DefaultContinuumWeb
         servletContainer = (ServletContainer) container.lookup( ServletContainer.ROLE );
 
         triggers = container.lookupList( ContinuumTrigger.ROLE );
+
+        connectionFactories = container.lookupList( ConnectionFactory.ROLE );
     }
 
     public void stop()
