@@ -4,7 +4,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.ProjectBuilder;
 import org.codehaus.plexus.compiler.Compiler;
-import org.codehaus.plexus.continuum.mail.MailMessage;
+import org.codehaus.plexus.continuum.notification.mail.MailMessage;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
