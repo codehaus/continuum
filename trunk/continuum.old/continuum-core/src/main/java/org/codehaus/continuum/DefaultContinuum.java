@@ -3,7 +3,6 @@ package org.codehaus.plexus.continuum;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.genericscm.manager.ScmManager;
 import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.continuum.mail.MailMessage;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -127,13 +126,11 @@ public class DefaultContinuum
 
         for ( Iterator i = builds.values().iterator(); i.hasNext(); )
         {
-            Project project = (Project) i.next();
+            ContinuumBuild projectBuild = (ContinuumBuild) i.next();
 
             try
             {
-                List messages = compiler.compile( classpathElements( project ),
-                                                  new String[]{ project.getBuild().getSourceDirectory() },
-                                                  project.getProperty( "maven.build.dest" ) );
+                List messages = buildProject( projectBuild );
 
                 // Notification is there are failures.
                 if ( messages.size() > 0 )
@@ -145,7 +142,7 @@ public class DefaultContinuum
                         message.append( j.next() ).append( "\n" );
                     }
 
-                    notifyAudience( project, message.toString() );
+                    notifyAudience( projectBuild.getProject(), message.toString() );
                 }
             }
             catch ( Exception e )
@@ -156,10 +153,20 @@ public class DefaultContinuum
 
                 e.printStackTrace( w );
 
-                notifyAudience( project, w.toString() );
+                notifyAudience( projectBuild.getProject(), w.toString() );
 
             }
         }
+    }
+
+    private List buildProject( ContinuumBuild build )
+        throws Exception
+    {
+        List messages = compiler.compile( classpathElements( build.getProject() ),
+                                          new String[]{ build.getProject().getBuild().getSourceDirectory() },
+                                          build.getProject().getProperty( "maven.build.dest" ) );
+
+        return messages;
     }
 
     private String[] classpathElements( Project project )
