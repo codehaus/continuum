@@ -17,10 +17,10 @@ import java.net.Socket;
  * of input which contains the the groupId and artifactId of the
  * project to build or the special word "all" to indicate building
  * all the projects.
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkRegistrar.java,v 1.1 2004-01-18 18:01:40 jvanzyl Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.2 2004-01-18 18:36:02 jvanzyl Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -73,6 +73,8 @@ public class SimpleNetworkRegistrar
 
     public void start()
     {
+        getLogger().info( "Simple network registrar has started." );
+
         if ( serverThread != null )
         {
             return;
