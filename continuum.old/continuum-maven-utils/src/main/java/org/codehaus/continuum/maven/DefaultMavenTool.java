@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.5 2004-10-28 19:10:23 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.6 2004-10-28 19:15:26 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -102,9 +102,9 @@ public class DefaultMavenTool
 //            throw new ContinuumException( "Maven home local isn't properly set: it's not a directory (" + mavenHomeLocal + ")." );
         }
 
-        if ( mavenRepository.equals( "${maven.repo.local}" ) )
+        if ( mavenRepository.equals( "${maven.repo.local}" ) || mavenRepository == null )
         {
-            mavenRepository = null;
+            mavenRepository = new File( mavenHomeLocalFile, "repository" ).getAbsolutePath();
         }
 
         maven.setMavenHome( mavenHomeFile );
