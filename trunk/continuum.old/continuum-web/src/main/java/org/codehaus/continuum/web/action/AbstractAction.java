@@ -26,7 +26,6 @@ import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
-import org.codehaus.continuum.web.ContinuumWeb;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -38,14 +37,12 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractAction.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
+ * @version $Id: AbstractAction.java,v 1.4 2004-10-15 13:01:10 trygvis Exp $
  */
 public abstract class AbstractAction
     extends AbstractLogEnabled
     implements Contextualizable, Action
 {
-    private ContinuumWeb app;
-
     private PlexusContainer container;
 
     public void contextualize( Context context )

@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
  */
 public interface ContinuumProject
     extends Serializable
@@ -34,56 +34,62 @@ public interface ContinuumProject
     /**
      * @return Returns the id.
      */
-    public String getId();
+    String getId();
 
     /**
      * @param id The id to set.
      */
-    public void setId( String id );
+    void setId( String id );
 
     /**
      * @return Returns the type.
      */
-    public String getType();
+    String getType();
 
     /**
      * @param type The type to set.
      */
-    public void setType( String type );
+    void setType( String type );
 
     /**
      * @return Returns the name.
      */
-    public String getName();
+    String getName();
 
     /**
      * @param name The name to set.
      */
-    public void setName( String name );
+    void setName( String name );
 
     /**
      * @return Returns the scm connection.
      */
-    public String getScmConnection();
+    String getScmConnection();
 
     /**
      * @param scmConnection The ccmConnection to set.
      */
-    public void setScmConnection( String scmConnection );
+    void setScmConnection( String scmConnection );
+
+    String getNagEmailAddress();
+
+    void setNagEmailAddress( String nagEmailAddress );
+
+    String getVersion();
+
+    void setVersion( String version );
 
     /**
      * @return Returns the state.
      */
-    public ContinuumProjectState getState();
+    ContinuumProjectState getState();
 
     /**
      * @param state The state to set.
      */
-    public void setState( ContinuumProjectState state );
+    void setState( ContinuumProjectState state );
 
-    public ProjectDescriptor getDescriptor();
+    ProjectDescriptor getDescriptor();
 
-    public void setDescriptor( ProjectDescriptor descriptor );
-
-//    public List getBuilds();
+    void setDescriptor( ProjectDescriptor descriptor );
 }

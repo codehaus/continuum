@@ -45,8 +45,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.44 2004-10-09 13:01:52 trygvis Exp $
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
+ * @version $Id: DefaultContinuum.java,v 1.45 2004-10-15 13:01:02 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -74,23 +74,24 @@ public class DefaultContinuum
 
     private BuilderThread builderThread;
 
+    private Thread builderThreadThread;
+
     // ----------------------------------------------------------------------
     // Component lifecycle
     // ----------------------------------------------------------------------
 
     String plexusHome;
+
     DefaultPlexusContainer container;
 
-    public void contextualize( Context context )
-        throws Exception
+    public void contextualize( Context context ) throws Exception
     {
-        plexusHome = (String)context.get( "plexus.home" );
+        plexusHome = (String) context.get( "plexus.home" );
 
         container = (DefaultPlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
-    public void initialize()
-        throws Exception
+    public void initialize() throws Exception
     {
         getLogger().info( "Initializing continuum." );
 
@@ -115,19 +116,19 @@ public class DefaultContinuum
         txManager.commit();
     }
 
-    public void start()
-        throws Exception
+    public void start() throws Exception
     {
         getLogger().info( "Starting continuum." );
 
         // start the builder thread
-        builderThread = new BuilderThread( builderManager, buildQueue, store, txManager, notifierManager, scm, getLogger() );
+        builderThread = new BuilderThread( builderManager, buildQueue, store, txManager, notifierManager, scm,
+            getLogger() );
 
-        Thread thread = new Thread( builderThread );
+        builderThreadThread = new Thread( builderThread );
 
-        thread.setDaemon( true );
+        builderThreadThread.setDaemon( true );
 
-        thread.start();
+        builderThreadThread.start();
 
         String banner = StringUtils.repeat( "-", continuumVersion.length() );
 
@@ -144,8 +145,7 @@ public class DefaultContinuum
         getLogger().info( "" );
     }
 
-    public void stop()
-        throws Exception
+    public void stop() throws Exception
     {
         int maxSleep = 10 * 1000; // 10 seconds
         int interval = 1000;
@@ -156,18 +156,32 @@ public class DefaultContinuum
         // signal the thread to stop
         builderThread.shutdown();
 
-        while( builderThread.isDone() )
+        builderThreadThread.interrupt();
+
+        while ( !builderThread.isDone() )
         {
             if ( slept > maxSleep )
             {
                 getLogger().warn( "Timeout, stopping continuum." );
+
                 break;
             }
 
             getLogger().info( "Waiting until continuum is idling..." );
 
-            Thread.sleep( interval );
+            try
+            {
+                synchronized ( builderThread )
+                {
+                    builderThread.wait( interval );
+                }
+            }
+            catch ( InterruptedException ex )
+            {
+                // ignore
+            }
 
+            // TODO: should use System.currentTimeMillis()
             slept += interval;
         }
 
@@ -178,8 +192,7 @@ public class DefaultContinuum
     // Continuum Implementation
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String type )
-        throws ContinuumException
+    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type ) throws ContinuumException
     {
         try
         {
@@ -201,7 +214,7 @@ public class DefaultContinuum
             {
                 txManager.enter();
 
-                String projectId = store.addProject( name, scmConnection, type );
+                String projectId = store.addProject( name, scmConnection, nagEmailAddress, version, type );
 
                 ContinuumProject project = store.getProject( projectId );
 
@@ -209,7 +222,7 @@ public class DefaultContinuum
 
                 ProjectDescriptor descriptor = builder.createDescriptor( project );
 
-                store.updateProject( projectId, project.getName(), project.getScmConnection() );
+                store.updateProject( projectId, project.getName(), project.getScmConnection(), project.getNagEmailAddress(), project.getVersion() );
 
                 store.setProjectDescriptor( projectId, descriptor );
 
@@ -230,8 +243,7 @@ public class DefaultContinuum
         }
     }
 
-    public void updateProject( String projectId )
-        throws ContinuumException
+    public void updateProject( String projectId ) throws ContinuumException
     {
         try
         {
@@ -243,7 +255,7 @@ public class DefaultContinuum
 
             ProjectDescriptor descriptor = builder.createDescriptor( project );
 
-            store.updateProject( projectId, project.getName(), project.getScmConnection() );
+            store.updateProject( projectId, project.getName(), project.getScmConnection(), project.getNagEmailAddress(), project.getVersion() );
 
             store.updateProjectDescriptor( projectId, descriptor );
 
@@ -261,8 +273,7 @@ public class DefaultContinuum
         }
     }
 
-    public void removeProject( String projectId )
-        throws ContinuumException
+    public void removeProject( String projectId ) throws ContinuumException
     {
         try
         {
@@ -282,8 +293,7 @@ public class DefaultContinuum
         }
     }
 
-    public ContinuumProject getProject( String projectId )
-        throws ContinuumException
+    public ContinuumProject getProject( String projectId ) throws ContinuumException
     {
         try
         {
@@ -295,7 +305,7 @@ public class DefaultContinuum
 
             return project;
         }
-        catch( ContinuumStoreException ex )
+        catch ( ContinuumStoreException ex )
         {
             txManager.rollback();
 
@@ -305,8 +315,7 @@ public class DefaultContinuum
         }
     }
 
-    public Iterator getAllProjects( int start, int end )
-        throws ContinuumException
+    public Iterator getAllProjects( int start, int end ) throws ContinuumException
     {
         try
         {
@@ -318,7 +327,7 @@ public class DefaultContinuum
 
             return it;
         }
-        catch( ContinuumStoreException ex )
+        catch ( ContinuumStoreException ex )
         {
             txManager.rollback();
 
@@ -330,8 +339,7 @@ public class DefaultContinuum
 
     // This method cannot be run inside another transaction
     // because the tx has to be committed before it's put on the build queue
-    public String buildProject( String id )
-        throws ContinuumException
+    public String buildProject( String id ) throws ContinuumException
     {
         try
         {
@@ -343,13 +351,16 @@ public class DefaultContinuum
 
             txManager.commit();
 
-            getLogger().info( "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId + "..." );
+            getLogger()
+                .info(
+                    "Enqueuing " + project.getName() + ", projet id: " + project.getId() + ", build id: " + buildId
+                        + "..." );
 
             buildQueue.enqueue( buildId );
 
             return buildId;
         }
-        catch( ContinuumStoreException ex )
+        catch ( ContinuumStoreException ex )
         {
             txManager.rollback();
 
@@ -361,11 +372,11 @@ public class DefaultContinuum
 
     /**
      * Returns the current length of the build queue.
-     *
+     * 
      * @return Returns the current length of the build queue.
      */
     public int getBuildQueueLength()
-        throws ContinuumException
+    	throws ContinuumException
     {
         return buildQueue.getLength();
     }

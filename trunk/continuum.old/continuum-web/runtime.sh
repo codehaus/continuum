@@ -82,6 +82,8 @@ copyDependency "xpp3" "xpp3" "1.1.3.3"
 mkdir -p $runtime/bin
 mkdir -p $runtime/conf
 cp src/runtime/bin/plexus.sh $runtime/bin
+cp src/runtime/bin/continuum-setupTables $runtime/bin
+
 cp src/runtime/conf/plexus.conf $runtime/conf
 cp src/runtime/conf/classworlds.conf $runtime/conf
 

@@ -38,7 +38,7 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.3 2004-10-14 14:29:57 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.4 2004-10-15 13:00:58 trygvis Exp $
  */
 public class ExternalMaven2ContinuumBuilder
     extends Maven2ContinuumBuilder
@@ -125,6 +125,10 @@ public class ExternalMaven2ContinuumBuilder
         cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
 
         cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
+
+        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
+
+        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
 
         if ( !StringUtils.isEmpty( getMavenRepository() ) )
         {

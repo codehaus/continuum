@@ -5,6 +5,8 @@ package org.codehaus.continuum.it.it1;
  */
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Iterator;
 
 import org.codehaus.continuum.AbstractContinuumTest;
@@ -18,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractMaven2Test.java,v 1.2 2004-10-08 12:37:23 trygvis Exp $
+ * @version $Id: AbstractMaven2Test.java,v 1.3 2004-10-15 13:01:03 trygvis Exp $
  */
 public abstract class AbstractMaven2Test
     extends AbstractContinuumTest
@@ -89,7 +91,7 @@ public abstract class AbstractMaven2Test
 
         txManager.begin();
 
-        Iterator projects = continuum.getAllProjects( 0, 0);
+        Iterator projects = continuum.getAllProjects( 0, 0 );
 
         assertFalse( projects.hasNext() );
 
@@ -107,7 +109,11 @@ public abstract class AbstractMaven2Test
 
         String projectScmConnection = "scm:test:target/repositories:hibernate-maven2";
 
-        String projectId = continuum.addProject( projectName, projectScmConnection, "maven2" );
+        String projectNagEmailAddress = "foo@bar";
+
+        String projectVersion = "1.0";
+
+        String projectId = continuum.addProject( projectName, projectScmConnection, projectNagEmailAddress, projectVersion, "maven2" );
 
         ContinuumProject project = store.getProject( projectId );
 
@@ -117,6 +123,8 @@ public abstract class AbstractMaven2Test
 
         // the pom should override the gived name
         assertEquals( pomName, project.getName() );
+
+        // TODO: add asserts for scmUrl, nagEmailAddress and version
 
         projects = continuum.getAllProjects( 0, 0);
 
@@ -163,14 +171,118 @@ public abstract class AbstractMaven2Test
         txManager.commit();
     }
 
-    private void deleteFile( String fileName )
+    public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithConnectionOnly()
         throws Exception
     {
-        File file = getTestFile( fileName );
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "scm:test:overridden-connection", null );
+    }
 
-        if ( file.exists() )
+    public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithConnectionAndDeveloperConnection()
+        throws Exception
+    {
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "scm:test:overridden-connection", "scm:test:overridden-developer-connection" );
+    }
+
+    public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithDeveloperConnectionOnly()
+        throws Exception
+    {
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( null, "scm:test:overridden-developer-connection" );
+    }
+
+//    public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithNeitherConnectionOrDeveloperConnection()
+//        throws Exception
+//    {
+//        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( null, null );
+//    }
+
+    private void testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( String connection, String developerConnection )
+        throws Exception
+    {
+        File scm = getTestFile( "target/scm-test" );
+
+        FileUtils.deleteDirectory( scm );
+
+        assertTrue( scm.mkdirs() );
+
+        String pom = 
+            "<project>" +
+            "  <modelVersion>4.0.0</modelVersion>"+
+            "  <groupId>continuum</groupId>" +
+            "  <artifactId>test</artifactId>" +
+            "  <version>test</version>" +
+            "  <name>Pom Name</name>" +
+            "  <ciManagement>" +
+            "    <nagEmailAddress>foo@bar</nagEmailAddress>" +
+            "  </ciManagement>" +
+            "  <scm>" +
+            (connection != null ?
+            "    <connection>" + connection + "</connection>" : "" ) +
+            (developerConnection != null ?
+            "    <developerConnection>" + developerConnection + "</developerConnection>" : "" ) +
+            "  </scm>" +
+            "</project>";
+
+        writePom( pom, scm, "pom.xml" );
+
+        ContinuumStore store = getContinuumStore();
+
+        StoreTransactionManager txManager = getStoreTransactionManager();
+
+        Continuum continuum = getContinuum();
+
+        txManager.begin();
+
+        String scmConnection = "scm:test:target:scm-test";
+
+        String nagEmailAddress = "foo@bar";
+
+        String version = "1.0";
+
+        String projectId = continuum.addProject( "Project Name", scmConnection, nagEmailAddress, version, "maven2" );
+
+        txManager.commit();
+
+        txManager.begin();
+
+        ContinuumProject project = store.getProject( projectId );
+
+        assertEquals( "Pom Name", project.getName() );
+
+        if ( connection != null && developerConnection != null )
         {
-            assertTrue( "Error while deleting " + file.getAbsolutePath(), file.delete() );
+            assertEquals( connection, project.getScmConnection() );
         }
+        else if ( connection != null && developerConnection == null )
+        {
+            assertEquals( connection, project.getScmConnection() );
+        }
+        else if ( connection == null && developerConnection != null )
+        {
+            assertEquals( developerConnection, project.getScmConnection() );
+        }
+//        else if ( connection == null && developerConnection == null )
+//        {
+//            assertEquals( scmConnection, project.getScmConnection() );
+//        }
+
+        txManager.commit();
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private void writePom( String pom, File scm, String pomFile )
+        throws Exception
+    {
+        FileWriter stream = new FileWriter( new File( scm, pomFile ) );
+
+        PrintWriter output = new PrintWriter( stream );
+
+        output.println( pom );
+
+        output.close();
+
+        stream.close();
     }
 }

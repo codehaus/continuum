@@ -32,7 +32,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectScm.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
+ * @version $Id: AddProjectScm.java,v 1.4 2004-10-15 13:01:10 trygvis Exp $
  */
 public class AddProjectScm
     extends AbstractAction
@@ -40,37 +40,21 @@ public class AddProjectScm
     public void execute( Map request )
         throws Exception
     {
-//        try
-//        {
-            String name = (String) request.get( "addProject.name" );
-    
-            String scm = (String) request.get( "addProject.scm" );
-    
-            getContinuum().addProject( name, scm, "maven2" );
-//        }
-//        catch( ContinuumException ex )
-//        {
-//            handleError( request, "Error adding the project.", ex );
-//
-//            return;
-//        }
+        String name = (String) request.get( "addProject.name" );
+
+        String scm = (String) request.get( "addProject.scm" );
+
+        String nagEmailAddress = (String) request.get( "addProject.nagEmailAddress" );
+
+        String version = (String) request.get( "addProject.version" );
+
+        getContinuum().addProject( name, scm, nagEmailAddress, version, "maven2" );
 
         RunData data = (RunData) request.get( "data" );
 
         ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
 
-        Iterator projects;
-
-//        try
-//        {
-            projects = getContinuumStore().getAllProjects();
-//        }
-//        catch( Exception ex )
-//        {
-//            handleError( request, "Error while getting projects.", ex );
-//
-//            return;
-//        }
+        Iterator projects = getContinuumStore().getAllProjects();
 
         vc.put( "projects", WebUtils.projectsToProjectModels( getI18N(), projects ) );
     }

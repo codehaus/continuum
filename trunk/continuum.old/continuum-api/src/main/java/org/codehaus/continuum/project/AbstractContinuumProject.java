@@ -24,7 +24,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumProject.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
+ * @version $Id: AbstractContinuumProject.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
  */
 public abstract class AbstractContinuumProject
     implements ContinuumProject
@@ -42,13 +42,16 @@ public abstract class AbstractContinuumProject
     private String scmConnection;
 
     /** */
+    private String nagEmailAddress;
+
+    /** */
+    private String version;
+
+    /** */
     private ContinuumProjectState state;
 
     /** */
     private ProjectDescriptor descriptor;
-
-    /** */
-//    private List builds;
 
     /**
      * @return Returns the id.
@@ -109,9 +112,41 @@ public abstract class AbstractContinuumProject
     /**
      * @param scmConnection The ccmConnection to set.
      */
-    public void setScmConnection( String scmConnection)
+    public void setScmConnection( String scmConnection )
     {
         this.scmConnection = scmConnection;
+    }
+
+    /**
+     * @return Returns the nag email address.
+     */
+    public String getNagEmailAddress()
+    {
+        return nagEmailAddress;
+    }
+
+    /**
+     * @param nagEmailAddress The nag email address to set.
+     */
+    public void setNagEmailAddress( String nagEmailAddress )
+    {
+        this.nagEmailAddress = nagEmailAddress;
+    }
+
+    /**
+     * @return Returns the version.
+     */
+    public String getVersion()
+    {
+        return version;
+    }
+
+    /**
+     * @param version The version to set.
+     */
+    public void setVersion( String version )
+    {
+        this.version = version;
     }
 
     /**

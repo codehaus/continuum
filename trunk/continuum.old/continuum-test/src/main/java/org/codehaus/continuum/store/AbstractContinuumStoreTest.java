@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.5 2004-10-08 12:26:43 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.6 2004-10-15 13:01:09 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends AbstractContinuumTest
@@ -50,13 +50,17 @@ public abstract class AbstractContinuumStoreTest
 
         String scmConnection = "scm:cvs:local:ignored:/cvsroot:module";
 
+        String nagEmailAddress = "foo@bar";
+
+        String version = "1";
+
         String type = "mock";
 
         // --- -- -
 
         txManager.begin();
 
-        String id = store.addProject( projectName, scmConnection, type );
+        String id = store.addProject( projectName, scmConnection, nagEmailAddress, version, type );
 
         assertNotNull( id );
 
@@ -133,11 +137,11 @@ public abstract class AbstractContinuumStoreTest
     {
         txManager.begin();
 
-        store.addProject( "aaa", "scm:test:foo", "test" );
+        store.addProject( "aaa", "scm:test:foo", "foo@bar", "1.0", "test" );
 
-        store.addProject( "aab", "scm:test:foo", "test" );
+        store.addProject( "aab", "scm:test:foo", "foo@bar", "1.0", "test" );
 
-        store.addProject( "baa", "scm:test:foo", "test" );
+        store.addProject( "baa", "scm:test:foo", "foo@bar", "1.0", "test" );
 
         txManager.commit();
 
@@ -163,9 +167,9 @@ public abstract class AbstractContinuumStoreTest
     {
         txManager.begin();
 
-        String projectId1 = store.addProject( "p1", "scm:test:", "test" );
+        String projectId1 = store.addProject( "p1", "scm:test:", "foo@bar", "1.0", "test" );
 
-        String projectId2 = store.addProject( "p2", "scm:test:", "test" );
+        String projectId2 = store.addProject( "p2", "scm:test:", "foo@bar", "1.0", "test" );
 
 //        ContinuumProject project1
 
@@ -253,11 +257,15 @@ public abstract class AbstractContinuumStoreTest
 
         String type = "maven2";
 
+        String nagEmailAddress1 = "Nag Email Address 1";
+
+        String version1 = "1.0";
+
         // --- -- -
 
         txManager.begin();
 
-        String projectId = store.addProject( name1, scmConnection1, type );
+        String projectId = store.addProject( name1, scmConnection1, nagEmailAddress1, version1, type );
 
         txManager.commit();
 
@@ -267,17 +275,21 @@ public abstract class AbstractContinuumStoreTest
 
         ContinuumProject project = store.getProject( projectId );
 
-        assertProject( projectId, name1, scmConnection1, type, project );
+        assertProject( projectId, name1, scmConnection1, nagEmailAddress1, type, project );
 
         String name2 = "Bar Project";
 
         String scmConnection2 = "Bar Project";
 
-        store.updateProject( projectId, name2, scmConnection2 );
+        String nagEmailAddress2 = "Nag Address 2";
+
+        String version2 = "2.0";
+
+        store.updateProject( projectId, name2, scmConnection2, nagEmailAddress2, version2 );
 
         project = store.getProject( projectId );
 
-        assertProject( projectId, name2, scmConnection2, type, project );
+        assertProject( projectId, name2, scmConnection2, nagEmailAddress2, type, project );
 
         txManager.commit();
     }
@@ -287,15 +299,25 @@ public abstract class AbstractContinuumStoreTest
     {
         txManager.begin();
 
-        String projectId = store.addProject( "Foo Project", "scm", "maven2" );
+        String projectId = store.addProject( "Foo Project", "scm", "foo@bar", "1.0", "maven2" );
 
         txManager.commit();
 
-        assertProjectUpdateFails( projectId, null, null );
+        String name = "name";
 
-        assertProjectUpdateFails( projectId, "foo", null );
+        String scmUrl = "scmUrl";
 
-        assertProjectUpdateFails( projectId, null, null );
+        String nagEmailAddress = "nagEmailAddress";
+
+        String version = "1.0";
+
+        assertProjectUpdateFails( projectId, name, null, null, null );
+
+        assertProjectUpdateFails( projectId, null, scmUrl, null, null );
+
+        assertProjectUpdateFails( projectId, null, null, nagEmailAddress, null );
+
+        assertProjectUpdateFails( projectId, null, null, null, version );
     }
 
     // ----------------------------------------------------------------------
@@ -307,7 +329,7 @@ public abstract class AbstractContinuumStoreTest
     {
         txManager.begin();
 
-        String projectId = store.addProject( "Foo Project", "scm", "maven2" );
+        String projectId = store.addProject( "Foo Project", "scm", "foo@bar", "1.0", "maven2" );
 
         String buildId = store.createBuild( projectId );
 
@@ -366,7 +388,7 @@ public abstract class AbstractContinuumStoreTest
         // Add a project
         txManager.begin();
 
-        String projectId = store.addProject( "Foo Project", "scm", "maven2" );
+        String projectId = store.addProject( "Foo Project", "scm", "foo@bar", "1.0", "maven2" );
 
         txManager.commit();
 
@@ -428,7 +450,7 @@ public abstract class AbstractContinuumStoreTest
     // Assertions
     // ----------------------------------------------------------------------
 
-    private void assertProject( String id, String name, String scmConnection, String type, ContinuumProject project )
+    private void assertProject( String id, String name, String scmConnection, String nagEmailAddress, String type, ContinuumProject project )
     {
         assertNotNull( project );
 
@@ -438,14 +460,16 @@ public abstract class AbstractContinuumStoreTest
 
         assertEquals( scmConnection, project.getScmConnection() );
 
+        assertEquals( nagEmailAddress, project.getNagEmailAddress() );
+
         assertEquals( type, project.getType() );
     }
 
-    private void assertProjectUpdateFails( String projectId, String name, String scmUrl )
+    private void assertProjectUpdateFails( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
     {
         try
         {
-            store.updateProject( projectId, name, scmUrl );
+            store.updateProject( projectId, name, scmUrl, nagEmailAddress, version );
 
             fail( "Expected exception" );
         }

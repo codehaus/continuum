@@ -32,6 +32,8 @@ import org.apache.maven.ExecutionResponse;
 import org.apache.maven.Maven;
 import org.apache.maven.lifecycle.goal.GoalNotFoundException;
 import org.apache.maven.model.Build;
+import org.apache.maven.model.CiManagement;
+import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 
@@ -50,7 +52,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.6 2004-10-14 14:29:57 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.7 2004-10-15 13:00:58 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -145,8 +147,19 @@ public abstract class Maven2ContinuumBuilder
             throw new ContinuumException( "Error while building the project.", ex );
         }
 
-        // TODO: Pick out the email addresses from the pom and store it
-        // in the generic project descriptor
+        // ----------------------------------------------------------------------
+        // Populating the descriptor
+        // ----------------------------------------------------------------------
+
+        if ( mavenProject.getScm() == null )
+        {
+            throw new ContinuumException( "The project descriptor is missing the SCM section." );
+        }
+
+        if ( mavenProject.getCiManagement() == null )
+        {
+            throw new ContinuumException( "The project descriptor is missing the CI section." );
+        }
 
         Build build = mavenProject.getBuild();
 
@@ -178,28 +191,57 @@ public abstract class Maven2ContinuumBuilder
 
         descriptor.setName( mavenProject.getName() );
 
+        // The public connection takes priority over the developer connection
+        Scm scm = mavenProject.getScm();
+
+        String scmConnection = scm.getConnection();
+
+        if ( StringUtils.isEmpty( scmConnection ) )
+        {
+            scmConnection = scm.getDeveloperConnection();
+        }
+
+        if ( StringUtils.isEmpty( scmConnection ) )
+        {
+            throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
+        }
+
+        descriptor.setScmConnection( scmConnection );
+
+        CiManagement ciManagement = mavenProject.getCiManagement();
+
+        String nagEmailAddress = ciManagement.getNagEmailAddress();
+
+        if ( StringUtils.isEmpty( nagEmailAddress ) )
+        {
+            throw new ContinuumException( "Missing nag email address from the ci section of the project descriptor." );
+        }
+
+        descriptor.setNagEmailAddress( nagEmailAddress );
+
+        String version = mavenProject.getVersion();
+
+        if ( StringUtils.isEmpty( version ) )
+        {
+            throw new ContinuumException( "Missing version from the project descriptor." );
+        }
+
+        descriptor.setVersion( version );
+
+        // ----------------------------------------------------------------------
+        // Update the project
+        // ----------------------------------------------------------------------
+
         if ( !StringUtils.isEmpty( mavenProject.getName() ) )
         {
             project.setName( mavenProject.getName() );
         }
 
-        if ( mavenProject.getScm() != null )
-        {
-            // The public connection takes priority over the developer connection
-            String connection = mavenProject.getScm().getConnection();
+        project.setScmConnection( scmConnection );
 
-            if ( StringUtils.isEmpty( connection ) )
-            {
-                connection = mavenProject.getScm().getDeveloperConnection();
-            }
+        project.setNagEmailAddress( nagEmailAddress );
 
-            if ( !StringUtils.isEmpty( connection ) )
-            {
-                descriptor.setScmConnection( connection );
-
-                project.setScmConnection( connection );
-            }
-        }
+        project.setVersion( version );
 
         return descriptor;
     }

@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.maven.model.CiManagement;
 import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 
@@ -40,10 +41,11 @@ import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrl.java,v 1.3 2004-10-06 14:24:24 trygvis Exp $
+ * @version $Id: AddProjectPomUrl.java,v 1.4 2004-10-15 13:01:10 trygvis Exp $
  */
 public class AddProjectPomUrl
     extends AbstractAction
@@ -70,65 +72,34 @@ public class AddProjectPomUrl
 
         File pomFile;
 
-//        try
-//        {
-            // download the pom.
-            URL url = new URL( urlString );
+        // download the pom.
+        URL url = new URL( urlString );
 
-            String pom = IOUtil.toString( url.openStream() );
+        String pom = IOUtil.toString( url.openStream() );
 
-            pomFile = File.createTempFile( "continuum-", "-pom-download" );
+        pomFile = File.createTempFile( "continuum-", "-pom-download" );
 
-            FileUtils.fileWrite( pomFile.getAbsolutePath(), pom );
-//        }
-//        catch( MalformedURLException ex )
-//        {
-//            handleError( request, "The URL is not correct." );
-//
-//            return;
-//        }
-//        catch( FileNotFoundException ex )
-//        {
-//            handleError( request, "Could not download the pom: The file doesn't exist." );
-//
-//            return;
-//        }
-//        catch( Exception ex )
-//        {
-//            handleError( request, "Could not download the pom.", ex );
-//
-//            return;
-//        }
+        FileUtils.fileWrite( pomFile.getAbsolutePath(), pom );
 
-//        try
-//        {
-            MavenProject project = ((Maven2ContinuumBuilder) m2Builder).getProject( pomFile );
+        MavenProject project = ((Maven2ContinuumBuilder) m2Builder).getProject( pomFile );
 
-            getContinuum().addProject( getName( project ), getScmUrl( project ), "maven2" );
-//        }
-//        catch( ContinuumException ex )
-//        {
-//            handleError( request, "Error while adding the project.", ex );
-//
-//            return;
-//        }
+        String name = getName( project );
+
+        String scmUrl = getScmUrl( project );
+
+        String nagEmailAddress = getNagEmailAddress( project );
+
+        String version = getVersion( project );
+
+        getLogger().info( "Adding '" + name + "', scm url: '" + scmUrl + "', nag email address: '" + nagEmailAddress + "'." );
+
+        getContinuum().addProject( name, scmUrl, nagEmailAddress, version, "maven2" );
 
         RunData data = (RunData) request.get( "data" );
 
         ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
 
-        Iterator projects;
-
-//        try
-//        {
-            projects = getContinuumStore().getAllProjects();
-//        }
-//        catch( ContinuumStoreException ex )
-//        {
-//            handleError( request, "Error while getting projects.", ex );
-//
-//            return;
-//        }
+        Iterator projects = getContinuumStore().getAllProjects();
 
         vc.put( "projects", WebUtils.projectsToProjectModels( getI18N(), projects ) );
     }
@@ -137,7 +108,7 @@ public class AddProjectPomUrl
     {
         String name = project.getName();
 
-        if ( name == null )
+        if ( StringUtils.isEmpty( name ) )
         {
             name = project.getGroupId() + ":" + project.getArtifactId();
         }
@@ -157,11 +128,44 @@ public class AddProjectPomUrl
 
         String url = scm.getConnection();
 
-        if ( url == null || url.trim().length() == 0 )
+        if ( StringUtils.isEmpty( url ) )
         {
             throw new ContinuumException( "Missing anonymous scm connection url." );
         }
 
         return url;
+    }
+
+    private String getNagEmailAddress( MavenProject project )
+        throws ContinuumException
+    {
+        CiManagement ciManagement = project.getCiManagement();
+
+        if ( ciManagement == null )
+        {
+            throw new ContinuumException( "Missing CiManagement from the project descriptor." );
+        }
+
+        String nagEmailAddress = ciManagement.getNagEmailAddress();
+
+        if ( StringUtils.isEmpty( nagEmailAddress ) )
+        {
+            throw new ContinuumException( "Missing nag email address from the continuous integration info." );
+        }
+
+        return nagEmailAddress;
+    }
+
+    private String getVersion( MavenProject project )
+        throws ContinuumException
+    {
+        String version = project.getVersion();
+
+        if ( StringUtils.isEmpty( version ) )
+        {
+            throw new ContinuumException( "Missing version from the project descriptor." );
+        }
+
+        return version;
     }
 }

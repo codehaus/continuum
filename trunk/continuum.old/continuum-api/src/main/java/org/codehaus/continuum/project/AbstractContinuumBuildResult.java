@@ -24,7 +24,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuildResult.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
+ * @version $Id: AbstractContinuumBuildResult.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
  */
 public abstract class AbstractContinuumBuildResult
     implements ContinuumBuildResult
@@ -60,5 +60,13 @@ public abstract class AbstractContinuumBuildResult
     public String getBuildId()
     {
         return buildId;
+    }
+
+    /**
+     * @param buildId The buildId to set.
+     */
+    protected void setBuildId( String buildId )
+    {
+        this.buildId = buildId;
     }
 }

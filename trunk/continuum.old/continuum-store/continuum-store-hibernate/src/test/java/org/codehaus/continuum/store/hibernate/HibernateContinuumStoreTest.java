@@ -22,49 +22,20 @@ package org.codehaus.continuum.store.hibernate;
  * SOFTWARE.
  */
 
-import java.io.File;
-
-import net.sf.hibernate.Session;
-import net.sf.hibernate.Transaction;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
 
 import org.codehaus.continuum.store.AbstractContinuumStoreTest;
-import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.hibernate.DefaultHibernateService;
 import org.codehaus.plexus.hibernate.HibernateService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStoreTest.java,v 1.7 2004-10-06 13:40:49 trygvis Exp $
+ * @version $Id: HibernateContinuumStoreTest.java,v 1.8 2004-10-15 13:01:06 trygvis Exp $
  */
 public class HibernateContinuumStoreTest
     extends AbstractContinuumStoreTest
 {
-//    private HibernateSessionService sessionService;
-
-    private ContinuumStore store;
-
-    private Session session;
-
-    private Transaction tx;
-
-    private File mavenHome = PlexusTestCase.getTestFile( "target/maven-home" );
-
-    private File mavenHomeLocal = PlexusTestCase.getTestFile( "target/maven-home-local" );
-/*
-    protected PlexusContainer getContainerInstance()
-    {
-        return MavenTestUtils.getContainerInstance();
-    }
-
-    protected void customizeContext()
-        throws Exception
-    {
-        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ), mavenHome, mavenHomeLocal );
-    }
-*/
     protected String getRoleHint()
     {
         return "hibernate";
@@ -90,7 +61,5 @@ public class HibernateContinuumStoreTest
         exporter.create( false, true );
 
 //        session = sessionService.getSession();
-
-        store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
     }
 }

@@ -32,7 +32,7 @@ import org.codehaus.continuum.trigger.ContinuumTrigger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.7 2004-10-06 14:18:59 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.8 2004-10-15 13:01:09 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends AbstractContinuumTest
@@ -51,9 +51,9 @@ public class AlarmClockTriggerTest
 
         getStoreTransactionManager().begin();
 
-        continuum.addProject( "Test Project 1", "scm:test:src/test/repository:simple", "test" );
+        continuum.addProject( "Test Project 1", "scm:test:src/test/repository:simple", "foo@bar", "1.0", "test" );
 
-        continuum.addProject( "Test Project 2", "scm:test:src/test/repository:simple", "test" );
+        continuum.addProject( "Test Project 2", "scm:test:src/test/repository:simple", "foo@bar", "1.0", "test" );
 
         getStoreTransactionManager().commit();
 

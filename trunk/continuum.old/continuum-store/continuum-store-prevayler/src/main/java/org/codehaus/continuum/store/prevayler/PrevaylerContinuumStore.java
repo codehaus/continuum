@@ -28,7 +28,7 @@ import org.prevayler.TransactionWithQuery;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PrevaylerContinuumStore.java,v 1.3 2004-10-08 13:51:07 trygvis Exp $
+ * @version $Id: PrevaylerContinuumStore.java,v 1.4 2004-10-15 13:01:07 trygvis Exp $
  */
 public class PrevaylerContinuumStore
     extends AbstractContinuumStore
@@ -110,10 +110,10 @@ public class PrevaylerContinuumStore
     // ----------------------------------------------------------------------
 
     /** */
-    public String addProject( String name, String scmConnection, String type )
+    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
-        String id = (String) executeQuery( new AddProjectTx( name, scmConnection, type ) );
+        String id = (String) executeQuery( new AddProjectTx( name, scmConnection, nagEmailAddress, version, type ) );
 
         getLogger().info( "Added project '" + name + "', id:" + id );
 
@@ -124,21 +124,23 @@ public class PrevaylerContinuumStore
         extends AbstractContinuumPrevaylerTransactionWithQuery
     {
         private String name;
-
         private String scmConnection;
-
+        private String nagEmailAddress;
         private String type;
+        private String version;
 
-        public AddProjectTx( String name, String scmConnection, String type )
+        public AddProjectTx( String name, String scmConnection, String nagEmailAddress, String version, String type )
         {
             this.name = name;
             this.scmConnection = scmConnection;
+            this.nagEmailAddress = nagEmailAddress;
+            this.version = version;
             this.type = type;
         }
 
         public Object execute( ContinuumDatabase database ) throws Exception
         {
-            return database.addProject( name, scmConnection, type );
+            return database.addProject( name, scmConnection, nagEmailAddress, version, type );
         }
     }
 
@@ -220,10 +222,10 @@ public class PrevaylerContinuumStore
     }
 
     /** */
-    public void updateProject( String projectId, String name, String scmUrl )
+    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException
     {
-        execute( new UpdateProjectTx( projectId, name, scmUrl ) );
+        execute( new UpdateProjectTx( projectId, name, scmUrl, nagEmailAddress, version ) );
     }
 
     private static class UpdateProjectTx
@@ -232,18 +234,22 @@ public class PrevaylerContinuumStore
         private String projectId;
         private String name;
         private String scmUrl;
+        private String nagEmailAddress;
+        private String version;
 
-        public UpdateProjectTx( String projectId, String name, String scmUrl )
+        public UpdateProjectTx( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         {
             this.projectId = projectId;
             this.name = name;
             this.scmUrl = scmUrl;
+            this.nagEmailAddress = nagEmailAddress;
+            this.version = version;
         }
 
         public void execute( ContinuumDatabase database )
             throws ContinuumStoreException
         {
-            database.updateProject( projectId, name, scmUrl );
+            database.updateProject( projectId, name, scmUrl, nagEmailAddress, version );
         }
     }
 

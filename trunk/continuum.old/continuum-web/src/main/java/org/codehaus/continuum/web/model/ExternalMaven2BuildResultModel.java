@@ -24,7 +24,7 @@ package org.codehaus.continuum.web.model;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2BuildResultModel.java,v 1.1 2004-10-06 14:25:24 trygvis Exp $
+ * @version $Id: ExternalMaven2BuildResultModel.java,v 1.2 2004-10-15 13:01:10 trygvis Exp $
  */
 public class ExternalMaven2BuildResultModel
     extends BuildResultModel
@@ -33,11 +33,6 @@ public class ExternalMaven2BuildResultModel
 
     private String standardError;
 
-    /**
-     * @param startTime
-     * @param endTime
-     * @param state
-     */
     public ExternalMaven2BuildResultModel( String standardOutput, String standardError )
     {
         this.standardOutput = standardOutput;

@@ -40,7 +40,7 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.7 2004-10-06 13:37:13 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.8 2004-10-15 13:01:02 trygvis Exp $
  */
 class BuilderThread
     implements Runnable
@@ -127,10 +127,32 @@ class BuilderThread
                 buildProject( buildId );
 
                 txManager.commit();
+
+                if ( false )
+                {
+                    throw new InterruptedException();
+                }
             }
-            catch( Exception ex )
+            catch( InterruptedException ex )
+            {
+                txManager.rollback();
+
+                continue;
+            }
+            catch( ContinuumStoreException ex )
             {
                 getLogger().error( "Internal error while building the project.", ex );
+
+                txManager.rollback();
+
+                continue;
+            }
+            catch( ContinuumException ex )
+            {
+                if ( !Thread.interrupted() )
+                {
+                    getLogger().error( "Internal error while building the project.", ex );
+                }
 
                 txManager.rollback();
 
@@ -141,11 +163,16 @@ class BuilderThread
         getLogger().info( "Builder thread exited." );
 
         done = true;
+
+        synchronized ( this )
+        {
+            notifyAll();
+        }
     }
 
     public void shutdown()
     {
-        getLogger().info( "Builder thread signaled." );
+        getLogger().info( "Builder thread got shutdown signal." );
 
         shutdown = true;
     }

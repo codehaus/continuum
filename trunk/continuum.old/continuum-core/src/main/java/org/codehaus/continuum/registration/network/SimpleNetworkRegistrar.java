@@ -34,7 +34,7 @@ import org.codehaus.continuum.utils.ContinuumUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.14 2004-10-09 13:01:53 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.15 2004-10-15 13:01:03 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -57,11 +57,21 @@ public class SimpleNetworkRegistrar
 
             String scmConnection = socket.readLine();
 
+            String nagEmailAddress = socket.readLine();
+
+            String version = socket.readLine();
+
             String type = socket.readLine();
 
             txManager.begin();
 
-            String id = getContinuum().addProject( name, scmConnection, type );
+            String id = getContinuum().addProject( name, scmConnection, nagEmailAddress, version, type );
+
+            txManager.commit();
+
+            txManager.begin();
+
+            getContinuum().updateProject( id );
 
             txManager.commit();
 
