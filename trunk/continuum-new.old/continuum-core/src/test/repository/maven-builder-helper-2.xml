@@ -1,13 +1,11 @@
-<model>
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
-  <artifactId>console-notifier</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>foo</artifactId>
   <version>1.0</version>
   <ciManagement>
     <notifiers>
       <notifier>
-        <type>mail</type>
         <address>foo@bar</address>
       </notifier>
     </notifiers>
@@ -15,4 +13,4 @@
   <scm>
     <connection>scm:local:src/test/repository:console-notifier</connection>
   </scm>
-</model>
+</project>
