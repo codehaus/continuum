@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.1.1.1 2005-03-29 20:42:00 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.2 2005-04-03 21:27:17 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
@@ -131,7 +131,7 @@ public class Maven1Builder
         // ----------------------------------------------------------------------
 
         // Name
-        String name = getValue( mavenProject, "name" );
+        String name = getValue( mavenProject, "name", project.getName() );
 
         if ( StringUtils.isEmpty( name ) )
         {
@@ -141,40 +141,59 @@ public class Maven1Builder
         // Scm
         Xpp3Dom repository = mavenProject.getChild( "repository" );
 
+        String scmConnection;
+
         if ( repository == null )
         {
-            throw new ContinuumException( "The project descriptor is missing the SCM information." );
+            if ( !StringUtils.isEmpty( project.getScmUrl() ) )
+            {
+                scmConnection = project.getScmUrl();
+            }
+            else
+            {
+                throw new ContinuumException( "The project descriptor is missing the SCM information." );
+            }
         }
-
-        String scmConnection = getValue( repository, "connection" );
-
-        if ( StringUtils.isEmpty( scmConnection ) )
+        else
         {
-            scmConnection = getValue( repository, "developerConnection" );
-        }
+            scmConnection = getValue( repository, "developerConnection", project.getScmUrl() );
 
-        if ( StringUtils.isEmpty( scmConnection ) )
-        {
-            throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
+            scmConnection = getValue( repository, "connection", scmConnection );
+
+            if ( StringUtils.isEmpty( scmConnection ) )
+            {
+                throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
+            }
         }
 
         // Nag email address
         Xpp3Dom build = mavenProject.getChild( "build" );
 
+        String nagEmailAddress;
+
         if ( build == null )
         {
-            throw new ContinuumException( "Missing build section." );
+            if ( !StringUtils.isEmpty( project.getNagEmailAddress() ) )
+            {
+                nagEmailAddress = project.getNagEmailAddress();
+            }
+            else
+            {
+                throw new ContinuumException( "Missing build section." );
+            }
         }
-
-        String nagEmailAddress = getValue( build, "nagEmailAddress" );
+        else
+        {
+            nagEmailAddress = getValue( build, "nagEmailAddress", project.getNagEmailAddress() );
+        }
 
         if ( StringUtils.isEmpty( nagEmailAddress ) )
         {
-            throw new ContinuumException( "Missing nag email address from the ci section of the project descriptor." );
+            throw new ContinuumException( "Missing nag email address from the project descriptor." );
         }
 
         // Version
-        String version = getValue( mavenProject, "currentVersion" );
+        String version = getValue( mavenProject, "currentVersion", project.getVersion() );
 
         if ( StringUtils.isEmpty( version ) )
         {
@@ -221,13 +240,13 @@ public class Maven1Builder
         return projectXmlFile;
     }
 
-    private String getValue( Xpp3Dom dom, String key )
+    private String getValue( Xpp3Dom dom, String key, String defaultValue )
     {
         Xpp3Dom child = dom.getChild( key );
 
         if ( child == null )
         {
-            return null;
+            return defaultValue;
         }
 
         return child.getValue();
