@@ -71,9 +71,9 @@
         </requirement>
       </requirements>
       <configuration>
-        <from>trygvis@inamo.no</from>
-        <to>trygvis@codehaus.org</to>
-        <administrator>trygvis@codehaus.org</administrator>
+        <from>@mail.from@</from>
+        <to>@mail.to@</to>
+        <administrator>@mail.administrator@</administrator>
       </configuration>
     </component>
 

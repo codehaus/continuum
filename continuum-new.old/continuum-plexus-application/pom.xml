@@ -102,6 +102,8 @@
         <configuration>
           <applicationName>continuum</applicationName>
           <applicationConfiguration>src/conf/application.xml</applicationConfiguration>
+          <configurationProperties>app.properties</configurationProperties>
+          <configurationDirectory>src/conf</configurationDirectory>
           <testRuntimeConfiguration>src/test/conf/testRuntimeConfiguration.xml</testRuntimeConfiguration>
           <basedir>target</basedir>
         </configuration>
