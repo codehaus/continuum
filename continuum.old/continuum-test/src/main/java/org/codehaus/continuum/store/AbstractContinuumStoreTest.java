@@ -1,5 +1,6 @@
 package org.codehaus.continuum.store;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.6 2004-10-15 13:01:09 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.7 2004-10-20 19:29:35 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends AbstractContinuumTest
@@ -382,6 +383,42 @@ public abstract class AbstractContinuumStoreTest
         txManager.commit();
     }
 
+    public void testGetBuildsForProject()
+    	throws Exception
+    {
+        txManager.begin();
+
+        String projectId = createProject();
+
+        List builds = new ArrayList();
+
+        for ( int i = 0; i < 10; i++ )
+        {
+            builds.add( createBuild( projectId ) );
+        }
+
+        txManager.commit();
+
+        txManager.begin();
+
+        Iterator it = store.getBuildsForProject( projectId, 0, 0 );
+
+        int i;
+
+        for ( i = builds.size() - 1; it.hasNext(); i-- )
+        {
+            String expectedBuildId = (String) builds.get( i );
+
+            ContinuumBuild actual = (ContinuumBuild) it.next();
+
+            assertNotNull( actual );
+
+            assertEquals( expectedBuildId, actual.getId() );
+        }
+
+        txManager.commit();
+    }
+
     public void testGetLatestBuildForProject()
         throws Exception
     {
@@ -401,37 +438,17 @@ public abstract class AbstractContinuumStoreTest
         // make some builds
         txManager.begin();
 
-        createBuild( projectId, 1 );
+        createBuild( projectId );
 
-        createBuild( projectId, 2 );
+        createBuild( projectId );
 
-        createBuild( projectId, 3 );
+        createBuild( projectId );
 
-        createBuild( projectId, 4 );
+        createBuild( projectId );
 
-        createBuild( projectId, 5 );
+        createBuild( projectId );
 
-        String buildId5 = createBuild( projectId, 6 );
-
-        txManager.commit();
-
-        // check the latest build
-
-        txManager.begin();
-
-        ContinuumBuild build5 = store.getLatestBuildForProject( projectId );
-
-        assertNotNull( build5 );
-
-        assertEquals( buildId5, build5.getId() );
-
-        txManager.commit();
-
-        // Add some more builds
-
-        txManager.begin();
-
-        String buildId6 = createBuild( projectId, 6 );
+        String buildId6 = createBuild( projectId );
 
         txManager.commit();
 
@@ -441,7 +458,27 @@ public abstract class AbstractContinuumStoreTest
 
         ContinuumBuild build6 = store.getLatestBuildForProject( projectId );
 
+        assertNotNull( build6 );
+
         assertEquals( buildId6, build6.getId() );
+
+        txManager.commit();
+
+        // Add some more builds
+
+        txManager.begin();
+
+        String buildId7 = createBuild( projectId );
+
+        txManager.commit();
+
+        // check the latest build
+
+        txManager.begin();
+
+        ContinuumBuild build7 = store.getLatestBuildForProject( projectId );
+
+        assertEquals( buildId7, build7.getId() );
 
         txManager.commit();
     }
@@ -495,7 +532,17 @@ public abstract class AbstractContinuumStoreTest
     //
     // ----------------------------------------------------------------------
 
-    private String createBuild( String projectId, long startTime )
+    private int projectCount;
+
+    private String createProject()
+    	throws ContinuumStoreException
+    {
+        projectCount++;
+
+        return store.addProject( "Project #" + projectCount, "scm:test:src/test/repository:simple-project", "foo@bar", "1.0", "maven2" );
+    }
+
+    private String createBuild( String projectId )
         throws ContinuumStoreException, InterruptedException
     {
         String buildId = store.createBuild( projectId );
