@@ -17,16 +17,23 @@ package org.codehaus.continuum.web.pipeline.valve;
  */
 
 import org.codehaus.continuum.web.ContinuumWeb;
+import org.codehaus.continuum.web.context.ViewContextPopulator;
 import org.codehaus.continuum.web.tool.CssTool;
 import org.codehaus.continuum.web.tool.OgnlTool;
+import org.codehaus.continuum.Continuum;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Enumeration;
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.3 2005-03-10 00:05:57 trygvis Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.4 2005-03-20 07:19:13 jvanzyl Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
@@ -39,14 +46,6 @@ public class ContinuumViewContextValve
 
     private I18N i18n;
 
-    // ----------------------------------------------------------------------
-    // Component Lifecycle
-    // ----------------------------------------------------------------------
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
     protected void populateViewContext( RunData data, ViewContext context )
     {
         context.put( "continuum", continuum );
@@ -58,51 +57,5 @@ public class ContinuumViewContextValve
         context.put( "i18n", i18n );
 
         context.put( "data", data );
-
-        // We look at the view we are trying to present and we populate
-        // context with the pertinent information.
-
-        // I could use an ognl expression to extract the information
-        // from the model to place in the
-
-//        String view = data.getRequest().getParameter( "view" );
-
-        /*
-
-        I am just using the model directly here so this is not required for what I'm doing.
-
-        If you were working with designers and wanted to make nice template options then
-        this is what would be used.
-
-        if ( view != null )
-        {
-            try
-            {
-                Map parameters = new HashMap();
-
-                for ( Enumeration e = data.getRequest().getParameterNames(); e.hasMoreElements(); )
-                {
-                    String key = (String) e.nextElement();
-
-                    parameters.put( key, data.getRequest().getParameter( key ) );
-                }
-
-                ViewContextManager vcm = (ViewContextManager) getServiceManager().lookup( ViewContextManager.ROLE );
-
-                Map scalars = vcm.getScalars( view, context.get( "docorama" ), parameters );
-
-                for ( Iterator i = scalars.keySet().iterator(); i.hasNext(); )
-                {
-                    String key = (String) i.next();
-
-                    context.put( key, scalars.get( key ) );
-                }
-            }
-            catch ( Exception e )
-            {
-                getLogger().error( "Error inserting scalars into the view context.", e );
-            }
-        }
-        */
     }
 }

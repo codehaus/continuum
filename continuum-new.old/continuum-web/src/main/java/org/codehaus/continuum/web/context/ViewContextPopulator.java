@@ -1,4 +1,4 @@
-package org.codehaus.continuum.web.action;
+package org.codehaus.continuum.web.context;
 
 /*
  * Copyright 2004-2005 The Apache Software Foundation.
@@ -16,29 +16,16 @@ package org.codehaus.continuum.web.action;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.summit.SummitConstants;
-import org.codehaus.plexus.summit.rundata.RunData;
-import org.codehaus.plexus.summit.view.ViewContext;
-
-import java.util.Iterator;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProjects.java,v 1.2 2005-03-10 00:05:57 trygvis Exp $
+ * @version $Id: ViewContextPopulator.java,v 1.1 2005-03-20 07:19:13 jvanzyl Exp $
  */
-public class ShowProjects
-    extends AbstractAction
+public interface ViewContextPopulator
 {
-    public void execute( Map request )
-        throws Exception
-    {
-        RunData data = (RunData) request.get( "data" );
+    String ROLE = ViewContextPopulator.class.getName();
 
-        ViewContext vc = (ViewContext) data.getMap().get( SummitConstants.VIEW_CONTEXT );
-
-        Iterator projects = getContinuumStore().getAllProjects();
-
-        vc.put( "projects", projects );
-    }
+    /** Map of scalars to place in the context. */
+    Map getScalars( String view, Object model, Map parameters );
 }
