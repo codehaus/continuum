@@ -22,6 +22,8 @@ public class DefaultContinuum
 {
     // configuration
 
+    private String mavenHome;
+
     // requirements
 
     private ContinuumBuilder builder;
@@ -29,6 +31,8 @@ public class DefaultContinuum
     private BuildQueue buildQueue;
 
     private MavenProjectBuilder projectBuilder;
+
+//    private Maven maven;
 
     private ProjectStorage projectStorage;
 
@@ -67,11 +71,14 @@ public class DefaultContinuum
     {
         getLogger().info( "Starting continuum." );
 
+        PlexusUtils.assertConfiguration( mavenHome, "mavenHome" );
+
         // start the builder thread
+/*
         Thread thread = new Thread( new BuilderThread() );
         thread.setDaemon( true );
         thread.start();
-
+*/
         getLogger().info( "Continuum started." );
     }
 
@@ -247,7 +254,7 @@ public class DefaultContinuum
 
     ///////////////////////////////////////////////////////////////////////////
     // Private
-
+/*
     private class BuilderThread
         implements Runnable
     {
@@ -296,7 +303,7 @@ public class DefaultContinuum
             }
         }
     }
-
+*/
     // TODO: This one is public now, move it!
     public void addProject( MavenProject project )
         throws ContinuumException

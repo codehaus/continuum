@@ -5,26 +5,19 @@ package org.codehaus.continuum.projectstorage;
  */
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FileContinuumStore.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: FileContinuumStore.java,v 1.4 2004-06-27 22:20:27 trygvis Exp $
  */
 public class FileProjectStorage
     extends AbstractLogEnabled
@@ -64,9 +57,10 @@ public class FileProjectStorage
     ///////////////////////////////////////////////////////////////////////////
     // ProjectStore implementation
 
-    public void storeProject( String groupId, String artifactId, Reader input )
+    public String storeProject( ContinuumProject project )
         throws ProjectStorageException
     {
+/*
         File file;
 
         file = new File( storage, groupId + "/" + artifactId + ".pom" );
@@ -81,11 +75,14 @@ public class FileProjectStorage
         {
             throw new ProjectStorageException( "Exception while persisting project.", ex );
         }
+*/
+        return null;
     }
 
     public Iterator getAllProjects()
         throws ProjectStorageException
     {
+/*
         List projects = new ArrayList();
 
         try
@@ -114,11 +111,14 @@ public class FileProjectStorage
         }
 
         return projects.iterator();
+*/
+        return null;
     }
 
-    public MavenProject getProject( String groupId, String artifactId )
+    public ContinuumProject getProject( String id )
         throws ProjectStorageException
     {
+/*
         try
         {
             return projectBuilder.build( new File( storage, groupId + File.pathSeparator + artifactId ) );
@@ -127,5 +127,7 @@ public class FileProjectStorage
         {
             throw new ProjectStorageException( "The projectdatabase is corrupted, could not read the project.", ex );
         }
+*/
+        return null;
     }
 }

@@ -18,6 +18,9 @@ import org.apache.maven.scm.Scm;
 
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.notification.NotifierWrapper;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.projectstorage.ProjectStorage;
+import org.codehaus.continuum.projectstorage.ProjectStorageException;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -26,7 +29,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumBuilder.java,v 1.4 2004-06-27 19:28:43 trygvis Exp $
+ * @version $Id: DefaultContinuumBuilder.java,v 1.5 2004-06-27 22:20:27 trygvis Exp $
  */
 public class DefaultContinuumBuilder
     extends AbstractLogEnabled
@@ -36,13 +39,13 @@ public class DefaultContinuumBuilder
 
     private MavenCore maven;
 
-//    private Scm scm;
-
     private MavenProjectBuilder projectBuilder;
 
     private ContinuumScm scm;
 
     private ContinuumNotifier notifier;
+
+    private ProjectStorage projectStorage;
 
     // configuration
 
@@ -78,11 +81,23 @@ public class DefaultContinuumBuilder
      * @param descriptor
      * @throws ContinuumException
      */
-    public synchronized void build( MavenProject descriptor )
+    public synchronized void build( String projectId )
     {
         String basedir = null;
 
-//        getLogger().info( "Building " + descriptor.getName() );
+        ContinuumProject project;
+
+        try
+        {
+            project = projectStorage.getProject( projectId );
+        }
+        catch( ProjectStorageException ex )
+        {
+            return;
+        }
+
+        MavenProject descriptor = project.getMavenProject();
+
         observer.buildStarted( descriptor );
 
         try
@@ -118,9 +133,9 @@ public class DefaultContinuumBuilder
 
             File file = new File( basedir, "pom.xml" );
 
-            MavenProject project = null;
+            MavenProject pom;
 
-            project = projectBuilder.build( file );
+            pom = projectBuilder.build( file );
 
             List goals = new ArrayList();
 
@@ -129,7 +144,7 @@ public class DefaultContinuumBuilder
             goals.add( "jar:install" );
 
             // TODO: get the output from the maven build
-            maven.execute( project, goals );
+            maven.execute( pom, goals );
 
             // TODO: is this wanted?
             FileUtils.forceDelete( basedir );

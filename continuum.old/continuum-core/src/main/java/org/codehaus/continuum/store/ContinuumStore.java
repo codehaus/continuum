@@ -4,22 +4,21 @@ package org.codehaus.continuum.projectstorage;
  * LICENSE
  */
 
-import java.io.Reader;
 import java.util.Iterator;
 
-import org.apache.maven.project.MavenProject;
+import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.4 2004-06-27 22:20:27 trygvis Exp $
  */
 public interface ProjectStorage {
-    void storeProject( String groupId, String artifactId, Reader input )
+    String storeProject( ContinuumProject project )
         throws ProjectStorageException;
 
     Iterator getAllProjects()
         throws ProjectStorageException;
 
-    MavenProject getProject( String groupId, String artifactId )
+    ContinuumProject getProject( String projectId )
         throws ProjectStorageException;
 }
