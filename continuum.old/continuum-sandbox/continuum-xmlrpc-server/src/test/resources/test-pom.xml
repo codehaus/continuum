@@ -1,0 +1,5 @@
+<project>
+  <artifactId>test-artifact</artifactId>
+  <groupId>test-group</groupId>
+  <version>5.3</version>
+</project>

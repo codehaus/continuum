@@ -6,6 +6,8 @@ package org.codehaus.continuum;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.GoalNotFoundException;
 import org.apache.maven.MavenCore;
@@ -13,14 +15,10 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.scm.Scm;
-import org.apache.maven.scm.ScmException;
-import org.apache.maven.scm.command.Command;
-import org.apache.maven.scm.command.checkout.CheckOutCommand;
-import org.apache.maven.scm.repository.RepositoryInfo;
 
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.notification.NotifierWrapper;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.FileUtils;
@@ -28,7 +26,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumBuilder.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: DefaultContinuumBuilder.java,v 1.4 2004-06-27 19:28:43 trygvis Exp $
  */
 public class DefaultContinuumBuilder
     extends AbstractLogEnabled
@@ -38,9 +36,11 @@ public class DefaultContinuumBuilder
 
     private MavenCore maven;
 
-    private Scm scm;
+//    private Scm scm;
 
     private MavenProjectBuilder projectBuilder;
+
+    private ContinuumScm scm;
 
     private ContinuumNotifier notifier;
 
@@ -62,17 +62,6 @@ public class DefaultContinuumBuilder
         assertRequirement( scm, Scm.class );
         assertRequirement( projectBuilder, MavenProjectBuilder.class );
         assertRequirement( notifier, ContinuumNotifier.class );
-
-        assertConfiguration( checkoutDirectory, "checkout-directory" );
-
-        File f = new File( checkoutDirectory );
-
-        getLogger().info( "Using " + checkoutDirectory + " as checkout directory." );
-        if ( !f.exists() )
-        {
-            getLogger().info( "Checkout directory does not exist, creating." );
-            f.mkdirs();
-        }
 
         // TODO: create this another way
 //        scm = new CvsScm();
@@ -100,21 +89,6 @@ public class DefaultContinuumBuilder
         {
             observer.checkoutStarted( descriptor );
 
-            // We need to check out the sources
-            RepositoryInfo repo = new RepositoryInfo();
-
-            repo.setUrl( descriptor.getScm().getConnection() );
-    
-            Command command = scm.createCommand( repo, CheckOutCommand.NAME );
-    
-            String coDir = checkoutDirectory + File.separator + 
-                           descriptor.getGroupId() + File.separator + 
-                           descriptor.getArtifactId();
-
-            command.setWorkingDirectory( coDir );
-
-            command.execute();
-
             // scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-components/native/continuum/src/test-projects/project1
 
             String[] connection = StringUtils.split( descriptor.getScm().getConnection(), ":" );
@@ -125,15 +99,11 @@ public class DefaultContinuumBuilder
             if ( !connection[1].equals( "cvs" ) )
                 throw new ContinuumException( "Continuum currently only supports 'cvs' as scm repo." );
 
-            basedir = coDir + File.separator + connection[5];
+            scm.clean( descriptor );
+
+            basedir = scm.checkout( descriptor );
 
             observer.checkoutComplete( descriptor, null );
-        }
-        catch( ScmException ex )
-        {
-            observer.checkoutComplete( descriptor, ex );
-
-            return;
         }
         catch( Exception ex )
         {
@@ -144,17 +114,22 @@ public class DefaultContinuumBuilder
 
         try
         {
-            // TODO: Use maven here
-            // maven.execute( descriptor, "scm:checkout" );
-
             observer.buildStarted( descriptor );
 
-            File file = new File( basedir, "project.xml" );
+            File file = new File( basedir, "pom.xml" );
 
-            MavenProject project = projectBuilder.build( file );
+            MavenProject project = null;
+
+            project = projectBuilder.build( file );
+
+            List goals = new ArrayList();
+
+            goals.add( "clean:clean" );
+
+            goals.add( "jar:install" );
 
             // TODO: get the output from the maven build
-            maven.execute( project, "jar" );
+            maven.execute( project, goals );
 
             // TODO: is this wanted?
             FileUtils.forceDelete( basedir );

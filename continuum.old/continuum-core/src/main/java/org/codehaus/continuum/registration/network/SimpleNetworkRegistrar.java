@@ -13,15 +13,14 @@ import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.6 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.7 2004-06-27 19:28:43 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
     implements ConnectionConsumer
 {
-    // ----------------------------------------------------------------------
+    /////////////////////////////////////////////////////////////////////////
     // ConnectionConsumer Implementation
-    // ----------------------------------------------------------------------
 
     public void consumeConnection( InputStream input, OutputStream output )
     {
@@ -43,9 +42,12 @@ public class SimpleNetworkRegistrar
 
         try
         {
-            getContinuum().addProject( instruction );
+            // TODO: download into a file and create a project of it.
+            throw new ContinuumException( "Not implemented" );
 
-            printer.println( "OK" );
+//            getContinuum().addProject( instruction );
+
+//            printer.println( "OK" );
         }
         catch( ContinuumException ex )
         {

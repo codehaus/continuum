@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <extend>${maven.repo.local}/continuum/poms/continuum-parent-0.1.pom</extend>
+  <artifactId>continuum-xmlrpc-interface</artifactId>
+  <name>Continuum XML-RPC Interface</name>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-xmlrpc</artifactId>
+      <version>1.0-beta-2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xmlrpc</groupId>
+      <artifactId>xmlrpc</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

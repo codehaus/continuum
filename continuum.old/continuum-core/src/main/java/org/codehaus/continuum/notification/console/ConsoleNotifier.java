@@ -10,7 +10,7 @@ import org.codehaus.continuum.notification.ContinuumNotifier;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.5 2004-06-27 19:28:43 trygvis Exp $
  */
 public class ConsoleNotifier
     implements ContinuumNotifier
@@ -57,9 +57,10 @@ public class ConsoleNotifier
         if ( ex != null )
         {
             // TODO: better reporting
-            String message = ex.getMessage();
+//            String message = ex.getMessage();
 
-            System.out.println( "Message: " + message );
+//            System.out.println( "Message: " + message );
+            ex.printStackTrace( System.out );
         }
     }
 }

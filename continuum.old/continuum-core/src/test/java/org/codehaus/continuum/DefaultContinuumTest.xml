@@ -1,151 +1,234 @@
 <plexus>
-
   <components>
+  <component>
+    <role>org.codehaus.continuum.Continuum</role>
+    <implementation>org.codehaus.continuum.DefaultContinuum</implementation>
+    <requirements>
+      <requirement>
+        <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
+      </requirement>
+      <requirement>
+        <role>org.apache.maven.project.MavenProjectBuilder</role>
+      </requirement>
+      <requirement>
+        <role>org.codehaus.continuum.ContinuumBuilder</role>
+      </requirement>
+      <requirement>
+        <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
+      </requirement>
+    </requirements>
+  </component>
+  <component>
+    <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
+    <implementation>org.codehaus.continuum.buildqueue.SimpleBuildQueue</implementation>
+  </component>
+  <component>
+    <role>org.codehaus.continuum.ContinuumBuilder</role>
+    <implementation>org.codehaus.continuum.DefaultContinuumBuilder</implementation>
+    <requirements>
+      <requirement>
+        <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+      </requirement>
+      <requirement>
+        <role>org.codehaus.continuum.ContinuumScm</role>
+      </requirement>
+      <requirement>
+        <role>org.apache.maven.MavenCore</role>
+      </requirement>
+      <requirement>
+        <role>org.apache.maven.project.MavenProjectBuilder</role>
+      </requirement>
+    </requirements>
+  </component>
+  <component>
+    <role>org.codehaus.continuum.ContinuumScm</role>
+    <implementation>org.codehaus.continuum.DefaultContinuumScm</implementation>
+    <configuration>
+      <checkout-directory>${plexus.home}/continuum/checkout</checkout-directory>
+    </configuration>
+    <requirements>
+      <requirement>
+        <role>org.apache.maven.scm.manager.ScmManager</role>
+      </requirement>
+    </requirements>
+  </component>
+  <!-- Notifier -->
+  <component>
+    <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+    <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
+  </component>
+  <!-- ProjectStorage -->
+  <component>
+    <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
+    <implementation>org.codehaus.continuum.projectstorage.FileProjectStorage</implementation>
+    <requirements>
+      <requirement>
+        <role>org.apache.maven.project.MavenProjectBuilder</role>
+      </requirement>
+    </requirements>
+    <configuration>
+      <storage-directory>${plexus.home}/continuum/storage</storage-directory>
+    </configuration>
+  </component>
 
+<!-- Maven SCM -->
     <component>
-      <role>org.codehaus.continuum.Continuum</role>
-      <implementation>org.codehaus.continuum.DefaultContinuum</implementation>
+      <role>org.apache.maven.scm.manager.ScmManager</role>
+      <implementation>org.apache.maven.scm.manager.DefaultScmManager</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.ContinuumBuilder</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
-        </requirement>
-      </requirements>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
-      <implementation>org.codehaus.continuum.buildqueue.SimpleBuildQueue</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.ContinuumBuilder</role>
-      <implementation>org.codehaus.continuum.DefaultContinuumBuilder</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.MavenCore</role>
-        </requirement>
-        <requirement>
+          <field-name>scmFactories</field-name>
           <role>org.apache.maven.scm.Scm</role>
         </requirement>
-        <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
-        </requirement>
-      </requirements>
-      <configuration>
-        <checkout-directory>${plexus.home}/continuum/checkout</checkout-directory>
-      </configuration>
-    </component>
-
-    <!-- Notifier -->
-    <component>
-      <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
-      <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
-    </component>
-
-    <!-- ProjectStorage -->
-    <component>
-      <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
-      <implementation>org.codehaus.continuum.projectstorage.FileProjectStorage</implementation>
-
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
-        </requirement>
-      </requirements>
-
-      <configuration>
-        <storage-directory>${plexus.home}/continuum/storage</storage-directory>
-      </configuration>
-    </component>
-
-    <component>
-      <role>org.apache.maven.scm.Scm</role>
-      <implementation>org.apache.maven.scm.provider.cvslib.CvsScm</implementation>
-    </component>
-
-    <!-- MavenProjectBuilder -->
-    <component>
-      <role>org.apache.maven.project.MavenProjectBuilder</role>
-      <implementation>org.apache.maven.project.DefaultMavenProjectBuilder</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.project.ModelInheritanceAssembler</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
-        </requirement>
       </requirements>
     </component>
-    <component>
-      <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
-      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Reader</implementation>
-    </component>
-    <component>
-      <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
-      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Writer</implementation>
-    </component>
-    <component>
-      <role>org.apache.maven.artifact.factory.MavenArtifactory</role>
-      <implementation>org.apache.maven.artifact.factory.DefaultMavenArtifactory</implementation>
-    </component>
 
-    <!-- This should be a part of maven -->
+    <!-- Maven -->
     <component>
-      <role>org.apache.maven.plugin.manager.PluginManagerManager</role>
-      <implementation>org.apache.maven.plugin.manager.DefaultPluginManagerManager</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.plugin.manager.PluginManager</role>
-          <field-name>pluginManagers</field-name>
-        </requirement>
-      </requirements>
+      <role>org.apache.maven.plugin.PluginManager</role>
+      <implementation>org.apache.maven.plugin.DefaultPluginManager</implementation>
       <configuration>
         <maven-home>${maven.home}</maven-home>
       </configuration>
     </component>
     <component>
-      <role>org.apache.maven.plugin.manager.PluginManager</role>
-      <role-hint>plexus</role-hint>
-      <implementation>org.apache.maven.plugin.plexus.PlexusPluginManager</implementation>
+      <role>org.apache.maven.MavenCore</role>
+      <implementation>org.apache.maven.DefaultMavenCore</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.plugin.PluginManager</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.MavenProjectBuilder</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.lifecycle.MavenLifecycleManager</role>
+        </requirement>
+      </requirements>
     </component>
     <component>
-      <role>org.apache.maven.plugin.plexus.executor.PluginExecutor</role>
-      <role-hint>field</role-hint>
-      <implementation>org.apache.maven.plugin.plexus.executor.FieldPluginExecutor</implementation>
+      <role>org.codehaus.plexus.i18n.I18N</role>
+      <implementation>org.codehaus.plexus.i18n.DefaultI18N</implementation>
+      <configuration>
+        <default-bundle-name>org.apache.maven.messages.messages</default-bundle-name>
+      </configuration>
     </component>
     <component>
-      <role>org.apache.maven.plugin.plexus.executor.PluginExecutor</role>
-      <role-hint>setter</role-hint>
-      <implementation>org.apache.maven.plugin.plexus.executor.SetterPluginExecutor</implementation>
+      <role>org.apache.maven.lifecycle.MavenLifecycleManager</role>
+      <implementation>org.apache.maven.lifecycle.DefaultMavenLifecycleManager</implementation>
+      <configuration>
+        <lifecycle-phases>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.GoalDecorationPhase"/>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.GoalResolutionPhase"/>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.DependencyResolutionPhase"/>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.DependencyDownloadPhase"/>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.PluginDownloadPhase"/>
+          <lifecycle-phase implementation="org.apache.maven.lifecycle.phase.GoalAttainmentPhase"/>
+        </lifecycle-phases>
+      </configuration>
     </component>
     <component>
-      <role>org.apache.maven.plugin.plexus.executor.PluginExecutor</role>
-      <role-hint>singleton</role-hint>
-      <implementation>org.apache.maven.plugin.plexus.executor.SingletonPluginExecutor</implementation>
+      <role>org.apache.maven.project.MavenProjectBuilder</role>
+      <implementation>org.apache.maven.project.DefaultMavenProjectBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.project.inheritance.ModelInheritanceAssembler</role>
+        </requirement>
+         <requirement>
+          <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.path.PathTranslator</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.wagon.manager.WagonManager</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.validation.ModelValidator</role>
+        </requirement>
+      </requirements>
     </component>
     <component>
-      <role>org.apache.maven.plugin.plexus.executor.PluginExecutor</role>
-      <role-hint>integrated</role-hint>
-      <implementation>org.apache.maven.plugin.plexus.executor.IntegratedPluginExecutor</implementation>
+      <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
+      <implementation>org.apache.maven.artifact.factory.DefaultMavenArtifactFactory</implementation>
     </component>
-
+    <component>
+      <role>org.apache.maven.artifact.collector.ArtifactCollector</role>
+      <implementation>org.apache.maven.artifact.collector.DefaultArtifactCollector</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+      <implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.downloader.ArtifactDownloader</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.snapshot.SnapshotResolver</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.downloader.ArtifactDownloader</role>
+      <implementation>org.apache.maven.artifact.downloader.DefaultArtifactDownloader</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.wagon.manager.WagonManager</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.project.inheritance.ModelInheritanceAssembler</role>
+      <implementation>org.apache.maven.project.inheritance.DefaultModelInheritanceAssembler</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.project.validation.ModelValidator</role>
+      <implementation>org.apache.maven.project.validation.DefaultModelValidator</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.project.path.PathTranslator</role>
+      <implementation>org.apache.maven.project.path.DefaultPathTranslator</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.snapshot.SnapshotResolver</role>
+      <implementation>org.apache.maven.artifact.snapshot.DefaultSnapshotResolver</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.wagon.manager.WagonManager</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.downloader.ArtifactDownloader</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.installer.ArtifactInstaller</role>
+      <implementation>org.apache.maven.artifact.installer.DefaultArtifactInstaller</implementation>
+      <requirements>
+        <requirement>
+         <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
+       </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.deployer.ArtifactDeployer</role>
+      <implementation>org.apache.maven.artifact.deployer.DefaultArtifactDeployer</implementation>
+      <requirements>
+        <requirement>
+         <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
+       </requirement>
+       <requirement>
+          <role>org.apache.maven.wagon.manager.WagonManager</role>
+       </requirement>
+      </requirements>
+    </component>
   </components>
 </plexus>

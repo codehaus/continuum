@@ -6,11 +6,14 @@
   <goal name="help">
     <ant:echo>
 To build continuum:
- $ maven build
+ $ maven continuum:build
+
+To make eclipse project descriptors:
+ $ maven continuum:eclipse
     </ant:echo>
   </goal>
 
-  <goal name="build">
+  <goal name="continuum:build">
     <maven:reactor
       basedir="${basedir}"
       includes="parent/project.xml"
@@ -23,7 +26,7 @@ To build continuum:
       goals="jar:install"/>
   </goal>
 
-  <goal name="eclipse">
+  <goal name="continuum:eclipse">
     <maven:reactor
       basedir="${basedir}"
       includes="*/project.xml"

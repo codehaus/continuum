@@ -1,31 +1,20 @@
 package org.codehaus.continuum;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.projectstorage.ProjectStorage;
-import org.codehaus.continuum.projectstorage.ProjectStorageException;
+import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
-import org.codehaus.plexus.util.IOUtil;
 
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -65,10 +54,10 @@ public class DefaultContinuum
 
         builds = new LinkedHashMap();
 
-        assertRequirement( builder, ContinuumBuilder.class );
-        assertRequirement( buildQueue, BuildQueue.class );
-        assertRequirement( projectBuilder, MavenProjectBuilder.class );
-        assertRequirement( projectStorage, ProjectStorage.class );
+        PlexusUtils.assertRequirement( builder, ContinuumBuilder.class );
+        PlexusUtils.assertRequirement( buildQueue, BuildQueue.class );
+        PlexusUtils.assertRequirement( projectBuilder, MavenProjectBuilder.class );
+        PlexusUtils.assertRequirement( projectStorage, ProjectStorage.class );
 
         getLogger().info( "Continuum initialized." );
     }
@@ -107,6 +96,7 @@ public class DefaultContinuum
             }
 
             getLogger().info( "Waiting until continuum is idling..." );
+
             Thread.sleep( interval );
 
             slept += interval;
@@ -117,7 +107,7 @@ public class DefaultContinuum
 
     ///////////////////////////////////////////////////////////////////////////
     // Continuum implementation
-
+/*
     public void addProject( String projectUrl )
         throws ContinuumException
     {
@@ -208,7 +198,7 @@ public class DefaultContinuum
             addingProject = false;
         }
     }
-
+*/
     public String buildProject( String groupId, String artifactId )
         throws ContinuumException
     {
@@ -244,7 +234,6 @@ public class DefaultContinuum
         return ContinuumConstants.IDLE;
     }
 
-
     /**
      * Returns the current length of the build queue.
      * 
@@ -268,16 +257,16 @@ public class DefaultContinuum
             {
                 MavenProject project = getProject();
 
-                if( project != null )
-                {
-                    builder.build( project );
-//                    buildProject( project );
-                }
-                else
+                if( project == null )
                 {
                     getLogger().info( "Builder sleeping..." );
+
                     sleep( 1000 );
+
+                    continue;
                 }
+
+                builder.build( project );
             }
         }
 
@@ -308,7 +297,8 @@ public class DefaultContinuum
         }
     }
 
-    private void addProject( MavenProject project )
+    // TODO: This one is public now, move it!
+    public void addProject( MavenProject project )
         throws ContinuumException
     {
         addingProject = true;
@@ -333,18 +323,6 @@ public class DefaultContinuum
         }
     }
 
-    private String[] classpathElements( MavenProject project )
-    {
-        String[] classpathElements = new String[project.getArtifacts().size()];
-
-        for ( int i = 0; i < classpathElements.length; i++ )
-        {
-            classpathElements[i] = ( (MavenArtifact) project.getArtifacts().get( i ) ).getPath();
-        }
-
-        return classpathElements;
-    }
-
     private boolean hasProject( String groupId, String artifactId )
     {
         return builds.containsKey( createId( groupId, artifactId ) );
@@ -366,19 +344,5 @@ public class DefaultContinuum
     private String createId( String groupId, String artifactId )
     {
         return groupId + ":" + artifactId;
-    }
-
-    private void assertConfiguration( Object configuration, String name )
-        throws PlexusConfigurationException
-    {
-        if( configuration == null )
-            throw new PlexusConfigurationException( "Missing configuration element: '" + name + "'." );
-    }
-
-    private void assertRequirement( Object requirement, Class clazz )
-        throws PlexusConfigurationException
-    {
-        if ( requirement == null )
-            throw new PlexusConfigurationException( "Missing requirement '" + clazz.getName() + "'." );
     }
 }

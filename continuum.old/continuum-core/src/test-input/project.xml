@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-
-  <pomVersion>3</pomVersion>
   <groupId>maven</groupId>
   <artifactId>maven-ajc-plugin</artifactId>
-  <id>maven-ajc-plugin</id>
+  <version>1.0</version>
   <name>Maven example projects</name>
-  <currentVersion>1.0</currentVersion>
-
   <dependencies>
-
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus</artifactId>
       <version>0.14-SNAPSHOT</version>
     </dependency>
-
   </dependencies>
-
-  <build>
-    <sourceDirectory>${basedir}/src/main</sourceDirectory>
-  </build>
-
 </project>
-
