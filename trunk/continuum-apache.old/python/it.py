@@ -155,6 +155,9 @@ def cvsCheckout( cvsroot, module, coDir ):
 def cvsImport( basedir, cvsroot, artifactId ):
     return execute( basedir, "cvs -d " + cvsroot + " import -m '' " + artifactId + " continuum_test start" )
 
+def svnImport( basedir, svnroot, artifactId ):
+    return execute( basedir, "svn import -m '' . file://" + svnroot + "/" + artifactId )
+
 def initMaven1Project( basedir, cvsroot, artifactId ):
     cleanDirectory( basedir )
     os.makedirs( basedir )
@@ -238,7 +241,7 @@ def initAntProject( basedir, cvsroot, artifactId ):
     foo.write( "class Foo { }" )
     foo.close()
 
-    cvsImport( basedir, cvsroot, artifactId )
+    svnImport( basedir, svnroot, artifactId )
 
 def initShellProject( basedir, cvsroot, artifactId ):
     cleanDirectory( basedir )
@@ -255,8 +258,13 @@ do
 
     cvsImport( basedir, cvsroot, artifactId )
 
-basedir = os.getcwd() + "/target/test-ci"
+############################################################
+# Start
+############################################################
+
+basedir = os.getcwd() + "/test-ci"
 cvsroot = basedir + "/cvsroot"
+svnroot = basedir + "/svnroot"
 maven1Project = basedir + "/maven-1"
 maven2Project = basedir + "/maven-2"
 antProject = basedir + "/ant"
@@ -266,11 +274,10 @@ coDir = basedir + "/tmp-co"
 cleanDirectory( basedir )
 os.makedirs( basedir )
 os.makedirs( cvsroot )
-os.system( "cvs -d " + cvsroot + " init" )
+os.makedirs( svnroot )
 
-############################################################
-# Project building
-############################################################
+execute( os.getcwd(), "cvs -d " + cvsroot + " init" )
+execute( os.getcwd(), "svnadmin create " + svnroot )
 
 startTime = int( time.time() )
 
@@ -324,11 +331,11 @@ if 1:
     assertSuccessfulNoBuildPerformed( build )
 
 if 1:
-    progress( "Initializing Ant CVS project" )
-    initAntProject( antProject, cvsroot, "ant" )
+    progress( "Initializing Ant SVN project" )
+    initAntProject( antProject, svnroot, "ant" )
 
     progress( "Adding Ant project" )
-    antId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant", "ant", "Ant Project", "foo@bar", "3.0", 
+    antId = continuum.addProjectFromScm( "scm:svn:file://" + svnroot + "/ant", "ant", "Ant Project", "foo@bar", "3.0", 
                                          { "executable": "ant", "targets" : "clean, build"} )
     ant = continuum.getProject( antId )
     assertProject( "3", "Ant Project", "foo@bar", continuum.STATE_NEW, "3.0", "ant", ant )
