@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.41 2004-10-06 13:37:13 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.42 2004-10-07 11:49:57 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -122,18 +122,7 @@ public class DefaultContinuum
         throws Exception
     {
         getLogger().info( "Starting continuum." );
-/*
-        if ( container.hasComponent( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" ) )
-        {
-            getLogger().warn( "Has m2 builder, booting" );
 
-            container.lookup( "org.codehaus.continuum.builder.ContinuumBuilder", "maven2" );
-        }
-        else
-        {
-            getLogger().warn( "Missing m2 builder" );
-        }
-*/
         // start the builder thread
         builderThread = new BuilderThread( builderManager, buildQueue, store, txManager, notifierManager, scm, getLogger() );
 
