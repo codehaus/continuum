@@ -28,11 +28,11 @@ package org.codehaus.continuum.buildqueue;
  * A <code>BuildQueue</code> implementation MUST be thread safe.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildQueue.java,v 1.3 2004-10-09 13:00:16 trygvis Exp $
+ * @version $Id: BuildQueue.java,v 1.4 2004-10-24 14:15:13 trygvis Exp $
  */
 public interface BuildQueue
 {
-    public final static String ROLE = BuildQueue.class.getName();
+    static String ROLE = BuildQueue.class.getName();
 
     /**
      * Returns a element from the queue.
