@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResult.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: BuildResult.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
  */
 public interface BuildResult
     extends Serializable
@@ -89,7 +89,8 @@ public interface BuildResult
     /**
      * @param error The error to set.
      */
-    public void setError( Throwable Error );
+    public void setError( Throwable error );
+
 /*
     public ExecutionResponse getMaven2Result();
 

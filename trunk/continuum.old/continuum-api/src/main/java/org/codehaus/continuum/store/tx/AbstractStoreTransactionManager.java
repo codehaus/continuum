@@ -10,13 +10,13 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractStoreTransactionManager.java,v 1.1 2004-10-06 13:36:04 trygvis Exp $
+ * @version $Id: AbstractStoreTransactionManager.java,v 1.2 2004-10-09 13:00:18 trygvis Exp $
  */
 public abstract class AbstractStoreTransactionManager
     extends AbstractLogEnabled
     implements StoreTransactionManager, Initializable
 {
-    private ThreadLocal state = new ThreadLocal();
+    private ThreadLocal txState = new ThreadLocal();
 
     // ----------------------------------------------------------------------
     // Abstract methods
@@ -207,7 +207,7 @@ public abstract class AbstractStoreTransactionManager
     private TransactionState getState()
         throws ContinuumStoreException
     {
-        TransactionState state = (TransactionState) this.state.get();
+        TransactionState state = (TransactionState) txState.get();
 
         if ( state == null )
         {
@@ -230,7 +230,7 @@ public abstract class AbstractStoreTransactionManager
 
         TransactionState state = new TransactionState();
 
-        this.state.set( state );
+        txState.set( state );
 
         return state;
     }

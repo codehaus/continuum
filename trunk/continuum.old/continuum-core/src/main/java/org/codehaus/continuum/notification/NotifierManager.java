@@ -22,12 +22,11 @@ package org.codehaus.continuum.notification;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierManager.java,v 1.3 2004-07-27 05:42:13 trygvis Exp $
+ * @version $Id: NotifierManager.java,v 1.4 2004-10-09 13:01:53 trygvis Exp $
  */
 public interface NotifierManager
 {
@@ -41,9 +40,7 @@ public interface NotifierManager
      * This method is called upon a completed checkout. If a error ocurred
      * <code>ex</code> will be non-null.
      *
-     * @param project The whose projects checkout completed.
-     * @param ex Possibly a exception.
-     * @throws ContinuumException
+     * @param build
      */
     void checkoutComplete( ContinuumBuild build );
 

@@ -24,9 +24,10 @@ package org.codehaus.continuum;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumException.java,v 1.2 2004-07-27 05:42:09 trygvis Exp $
+ * @version $Id: ContinuumException.java,v 1.3 2004-10-09 13:00:16 trygvis Exp $
  */
-public class ContinuumException extends Exception
+public class ContinuumException
+	extends Exception
 {
     public ContinuumException( String message )
     {

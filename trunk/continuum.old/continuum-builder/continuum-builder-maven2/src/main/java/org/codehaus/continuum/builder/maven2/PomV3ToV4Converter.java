@@ -57,7 +57,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PomV3ToV4Converter.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
+ * @version $Id: PomV3ToV4Converter.java,v 1.3 2004-10-09 13:03:19 trygvis Exp $
  */
 public class PomV3ToV4Converter
 {
@@ -233,6 +233,8 @@ public class PomV3ToV4Converter
         v4Model.setDevelopers( getDevelopers( v3Model ) );
 
         v4Model.setContributors( getContributors( v3Model ) );
+
+        v4Model.setMailingLists( getMailingLists( v3Model ) );
 
         v4Model.setDependencies( getDependencies( v3Model ) );
 

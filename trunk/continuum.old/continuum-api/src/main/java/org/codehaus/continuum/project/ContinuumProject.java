@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProject.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: ContinuumProject.java,v 1.3 2004-10-09 13:00:17 trygvis Exp $
  */
 public interface ContinuumProject
     extends Serializable
@@ -67,7 +67,7 @@ public interface ContinuumProject
     public String getScmConnection();
 
     /**
-     * @param ccmConnection The ccmConnection to set.
+     * @param scmConnection The ccmConnection to set.
      */
     public void setScmConnection( String scmConnection );
 

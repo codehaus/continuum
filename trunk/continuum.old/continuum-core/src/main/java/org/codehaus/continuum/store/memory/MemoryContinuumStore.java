@@ -38,7 +38,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.8 2004-10-08 13:52:01 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.9 2004-10-09 13:01:54 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -230,24 +230,24 @@ public class MemoryContinuumStore
         }
     }
 
-    private ContinuumProject findProjectByName( String name )
-        throws ContinuumStoreException
-    {
-        try
-        {
-            enter();
-
-            ContinuumProject project = database.findProjectByName( name );
-
-            leave();
-
-            return project;
-        }
-        catch( ContinuumStoreException ex )
-        {
-            throw rollback( ex );
-        }
-    }
+//    private ContinuumProject findProjectByName( String name )
+//        throws ContinuumStoreException
+//    {
+//        try
+//        {
+//            enter();
+//
+//            ContinuumProject project = database.findProjectByName( name );
+//
+//            leave();
+//
+//            return project;
+//        }
+//        catch( ContinuumStoreException ex )
+//        {
+//            throw rollback( ex );
+//        }
+//    }
 
     // ----------------------------------------------------------------------
     // Build

@@ -40,7 +40,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumNotifier.java,v 1.3 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: ContinuumNotifier.java,v 1.4 2004-10-09 13:00:17 trygvis Exp $
  */
 public interface ContinuumNotifier
 {
@@ -56,8 +56,7 @@ public interface ContinuumNotifier
      * This method is called upon a completed checkout. If a error ocurred
      * <code>ex</code> will be non-null.
      *
-     * @param project The whose projects checkout completed.
-     * @param ex Possibly a exception.
+     * @param build
      * @throws ContinuumException
      */
     void checkoutComplete( ContinuumBuild build )

@@ -38,7 +38,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.10 2004-07-27 05:42:13 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.11 2004-10-09 13:01:53 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -81,7 +81,7 @@ public class DefaultContinuumScm
     {
         try
         {
-            FileUtils.deleteDirectory( getProjectScmDirectory( project, checkoutDirectory ) );
+            FileUtils.deleteDirectory( getProjectScmDirectory( project ) );
         }
         catch( IOException ex )
         {
@@ -100,7 +100,7 @@ public class DefaultContinuumScm
     {
         try
         {
-            File workingDirectory = getProjectScmDirectory( project, checkoutDirectory );
+            File workingDirectory = getProjectScmDirectory( project );
 
             RepositoryInfo repositoryInfo = ScmUtils.createRepositoryInfo( project );
 
@@ -138,7 +138,7 @@ public class DefaultContinuumScm
     {
         try
         {
-            File dir = getProjectScmDirectory( project, checkoutDirectory );
+            File dir = getProjectScmDirectory( project );
 
             synchronized( this )
             {
@@ -159,7 +159,7 @@ public class DefaultContinuumScm
     // Private
     // ----------------------------------------------------------------------
 
-    private File getProjectScmDirectory( ContinuumProject project, String checkoutDirectory )
+    private File getProjectScmDirectory( ContinuumProject project )
     {
         return new File( checkoutDirectory, project.getId() );
     }

@@ -25,7 +25,6 @@ package org.codehaus.continuum.registration.network;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 
 import org.codehaus.continuum.network.ConnectionConsumer;
 import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
@@ -35,7 +34,7 @@ import org.codehaus.continuum.utils.ContinuumUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.13 2004-10-07 12:09:39 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.14 2004-10-09 13:01:53 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -43,9 +42,6 @@ public class SimpleNetworkRegistrar
 {
     /** @requirement */
     private StoreTransactionManager txManager;
-
-    /** @default ${maven.home}/repository */
-    private String localRepository;
 
     /////////////////////////////////////////////////////////////////////////
     // ConnectionConsumer Implementation
@@ -85,27 +81,5 @@ public class SimpleNetworkRegistrar
 
             socket.writeLine( stackTrace );
         }
-    }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    private void error( PrintWriter printer, String message, Throwable ex )
-    {
-        out( printer, "ERROR" );
-
-        out( printer, message );
-
-        ex.printStackTrace( printer );
-
-        printer.flush();
-    }
-
-    private void out( PrintWriter writer, String line )
-    {
-        writer.println( line );
-
-        writer.flush();
     }
 }

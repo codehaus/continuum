@@ -26,7 +26,7 @@ import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.1 2004-10-08 13:52:01 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.2 2004-10-09 13:01:54 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -87,10 +87,8 @@ public class ContinuumDatabase
             {
                 return true;
             }
-            else
-            {
-                return setNext();
-            }
+
+            return setNext();
         }
 
         private boolean setNext()

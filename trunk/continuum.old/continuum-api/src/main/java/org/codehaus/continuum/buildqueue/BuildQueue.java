@@ -22,15 +22,13 @@ package org.codehaus.continuum.buildqueue;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.ContinuumException;
-
 /**
  * A queue of build job ids.
  *
  * A <code>BuildQueue</code> implementation MUST be thread safe.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildQueue.java,v 1.2 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: BuildQueue.java,v 1.3 2004-10-09 13:00:16 trygvis Exp $
  */
 public interface BuildQueue
 {
@@ -46,20 +44,14 @@ public interface BuildQueue
     String dequeue();
 
     /**
-     * Adds a build id to the queue.
-     *
-     * @param groupId The group id.
-     * @param artifactId The artifact id.
-     * @return Returns the build id.
-     * @throws ContinuumException
+     * @param projectId The id of the project to enqueue.
      */
-    void enqueue( String project );
+    void enqueue( String projectId );
 
     /**
      * Returns the length of the queue.
      *
      * @return Returns the length of the queue.
-     * @throws ContinuumException
      */
     int getLength();
 }
