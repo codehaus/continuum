@@ -10,5 +10,4 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-builder-shell</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Continuum Shell Builder</name>
 </project>

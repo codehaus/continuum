@@ -36,7 +36,7 @@ public class ShellBuildResult
 
     private int exitCode;
 
-    public ShellBuildResult()
+    protected ShellBuildResult()
     {
     }
 
@@ -51,11 +51,6 @@ public class ShellBuildResult
         this.standardError = standardError;
 
         this.exitCode = exitCode;
-    }
-
-    public void setSuccess( boolean success )
-    {
-        this.success = success;
     }
 
     public boolean isSuccess()

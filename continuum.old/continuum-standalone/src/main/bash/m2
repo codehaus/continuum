@@ -1,9 +1,0 @@
-#!/bin/bash
-
-THIS_PROG="$0"
-PRGDIR=`dirname "$THIS_PROG"`
-basedir=`cd "$PRGDIR/.." ; pwd`
-
-M2_HOME=$basedir/apps/maven2
-
-$M2_HOME/bin/m2 "$@"

@@ -38,9 +38,9 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenContinuumBuilder.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
+ * @version $Id: AntContinuumBuilder.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
  */
-public class MavenContinuumBuilder
+public class AntContinuumBuilder
     extends ShellContinuumBuilder
 {
     private String mavenHome;

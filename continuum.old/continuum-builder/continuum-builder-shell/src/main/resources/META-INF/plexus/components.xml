@@ -2,10 +2,23 @@
   <components>
     <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
-      <role-hint>maven</role-hint>
-      <implementation>org.codehaus.continuum.builder.shell.MavenContinuumBuilder</implementation>
+      <role-hint>maven2</role-hint>
+<!--
+      <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
+-->
+      <implementation>org.codehaus.continuum.builder.maven2.ExternalMaven2ContinuumBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.Maven</role>
+        </requirement>
+      </requirements>
       <configuration>
-        <shell-command>maven pom:install jar:install</shell-command>
+        <maven-home>/home/trygvis/m2</maven-home>
+        <maven-home-local>/home/trygvis/.m2</maven-home-local>
+        <maven-repository>/home/trygvis/.m2/repository</maven-repository>
       </configuration>
     </component>
   </components>

@@ -22,18 +22,19 @@ package org.codehaus.continuum.builder.shell;
  * SOFTWARE.
  */
 
-import java.io.File;
-
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
+import java.io.File;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellContinuumBuilder.java,v 1.4 2004-10-29 14:48:04 trygvis Exp $
+ * @version $Id: ShellContinuumBuilder.java,v 1.1.1.1 2004-10-28 04:32:53 jvanzyl Exp $
  */
 public abstract class ShellContinuumBuilder
     extends AbstractContinuumBuilder
@@ -42,11 +43,7 @@ public abstract class ShellContinuumBuilder
     // Components
     // ----------------------------------------------------------------------
 
-    // ----------------------------------------------------------------------
-    // Configuration
-    // ----------------------------------------------------------------------
-
-    protected String shellCommand;
+    protected ContinuumScm scm;
 
     // ----------------------------------------------------------------------
     //
@@ -71,8 +68,6 @@ public abstract class ShellContinuumBuilder
 
         int exitCode;
 
-        getLogger().info( "executing: " + cl );
-
         try
         {
             exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
@@ -86,7 +81,7 @@ public abstract class ShellContinuumBuilder
 
         String err = stderr.getOutput();
 
-        boolean success = exitCode == 0;
+        boolean success = out.indexOf( "BUILD SUCCESSFUL" ) != -1;
 
         if ( build != null )
         {
