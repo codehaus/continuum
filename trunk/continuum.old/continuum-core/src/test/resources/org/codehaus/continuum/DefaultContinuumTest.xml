@@ -1,8 +1,4 @@
 <plexus>
-  <resources>
-    <jar-repository>${maven.home}/plugins</jar-repository>
-  </resources>
-
   <components>
     <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>

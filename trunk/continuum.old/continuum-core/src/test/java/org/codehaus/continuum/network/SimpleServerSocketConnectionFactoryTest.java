@@ -8,14 +8,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.continuum.AbstractContinuumTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.4 2004-07-01 15:30:59 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.5 2004-07-02 03:27:07 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
-    extends PlexusTestCase
+    extends AbstractContinuumTest
 {
     private int port = 6789;
     private byte[] rawData = { 

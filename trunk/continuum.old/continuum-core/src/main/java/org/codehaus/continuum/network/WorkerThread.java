@@ -15,7 +15,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: WorkerThread.java,v 1.1 2004-07-01 15:30:57 trygvis Exp $
+ * @version $Id: WorkerThread.java,v 1.2 2004-07-02 03:27:07 trygvis Exp $
  */
 public class WorkerThread
     extends Thread
@@ -72,8 +72,7 @@ public class WorkerThread
             }
             catch ( IOException ex )
             {
-                getLogger().fatalError(
-                    "Exception while getting the input and output streams from the socket.", ex );
+                getLogger().fatalError( "Exception while getting the input and output streams from the socket.", ex );
                 continue;
             }
 
@@ -94,6 +93,11 @@ public class WorkerThread
         }
 
 //        getLogger().info( "Worker thread for port " + port + " exiting." );
+    }
+
+    public void shutdown()
+    {
+        running = false;
     }
 
     public ServerSocket getServerSocket()

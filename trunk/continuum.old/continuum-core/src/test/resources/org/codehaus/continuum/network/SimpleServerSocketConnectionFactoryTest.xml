@@ -1,11 +1,11 @@
 <plexus>
   <components>
     <component>
-      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
-      <implementation>org.codehaus.plexus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
         </requirement>
       </requirements>
       <configuration>
@@ -13,8 +13,8 @@
       </configuration>
     </component>
     <component>
-      <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
-      <implementation>org.codehaus.plexus.continuum.network.EchoingConnectionConsumer</implementation>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <implementation>org.codehaus.continuum.network.EchoingConnectionConsumer</implementation>
     </component>
   </components>
 </plexus>
