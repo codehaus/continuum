@@ -1,82 +1,99 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<project>
-  <modelVersion>4.0.0</modelVersion>
+<model>
   <parent>
-    <groupId>continuum</groupId>
     <artifactId>continuum-parent</artifactId>
+    <groupId>continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
   <artifactId>continuum-web</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>Continuum Web</name>
-
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
-
-    <!-- Plexus Components -->
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-log4j-logging</artifactId>
       <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
-    <!-- this is really a summit dependency -->
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.0</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-i18n</artifactId>
       <version>1.0-beta-3</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-formica</artifactId>
       <version>1.0-beta-3-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-formica-web</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-summit</artifactId>
       <version>1.0-beta-4-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>servletapi</groupId>
       <artifactId>servletapi</artifactId>
       <version>2.3</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ognl</groupId>
       <artifactId>ognl</artifactId>
       <version>2.5.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-jetty</artifactId>
       <version>1.0-beta-2-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
-
-    <!-- Maven Components -->
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-scm-provider-cvs</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>maven</groupId>
       <artifactId>wagon-http-lightweight</artifactId>
       <version>1.0-alpha-2-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
-</project>
-
+</model>
