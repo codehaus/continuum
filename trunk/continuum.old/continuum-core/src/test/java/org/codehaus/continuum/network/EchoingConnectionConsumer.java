@@ -30,7 +30,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: EchoingConnectionConsumer.java,v 1.4 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: EchoingConnectionConsumer.java,v 1.5 2004-10-06 13:37:14 trygvis Exp $
  */
 public class EchoingConnectionConsumer
     extends AbstractLogEnabled
@@ -43,11 +43,11 @@ public class EchoingConnectionConsumer
 
         while ( (data = input.read() ) != -1 )
         {
-            getLogger().info( "Writing " + Integer.toHexString( data ) );
             output.write( data );
         }
 
         output.close();
+
         input.close();
     }
 }

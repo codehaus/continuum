@@ -23,6 +23,8 @@ package org.codehaus.continuum.test.scm;
  */
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.command.checkout.CheckOutCommand;
@@ -31,7 +33,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestCheckOutCommand.java,v 1.4 2004-09-07 16:22:19 trygvis Exp $
+ * @version $Id: TestCheckOutCommand.java,v 1.5 2004-10-06 13:33:50 trygvis Exp $
  */
 public class TestCheckOutCommand
     extends AbstractTestCommand
@@ -54,7 +56,7 @@ public class TestCheckOutCommand
 
         File source = new File( base, dir );
 
-        File destination = new File( workingDirectory, dir );
+        File baseDestination = new File( workingDirectory, dir );
 
         if ( !workingDirectory.exists() )
         {
@@ -71,15 +73,37 @@ public class TestCheckOutCommand
             throw new ScmException( "The module directory doesn't exist (" + source.getAbsolutePath() + ")." );
         }
 
-        FileUtils.deleteDirectory( destination );
+        FileUtils.deleteDirectory( baseDestination );
 
-        if ( !destination.mkdirs() )
+        if ( !baseDestination.mkdirs() )
         {
-            throw new ScmException( "Could not create destination directory: " + destination.getAbsolutePath() );
+            throw new ScmException( "Could not create destination directory '" + baseDestination.getAbsolutePath() + "'." );
         }
 
-        System.err.println( "Checking out " + source.getAbsolutePath() + " to " + destination.getAbsolutePath() );
+        System.err.println( "Checking out '" + source.getAbsolutePath() + "' to '" + baseDestination.getAbsolutePath() + "'." );
 
-        FileUtils.copyDirectory( source, destination );
+        List files = FileUtils.getFiles( source.getAbsoluteFile(), "**", null );
+
+        String sourcePath = source.getAbsolutePath();
+
+        for ( Iterator i = files.iterator(); i.hasNext(); )
+        {
+            File file = (File) i.next();
+
+            String dest = file.getAbsolutePath();
+
+            dest = dest.substring( sourcePath.length() + 1 );
+
+            File destination = new File( baseDestination, dest );
+
+            destination = destination.getParentFile();
+
+            if ( !destination.exists() && !destination.mkdirs() )
+            {
+                throw new ScmException( "Could not create destination directory '" + destination.getAbsolutePath() + "'." );
+            }
+
+            FileUtils.copyFileToDirectory( file, destination );
+        }
     }
 }

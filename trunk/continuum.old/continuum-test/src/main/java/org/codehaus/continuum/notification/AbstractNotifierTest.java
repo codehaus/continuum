@@ -25,12 +25,11 @@ package org.codehaus.continuum.notification;
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifierTest.java,v 1.3 2004-09-07 16:22:19 trygvis Exp $
+ * @version $Id: AbstractNotifierTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
  */
 public abstract class AbstractNotifierTest
     extends AbstractContinuumTest
@@ -56,6 +55,11 @@ public abstract class AbstractNotifierTest
     // ----------------------------------------------------------------------
     // Override these to assert the notifier.
     // ----------------------------------------------------------------------
+
+    protected void preBuildStarted()
+        throws Exception
+    {
+    }
 
     protected void postBuildStarted()
         throws Exception
@@ -96,6 +100,8 @@ public abstract class AbstractNotifierTest
     {
         super.setUp();
 
+        getContinuum();
+
         setUpNotifier();
     }
 
@@ -103,6 +109,8 @@ public abstract class AbstractNotifierTest
         throws Exception
     {
         super.tearDown();
+
+        tearDownNotifier();
     }
 
     protected ContinuumBuild build()
@@ -114,33 +122,19 @@ public abstract class AbstractNotifierTest
 
         Continuum continuum = getContinuum();
 
+        getStoreTransactionManager().begin();
+
         String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectType() );
+
+        getStoreTransactionManager().commit();
 
         String buildId = continuum.buildProject( projectId );
 
+        getStoreTransactionManager().begin();
+
         ContinuumBuild build = store.getBuild( buildId );
 
-        int time = 30 * 1000;
-
-        int interval = 100;
-
-        ContinuumBuild result;
-
-        while( time > 0 )
-        {
-            Thread.sleep( interval );
-
-            time -= interval;
-
-            result = store.getBuild( buildId );
-
-            assertNotNull( result );
-
-            if ( result.getState() != ContinuumProjectState.BUILDING )
-            {
-                break;
-            }
-        }
+        getStoreTransactionManager().commit();
 
         return build;
     }

@@ -23,10 +23,11 @@ package org.codehaus.continuum.notification;
  */
 
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractSuccessfulBuildNotifierTest.java,v 1.3 2004-09-07 16:22:19 trygvis Exp $
+ * @version $Id: AbstractSuccessfulBuildNotifierTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
  */
 public abstract class AbstractSuccessfulBuildNotifierTest
     extends AbstractNotifierTest
@@ -36,31 +37,71 @@ public abstract class AbstractSuccessfulBuildNotifierTest
     public void testSuccessfulBuild()
         throws Exception
     {
+        StoreTransactionManager txManager = getStoreTransactionManager();
+
         ContinuumNotifier notifier = getContinuumNotifier( getNotifierRoleHint() );
+
+        // --- -- -
+
+        preBuildStarted();
 
         ContinuumBuild buildResult = build();
 
+        txManager.begin();
+
         notifier.buildStarted( buildResult );
+
+        txManager.commit();
 
         postBuildStarted();
 
+        // --- -- -
+
+        txManager.begin();
+
         notifier.checkoutStarted( buildResult );
+
+        txManager.commit();
 
         postCheckoutStarted();
 
+        // --- -- -
+
+        txManager.begin();
+
         notifier.checkoutComplete( buildResult );
+
+        txManager.commit();
 
         postCheckoutComplete();
 
+        // --- -- -
+
+        txManager.begin();
+
         notifier.runningGoals( buildResult );
+
+        txManager.commit();
 
         postRunningGoals();
 
+        // --- -- -
+
+        txManager.begin();
+
         notifier.goalsCompleted( buildResult );
+
+        txManager.commit();
 
         postGoalsCompleted();
 
+        // --- -- -
+
+        txManager.begin();
+
         notifier.buildComplete( buildResult );
+
+        txManager.commit();
 
         postBuildComplete();
     }

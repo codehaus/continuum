@@ -32,24 +32,11 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.4 2004-07-29 03:43:48 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.5 2004-10-06 13:33:29 trygvis Exp $
  */
 public interface ContinuumStore
 {
     String ROLE = ContinuumStore.class.getName();
-
-    // ----------------------------------------------------------------------
-    // Transaction handling
-    // ----------------------------------------------------------------------
-
-    public void beginTransaction()
-        throws ContinuumStoreException;
-
-    public void commitTransaction()
-        throws ContinuumStoreException;
-
-    public void rollbackTransaction()
-        throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
     // Database methods
@@ -74,10 +61,16 @@ public interface ContinuumStore
     void setProjectDescriptor( String projectId, ProjectDescriptor descriptor )
         throws ContinuumStoreException;
 
+    void updateProjectDescriptor( String projectId, ProjectDescriptor descriptor )
+        throws ContinuumStoreException;
+
     void updateProject( String projectId, String name, String scmUrl )
         throws ContinuumStoreException;
 
     Iterator getAllProjects()
+        throws ContinuumStoreException;
+
+    Iterator findProjectsByName( String nameSearchPattern )
         throws ContinuumStoreException;
 
     ContinuumProject getProject( String projectId )

@@ -13,7 +13,7 @@ import org.codehaus.plexus.util.cli.StreamPumper;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: CommandLineUtils.java,v 1.1 2004-09-07 16:22:16 trygvis Exp $
+ * @version $Id: CommandLineUtils.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
  */
 public abstract class CommandLineUtils
 {
@@ -45,8 +45,8 @@ public abstract class CommandLineUtils
 
         Process p;
 
-        System.out.println( "Executing: " + cl );
-        System.out.println( "pwd: " + cl.getWorkingDirectory().getAbsolutePath() );
+//        System.out.println( "Executing: " + cl );
+//        System.out.println( "pwd: " + cl.getWorkingDirectory().getAbsolutePath() );
 
         try
         {

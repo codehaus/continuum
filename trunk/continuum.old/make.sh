@@ -7,13 +7,17 @@
 ( cd continuum-builder && m2 pom:install )
 ( cd continuum-builder/continuum-builder-maven2 && m2 jar:install )
 ( cd continuum-store/continuum-store-hibernate && m2 jar:install )
+( cd continuum-store/continuum-store-hibernate-it && m2 jar:install )
+( cd continuum-store/continuum-store-prevayler && m2 jar:install )
 ( cd continuum-notifier/continuum-notifier-mail && m2 jar:install )
 ( cd continuum-trigger/continuum-trigger-alarm && m2 jar:install )
+( cd continuum-standalone && m2 jar:install )
+( cd continuum-web && m2 jar:install )
+( cd continuum-it && m2 jar:install )
 
 (
-#  cd continuum-web
-#  sh make.sh
-#  cd ..
+  cd continuum-web
+  sh update.sh
 )
 
 #( cd continuum-it && m2 jar:install )

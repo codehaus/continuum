@@ -23,12 +23,13 @@ package org.codehaus.continuum.trigger;
  */
 
 import org.codehaus.continuum.Continuum;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AbstractContinuumTrigger.java,v 1.2 2004-07-27 05:42:11 trygvis Exp $
+ * @version $Id: AbstractContinuumTrigger.java,v 1.3 2004-10-06 13:33:30 trygvis Exp $
  */
 public class AbstractContinuumTrigger
     extends AbstractLogEnabled
@@ -36,8 +37,15 @@ public class AbstractContinuumTrigger
 {
     private Continuum continuum;
 
+    private StoreTransactionManager txManager;
+
     public Continuum getContinuum()
     {
         return continuum;
+    }
+
+    public StoreTransactionManager getStoreTransactionManager()
+    {
+        return txManager;
     }
 }

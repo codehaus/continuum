@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ProjectDescriptor.java,v 1.1 2004-08-29 18:45:15 trygvis Exp $
+ * @version $Id: Maven2ProjectDescriptor.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
  */
 public class Maven2ProjectDescriptor
     extends AbstractProjectDescriptor
@@ -41,6 +41,11 @@ public class Maven2ProjectDescriptor
     private List goals;
 
     private String pom;
+
+    // some selected fields from the POM
+    private String name;
+
+    private String scmConnection;
 
     private transient MavenProject mavenProject;
 
@@ -82,11 +87,42 @@ public class Maven2ProjectDescriptor
     }
 
     /**
+     * @return Returns the name.
+     */
+    public String getName()
+    {
+        return name;
+    }
+
+    /**
+     * @param name The name to set.
+     */
+    public void setName( String name )
+    {
+        this.name = name;
+    }
+
+    /**
+     * @return Returns the scmConnection.
+     */
+    public String getScmConnection()
+    {
+        return scmConnection;
+    }
+
+    /**
+     * @param scmConnection The scmConnection to set.
+     */
+    public void setScmConnection( String scmConnection )
+    {
+        this.scmConnection = scmConnection;
+    }
+
+    /**
      * @return Returns the mavenProject.
      * @throws ContinuumException Thrown if the mavenProject isn't set.
      */
     public MavenProject getMavenProject()
-        throws ContinuumException
     {
         return mavenProject;
     }

@@ -28,6 +28,8 @@
       <generator class="assigned"/>
     </id>
     <property name="pom" type="java.lang.String" length="8000"/>
+    <property name="name" type="java.lang.String" length="8000"/>
+    <property name="scmConnection" type="java.lang.String" length="8000"/>
     <list
       name="goals"
       table="Maven2Goal">

@@ -22,28 +22,27 @@ package org.codehaus.continuum.store.hibernate;
  * SOFTWARE.
  */
 
+import java.io.File;
+
 import net.sf.hibernate.Session;
 import net.sf.hibernate.Transaction;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
 
-import org.apache.maven.MavenTestUtils;
-
 import org.codehaus.continuum.store.AbstractContinuumStoreTest;
 import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.hibernate.DefaultHibernateService;
 import org.codehaus.plexus.hibernate.HibernateService;
-import org.codehaus.plexus.hibernate.HibernateSessionService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStoreTest.java,v 1.6 2004-08-29 17:37:29 trygvis Exp $
+ * @version $Id: HibernateContinuumStoreTest.java,v 1.7 2004-10-06 13:40:49 trygvis Exp $
  */
 public class HibernateContinuumStoreTest
     extends AbstractContinuumStoreTest
 {
-    private HibernateSessionService sessionService;
+//    private HibernateSessionService sessionService;
 
     private ContinuumStore store;
 
@@ -51,6 +50,10 @@ public class HibernateContinuumStoreTest
 
     private Transaction tx;
 
+    private File mavenHome = PlexusTestCase.getTestFile( "target/maven-home" );
+
+    private File mavenHomeLocal = PlexusTestCase.getTestFile( "target/maven-home-local" );
+/*
     protected PlexusContainer getContainerInstance()
     {
         return MavenTestUtils.getContainerInstance();
@@ -59,36 +62,12 @@ public class HibernateContinuumStoreTest
     protected void customizeContext()
         throws Exception
     {
-        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ) );
+        MavenTestUtils.customizeContext( getContainer(), getTestFile( "" ), mavenHome, mavenHomeLocal );
     }
-
+*/
     protected String getRoleHint()
     {
         return "hibernate";
-    }
-
-    protected void beginTx()
-        throws Exception
-    {
-        session = sessionService.getSession();
-
-        store.beginTransaction();
-    }
-
-    protected void commitTx()
-        throws Exception
-    {
-        store.commitTransaction();
-
-        sessionService.closeSession();
-    }
-
-    protected void rollbackTx()
-        throws Exception
-    {
-        store.rollbackTransaction();
-
-        sessionService.closeSession();
     }
 
     public void setUp()
@@ -96,7 +75,9 @@ public class HibernateContinuumStoreTest
     {
         super.setUp();
 
-        sessionService = (HibernateSessionService) lookup( HibernateSessionService.ROLE );
+        // TODO: use store.createDatabase() ?
+
+//        sessionService = (HibernateSessionService) lookup( HibernateSessionService.ROLE );
 
         DefaultHibernateService hibernate = (DefaultHibernateService) lookup( HibernateService.ROLE );
 
@@ -108,7 +89,7 @@ public class HibernateContinuumStoreTest
 
         exporter.create( false, true );
 
-        session = sessionService.getSession();
+//        session = sessionService.getSession();
 
         store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
     }

@@ -26,14 +26,14 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2BuildResult.java,v 1.1 2004-09-07 16:22:16 trygvis Exp $
+ * @version $Id: ExternalMaven2BuildResult.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
  */
 public class ExternalMaven2BuildResult
     extends Maven2BuildResult
 {
-    private String output;
+    private String standardOutput;
 
-    private String error;
+    private String standardError;
 
     private int exitCode;
 
@@ -41,24 +41,62 @@ public class ExternalMaven2BuildResult
     {
     }
 
-    public ExternalMaven2BuildResult( ContinuumBuild build, boolean success, String output, String error, int exitCode )
+    public ExternalMaven2BuildResult( ContinuumBuild build, boolean success, String standardOutput, String standardError, int exitCode )
     {
         super( build, success );
 
-        this.output = output;
+        this.standardOutput = standardOutput;
 
-        this.error = error;
+        this.standardError = standardError;
 
         this.exitCode = exitCode;
     }
 
-    public String getOutput()
+    /**
+     * @return Returns the exitCode.
+     */
+    public int getExitCode()
     {
-        return output;
+        return exitCode;
     }
 
-    public String getError()
+    /**
+     * @param exitCode The exitCode to set.
+     */
+    public void setExitCode( int exitCode )
     {
-        return error;
+        this.exitCode = exitCode;
+    }
+
+    /**
+     * @return Returns the standardOutput.
+     */
+    public String getStandardOutput()
+    {
+        return standardOutput;
+    }
+
+    /**
+     * @param standardOutput The standardOutput to set.
+     */
+    public void setStandardOutput( String standardOutput )
+    {
+        this.standardOutput = standardOutput;
+    }
+
+    /**
+     * @return Returns the standardError.
+     */
+    public String getStandardError()
+    {
+        return standardError;
+    }
+
+    /**
+     * @param standardError The standardError to set.
+     */
+    public void setStandardError( String standardError )
+    {
+        this.standardError = standardError;
     }
 }
