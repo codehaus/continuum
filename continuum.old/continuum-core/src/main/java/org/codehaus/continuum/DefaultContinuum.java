@@ -13,9 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,7 +24,7 @@ import java.util.TimerTask;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: DefaultContinuum.java,v 1.5 2004-01-16 06:20:14 jvanzyl Exp $
+ * @version $Id: DefaultContinuum.java,v 1.6 2004-01-16 14:16:24 jvanzyl Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -37,9 +38,7 @@ public class DefaultContinuum
 
     private int buildInterval;
 
-    private List moms;
-
-    private List projects;
+    private Map projects;
 
     private String workDirectory;
 
@@ -50,7 +49,8 @@ public class DefaultContinuum
     public void initialize()
         throws Exception
     {
-        // Create the work directory if it doesn't exist.
+        projects = new LinkedHashMap();
+
         File f = new File ( workDirectory );
 
         if ( !f.exists() )
@@ -58,55 +58,17 @@ public class DefaultContinuum
             f.mkdirs();
         }
 
-        // Storage for projects.
-        projects = new ArrayList();
-
-        // Read in the moms and create projects.
-        for ( Iterator i = moms.iterator(); i.hasNext(); )
-        {
-            String s = (String) i.next();
-
-            File file = new File( s );
-
-            if ( !file.exists() )
-            {
-                getLogger().warn( "The specified POM doesn't exist: " + file + ". Skipping." );
-
-                continue;
-            }
-
-            Project project = null;
-
-            try
-            {
-                project = projectBuilder.build( file );
-
-                projects.add( project );
-            }
-            catch ( Exception e )
-            {
-                getLogger().warn( "Error building POM: " + file + ". Skipping." );
-
-                continue;
-            }
-        }
-
-
-        // Create the timer.
         timer = new Timer();
     }
 
-    /** @see Startable#start */
     public void start()
         throws Exception
     {
         getLogger().info( "Starting Continuum!" );
 
-        // Set the scheduler.
         timer.schedule( new BuildTask(), 0, buildInterval * 60 * 1000 );
     }
 
-    /** @see Startable#stop */
     public void stop()
         throws Exception
     {
@@ -118,6 +80,7 @@ public class DefaultContinuum
 
     public void addProject( Project project )
     {
+        projects.put( project.getId(), project );
     }
 
     private void notifyAudience( Project project, String message )
@@ -150,7 +113,7 @@ public class DefaultContinuum
     {
         getLogger().info( "Building Projects ..." );
 
-        for ( Iterator i = projects.iterator(); i.hasNext(); )
+        for ( Iterator i = projects.values().iterator(); i.hasNext(); )
         {
             Project project = (Project) i.next();
 
@@ -181,7 +144,6 @@ public class DefaultContinuum
 
                 e.printStackTrace( w );
 
-                // Notification of failure.
                 notifyAudience( project, w.toString() );
 
             }
