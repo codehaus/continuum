@@ -1,68 +1,52 @@
 <form>
   <id>continuumProject</id>
-  <source-role>org.codehaus.continuum.Continuum</source-role>
+  <key-expression>id</key-expression>
   <lookup-expression>getProject(#id)</lookup-expression>
   <summary-collection-expression>getProjects()</summary-collection-expression>
-  <key-expression>id</key-expression>
+  <source-role>org.codehaus.continuum.Continuum</source-role>
   <elements>
     <element>
-      <id>addProject.scmUrl</id>
+      <id>project.name</id>
       <validator>default</validator>
-      <message-key>addProject.scmUrl.message</message-key>
-      <label-key>addProject.scmUrl.label</label-key>
-      <error-message-key>addProject.scmUrl.error</error-message-key>
-      <type>text</type>
-      <expression>scmUrl</expression>
-    </element>
-    <element>
-      <id>addProject.name</id>
-      <validator>default</validator>
-      <message-key>addProject.name.message</message-key>
-      <label-key>addProject.name.label</label-key>
-      <error-message-key>addProject.name.error</error-message-key>
+      <message-key>project.name.message</message-key>
+      <label-key>project.name.label</label-key>
+      <error-message-key>project.name.error</error-message-key>
       <type>text</type>
       <expression>name</expression>
     </element>
     <element>
-      <id>addProject.nagEmailAddress</id>
+      <id>project.scmUrl</id>
       <validator>default</validator>
-      <message-key>addProject.nagEmailAddress.message</message-key>
-      <label-key>addProject.nagEmailAddress.label</label-key>
-      <error-message-key>addProject.nagEmailAddress.error</error-message-key>
+      <message-key>project.scmUrl.message</message-key>
+      <label-key>project.scmUrl.label</label-key>
+      <error-message-key>project.scmUrl.error</error-message-key>
+      <type>text</type>
+      <expression>scmUrl</expression>
+    </element>
+    <element>
+      <id>project.nagEmailAddress</id>
+      <validator>default</validator>
+      <message-key>project.nagEmailAddress.message</message-key>
+      <label-key>project.nagEmailAddress.label</label-key>
+      <error-message-key>project.nagEmailAddress.error</error-message-key>
       <type>text</type>
       <expression>nagEmailAddress</expression>
     </element>
     <element>
-      <id>addProject.version</id>
+      <id>project.version</id>
       <validator>default</validator>
-      <message-key>addProject.version.message</message-key>
-      <label-key>addProject.version.label</label-key>
-      <error-message-key>addProject.version.error</error-message-key>
+      <message-key>project.version.message</message-key>
+      <label-key>project.version.label</label-key>
+      <error-message-key>project.version.error</error-message-key>
       <type>text</type>
       <expression>version</expression>
     </element>
     <element>
-      <id>addAntProject.executable</id>
+      <id>project.type</id>
       <validator>default</validator>
-      <message-key>addAntProject.executable.message</message-key>
-      <label-key>addAntProject.executable.label</label-key>
-      <error-message-key>addAntProject.executable.error</error-message-key>
-      <type>text</type>
-    </element>
-    <element>
-      <id>addAntProject.targets</id>
-      <validator>default</validator>
-      <message-key>addAntProject.targets.message</message-key>
-      <label-key>addAntProject.targets.label</label-key>
-      <error-message-key>addAntProject.targets.error</error-message-key>
-      <type>text</type>
-    </element>
-    <element>
-      <id>continuumProject.type</id>
-      <validator>default</validator>
-      <message-key>continuumProject.type.message</message-key>
-      <label-key>continuumProject.type.label</label-key>
-      <error-message-key>continuumProject.type.error</error-message-key>
+      <message-key>project.type.message</message-key>
+      <label-key>project.type.label</label-key>
+      <error-message-key>project.type.error</error-message-key>
       <type>text</type>
       <expression>builderId</expression>
     </element>
@@ -70,21 +54,21 @@
 
   <!-- Add -->
   <add>
-    <title-key>addAntProject.title</title-key>
-    <action>addAntProject</action>
+    <title-key>project.title</title-key>
+    <action>project</action>
     <view>continuumProject.form?mode=summary</view>
   </add>
 
   <!-- Update -->
   <update>
-    <title-key>addAntProject.title</title-key>
+    <title-key>project.title</title-key>
     <action>updateProject</action>
     <view>continuumProject.form?mode=summary</view>
   </update>
 
   <!-- View -->
   <view>
-    <title-key>viewAntProject.title</title-key>
+    <title-key>project.title</title-key>
   </view>
 
   <!-- Summary -->
@@ -92,10 +76,10 @@
     <title-key>title.key</title-key>
     <summary-elements>
       <summary-element>
-        <id>addProject.name</id>
+        <id>project.name</id>
       </summary-element>
       <summary-element>
-        <id>continuumProject.type</id>
+        <id>project.type</id>
       </summary-element>
     </summary-elements>
     <operations>
