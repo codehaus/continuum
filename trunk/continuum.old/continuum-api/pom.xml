@@ -10,21 +10,4 @@
   <artifactId>continuum-api</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum API</name>
-  <scm>
-    <connection>scm:cvs:pserver:anoncvs@cvs.continuum.codehaus.org:/scm/continuum:continuum/continuum-api</connection>
-  </scm>
-  <dependencies>
-<!--
-    <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus</artifactId>
-      <version>0.17-SNAPSHOT</version>
-    </dependency>
--->
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>scm-api</artifactId>
-      <version>0.9-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
 </project>
