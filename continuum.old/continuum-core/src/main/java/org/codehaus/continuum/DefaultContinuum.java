@@ -20,7 +20,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.33 2004-07-08 01:13:35 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.34 2004-07-12 00:00:27 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -115,6 +115,8 @@ public class DefaultContinuum
 
         try
         {
+            store.beginTransaction();
+
             projectId = store.addProject( name, scmConnection, type );
 
             ContinuumProject project = store.getProject( projectId );
@@ -124,6 +126,8 @@ public class DefaultContinuum
             ProjectDescriptor descriptor = builder.createDescriptor( project );
 
             store.setProjectDescriptor( projectId, descriptor );
+
+            store.commitTransaction();
 
             getLogger().info( "Added project: " + name );
         }
@@ -144,16 +148,20 @@ public class DefaultContinuum
 
         try
         {
+            store.beginTransaction();
+
             buildId = store.createBuildResult( project.getId() );
 
             buildQueue.enqueue( buildId );
+
+            getLogger().info( "Enqueuing " + project.getName() + ", build id " + buildId + "..." );
+
+            store.commitTransaction();
         }
         catch( ContinuumStoreException ex )
         {
             throw new ContinuumException( "Exception while creating build object.", ex );
         }
-
-        getLogger().info( "Enqueuing " + project.getName() + ", build id " + buildId + "..." );
 
         return buildId;
     }

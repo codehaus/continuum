@@ -6,17 +6,32 @@ package org.codehaus.continuum.store;
 
 import java.util.Iterator;
 
+import org.apache.maven.ExecutionResponse;
+
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.8 2004-07-07 02:34:36 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.9 2004-07-12 00:00:27 trygvis Exp $
  */
 public interface ContinuumStore
 {
     String ROLE = ContinuumStore.class.getName();
+
+    // ----------------------------------------------------------------------
+    // Transaction handling
+    // ----------------------------------------------------------------------
+
+    public void beginTransaction()
+        throws ContinuumStoreException;
+
+    public void commitTransaction()
+        throws ContinuumStoreException;
+
+    public void rollbackTransaction()
+        throws ContinuumStoreException;
 
     // ----------------------------------------------------------------------
     // ContinuumProject
@@ -41,7 +56,7 @@ public interface ContinuumStore
     String createBuildResult( String projectId )
         throws ContinuumStoreException;
 
-    void setBuildResult( String buildId, int state, Throwable error )
+    void setBuildResult( String buildId, int state, Throwable error, ExecutionResponse executionResponse )
         throws ContinuumStoreException;
 
     BuildResult getBuildResult( String buildId )

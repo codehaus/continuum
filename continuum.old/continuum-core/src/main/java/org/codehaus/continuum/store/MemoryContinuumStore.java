@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.maven.ExecutionResponse;
+
 import org.codehaus.continuum.project.BuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.GenericBuildResult;
@@ -18,7 +20,7 @@ import org.codehaus.continuum.project.ProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.3 2004-07-07 02:34:36 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.4 2004-07-12 00:00:27 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -34,6 +36,25 @@ public class MemoryContinuumStore
     /** */
     public MemoryContinuumStore()
     {
+    }
+
+    // ----------------------------------------------------------------------
+    // Transaction handling
+    // ----------------------------------------------------------------------
+
+    public void beginTransaction()
+    {
+        // ignored
+    }
+
+    public void commitTransaction()
+    {
+        // ignored
+    }
+
+    public void rollbackTransaction()
+    {
+        // ignored
     }
 
     // ----------------------------------------------------------------------
@@ -138,7 +159,7 @@ public class MemoryContinuumStore
         return buildId;
     }
 
-    public void setBuildResult( String buildId, int state, Throwable error )
+    public void setBuildResult( String buildId, int state, Throwable error, ExecutionResponse executionResponse )
         throws ContinuumStoreException
     {
         BuildResult buildResult = getBuildResult( buildId );
@@ -148,6 +169,8 @@ public class MemoryContinuumStore
         buildResult.setEndTime( new Date().getTime() );
 
         buildResult.setError( error );
+
+        buildResult.setMaven2Result( executionResponse );
     }
 
     public BuildResult getBuildResult( String buildId )
