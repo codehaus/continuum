@@ -2,26 +2,27 @@
   <components>
     <component>
       <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
-      <implementation>org.codehaus.continuum.store.prevayler.tx.PrevaylerStoreTransactionManager</implementation>
-      <role-hint>prevayler</role-hint>
+      <role-hint>hibernate</role-hint>
+      <implementation>org.codehaus.continuum.store.hibernate.tx.HibernateStoreTransactionManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.hibernate.HibernateSessionService</role>
+        </requirement>
+      </requirements>
     </component>
     <component>
       <role>org.codehaus.continuum.store.ContinuumStore</role>
-      <role-hint>prevayler</role-hint>
-      <implementation>org.codehaus.continuum.store.prevayler.PrevaylerContinuumStore</implementation>
+      <role-hint>hibernate</role-hint>
+      <implementation>org.codehaus.continuum.store.hibernate.HibernateContinuumStore</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
-          <role-hint>prevayler</role-hint>
+          <role>org.codehaus.plexus.hibernate.HibernateSessionService</role>
         </requirement>
         <requirement>
           <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
           <role-hint>hibernate</role-hint>
         </requirement>
       </requirements>
-      <configuration>
-        <database-directory>${plexus.home}/prevayler-database</database-directory>
-      </configuration>
     </component>
   </components>
 </component-set>
