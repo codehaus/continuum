@@ -32,7 +32,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2BuildResult.java,v 1.4 2004-10-14 13:59:59 trygvis Exp $
+ * @version $Id: Maven2BuildResult.java,v 1.5 2004-10-30 11:57:47 trygvis Exp $
  */
 public class Maven2BuildResult
     extends AbstractContinuumBuildResult
@@ -47,7 +47,7 @@ public class Maven2BuildResult
 
     private String executionResponse;
 
-    protected Maven2BuildResult()
+    public Maven2BuildResult()
     {
     }
 
