@@ -3,7 +3,7 @@ package org.codehaus.continuum.buildqueue;
 /*
  * The MIT License
  *
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
+ * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,38 +24,57 @@ package org.codehaus.continuum.buildqueue;
  * SOFTWARE.
  */
 
-import java.util.LinkedList;
-import java.util.List;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.taskqueue.TaskQueue;
+import org.codehaus.plexus.taskqueue.TaskQueueException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleBuildQueue.java,v 1.2 2005-02-22 10:12:18 trygvis Exp $
+ * @version $Id: DefaultBuildQueue.java,v 1.1 2005-02-22 10:12:18 trygvis Exp $
  */
-public class SimpleBuildQueue
+public class DefaultBuildQueue
     extends AbstractBuildQueue
     implements BuildQueue
 {
-    /**
-     * The queue of elements.
-     */
-    private List queue = new LinkedList();
+    /** @requirement */
+    private TaskQueue taskQueue;
+
+    // ----------------------------------------------------------------------
+    // BuildQueue Implementation
+    // ----------------------------------------------------------------------
 
     public String dequeue()
+        throws BuildQueueException
     {
-        synchronized ( queue )
+        try
         {
-            if ( queue.size() == 0 )
-                return null;
+            BuildProjectTask task = (BuildProjectTask) taskQueue.take();
 
-            return (String) queue.remove( 0 );
+            if ( task == null )
+            {
+                return null;
+            }
+
+            return task.getBuildId();
+        }
+        catch ( TaskQueueException e )
+        {
+            throw new BuildQueueException( "Error while getting a task from the task queue.", e );
         }
     }
 
     public void enqueue( String projectId, String buildId )
+        throws BuildQueueException
     {
-        synchronized ( queue )
+        BuildProjectTask task = new BuildProjectTask( projectId, buildId, System.currentTimeMillis() );
+
+        try
         {
-            queue.add( projectId );
+            taskQueue.put( task );
+        }
+        catch ( TaskQueueException e )
+        {
+            throw new BuildQueueException( "Error while enqueing project.", e );
         }
     }
 }

@@ -26,13 +26,14 @@ package org.codehaus.continuum;
 
 import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.buildqueue.BuildQueueException;
 import org.codehaus.plexus.logging.Logger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: BuilderThread.java,v 1.1.1.1 2005-02-17 22:23:48 trygvis Exp $
+ * @version $Id: BuilderThread.java,v 1.2 2005-02-22 10:12:18 trygvis Exp $
  */
-class BuilderThread
+public class BuilderThread
     implements Runnable
 {
     /** */
@@ -63,7 +64,9 @@ class BuilderThread
     {
         while ( !shutdown )
         {
-            String buildId = buildQueue.dequeue();
+            String buildId = null;
+
+            buildId = dequeue();
 
             if ( buildId == null )
             {
@@ -100,6 +103,24 @@ class BuilderThread
     private Logger getLogger()
     {
         return logger;
+    }
+
+    private String dequeue()
+    {
+        try
+        {
+            return buildQueue.dequeue();
+        }
+        catch ( BuildQueueException e )
+        {
+            getLogger().warn( "Error while getting build from the queue.", e );
+
+            // TODO: Sleep for 10 seconds to give the system some time to breath.
+            // If interruped it will return properly.
+            sleep( 10 * 1000 );
+
+            return null;
+        }
     }
 
     private void sleep( int interval )
