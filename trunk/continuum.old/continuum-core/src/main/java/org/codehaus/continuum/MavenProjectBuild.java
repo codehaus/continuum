@@ -7,19 +7,19 @@ import org.apache.maven.project.Project;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ProjectBuild.java,v 1.1 2004-01-16 19:36:50 jvanzyl Exp $
+ * @version $Id: MavenProjectBuild.java,v 1.1 2004-01-16 19:38:33 jvanzyl Exp $
  */
-public class ProjectBuild
+public class MavenProjectBuild
 {
     private Project project;
 
-    private ProjectScm projectScm;
+    private MavenProjectScm projectScm;
 
-    public ProjectBuild( Project project )
+    public MavenProjectBuild( Project project )
     {
         this.project = project;
 
-        projectScm = new ProjectScm( project );
+        projectScm = new MavenProjectScm( project );
     }
 
     public Project getProject()
@@ -27,7 +27,7 @@ public class ProjectBuild
         return project;
     }
 
-    public ProjectScm getProjectScm()
+    public MavenProjectScm getProjectScm()
     {
         return projectScm;
     }
