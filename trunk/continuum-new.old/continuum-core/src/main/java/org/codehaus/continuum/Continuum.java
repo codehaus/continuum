@@ -26,6 +26,7 @@ package org.codehaus.continuum;
 
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.codehaus.continuum.project.ContinuumProject;
 
@@ -44,7 +45,11 @@ public interface Continuum
 {
     String ROLE = Continuum.class.getName();
 
-    String addProject( URL url, String builder )
+    String addProjectFromUrl( URL url, String builder )
+        throws ContinuumException;
+
+    String addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
+                              String version, Properties configuration )
         throws ContinuumException;
 
     void removeProject( String projectId )

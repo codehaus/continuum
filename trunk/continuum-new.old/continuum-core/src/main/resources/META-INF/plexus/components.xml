@@ -245,6 +245,17 @@
       <implementation>org.codehaus.continuum.builder.shell.DefaultShellCommandHelper</implementation>
     </component>
 
+    <component>
+      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <role-hint>ant</role-hint>
+      <implementation>org.codehaus.continuum.builder.ant.AntBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
+        </requirement>
+      </requirements>
+    </component>
+
     <!-- Store -->
 
     <component>

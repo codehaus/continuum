@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddProjectPomUrl.java,v 1.1.1.1 2005-02-17 22:23:56 trygvis Exp $
+ * @version $Id: AddProjectPomUrl.java,v 1.2 2005-03-09 00:15:22 trygvis Exp $
  */
 public class AddProjectPomUrl
     extends AbstractAction
@@ -44,7 +44,7 @@ public class AddProjectPomUrl
 
         getLogger().info( "Adding project from '" + url + "'." );
 
-        getContinuum().addProject( new URL( url ), "maven2" );
+        getContinuum().addProjectFromUrl( new URL( url ), "maven2" );
 
         RunData data = (RunData) request.get( "data" );
 

@@ -39,7 +39,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ActionValve.java,v 1.2 2005-02-21 15:03:16 trygvis Exp $
+ * @version $Id: ActionValve.java,v 1.3 2005-03-09 00:15:23 trygvis Exp $
  */
 public class ActionValve
     extends AbstractValve
@@ -64,6 +64,8 @@ public class ActionValve
             catch ( Exception ex )
             {
                 handleException( request, actionId, ex );
+
+                return;
             }
 
             try

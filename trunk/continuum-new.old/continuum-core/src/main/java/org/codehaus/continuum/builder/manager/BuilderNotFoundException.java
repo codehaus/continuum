@@ -26,7 +26,7 @@ package org.codehaus.continuum.builder.manager;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: BuilderNotFoundException.java,v 1.1.1.1 2005-02-17 22:23:49 trygvis Exp $
+ * @version $Id: BuilderNotFoundException.java,v 1.2 2005-03-09 00:14:41 trygvis Exp $
  */
 public class BuilderNotFoundException
     extends Exception
@@ -34,15 +34,5 @@ public class BuilderNotFoundException
     public BuilderNotFoundException( String message )
     {
         super( message );
-    }
-
-    public BuilderNotFoundException( Throwable cause )
-    {
-        super( cause );
-    }
-
-    public BuilderNotFoundException( String message, Throwable cause )
-    {
-        super( message, cause );
     }
 }

@@ -24,22 +24,17 @@ package org.codehaus.continuum.web.action;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.summit.SummitConstants;
-import org.codehaus.plexus.summit.rundata.RunData;
-import org.codehaus.plexus.summit.view.ViewContext;
-import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.scm.ContinuumScmException;
-
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.maven.scm.ScmResult;
+import org.codehaus.plexus.summit.SummitConstants;
+import org.codehaus.plexus.summit.rundata.RunData;
+import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AddMaven1ProjectPomUrl.java,v 1.1 2005-03-07 18:30:49 trygvis Exp $
+ * @version $Id: AddMaven1ProjectPomUrl.java,v 1.2 2005-03-09 00:15:22 trygvis Exp $
  */
 public class AddMaven1ProjectPomUrl
     extends AbstractAction
@@ -51,7 +46,7 @@ public class AddMaven1ProjectPomUrl
 
         getLogger().info( "Adding project from '" + url + "'." );
 
-        getContinuum().addProject( new URL( url ), "maven-1" );
+        getContinuum().addProjectFromUrl( new URL( url ), "maven-1" );
 
         RunData data = (RunData) request.get( "data" );
 

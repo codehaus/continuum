@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.codehaus.continuum.buildcontroller.BuildController;
 import org.codehaus.continuum.builder.ContinuumBuilder;
@@ -50,7 +51,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.5 2005-03-07 18:30:47 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.6 2005-03-09 00:14:25 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -79,7 +80,6 @@ public class DefaultContinuum
     // data what type of project handler would be required. We could
     // definitely tell if we were looking at a Maven POM, So for the various
     // POM versions we would know what builder to use, and for an arbitrary
-    //
     // ----------------------------------------------------------------------
 
     // add project meta data
@@ -89,7 +89,7 @@ public class DefaultContinuum
     // -> check out from scm
     // -> update the project metadata
 
-    public String addProject( URL url, String builderType )
+    public String addProjectFromUrl( URL url, String builderType )
         throws ContinuumException
     {
         File pomFile;
@@ -124,9 +124,58 @@ public class DefaultContinuum
 
         getLogger().info( "done creating continuum project" );
 
-        project = addProject( project, builderType );
+        // TODO: Update from metadata in the initial checkout?
 
-        setupProject( project );
+        project = addProjectAndCheckOutSources( project, builderType );
+
+        return project.getId();
+    }
+
+    public String addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
+                                     String version, Properties configuration )
+        throws ContinuumException
+    {
+        // ----------------------------------------------------------------------
+        // Create the stub project
+        // ----------------------------------------------------------------------
+
+        ContinuumProject project = new ContinuumProject();
+
+        project.setScmUrl( scmUrl );
+
+        project.setBuilderId( builderType );
+
+        project.setName( projectName );
+
+        project.setNagEmailAddress( nagEmailAddress );
+
+        project.setVersion( version );
+
+        project.setConfiguration( configuration );
+
+        // ----------------------------------------------------------------------
+        // Make sure that the builder id is correct before starting to check
+        // stuff out
+        // ----------------------------------------------------------------------
+
+        if( !builderManager.hasBuilder( builderType ) )
+        {
+            throw new ContinuumException( "No such builder '" + builderType + "'." );
+        }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        doTempCheckOut( project );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        project = addProjectAndCheckOutSources( project, builderType );
+
+        updateProjectFromCheckOut( project );
 
         return project.getId();
     }
@@ -150,7 +199,20 @@ public class DefaultContinuum
                 }
             }
 
-            updateProjectFromDirectory( project, workingDirectory );
+            // ----------------------------------------------------------------------
+            // Update the source code
+            // ----------------------------------------------------------------------
+
+            try
+            {
+                scm.updateProject( project );
+            }
+            catch ( ContinuumScmException e )
+            {
+                throw new ContinuumException( "Error while updating project.", e );
+            }
+
+            updateProjectFromCheckOut( project );
         }
         catch ( ContinuumStoreException ex )
         {
@@ -274,7 +336,7 @@ public class DefaultContinuum
     //
     // ----------------------------------------------------------------------
 
-    private ContinuumProject addProject( ContinuumProject project, String builderType )
+    private ContinuumProject addProjectAndCheckOutSources( ContinuumProject project, String builderType )
         throws ContinuumException
     {
         try
@@ -283,12 +345,21 @@ public class DefaultContinuum
             // Store the project
             // ----------------------------------------------------------------------
 
+            if ( StringUtils.isEmpty( project.getName() ) )
+            {
+                throw new ContinuumException( "The name of the project cannot be empty" );
+            }
+
             File projectWorkingDirectory = new File( workingDirectory, project.getName().replace( ' ', '-' ) );
 
             if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
             {
                 throw new ContinuumException( "Could not make the working directory for the project (" + projectWorkingDirectory.getAbsolutePath() + ")." );
             }
+
+            project.setWorkingDirectory( projectWorkingDirectory.getAbsolutePath() );
+
+            scm.checkOutProject( project );
 
             String projectId = store.addProject( project.getName(),
                                                  project.getScmUrl(),
@@ -300,16 +371,14 @@ public class DefaultContinuum
 
             project = store.getProject( projectId );
 
-//            scm.checkOutProject( project );
-
             return project;
         }
-//        catch ( ContinuumScmException ex )
-//        {
-//            getLogger().error( "Exception while checking out the project.", ex );
-//
-//            throw new ContinuumException( "Exception while checking out the project.", ex );
-//        }
+        catch ( ContinuumScmException ex )
+        {
+            getLogger().error( "Exception while checking out the project.", ex );
+
+            throw new ContinuumException( "Exception while checking out the project.", ex );
+        }
         catch ( ContinuumStoreException ex )
         {
             getLogger().error( "Exception while adding project.", ex );
@@ -318,20 +387,10 @@ public class DefaultContinuum
         }
     }
 
-    // ----------------------------------------------------------------------
-    // o take the metadata
-    // o create a continuum project
-    // o setup/initialize the project
-    //   -> check it out
-    //   -> update project metadata if necessary
-    // ----------------------------------------------------------------------
-
-    private void setupProject( ContinuumProject project )
+    private void doTempCheckOut( ContinuumProject project )
         throws ContinuumException
     {
         File checkoutDirectory = new File( workingDirectory, "temp-project" );
-
-        project.setWorkingDirectory( checkoutDirectory.getAbsolutePath() );
 
         if ( checkoutDirectory.exists() )
         {
@@ -352,41 +411,29 @@ public class DefaultContinuum
             }
         }
 
+        // TODO: Get the list of files to check out from the builder.
+        // Maven 2: pom.xml, Maven 1: project.xml, Ant: all? build.xml?
+
         try
         {
-            scm.checkOut( checkoutDirectory, project.getScmUrl() );
+            scm.checkOut( project, checkoutDirectory);
         }
         catch ( ContinuumScmException ex )
         {
             throw new ContinuumException( "Error while checking out the project.", ex );
         }
-
-        updateProjectFromDirectory( project, checkoutDirectory );
     }
 
-    private void updateProjectFromDirectory( ContinuumProject project, File workingDirectory )
+    private void updateProjectFromCheckOut( ContinuumProject project )
         throws ContinuumException
     {
         ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
         // ----------------------------------------------------------------------
-        // Update the check out
-        // ----------------------------------------------------------------------
-
-        try
-        {
-            scm.updateProject( project );
-        }
-        catch ( ContinuumScmException e )
-        {
-            throw new ContinuumException( "Error while updating project.", e );
-        }
-
-        // ----------------------------------------------------------------------
         // Make a new descriptor
         // ----------------------------------------------------------------------
 
-        builder.updateProjectFromMetadata( workingDirectory, project );
+        builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
 
         // ----------------------------------------------------------------------
         // Store the new descriptor

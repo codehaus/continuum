@@ -36,22 +36,25 @@ $css.reset()
         <td>Working directory</td>
         <td>$project.workingDirectory</td>
       </tr>
-## Include project type specific info
 #if ( $project.builderId == "maven2" )
 #set ( $desc = $project.descriptor )
       <tr class="$css.nextClass">
         <td>Goals</td>
-        <td>
-#foreach( $goal in $desc.goals)
-              $goal</br>
-#end
-        </td>
+        <td>$project.configuration.getProperty( 'goals' )</td>
       </tr>
-#elseif ( $project.type == "maven" )
-
+#elseif ( $project.builderId == "maven-1" )
+      <tr class="$css.nextClass">
+        <td>Goals</td>
+        <td>$project.configuration.getProperty( 'goals' )</td>
+      </tr>
+#elseif ( $project.builderId == "ant" )
+      <tr class="$css.nextClass">
+        <td>Targets</td>
+        <td>$project.configuration.getProperty( 'targets' )</td>
+      </tr>
 #else
       <tr class="$css.nextClass">
-        <td><font color="red">UNKNOWN PROJECT TYPE '$project.type'</td>
+        <td><font color="red">UNKNOWN PROJECT TYPE '$project.builderId'</td>
         <td>&nbsp;</td>
       </tr>
 #end
@@ -66,13 +69,14 @@ $css.reset()
         </td>
       </tr>
     </table>
+  </p>
 </div>
 #if( $latestBuild && ( $latestBuild.state == "ok" || $latestBuild.state == "failed" || $latestBuild.state == "error" ) )
 #set ( $build = $latestBuild )
-#if ( $project.type == "maven2" )
-#parse ( "screens/ExternalMaven2BuildResult.vm" ) 
+#if ( $project.type == "maven-2" )
+#parse ( "screens/ExternalMaven2BuildResult.vm" )
 #elseif( $project.type == "maven" )
-#parse ( "screens/ShellBuildResult.vm" ) 
+#parse ( "screens/ShellBuildResult.vm" )
 #else
 
 #end

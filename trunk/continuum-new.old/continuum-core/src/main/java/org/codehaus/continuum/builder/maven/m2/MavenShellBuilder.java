@@ -33,11 +33,12 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.3 2005-03-09 00:14:45 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
 {
+    /** @requirement */
     private MavenBuilderHelper builderHelper;
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
@@ -46,7 +47,7 @@ public class MavenShellBuilder
         return builderHelper.createProjectFromMetadata( metadata );
     }
 
-    public void updateProjectFromMetadata( File workingDirectory, ContinuumProject project )
+    public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
         builderHelper.updateProjectFromMetadata( workingDirectory, project );

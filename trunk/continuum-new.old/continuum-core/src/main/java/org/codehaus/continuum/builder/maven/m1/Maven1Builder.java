@@ -42,13 +42,13 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.1 2005-03-07 18:30:47 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.2 2005-03-09 00:14:43 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
     implements ContinuumBuilder
 {
-    public final static String PROPERTY_GOALS = "goals";
+    public final static String CONFIGURATION_GOALS = "goals";
 
     /** @requirement */
     private ShellCommandHelper shellCommandHelper;
@@ -63,11 +63,11 @@ public class Maven1Builder
     public ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
-        ExecutionResult executionResult;
-
         Properties configuration = project.getConfiguration();
 
-        String[] goals = StringUtils.split( configuration.getProperty( PROPERTY_GOALS ), "," );
+        String[] goals = StringUtils.split( configuration.getProperty( CONFIGURATION_GOALS ), "," );
+
+        ExecutionResult executionResult;
 
         try
         {
@@ -105,7 +105,7 @@ public class Maven1Builder
         return project;
     }
 
-    public void updateProjectFromMetadata( File workingDirectory, ContinuumProject project )
+    public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
         File projectXmlFile = getProjectXmlFile( workingDirectory );
@@ -184,7 +184,7 @@ public class Maven1Builder
         // Goals
         Properties configuration = new Properties();
 
-        configuration.setProperty( PROPERTY_GOALS, "clean:clean,jar:install" );
+        configuration.setProperty( CONFIGURATION_GOALS, "clean:clean,jar:install" );
 
         // ----------------------------------------------------------------------
         // Make the project

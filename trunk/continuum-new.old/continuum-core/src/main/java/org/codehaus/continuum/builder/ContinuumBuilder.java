@@ -33,7 +33,7 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.2 2005-02-21 14:58:09 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.3 2005-03-09 00:14:27 trygvis Exp $
  */
 public interface ContinuumBuilder
 {
@@ -45,6 +45,6 @@ public interface ContinuumBuilder
     ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException;
 
-    void updateProjectFromMetadata( File workingDirectory, ContinuumProject project )
+    void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
         throws ContinuumException;
 }

@@ -11,6 +11,7 @@
   <div class="body">
     <div><a href="$link.setPage('addProjectPomUrl.form')">M2 Pom Url</a></div>
     <div><a href="$link.setPage('addMaven1ProjectPomUrl.form')">M1 Pom Url</a></div>
+    <div><a href="$link.setPage('addAntProject.form')">Ant</a></div>
   </div>
  </div>
 </div>

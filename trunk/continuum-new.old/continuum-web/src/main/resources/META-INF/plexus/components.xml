@@ -85,77 +85,72 @@
       </requirements>
     </component>
 
-    <!-- login -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>login</role-hint>
       <implementation>org.codehaus.continuum.web.action.Login</implementation>
     </component>
 
-    <!-- addProjectPomUrl -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addProjectPomUrl</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
     </component>
 
-    <!-- addProjectPomUrl -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>addMaven1ProjectPomUrl</role-hint>
       <implementation>org.codehaus.continuum.web.action.AddMaven1ProjectPomUrl</implementation>
     </component>
 
-    <!-- showProjects -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addAntProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddAntProjectAction</implementation>
+    </component>
+
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProjects</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProjects</implementation>
     </component>
 
-    <!-- showProject -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProject</implementation>
     </component>
 
-    <!-- updateProject -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>updateProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
     </component>
 
-    <!-- updateProjectDescriptor -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>updateProjectDescriptor</role-hint>
       <implementation>org.codehaus.continuum.web.action.UpdateProjectDescriptor</implementation>
     </component>
 
-    <!-- removeProject -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>removeProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
     </component>
 
-    <!-- showProjectBuilds -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showProjectBuilds</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowProjectBuilds</implementation>
     </component>
 
-    <!-- showExternalMaven2BuildResult -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>showExternalMaven2BuildResult</role-hint>
       <implementation>org.codehaus.continuum.web.action.ShowExternalMaven2BuildResultAction</implementation>
     </component>
 
-    <!-- enqueueProject -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>enqueueProject</role-hint>
