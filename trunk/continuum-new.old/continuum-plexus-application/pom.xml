@@ -1,16 +1,19 @@
-<model>
+<project>
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
+    <version>1.0-alpha-1-SNAPSHOT</version>
+  </parent>
   <groupId>continuum</groupId>
   <artifactId>continuum-plexus-application</artifactId>
-  <packaging>jar</packaging>
   <version>1.0-alpha-1-SNAPSHOT</version>
+  <name>Continuum Plexus Application</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-web</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -19,6 +22,14 @@
         <groupId>maven</groupId>
         <artifactId>maven-plexus-plugin</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <goals>
+          <goal>
+            <id>plexus:app</id>
+          </goal>
+          <goal>
+            <id>plexus:bundle-application</id>
+          </goal>
+        </goals>
         <configuration>
           <configurationDirectory>src/conf</configurationDirectory>
           <applicationName>continuum</applicationName>
@@ -29,4 +40,4 @@
       </plugin>
     </plugins>
   </build>
-</model>
+</project>
