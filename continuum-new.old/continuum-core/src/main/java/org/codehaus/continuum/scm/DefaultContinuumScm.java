@@ -41,7 +41,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.3 2005-03-07 18:30:48 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.4 2005-03-09 00:15:10 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -64,12 +64,16 @@ public class DefaultContinuumScm
     // ContinuumScm implementation
     // ----------------------------------------------------------------------
 
-    public void checkOut( File workingDirectory, String scmUrl )
+    public void checkOut( ContinuumProject project, File workingDirectory )
         throws ContinuumScmException
     {
         try
         {
-            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+            getLogger().info( "Checking out project: '" + project.getName() + "', " +
+                              "id: '" + project.getId() + "' " +
+                              "to '" + workingDirectory + "'." );
+
+            ScmRepository repository = scmManager.makeScmRepository( project.getScmUrl() );
 
             CheckOutScmResult result;
 
@@ -92,7 +96,7 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
-                getLogger().warn( "Error while executing SCM command." );
+                getLogger().warn( "Error while checking out the code for project: '" + project.getName() + "', id: '" + project.getId() + "' to '" + workingDirectory.getAbsolutePath() + "'." );
 
                 getLogger().warn( "Command output: " + result.getCommandOutput() );
 
@@ -120,14 +124,14 @@ public class DefaultContinuumScm
     public void checkOutProject( ContinuumProject project )
         throws ContinuumScmException
     {
-        String wd = project.getWorkingDirectory();
+        String workingDirectory = project.getWorkingDirectory();
 
-        if ( wd == null )
+        if ( workingDirectory == null )
         {
-            throw new ContinuumScmException( "The working directory for the project has to be set." );
+            throw new ContinuumScmException( "The working directory for the project has to be set. Project: '" + project.getName() + "', id: '" + project.getId() + "'.");
         }
 
-        checkOut( new File( wd ), project.getScmUrl() );
+        checkOut( project, new File( workingDirectory ) );
     }
 
     /**
@@ -142,6 +146,10 @@ public class DefaultContinuumScm
         try
         {
             File workingDirectory = new File( project.getWorkingDirectory() );
+
+            getLogger().info( "Checking out project: '" + project.getName() + "', " +
+                              "id: '" + project.getId() + "' " +
+                              "to '" + workingDirectory + "'." );
 
             getLogger().info( workingDirectory.getAbsolutePath() );
 
@@ -165,7 +173,13 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
-                throw new ContinuumScmException( "Error while updating project.", result );
+                getLogger().warn( "Error while updating the code for project: '" + project.getName() + "', id: '" + project.getId() + "' to '" + workingDirectory.getAbsolutePath() + "'." );
+
+                getLogger().warn( "Command output: " + result.getCommandOutput() );
+
+                getLogger().warn( "Provider message: " + result.getProviderMessage() );
+
+                throw new ContinuumScmException( "Error while checking out the project.", result );
             }
 
             return result.getUpdatedFiles().size() > 0;

@@ -35,7 +35,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuilderManager.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: DefaultBuilderManager.java,v 1.4 2005-03-09 00:14:41 trygvis Exp $
  */
 public class DefaultBuilderManager
     extends AbstractLogEnabled
@@ -85,5 +85,10 @@ public class DefaultBuilderManager
         }
 
         return builder;
+    }
+
+    public boolean hasBuilder( String builderType )
+    {
+        return builders.containsKey( builderType );
     }
 }

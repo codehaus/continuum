@@ -32,7 +32,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1BuilderTest.java,v 1.1 2005-03-07 18:30:48 trygvis Exp $
+ * @version $Id: Maven1BuilderTest.java,v 1.2 2005-03-09 00:15:20 trygvis Exp $
  */
 public class Maven1BuilderTest
     extends PlexusTestCase
@@ -62,6 +62,6 @@ public class Maven1BuilderTest
 
         assertEquals( 1, configuration.size() );
 
-        assertEquals( "clean:clean,jar:install", configuration.getProperty( Maven1Builder.PROPERTY_GOALS ) );
+        assertEquals( "clean:clean,jar:install", configuration.getProperty( Maven1Builder.CONFIGURATION_GOALS ) );
     }
 }

@@ -12,7 +12,7 @@ import org.codehaus.continuum.utils.ContinuumUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: UrlSocketRegistrar.java,v 1.1.1.1 2005-02-17 22:23:55 trygvis Exp $
+ * @version $Id: UrlSocketRegistrar.java,v 1.2 2005-03-09 00:15:21 trygvis Exp $
  */
 public class UrlSocketRegistrar
     extends AbstractContinuumRegistrar
@@ -33,7 +33,7 @@ public class UrlSocketRegistrar
 
             URL u = new URL( url );
 
-            String projectId = getContinuum().addProject( u, "maven2" );
+            String projectId = getContinuum().addProjectFromUrl( u, "maven2" );
 
             socket.writeLine( "OK" );
 

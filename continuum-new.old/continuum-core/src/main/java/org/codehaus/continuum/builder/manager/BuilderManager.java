@@ -29,7 +29,7 @@ import org.codehaus.continuum.builder.ContinuumBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuilderManager.java,v 1.2 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: BuilderManager.java,v 1.3 2005-03-09 00:14:41 trygvis Exp $
  */
 public interface BuilderManager
 {
@@ -37,4 +37,6 @@ public interface BuilderManager
 
     ContinuumBuilder getBuilder( String builderType )
         throws ContinuumException;
+
+    boolean hasBuilder( String builderType );
 }
