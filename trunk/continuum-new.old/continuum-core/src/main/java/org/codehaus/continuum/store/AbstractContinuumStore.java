@@ -33,7 +33,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStore.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
+ * @version $Id: AbstractContinuumStore.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
  */
 public abstract class AbstractContinuumStore
     extends AbstractLogEnabled
@@ -55,6 +55,11 @@ public abstract class AbstractContinuumStore
 
     public static String throwableToString( Throwable error )
     {
+        if ( error == null )
+        {
+            return "";
+        }
+
         StringWriter writer = new StringWriter();
 
         PrintWriter printer = new PrintWriter( writer );

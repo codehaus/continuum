@@ -24,11 +24,11 @@ package org.codehaus.continuum.notification.mail;
  * SOFTWARE.
  */
 
-import org.codehaus.continuum.builder.shell.ShellBuildResult;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumBuildResult;
+import org.codehaus.continuum.builder.shell.ShellBuildResult;
 import org.codehaus.plexus.logging.Logger;
 
 import java.io.PrintWriter;
@@ -38,7 +38,7 @@ import java.util.Date;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2MailGenerator.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
+ * @version $Id: ExternalMaven2MailGenerator.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
  */
 public class ExternalMaven2MailGenerator
     extends AbstractMailGenerator
