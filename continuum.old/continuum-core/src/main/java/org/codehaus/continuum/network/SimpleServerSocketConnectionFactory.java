@@ -14,7 +14,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.6 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.7 2004-07-14 05:35:23 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactory
     extends AbstractLogEnabled
@@ -37,8 +37,6 @@ public class SimpleServerSocketConnectionFactory
     public void initialize()
         throws Exception
     {
-        getLogger().info( "Initializing socket listener." );
-
         if( port <= 0 )
             throw new PlexusConfigurationException( "The port must be bigger than 0." );
 
@@ -50,8 +48,6 @@ public class SimpleServerSocketConnectionFactory
 
         if( consumer == null )
             throw new PlexusConfigurationException( "There is no connection consumer configured." );
-
-        getLogger().info( "Initialized socket listener." );
     }
 
     public void start()
@@ -92,7 +88,5 @@ public class SimpleServerSocketConnectionFactory
                 // ignore
             }
         }
-
-        getLogger().info( "Stopped socket listener on port " + port );
     }
 }
