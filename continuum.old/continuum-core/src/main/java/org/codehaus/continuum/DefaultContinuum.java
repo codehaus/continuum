@@ -67,9 +67,9 @@ public class DefaultContinuum
 
         storageDirectory = new File( workingDirectory, "storage" );
 
-        if ( !f.exists() )
+        if ( !storageDirectory.exists() )
         {
-            f.mkdirs();
+            storageDirectory.mkdirs();
         }
 
         // Now lets bring up all the projects that we have stored, if there are any.
