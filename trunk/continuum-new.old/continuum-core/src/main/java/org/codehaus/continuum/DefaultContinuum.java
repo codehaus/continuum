@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.12 2005-03-21 12:53:22 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.13 2005-03-22 12:42:42 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -54,7 +54,7 @@ public class DefaultContinuum
 {
     private final static String DATABASE_INITIALIZED = "database.initialized";
 
-    private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
+    private final static String CONTINUUM_VERSION = "1.0-alpha-1-SNAPSHOT";
 
     // ----------------------------------------------------------------------
     //
@@ -315,10 +315,6 @@ public class DefaultContinuum
         try
         {
             ContinuumProject project = store.getProject( projectId );
-//
-//            ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
-//
-//            builder.build( project );
 
             getLogger().info( "Enqueuing '" + project.getName() + "'." );
 
@@ -578,11 +574,11 @@ public class DefaultContinuum
         //
         // ----------------------------------------------------------------------
 
-        String banner = StringUtils.repeat( "-", continuumVersion.length() );
+        String banner = StringUtils.repeat( "-", CONTINUUM_VERSION.length() );
 
         getLogger().info( "" );
         getLogger().info( "" );
-        getLogger().info( "< Continuum " + continuumVersion + " started! >" );
+        getLogger().info( "< Continuum " + CONTINUUM_VERSION + " started! >" );
         getLogger().info( "-----------------------" + banner );
         getLogger().info( "       \\   ^__^" );
         getLogger().info( "        \\  (oo)\\_______" );
