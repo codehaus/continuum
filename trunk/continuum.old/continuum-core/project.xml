@@ -15,15 +15,9 @@
     </dependency>
 
     <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjtools</artifactId>
-      <version>1.1.0</version>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-i18n</artifactId>
+      <version>1.0-beta-2-SNAPSHOT</version>
     </dependency>
 
     <!-- smtpd & synapse -->
@@ -80,13 +74,13 @@
     <dependency>
       <groupId>maven</groupId>
       <artifactId>scm-api</artifactId>
-      <version>1.0-beta-1-SNAPSHOT</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>maven</groupId>
       <artifactId>scm-cvslib</artifactId>
-      <version>1.0-beta-1-SNAPSHOT</version>
+      <version>0.9-SNAPSHOT</version>
     </dependency>
 
     <dependency>
