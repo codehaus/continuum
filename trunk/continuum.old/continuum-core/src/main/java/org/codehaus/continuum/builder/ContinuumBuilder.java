@@ -6,9 +6,11 @@ package org.codehaus.continuum.builder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumBuilder.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: ContinuumBuilder.java,v 1.5 2004-07-01 15:30:56 trygvis Exp $
  */
 public interface ContinuumBuilder
 {
-    void build( String projectId );
+    String ROLE = ContinuumBuilder.class.getName();
+
+    void build( String buildId );
 }

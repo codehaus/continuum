@@ -12,7 +12,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.4 2004-07-01 15:30:59 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends PlexusTestCase
@@ -33,7 +33,7 @@ public class SimpleServerSocketConnectionFactoryTest
         byte[] readData;
         int i, data;
 
-        factory = (ConnectionFactory)lookup( ConnectionFactory.class.getName() );
+        factory = (ConnectionFactory)lookup( ConnectionFactory.ROLE );
 
         System.err.println( "Connecting..." );
         socket = new Socket( "127.0.0.1", port );

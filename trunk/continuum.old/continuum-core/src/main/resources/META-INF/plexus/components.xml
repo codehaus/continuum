@@ -8,13 +8,48 @@
           <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
-          <role>org.codehaus.continuum.ContinuumBuilder</role>
+          <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>simple-server-socket</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <role-hint>maven2</role-hint>
+      <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
         </requirement>
         <requirement>
-          <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.store.ContinuumStore</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.MavenCore</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.scm.ContinuumScm</role>
+      <implementation>org.codehaus.continuum.scm.DefaultContinuumScm</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.scm.manager.ScmManager</role>
         </requirement>
       </requirements>
     </component>
@@ -23,52 +58,12 @@
       <implementation>org.codehaus.continuum.buildqueue.SimpleBuildQueue</implementation>
     </component>
     <component>
-      <role>org.codehaus.continuum.ContinuumBuilder</role>
-      <implementation>org.codehaus.continuum.DefaultContinuumBuilder</implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.ContinuumScm</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.MavenCore</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
-        </requirement>
-      </requirements>
-      <configuration>
-        <checkout-directory>${plexus.home}/continuum/checkout</checkout-directory>
-      </configuration>
-    </component>
-    <component>
-      <role>org.codehaus.continuum.ContinuumScm</role>
-      <implementation>org.codehaus.continuum.DefaultContinuumScm</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.scm.manager.ScmManager</role>
-        </requirement>
-      </requirements>
-    </component>
-    <!-- Notifier -->
-    <component>
       <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
       <implementation>org.codehaus.continuum.notification.console.ConsoleNotifier</implementation>
     </component>
-    <!-- ProjectStorage -->
     <component>
-      <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
-      <implementation>org.codehaus.continuum.projectstorage.FileProjectStorage</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.project.MavenProjectBuilder</role>
-        </requirement>
-      </requirements>
-      <configuration>
-        <storage-directory>${plexus.home}/continuum/storage</storage-directory>
-      </configuration>
+      <role>org.codehaus.continuum.store.ContinuumStore</role>
+      <implementation>org.codehaus.continuum.store.MemoryContinuumStore</implementation>
     </component>
-  <components>
+  </components>
 </component-set>

@@ -10,11 +10,12 @@ import java.util.Map;
 
 import org.apache.maven.project.MavenProject;
 
+import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractProjectStorageTest.java,v 1.4 2004-06-27 23:21:04 trygvis Exp $
+ * @version $Id: AbstractProjectStorageTest.java,v 1.5 2004-07-01 15:30:59 trygvis Exp $
  */
 public abstract class AbstractProjectStorageTest
     extends PlexusTestCase
@@ -24,10 +25,10 @@ public abstract class AbstractProjectStorageTest
     {
         Iterator i;
         Map projects = new HashMap();
-        ContinuumProjectStorage store;
+        ContinuumStore store;
         MavenProject p;
 
-        store = (ContinuumProjectStorage) lookup( ContinuumProjectStorage.class.getName() );
+        store = (ContinuumStore) lookup( ContinuumStore.class.getName() );
 
         i = store.getAllProjects();
 

@@ -10,13 +10,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringInputStream;
 
 /**
  * This class emulates the unix tool <code>nc</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NetCat.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: NetCat.java,v 1.4 2004-07-01 15:30:57 trygvis Exp $
  */
 public class NetCat
 {
@@ -66,7 +67,8 @@ public class NetCat
         }
         finally
         {
-            NetworkUtils.closeOutput( output );
+            IOUtil.close( output );
+
             NetworkUtils.closeSocket( socket );
         }
 

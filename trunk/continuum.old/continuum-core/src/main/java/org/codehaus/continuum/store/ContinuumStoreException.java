@@ -1,4 +1,4 @@
-package org.codehaus.continuum.projectstorage;
+package org.codehaus.continuum.store;
 
 /*
  * LICENSE
@@ -6,16 +6,16 @@ package org.codehaus.continuum.projectstorage;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStoreException.java,v 1.4 2004-06-27 23:21:03 trygvis Exp $
+ * @version $Id: ContinuumStoreException.java,v 1.5 2004-07-01 15:30:58 trygvis Exp $
  */
-public class ContinuumProjectStorageException extends Exception
+public class ContinuumStoreException extends Exception
 {
-    public ContinuumProjectStorageException( String msg )
+    public ContinuumStoreException( String msg )
     {
         super( msg );
     }
 
-    public ContinuumProjectStorageException( String msg, Exception ex )
+    public ContinuumStoreException( String msg, Exception ex )
     {
         super( msg, ex );
     }

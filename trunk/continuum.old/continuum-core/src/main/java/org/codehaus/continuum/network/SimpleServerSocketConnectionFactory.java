@@ -5,10 +5,7 @@ package org.codehaus.continuum.network;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -17,21 +14,19 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactory.java,v 1.4 2004-07-01 15:30:57 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactory
     extends AbstractLogEnabled
     implements ConnectionFactory, Initializable, Startable
 {
-    // configuration
+    /** @default 0 */
     private int port;
 
+    /** @default 50 */
     private int backlog;
 
     private ConnectionConsumer consumer;
-
-    // member variables
-    private ServerSocket serverSocket;
 
     private boolean running;
 
@@ -65,6 +60,8 @@ public class SimpleServerSocketConnectionFactory
     {
         getLogger().info( "Starting socket listener on port " + port );
 
+        ServerSocket serverSocket;
+
         try
         {
             serverSocket = new ServerSocket( port, backlog );
@@ -74,9 +71,8 @@ public class SimpleServerSocketConnectionFactory
             throw new Exception( "Could not create a server socket.", ex );
         }
 
-        running = true;
+        thread = new WorkerThread( serverSocket, consumer, getLogger() );
 
-        thread = new WorkerThread();
         thread.start();
 
         getLogger().info( "Started socket listener on port " + port );
@@ -88,11 +84,11 @@ public class SimpleServerSocketConnectionFactory
 
         running = false;
 
-        if ( serverSocket != null )
+        if ( thread.getServerSocket() != null )
         {
             try
             {
-                serverSocket.close();
+                thread.getServerSocket().close();
             }
             catch( IOException ex )
             {
@@ -101,63 +97,6 @@ public class SimpleServerSocketConnectionFactory
         }
 
         getLogger().info( "Stopped socket listener on port " + port );
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // InputStreamFactory implementation
-
-    private class WorkerThread extends Thread
-    {
-        public void run()
-        {
-//            getLogger().info( "Worker thread for port " + port + " is running" );
-            while( isRunning() )
-            {
-                Socket socket;
-                InputStream input;
-                OutputStream output;
-
-                try
-                {
-                    socket = serverSocket.accept();
-                }
-                catch( IOException ex)
-                {
-                    if ( isRunning() )
-                        getLogger().warn( "Exception while accepting socket.", ex );
-
-                    return;
-                }
-
-//                getLogger().info( "Got connection from: " + socket.getInetAddress() );
-
-                try
-                {
-                    input = socket.getInputStream();
-                    output = socket.getOutputStream();
-                }
-                catch( IOException ex )
-                {
-                    getLogger().fatalError( "Exception while getting the input and output streams from the socket.", ex );
-                    continue;
-                }
-
-                try
-                {
-                    consumer.consumeConnection( input, output );
-                }
-                catch( IOException ex )
-                {
-                    getLogger().fatalError( "Exception while consuming connection.", ex );
-                }
-
-                NetworkUtils.closeInput( input );
-                NetworkUtils.closeOutput( output );
-                NetworkUtils.closeSocket( socket );
-            }
-
-//            getLogger().info( "Worker thread for port " + port + " exiting." );
-        }
     }
 
     public boolean isRunning()
