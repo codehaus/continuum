@@ -3,6 +3,7 @@
     <component>
       <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
       <implementation>org.codehaus.continuum.cli.MockXmlRpcContinuumClient</implementation>
+      <role-hint>mock</role-hint>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
@@ -16,6 +17,7 @@
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
+          <role-hint>mock</role-hint>
         </requirement>
       </requirements>
     </component>

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.UnrecognizedOptionException;
+import org.apache.maven.scm.Scm;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.plexus.PlexusContainer;
@@ -18,7 +19,7 @@ import org.codehaus.plexus.embed.Embedder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumCC.java,v 1.1 2004-07-07 05:05:36 trygvis Exp $
+ * @version $Id: ContinuumCC.java,v 1.2 2004-07-11 20:03:23 trygvis Exp $
  */
 public class ContinuumCC
 {
@@ -35,9 +36,20 @@ public class ContinuumCC
 
         cli.start();
 
-        cli.work( args );
+        int exitCode = cli.work( args );
 
-        cli.stop();
+        try
+        {
+            cli.stop();
+        }
+        catch( Exception ex )
+        {
+            System.err.println( "Exception while shutting down the container, ignored." );
+
+            ex.printStackTrace( System.err );
+        }
+
+        System.exit( exitCode );
     }
 
     public void start()
@@ -48,6 +60,8 @@ public class ContinuumCC
         embedder.start();
 
         plexus = embedder.getContainer();
+
+        plexus.lookup( Scm.ROLE, "cvs" );
     }
 
     public void stop()
