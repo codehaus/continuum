@@ -1,5 +1,7 @@
 package org.codehaus.continuum.project;
 
+import java.io.Serializable;
+
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
  *
@@ -24,9 +26,10 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProjectState.java,v 1.3 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: ContinuumProjectState.java,v 1.4 2004-07-29 03:43:48 trygvis Exp $
  */
 public class ContinuumProjectState
+    implements Serializable
 {
     /**
      * This state indicates that the project is new and has never been build.
