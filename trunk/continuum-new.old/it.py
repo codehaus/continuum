@@ -28,9 +28,7 @@ def assertEquals( message, expected, actual ):
     sys.exit( -1 )
 
 def assertTrue( message, condition ):
-    assertEquals( message, str( condition ), "true" )
-
-    sys.exit( -1 )
+    assertEquals( message, str( condition ), "True" )
 
 def assertNotNull( message, condition ):
     if( condition != None ):
@@ -104,8 +102,13 @@ def cleanDirectory( dir ):
     if ( os.path.isdir( dir ) ):
         shutil.rmtree( dir )
 
+def cvsCommit( basedir ):
+    cwd = os.getcwd()
+    os.chdir( basedir )
+    os.system( "cvs commit -m ''" )
+    os.chdir( cwd )
+
 def cvsImport( basedir, cvsroot, artifactId ):
-    os.system( "cvs -d " + cvsroot + " init" )
     cwd = os.getcwd()
     os.chdir( basedir )
     os.system( "cvs -d " + cvsroot + " import -m '' " + artifactId + " continuum_test start" )
@@ -221,6 +224,7 @@ shellProject = basedir + "/shell"
 cleanDirectory( basedir )
 os.mkdir( basedir )
 os.mkdir( cvsroot )
+os.system( "cvs -d " + cvsroot + " init" )
 
 print "Initializing Maven 1 CVS project"
 initMaven1Project( maven1Project, cvsroot, "maven-1" )
@@ -274,6 +278,26 @@ if 1:
     buildId = continuum.buildProject( maven1.id )
     assertSuccessfulMaven1Build( buildId )
 
+    print "Testing that the POM is updated before each build."
+    # Test that the POM is updated before each build
+    pom = file( maven1Project + "/project.xml", "r" )
+    str = pom.read()
+    pom.close()
+
+    str = str.replace( "Maven 1 Project", "Maven 1 Project - Changed" )
+    str = str.replace( "1.0", "1.1" )
+
+    pom = file( maven1Project + "/project.xml", "w+" )
+    pom.write( str )
+    pom.close()
+
+    cvsImport( maven1Project, cvsroot, "maven-1" )
+
+    continuum.updateProjectFromScm( maven1.id )
+    maven1 = continuum.getProject( maven1.id )
+    assertEquals( "The project name wasn't changed.", "Maven 1 Project - Changed", maven1.name )
+    assertEquals( "The project version wasn't changed.", "1.1", maven1.version )
+
 if 1:
     print "Building Maven 2 project"
     build = continuum.buildProject( maven2.id )
@@ -289,6 +313,7 @@ if 1:
     build = continuum.buildProject( shell.id )
     assertSuccessfulShellBuild( build, "" )
 
+    # Test project reconfiguration
     configuration = shell.configuration
     configuration[ "arguments" ] = "a b";
     continuum.updateProjectConfiguration( shell.id, configuration );
@@ -297,6 +322,8 @@ if 1:
     assertSuccessfulShellBuild( build, """a
 b
 """ )
+
+# TODO: Add project failure tests
 
 print ""
 print "##############################################"
