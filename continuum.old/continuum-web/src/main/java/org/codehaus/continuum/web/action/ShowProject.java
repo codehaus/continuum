@@ -33,7 +33,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShowProject.java,v 1.4 2004-10-08 09:05:51 trygvis Exp $
+ * @version $Id: ShowProject.java,v 1.5 2004-10-08 13:53:18 trygvis Exp $
  */
 public class ShowProject
     extends AbstractAction
@@ -53,6 +53,9 @@ public class ShowProject
 
         vc.put( "project", WebUtils.projectToProjectModel( getI18N(), project ) );
 
-        vc.put( "latestBuild", WebUtils.buildToBuildModel( getI18N(), build ) );
+        if ( build != null )
+        {
+            vc.put( "latestBuild", WebUtils.buildToBuildModel( getI18N(), build ) );
+        }
     }
 }
