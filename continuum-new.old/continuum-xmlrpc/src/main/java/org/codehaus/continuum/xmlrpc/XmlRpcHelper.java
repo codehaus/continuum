@@ -17,16 +17,20 @@ package org.codehaus.continuum.xmlrpc;
  */
 
 import java.util.Hashtable;
+import java.util.Set;
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: XmlRpcHelper.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
+ * @version $Id: XmlRpcHelper.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
  */
 public interface XmlRpcHelper
 {
     String ROLE = XmlRpcHelper.class.getName();
 
     Hashtable objectToHashtable( Object object )
+        throws IllegalAccessException, InvocationTargetException;
+
+    Hashtable objectToHashtable( Object object, Set excludedProperties )
         throws IllegalAccessException, InvocationTargetException;
 }

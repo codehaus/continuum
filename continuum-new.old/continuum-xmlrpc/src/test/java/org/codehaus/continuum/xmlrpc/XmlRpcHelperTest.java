@@ -22,12 +22,12 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: XmlRpcHelperTest.java,v 1.1.1.1 2005-03-20 22:59:13 trygvis Exp $
+ * @version $Id: XmlRpcHelperTest.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
  */
 public class XmlRpcHelperTest
     extends PlexusTestCase
 {
-    private class SimleBean
+    private static class SimleBean
     {
         private String foo;
 
@@ -49,7 +49,7 @@ public class XmlRpcHelperTest
         }
     }
 
-    private class ComplexBean
+    private static class ComplexBean
     {
         private SimleBean s1;
 
@@ -175,7 +175,7 @@ public class XmlRpcHelperTest
 
     private void assertProperty( String name, String value, Hashtable hashtable )
     {
-        assertTrue( "Missing element '" + name + ".", hashtable.containsKey( name ) );
+        assertTrue( "Missing element '" + name + "'.", hashtable.containsKey( name ) );
 
         assertEquals( "Value for element '" + name + "' isn't the expected value.", value, hashtable.get( name ) );
     }
