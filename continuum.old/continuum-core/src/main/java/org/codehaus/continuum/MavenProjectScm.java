@@ -14,13 +14,13 @@ import org.apache.maven.genericscm.ScmException;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ProjectScm.java,v 1.1 2004-01-16 17:57:17 jvanzyl Exp $
+ * @version $Id: MavenProjectScm.java,v 1.1 2004-01-16 19:38:33 jvanzyl Exp $
  */
-public class ProjectScm
+public class MavenProjectScm
 {
     private ScmManager scmManager;
 
-    public ProjectScm( Project project )
+    public MavenProjectScm( Project project )
     {
         scmManager = new DefaultScmManager( new MavenScmInfoAdapter( project ) );
     }
