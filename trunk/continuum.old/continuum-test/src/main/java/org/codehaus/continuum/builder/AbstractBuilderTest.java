@@ -30,12 +30,12 @@ import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuilderTest.java,v 1.4 2004-10-15 13:01:07 trygvis Exp $
+ * @version $Id: AbstractBuilderTest.java,v 1.5 2004-10-28 17:21:23 trygvis Exp $
  */
 public abstract class AbstractBuilderTest
     extends AbstractContinuumTest
 {
-    protected abstract String getProjectType();
+    protected abstract String getProjectBuilder();
 
     public void testNormalTestCase()
         throws Exception
@@ -44,9 +44,10 @@ public abstract class AbstractBuilderTest
 
         ContinuumStore store = getContinuumStore();
 
-        String scm = "scm:test:src/test/projects/" + getProjectType() + ":normal";
+        String scmUrl = "scm:local:src/test/projects/" + getProjectBuilder() + ":normal";
 
-        String projectId = continuum.addProject( "Normal project", scm, "foo@bar", "1.0", getProjectType() );
+//        String projectId = continuum.addProject( "Normal project", scm, "foo@bar", "1.0", getProjectType() );
+        String projectId = continuum.addProjectFromScm( scmUrl, getProjectBuilder() );
 
         String buildId = continuum.buildProject( projectId );
 

@@ -26,12 +26,12 @@ import org.codehaus.continuum.builder.AbstractBuilderTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2BuilderTest.java,v 1.3 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: Maven2BuilderTest.java,v 1.4 2004-10-28 17:21:24 trygvis Exp $
  */
 public class Maven2BuilderTest
     extends AbstractBuilderTest
 {
-    protected String getProjectType()
+    protected String getProjectBuilder()
     {
         return "maven2";
     }

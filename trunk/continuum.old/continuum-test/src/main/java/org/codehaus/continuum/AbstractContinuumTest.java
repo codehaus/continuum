@@ -22,7 +22,11 @@ package org.codehaus.continuum;
  * SOFTWARE.
  */
 
+import java.io.File;
+
 import junit.framework.Assert;
+
+import org.apache.maven.scm.manager.ScmManager;
 
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
@@ -33,10 +37,11 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
 import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.6 2004-10-06 13:33:49 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.7 2004-10-28 17:21:23 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends ArtifactEnabledPlexusTestCase
@@ -48,6 +53,17 @@ public abstract class AbstractContinuumTest
     {
         super.setUp();
 
+        File plexusTemp = getTestFile( "target/plexus-home/temp" );
+
+        // TODO: fix
+//        plexusTemp = getTestFile( "${plexus.temp}" );
+
+        FileUtils.deleteDirectory( plexusTemp );
+
+        assertTrue( plexusTemp.mkdirs() );
+
+        getContainer().getContext().put( "plexus.temp", plexusTemp.getAbsolutePath() );
+
         instance = this;
     }
 
@@ -57,6 +73,10 @@ public abstract class AbstractContinuumTest
 
         return instance.getContainer();
     }
+
+    // ----------------------------------------------------------------------
+    // Continuum lookups
+    // ----------------------------------------------------------------------
 
     public static Continuum getContinuum()
         throws Exception
@@ -117,6 +137,20 @@ public abstract class AbstractContinuumTest
     {
         return (ContinuumStore) lookupComponent( ContinuumStore.ROLE );
     }
+
+    // ----------------------------------------------------------------------
+    // Misc lookups
+    // ----------------------------------------------------------------------
+
+    public static ScmManager getScmManager()
+        throws Exception
+    {
+        return (ScmManager) lookupComponent( ScmManager.ROLE );
+    }
+
+    // ----------------------------------------------------------------------
+    // Generic lookups
+    // ----------------------------------------------------------------------
 
     public static Object lookupComponent( String role )
         throws Exception
