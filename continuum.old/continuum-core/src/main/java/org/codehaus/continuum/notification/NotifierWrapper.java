@@ -17,7 +17,7 @@ import org.codehaus.plexus.logging.Logger;
  * <code>logger.fatalError( ex )</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierWrapper.java,v 1.1 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: NotifierWrapper.java,v 1.2 2004-04-26 00:21:18 trygvis Exp $
  */
 public class NotifierWrapper
 {
@@ -30,8 +30,7 @@ public class NotifierWrapper
         this.logger = logger;
     }
 
-    void buildStarted( MavenProject project )
-        throws ContinuumException
+    public void buildStarted( MavenProject project )
     {
         try
         {
@@ -43,8 +42,7 @@ public class NotifierWrapper
         }
     }
 
-    void checkoutStarted( MavenProject project )
-        throws ContinuumException
+    public void checkoutStarted( MavenProject project )
     {
         try
         {
@@ -56,8 +54,7 @@ public class NotifierWrapper
         }
     }
 
-    void checkoutComplete( MavenProject project, Exception ex )
-        throws ContinuumException
+    public void checkoutComplete( MavenProject project, Exception ex )
     {
         try
         {
@@ -69,8 +66,7 @@ public class NotifierWrapper
         }
     }
 
-    void runningGoals( MavenProject project )
-        throws ContinuumException
+    public void runningGoals( MavenProject project )
     {
         try
         {
@@ -82,8 +78,7 @@ public class NotifierWrapper
         }
     }
 
-    void goalsCompleted( MavenProject project, Exception ex )
-        throws ContinuumException
+    public void goalsCompleted( MavenProject project, Exception ex )
     {
         try
         {
@@ -95,8 +90,7 @@ public class NotifierWrapper
         }
     }
 
-    void buildComplete( MavenProject project, Exception ex )
-        throws ContinuumException
+    public void buildComplete( MavenProject project, Exception ex )
     {
         try
         {
