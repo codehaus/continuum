@@ -15,12 +15,12 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: UrlSocketRegistrarTest.java,v 1.1 2004-10-30 16:31:12 trygvis Exp $
+ * @version $Id: UrlSocketRegistrarTest.java,v 1.2 2004-10-31 15:54:50 trygvis Exp $
  */
 public class UrlSocketRegistrarTest
     extends AbstractContinuumTest
 {
-    private final static int PORT = 6000;
+    private final static int PORT = 54321;
 
     public void testRegistration()
         throws Exception
