@@ -5,8 +5,6 @@ package org.codehaus.continuum.it.it1;
  */
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.Iterator;
 
 import org.codehaus.continuum.AbstractContinuumTest;
@@ -20,7 +18,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractMaven2Test.java,v 1.3 2004-10-15 13:01:03 trygvis Exp $
+ * @version $Id: AbstractMaven2Test.java,v 1.4 2004-10-28 19:45:37 trygvis Exp $
  */
 public abstract class AbstractMaven2Test
     extends AbstractContinuumTest
@@ -103,17 +101,11 @@ public abstract class AbstractMaven2Test
 
         txManager.begin();
 
-        String projectName = "Hibernate And Maven 2 Test Project - Project - Original";
-
         String pomName = "Hibernate And Maven 2 Test Project - POM - Original";
 
-        String projectScmConnection = "scm:test:target/repositories:hibernate-maven2";
+        String projectScmUrl = "scm:local:target/repositories:hibernate-maven2";
 
-        String projectNagEmailAddress = "foo@bar";
-
-        String projectVersion = "1.0";
-
-        String projectId = continuum.addProject( projectName, projectScmConnection, projectNagEmailAddress, projectVersion, "maven2" );
+        String projectId = continuum.addProjectFromScm( projectScmUrl, "maven2" );
 
         ContinuumProject project = store.getProject( projectId );
 
@@ -170,30 +162,24 @@ public abstract class AbstractMaven2Test
 
         txManager.commit();
     }
-
+/*
     public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithConnectionOnly()
         throws Exception
     {
-        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "scm:test:overridden-connection", null );
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "overridden-connection", null );
     }
 
     public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithConnectionAndDeveloperConnection()
         throws Exception
     {
-        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "scm:test:overridden-connection", "scm:test:overridden-developer-connection" );
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( "overridden-connection", "overridden-developer-connection" );
     }
 
     public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithDeveloperConnectionOnly()
         throws Exception
     {
-        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( null, "scm:test:overridden-developer-connection" );
+        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( null, "overridden-developer-connection" );
     }
-
-//    public void testUpdatedOfProjectWhenUpdatingTheProjectDescriptorWithNeitherConnectionOrDeveloperConnection()
-//        throws Exception
-//    {
-//        testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( null, null );
-//    }
 
     private void testUpdatedOfProjectWhenUpdatingTheProjectDescriptor( String connection, String developerConnection )
         throws Exception
@@ -216,12 +202,22 @@ public abstract class AbstractMaven2Test
             "  </ciManagement>" +
             "  <scm>" +
             (connection != null ?
-            "    <connection>" + connection + "</connection>" : "" ) +
+            "    <connection>scm:local:target/scm-test:" + connection + "</connection>" : "" ) +
             (developerConnection != null ?
-            "    <developerConnection>" + developerConnection + "</developerConnection>" : "" ) +
+            "    <developerConnection>scm:local:target/scm-test:" + developerConnection + "</developerConnection>" : "" ) +
             "  </scm>" +
             "</project>";
 
+        if ( connection != null )
+        {
+            assertTrue( new File( scm, connection ).mkdirs() );
+        }
+
+        if ( developerConnection != null )
+        {
+            assertTrue( new File( scm, developerConnection ).mkdirs() );
+        }
+        
         writePom( pom, scm, "pom.xml" );
 
         ContinuumStore store = getContinuumStore();
@@ -232,13 +228,9 @@ public abstract class AbstractMaven2Test
 
         txManager.begin();
 
-        String scmConnection = "scm:test:target:scm-test";
+        String scmUrl = "scm:local:target:scm-test";
 
-        String nagEmailAddress = "foo@bar";
-
-        String version = "1.0";
-
-        String projectId = continuum.addProject( "Project Name", scmConnection, nagEmailAddress, version, "maven2" );
+        String projectId = continuum.addProjectFromScm( scmUrl, "maven2" );
 
         txManager.commit();
 
@@ -250,20 +242,16 @@ public abstract class AbstractMaven2Test
 
         if ( connection != null && developerConnection != null )
         {
-            assertEquals( connection, project.getScmConnection() );
+            assertEquals( connection, project.getScmUrl() );
         }
         else if ( connection != null && developerConnection == null )
         {
-            assertEquals( connection, project.getScmConnection() );
+            assertEquals( connection, project.getScmUrl() );
         }
         else if ( connection == null && developerConnection != null )
         {
-            assertEquals( developerConnection, project.getScmConnection() );
+            assertEquals( developerConnection, project.getScmUrl() );
         }
-//        else if ( connection == null && developerConnection == null )
-//        {
-//            assertEquals( scmConnection, project.getScmConnection() );
-//        }
 
         txManager.commit();
     }
@@ -285,4 +273,5 @@ public abstract class AbstractMaven2Test
 
         stream.close();
     }
+*/
 }
