@@ -10,6 +10,7 @@
       <configuration>
         <work-directory>${plexus.home}/continuum</work-directory>
         <build-interval>1</build-interval>
+        <smtp-server>mail.maven.org</smtp-server>
       </configuration>
     </component>
     <component>
