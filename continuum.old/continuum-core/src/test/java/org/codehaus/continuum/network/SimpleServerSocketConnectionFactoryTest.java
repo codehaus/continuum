@@ -1,7 +1,7 @@
 package org.codehaus.plexus.continuum.network;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.1 2004-04-07 15:56:56 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.2 2004-04-24 23:54:14 trygvis Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends PlexusTestCase
@@ -30,7 +30,6 @@ public class SimpleServerSocketConnectionFactoryTest
         Socket socket;
         InputStream input;
         OutputStream output;
-        byte[] bytes;
         byte[] readData;
         int i, data;
 

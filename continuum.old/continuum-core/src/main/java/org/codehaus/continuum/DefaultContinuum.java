@@ -3,25 +3,27 @@ package org.codehaus.plexus.continuum;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 
 import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.continuum.buildqueue.BuildQueue;
 import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
 import org.codehaus.plexus.continuum.projectstorage.ProjectStorage;
+import org.codehaus.plexus.continuum.projectstorage.ProjectStorageException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
@@ -32,9 +34,16 @@ public class DefaultContinuum
     implements Continuum, Initializable, Startable
 {
     // configuration
+
     private String buildDirectory;
 
     private String checkoutDirectory;
+
+    // requirements
+
+    private ContinuumBuilder builder;
+
+    private BuildQueue buildQueue;
 
     private MavenProjectBuilder projectBuilder;
 
@@ -45,11 +54,16 @@ public class DefaultContinuum
     private ProjectStorage projectStorage;
 
     // member variables
+
     private Map builds;
+
+    private boolean addingProject;
+
+    // state
 
     private boolean building;
 
-    private boolean addingProject;
+    private boolean shutdown;
 
     ///////////////////////////////////////////////////////////////////////////
     // Component lifecycle
@@ -60,6 +74,13 @@ public class DefaultContinuum
         getLogger().info( "Initializing continuum." );
 
         builds = new LinkedHashMap();
+
+        assertRequirement( builder, "builder" );
+        assertRequirement( buildQueue, "build-queue" );
+        assertRequirement( projectBuilder, "project-builder" );
+        assertRequirement( compiler, "compiler" );
+        assertRequirement( notifier, "notifier" );
+        assertRequirement( projectStorage, "project-storage" );
 
         if( checkoutDirectory == null )
             throw new PlexusConfigurationException( "Missing configuration: checkout directory." );
@@ -82,6 +103,14 @@ public class DefaultContinuum
     public void start()
         throws Exception
     {
+        getLogger().info( "Starting continuum." );
+
+        // start the builder thread
+        Thread thread = new Thread( new BuilderThread() );
+        thread.setDaemon( true );
+        thread.start();
+
+        getLogger().info( "Continuum started." );
     }
 
     public void stop()
@@ -93,12 +122,18 @@ public class DefaultContinuum
 
         getLogger().info( "Stopping continuum." );
 
-        while( isWorking() )
+        // signal the thread to stop
+        shutdown = true;
+
+        while( getState() != ContinuumConstants.IDLE )
         {
             if ( slept > maxSleep )
+            {
                 getLogger().warn( "Timeout, stopping continuum." );
+                break;
+            }
 
-            getLogger().info( "Waiting untill continuum is idling..." );
+            getLogger().info( "Waiting until continuum is idling..." );
             Thread.sleep( interval );
 
             slept += interval;
@@ -111,6 +146,7 @@ public class DefaultContinuum
     // Continuum implementation
 
     public void addProject( String projectUrl )
+        throws ContinuumException
     {
         // We will simply deal with POMs that can be retrieved from
         // the local file system or over http.
@@ -119,66 +155,185 @@ public class DefaultContinuum
 
         MavenProject project = null;
 
-        if ( projectUrl.startsWith( "http://" ) )
+        try
         {
-            try
+            if ( projectUrl.startsWith( "http://" ) )
             {
-                getLogger().info( "Downloading project.xml" );
+                try
+                {
+                    getLogger().info( "Downloading from " + projectUrl );
+    
+                    URL url = new URL( projectUrl );
+    
+                    InputStream is = url.openStream();
+    
+                    // for now
+    
+                    String contents = IOUtil.toString( is );
+    
+                    File file = File.createTempFile( "continuum-project-", ".xml" );
+                    FileWriter writer = new FileWriter( file );
+    
+                    IOUtil.copy( contents, writer );
+    
+                    writer.close();
+    
+                    project = projectBuilder.build( file );
+    
+                    file.delete();
+    
+                    projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new StringReader( contents ) );
+                }
+                catch ( ProjectStorageException ex )
+                {
+                    getLogger().fatalError( "Error while storing the POM.", ex );
 
-                URL url = new URL( projectUrl );
-
-                InputStream is = url.openStream();
-
-                // for now
-
-                String contents = IOUtil.toString( is );
-
-                File file = File.createTempFile( "continuum-project-", ".xml" );
-                FileWriter writer = new FileWriter( file );
-
-                getLogger().info("filename:" + file.getPath());
-
-                IOUtil.copy( contents, writer );
-
-                writer.close();
-
-                project = projectBuilder.build( file );
-
-                file.delete();
-
-                projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new StringReader( contents ) );
+                    throw new ContinuumException( "Error while storing the POM.", ex );
+                }
+                catch ( ProjectBuildingException ex )
+                {
+                    getLogger().fatalError( "Can't build the POM read from url: " + projectUrl, ex );
+    
+                    throw new ContinuumException( "Can't build the POM read from url: " + projectUrl, ex );
+                }
+                catch ( IOException ex )
+                {
+                    getLogger().fatalError( "Can't read POM from url: " + projectUrl, ex );
+    
+                    throw new ContinuumException( "Could not add project: " + projectUrl, ex );
+                }
             }
-            catch ( Exception e )
+            else
             {
-                getLogger().error( "Can't read POM from url: " + projectUrl, e );
+                try
+                {
+                    File file = new File( projectUrl );
+
+                    project = projectBuilder.build( file );
+    
+                    projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new FileReader( file ) );
+                }
+                catch ( Exception ex )
+                {
+                    getLogger().error( "Can't read POM from file system: " + projectUrl, ex );
+    
+                    throw new ContinuumException( "Could not add project: " + projectUrl, ex );
+                }
+            }
+
+            // If we successfully created a project we're ready to go!
+            if ( project != null )
+            {
+                addProject( project );
             }
         }
-        else
+        finally
         {
-            try
-            {
-                File file = new File( projectUrl );
-
-                project = projectBuilder.build( file );
-
-                projectStorage.storeProject( project.getGroupId(), project.getArtifactId(), new FileReader( file ) );
-            }
-            catch ( Exception e )
-            {
-                getLogger().error( "Can't read POM from file system: " + projectUrl, e );
-            }
+            addingProject = false;
         }
-
-        // If we successfully created a project we're ready to go!
-        if ( project != null )
-        {
-            addProject( project );
-        }
-
-        addingProject = false;
     }
 
-    public void addProject( MavenProject project )
+    public String buildProject( String groupId, String artifactId )
+        throws ContinuumException
+    {
+        MavenProject project = getProject( groupId, artifactId );
+
+        getLogger().info( "Enqueuing " + createId( groupId, artifactId ) + " ..." );
+
+        return buildQueue.enqueue( project );
+    }
+
+    public List buildProjects()
+        throws ContinuumException
+    {
+        getLogger().info( "Building all projects ..." );
+
+        List ids = new ArrayList();
+
+        for ( Iterator i = builds.values().iterator(); i.hasNext(); )
+        {
+            MavenProject project = (MavenProject) i.next();
+
+            ids.add( buildQueue.enqueue( project ) );
+        }
+
+        return ids;
+    }
+
+    public int getState()
+    {
+        if ( building || addingProject )
+            return ContinuumConstants.WORKING;
+
+        return ContinuumConstants.IDLE;
+    }
+
+
+    /**
+     * Returns the current length of the build queue.
+     * 
+     * @return Returns the current length of the build queue.
+     */
+    public int getBuildQueueLength()
+        throws ContinuumException
+    {
+        return buildQueue.getLength();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Private
+
+    private class BuilderThread
+        implements Runnable
+    {
+        public void run()
+        {
+            while ( !shutdown )
+            {
+                MavenProject project = getProject();
+
+                if( project != null )
+                {
+                    builder.build( project );
+//                    buildProject( project );
+                }
+                else
+                {
+                    getLogger().info( "Builder sleeping..." );
+                    sleep( 1000 );
+                }
+            }
+        }
+
+        private void sleep( int interval )
+        {
+            try
+            {
+                Thread.sleep( interval );
+            }
+            catch( InterruptedException ex )
+            {
+                // ignore
+            }
+        }
+
+        private MavenProject getProject()
+        {
+            try
+            {
+                return buildQueue.dequeue();
+            }
+            catch( ContinuumException ex )
+            {
+                getLogger().fatalError( "Exception while dequeueing project.", ex );
+
+                return null;
+            }
+        }
+    }
+
+    private void addProject( MavenProject project )
+        throws ContinuumException
     {
         MavenProjectBuild build = null;
 
@@ -188,101 +343,34 @@ public class DefaultContinuum
         {
             build = new MavenProjectBuild( project );
 
+            String id = createId( project.getGroupId(), project.getArtifactId() );
+
+            builds.put( id, build );
+
             getLogger().info( "Adding project: " + project.getName() );
         }
-        catch ( Exception e )
+        catch ( Exception ex )
         {
-            getLogger().error( "Cannot add project!", e );
+            getLogger().error( "Cannot add project!", ex );
+
+            throw new ContinuumException( "Exception while building project.", ex );
         }
-
-        builds.put( project.getGroupId() + ":" + project.getArtifactId(), build );
-
-        addingProject = false;
+        finally
+        {
+            addingProject = false;
+        }
     }
 
-    public void buildProject( String groupId, String artifactId )
+    private List compileProject( MavenProject project )
         throws Exception
     {
-        buildProject( (MavenProjectBuild) builds.get( groupId + ":" + artifactId ) );
-    }
-
-    public void buildProjects()
-    {
-        getLogger().info( "Building Projects ..." );
-
-        building = true;
-
-        for ( Iterator i = builds.values().iterator(); i.hasNext(); )
-        {
-            MavenProjectBuild projectBuild = (MavenProjectBuild) i.next();
-
-            try
-            {
-                List messages = buildProject( projectBuild );
-
-                StringBuffer message = new StringBuffer();
-
-                // Notification is there are failures.
-                if ( messages.size() > 0 )
-                {
-                    for ( Iterator j = messages.iterator(); j.hasNext(); )
-                    {
-                        message.append( j.next() ).append( "\n" );
-                    }
-
-                    getLogger().info( "Notifying!" );
-                }
-                else
-                {
-                    message.append( "Build OK." );
-                }
-
-                notifier.notifyAudience( projectBuild.getProject(), message.toString() );
-            }
-            catch ( Exception e )
-            {
-                e.printStackTrace();
-
-                StringWriter writer = new StringWriter();
-
-                PrintWriter w = new PrintWriter( writer );
-
-                e.printStackTrace( w );
-
-                try
-                {
-                    notifier.notifyAudience( projectBuild.getProject(), writer.toString() );
-                }
-                catch ( Exception ex )
-                {
-                    getLogger().fatalError( "Could not send notify", ex);
-                }
-            }
-        }
-
-        building = false;
-    }
-
-    public boolean isWorking()
-    {
-        return building || addingProject;
-    }
-
-    private List buildProject( MavenProjectBuild build )
-        throws Exception
-    {
-        // We need to check out the sources
-        build.getProjectScm().checkout( checkoutDirectory );
-
         getLogger().info( "Done checking out the project!" );
 
         String destinationDirectory = buildDirectory + "/target/classes";
 //        build.getProject().setProperty( "basedir", buildDirectory );
 
-        System.err.println( new TreeMap( build.getProject().getProperties() ).toString().replace( ',', '\n' ) );
-
-        List messages = compiler.compile( classpathElements( build.getProject() ),
-                                          new String[]{build.getProject().getBuild().getSourceDirectory()},
+        List messages = compiler.compile( classpathElements( project ),
+                                          new String[]{project.getBuild().getSourceDirectory()},
                                           destinationDirectory );
 
         getLogger().info( "Done compiling!" );
@@ -300,5 +388,35 @@ public class DefaultContinuum
         }
 
         return classpathElements;
+    }
+
+    private boolean hasProject( String groupId, String artifactId )
+    {
+        return builds.containsKey( createId( groupId, artifactId ) );
+    }
+
+    private MavenProject getProject( String groupId, String artifactId )
+        throws ContinuumException
+    {
+        String id = createId( groupId, artifactId );
+
+        MavenProject project = (MavenProject)builds.get( id );
+
+        if ( project == null )
+            throw new ContinuumException( "No such project: " + id + "." );
+
+        return project;
+    }
+
+    private String createId( String groupId, String artifactId )
+    {
+        return groupId + ":" + artifactId;
+    }
+
+    private void assertRequirement( Object requirement, String name )
+        throws PlexusConfigurationException
+    {
+        if ( requirement == null )
+            throw new PlexusConfigurationException( "Missing requirement '" + name + "'." );
     }
 }

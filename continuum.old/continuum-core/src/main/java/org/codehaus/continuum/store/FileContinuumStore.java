@@ -1,19 +1,20 @@
 package org.codehaus.plexus.continuum.projectstorage;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -23,7 +24,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: FileContinuumStore.java,v 1.1 2004-04-07 15:56:56 trygvis Exp $
+ * @version $Id: FileContinuumStore.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
  */
 public class FileProjectStorage
     extends AbstractLogEnabled
@@ -37,8 +38,6 @@ public class FileProjectStorage
     private MavenProjectBuilder projectBuilder;
 
     // member variables
-    private Map projects;
-
     private File storage;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -60,35 +59,6 @@ public class FileProjectStorage
             storage.mkdirs();
         }
 
-        // Now lets bring up all the projects that we have stored, if there are any.
-
-        projects = new HashMap();
-
-        Iterator groups = FileUtils.getFiles( storage, "**", null ).iterator();
-
-        while ( groups.hasNext() )
-        {
-            File group = (File)groups.next();
-
-            if ( !group.isFile() )
-                continue;
-
-            File pom = FileUtils.resolveFile( storage, group.getPath() );
-            String name = pom.getPath();
-            name = name.substring( FileUtils.dirname( FileUtils.dirname( name ) ) .length() + 1);
-
-            MavenProject project = projectBuilder.build( pom );
-
-            try
-            {
-                projects.put( project.getGroupId() + "-" + project.getArtifactId(), project );
-                getLogger().info( "Added " + project.getGroupId() + ":" + project.getArtifactId() );
-            }
-            catch ( Exception e )
-            {
-                getLogger().error( "Cannot process pom: " + pom, e );
-            }
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -116,12 +86,46 @@ public class FileProjectStorage
     public Iterator getAllProjects()
         throws ProjectStorageException
     {
-        return projects.values().iterator();
+        List projects = new ArrayList();
+
+        try
+        {
+            Iterator groups = FileUtils.getFiles( storage, "**", null ).iterator();
+    
+            while ( groups.hasNext() )
+            {
+                File group = (File)groups.next();
+    
+                if ( !group.isFile() )
+                    continue;
+    
+                File pom = FileUtils.resolveFile( storage, group.getPath() );
+
+                projects.add( projectBuilder.build( pom ) );
+            }
+        }
+        catch( IOException ex )
+        {
+            throw new ProjectStorageException( "Exception while reading from project storage.", ex );
+        }
+        catch( ProjectBuildingException ex )
+        {
+            throw new ProjectStorageException( "Exception while building the project description.", ex );
+        }
+
+        return projects.iterator();
     }
 
     public MavenProject getProject( String groupId, String artifactId )
         throws ProjectStorageException
     {
-        return (MavenProject)projects.get( groupId + "-" + artifactId );
+        try
+        {
+            return projectBuilder.build( new File( storage, groupId + File.pathSeparator + artifactId ) );
+        }
+        catch( ProjectBuildingException ex )
+        {
+            throw new ProjectStorageException( "The projectdatabase is corrupted, could not read the project.", ex );
+        }
     }
 }

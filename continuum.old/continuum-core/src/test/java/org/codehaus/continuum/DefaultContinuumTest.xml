@@ -1,0 +1,96 @@
+<plexus>
+
+  <components>
+
+    <component>
+      <role>org.codehaus.plexus.continuum.Continuum</role>
+      <implementation>org.codehaus.plexus.continuum.DefaultContinuum</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.buildqueue.BuildQueue</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.compiler.Compiler</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.MavenProjectBuilder</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.projectstorage.ProjectStorage</role>
+        </requirement>
+      </requirements>
+      <configuration>
+        <checkout-directory>${plexus.home}/continuum/checkout</checkout-directory>
+        <build-directory>${plexus.home}/continuum/checkout</build-directory>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.continuum.buildqueue.BuildQueue</role>
+      <implementation>org.codehaus.plexus.continuum.buildqueue.SimpleBuildQueue</implementation>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.compiler.Compiler</role>
+      <implementation>org.codehaus.plexus.compiler.javac.JavacCompiler</implementation>
+    </component>
+
+    <!-- Maven stuff -->
+    <component>
+      <role>org.apache.maven.project.MavenProjectBuilder</role>
+      <implementation>org.apache.maven.project.DefaultMavenProjectBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.ModelInheritanceAssembler</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
+      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Reader</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
+      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Writer</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.artifact.factory.MavenArtifactory</role>
+      <implementation>org.apache.maven.artifact.factory.DefaultMavenArtifactory</implementation>
+    </component>
+
+    <!-- Notifier -->
+    <component>
+      <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
+      <implementation>org.codehaus.plexus.continuum.notification.console.ConsoleNotifier</implementation>
+    </component>
+
+    <!-- ProjectStorage -->
+    <component>
+      <role>org.codehaus.plexus.continuum.projectstorage.ProjectStorage</role>
+      <implementation>org.codehaus.plexus.continuum.projectstorage.FileProjectStorage</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.project.MavenProjectBuilder</role>
+        </requirement>
+      </requirements>
+
+      <configuration>
+        <storage-directory>${plexus.home}/continuum/storage</storage-directory>
+      </configuration>
+    </component>
+
+  </components>
+</plexus>

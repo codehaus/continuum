@@ -1,11 +1,16 @@
 package org.codehaus.plexus.continuum.trigger.network;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
+import org.codehaus.plexus.continuum.ContinuumException;
 import org.codehaus.plexus.continuum.network.ConnectionConsumer;
-import org.codehaus.plexus.continuum.network.NetworkUtils;
 import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * This trigger listens on a specified port and takes one line
@@ -15,7 +20,7 @@ import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkTrigger.java,v 1.2 2004-04-07 15:56:56 trygvis Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.3 2004-04-24 23:54:13 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger
@@ -26,17 +31,60 @@ public class SimpleNetworkTrigger
     // ----------------------------------------------------------------------
 
     public void consumeConnection( InputStream input, OutputStream output )
+        throws IOException
     {
-        NetworkUtils.closeInput( input );
-        NetworkUtils.closeOutput( output );
+        PrintWriter printer = new PrintWriter( output );
+        BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
+        String project, groupId, artifactId;
+        int i;
 
         try
         {
-            getContinuum().buildProjects();
+            project = reader.readLine();
+
+            i = project.indexOf( ':' );
+
+            if( i == -1 )
+            {
+                printer.println( "ERROR" );
+                printer.println( "Error in input, expected format: groupId:artifactId." );
+
+                return;
+            }
+
+            groupId = project.substring( 0, i ).trim();
+            artifactId = project.substring( i + 1 ).trim();
+
+            if( groupId.length() == 0 )
+            {
+                printer.println( "ERROR" );
+                printer.println( "Error in input, expected format: groupId:artifactId." );
+
+                return;
+            }
+
+            if( artifactId.length() == 0 )
+            {
+                printer.println( "ERROR" );
+                printer.println( "Error in input, expected format: groupId:artifactId." );
+
+                return;
+            }
+
+            String jobId = getContinuum().buildProject( groupId, artifactId );
+
+            printer.println( "OK" );
+            printer.println( jobId );
+            printer.println( "Build of " + groupId + ":" + artifactId + " scheduled. Job #" + jobId);
         }
-        catch( Exception ex )
+        catch( ContinuumException ex )
         {
-            
+            printer.println( "ERROR" );
+            ex.printStackTrace( printer );
+        }
+        finally
+        {
+            IOUtil.close( printer );
         }
     }
 }

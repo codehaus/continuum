@@ -422,8 +422,7 @@ public class MailMessage
         int[] ok = {220};
         if ( !isResponseOK( response, ok ) )
         {
-            throw new IOException(
-                "Didn't get introduction from server: " + response );
+            throw new IOException( "Didn't get introduction from server: " + response );
         }
     }
 
