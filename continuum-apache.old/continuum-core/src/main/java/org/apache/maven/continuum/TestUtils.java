@@ -16,22 +16,15 @@ package org.apache.maven.continuum;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.project.ContinuumProjectState;
 import org.apache.maven.continuum.store.ContinuumStore;
-
-import org.codehaus.plexus.PlexusTestCase;
 
 import junit.framework.Assert;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestUtils.java,v 1.1.1.1 2005-03-29 20:41:59 trygvis Exp $
+ * @version $Id: TestUtils.java,v 1.2 2005-04-04 15:24:03 trygvis Exp $
  */
 public class TestUtils
 {
@@ -99,139 +92,5 @@ public class TestUtils
     public static void setBuildTimeout( int buildTimeout )
     {
         TestUtils.buildTimeout = buildTimeout;
-    }
-
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-/*
-    public static PlexusContainer setUpPlexus()
-        throws Exception
-    {
-        PlexusContainer container = new DefaultArtifactEnabledContainer();
-
-        File basedir = new File( System.getProperty( "basedir", new File( "" ).getAbsolutePath() ) );
-
-        File mavenHome = new File( System.getProperty( "user.home" ), "m2" );
-
-        File mavenHomeLocal = new File( System.getProperty( "user.home" ), ".m2" );
-
-        File repository = new File( System.getProperty( "user.home" ), ".m2/repository" );
-
-        Assert.assertTrue( "Cannot find maven.home: " + mavenHome, mavenHome.exists() );
-
-        Assert.assertTrue( "Cannot find maven.home.local: " + mavenHomeLocal, mavenHomeLocal.exists() );
-
-        Assert.assertTrue( "Cannot find maven.repo.local: " + repository, repository.exists() );
-
-        System.setProperty( "maven.home", mavenHome.getAbsolutePath() );
-
-        System.setProperty( "maven.home.local", mavenHomeLocal.getAbsolutePath() );
-
-        System.setProperty( "maven.repo.local", repository.getAbsolutePath() );
-
-        // ----------------------------------------------------------------------
-        // Set up the container
-        // ----------------------------------------------------------------------
-
-        container.getContext().put( "basedir", basedir.getAbsolutePath() );
-
-        deleteFile( "continuumdb.log" );
-
-        deleteFile( "continuumdb.properties" );
-
-        deleteFile( "continuumdb.sql" );
-
-        File plexusHome = PlexusTestCase.getTestFile( "target/plexus-home" );
-
-        if ( plexusHome.exists() )
-        {
-            FileUtils.deleteDirectory( plexusHome );
-        }
-
-        container.getContext().put( "plexus.home", plexusHome.getAbsolutePath() );
-
-        FileUtils.mkdir( new File( plexusHome, "logs" ).getAbsolutePath() );
-
-        // ----------------------------------------------------------------------
-        // Set up the maven 2 application
-        // ----------------------------------------------------------------------
-
-        File maven2 = new File( plexusHome, "apps/maven2" );
-
-        Assert.assertTrue( "Coult not make directory " + maven2.getAbsolutePath() + "/core.", new File( maven2, "core" ).mkdirs() );
-
-        Assert.assertTrue( "Coult not make directory " + maven2.getAbsolutePath() + "/bin.", new File( maven2, "bin" ).mkdirs() );
-
-        FileUtils.copyFileToDirectory( new File( mavenHome, "core/classworlds-1.1-SNAPSHOT.jar" ), new File( maven2, "core" ) );
-
-        FileUtils.copyFileToDirectory( new File( mavenHome, "bin/classworlds.conf" ), new File( maven2, "bin" ) );
-
-        FileUtils.copyDirectoryStructure( new File( repository, "surefire" ), new File( plexusHome, "apps/maven2/repository/surefire" ) );
-
-        // ----------------------------------------------------------------------
-        // Set up the continuum application
-        // ----------------------------------------------------------------------
-
-        FileUtils.mkdir( new File( plexusHome, "apps/continuumweb/lib" ).getAbsolutePath() );
-
-        FileUtils.mkdir( new File( plexusHome, "apps/continuumweb/web" ).getAbsolutePath() );
-
-        File webDir = PlexusTestCase.getTestFile( "src/main/resources/web/continuumweb" );
-
-        Assert.assertTrue( "Could not find " + webDir.getAbsolutePath(), webDir.isDirectory() );
-
-        FileUtils.copyDirectoryStructure( webDir, new File( plexusHome, "apps/continuumweb/web/continuumweb" ) );
-
-        File formsDir = PlexusTestCase.getTestFile( "src/main/resources/forms" );
-
-        Assert.assertTrue( "Could not find " + formsDir.getAbsolutePath(), formsDir.isDirectory() );
-
-        FileUtils.copyDirectoryStructure( formsDir, new File( plexusHome, "apps/continuumweb/forms" ) );
-
-        File localizationDir = PlexusTestCase.getTestFile( "src/main/resources/localization" );
-
-        Assert.assertTrue( "Could not find " + localizationDir.getAbsolutePath(), localizationDir.isDirectory() );
-
-        FileUtils.copyDirectoryStructure( localizationDir, new File( plexusHome, "apps/continuumweb/localization" ) );
-
-        // ----------------------------------------------------------------------
-        // Set up the container
-        // ----------------------------------------------------------------------
-
-        Locale.setDefault( Locale.ENGLISH );
-
-        container.setConfigurationResource( getCustomConfiguration() );
-
-        container.initialize();
-
-        container.start();
-
-        LoggerManager loggerManager = (LoggerManager) container.lookup( LoggerManager.ROLE );
-
-        loggerManager.setThreshold( AbstractLogger.LEVEL_DEBUG );
-
-        return container;
-    }
-*/
-    private static void deleteFile( String fileName )
-        throws Exception
-    {
-        File file = PlexusTestCase.getTestFile( fileName );
-
-        if ( file.exists() )
-        {
-            Assert.assertTrue( "Error while deleting " + file.getAbsolutePath(), file.delete() );
-        }
-    }
-
-    private static Reader getCustomConfiguration()
-        throws Exception
-    {
-        URL config = Thread.currentThread().getContextClassLoader().getResource( "conf/plexus.conf" );
-
-        Assert.assertNotNull( "Missing configuration.", config );
-
-        return new InputStreamReader( config.openStream() );
     }
 }
