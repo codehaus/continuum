@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultShellCommandHelper.java,v 1.2 2005-03-10 00:05:50 trygvis Exp $
+ * @version $Id: DefaultShellCommandHelper.java,v 1.3 2005-03-28 14:10:58 trygvis Exp $
  */
 public class DefaultShellCommandHelper
     extends AbstractLogEnabled
@@ -74,10 +74,6 @@ public class DefaultShellCommandHelper
         {
             cl.createArgument().setValue( arguments[ i ] );
         }
-
-        getLogger().warn( "Executing external command '" + shellCommand + "'." );
-
-        getLogger().warn( "Executing external command. Working directory: '" + workingDirectory.getAbsolutePath() + "'." );
 
         return cl;
     }

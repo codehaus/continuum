@@ -26,7 +26,7 @@ import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.7 2005-03-28 14:10:58 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
@@ -35,6 +35,9 @@ public class MavenShellBuilder
 
     /** @requirement */
     private MavenBuilderHelper builderHelper;
+
+    /** @configuration */
+    private String executable;
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
@@ -48,10 +51,16 @@ public class MavenShellBuilder
         builderHelper.updateProjectFromMetadata( workingDirectory, project );
     }
 
+    protected String getExecutable( ContinuumProject project )
+        throws ContinuumException
+    {
+        return executable;
+    }
+
     protected String[] getArguments( ContinuumProject project )
         throws ContinuumException
     {
-        String[] arguments = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS );
+        String[] arguments = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS, "," );
 
         for ( int i = 0; i < arguments.length; i++ )
         {

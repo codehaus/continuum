@@ -32,6 +32,22 @@ def checkResult( map ):
 
     raise Exception( "Error while executing method" )
 
+def decodeState( state ):
+    if ( state == 1 ):
+        return "new"
+    elif ( state == 2 ):
+        return "ok"
+    elif ( state == 3 ):
+        return "failed"
+    elif ( state == 4 ):
+        return "error"
+    elif ( state == 5 ):
+        return "build signaled"
+    elif ( state == 6 ):
+        return "building"
+    else:
+        return "UNKNOWN STATE '" + state + "'."
+
 def addProjectFromUrl( url, builderId ):
     result = checkResult( server.continuum.addProjectFromUrl( url, builderId ) )
 
@@ -47,15 +63,27 @@ def getProject( projectId ):
 
     return Project( result[ "project" ] )
 
-def buildProject( projectId ):
-    result = checkResult( server.continuum.buildProject( projectId ) )
-
-    return result[ "buildId" ]
+def updateProjectConfiguration( projectId, configuration ):
+    checkResult( server.continuum.updateProjectConfiguration( projectId, configuration ) )
 
 def getAllProjects():
     result = checkResult( server.continuum.getAllProjects() )
 
     return result[ "projects" ]
+
+def buildProject( projectId ):
+    result = checkResult( server.continuum.buildProject( projectId ) )
+
+    return result[ "buildId" ]
+
+def getBuildsForProject( projectId, start, end ):
+    result = checkResult( server.continuum.getBuildsForProject( projectId, start, end ) )
+
+    builds = []
+    for build in result[ "builds" ]:
+        builds.append( Build( build ) )
+
+    return builds;
 
 def getBuild( buildId ):
     result = checkResult( server.continuum.getBuild( buildId ) )
@@ -74,20 +102,30 @@ def getBuildResult( buildId ):
 
 class Project:
     def __init__( self, map ):
+        self.map = map
         self.id = map[ "id" ]
         self.name = map[ "name" ]
         self.nagEmailAddress = map[ "nagEmailAddress" ]
-        self.state = map[ "state" ]
+        self.state = int( map[ "state" ] )
         self.version = map[ "version" ]
         self.builderId = map[ "builderId" ]
+        self.configuration = map[ "configuration" ]
 
     def __str__( self ):
-        return "id: " + self.id + os.linesep +\
-               "name: " + self.name + os.linesep +\
-               "nagEmailAddress: " + self.nagEmailAddress + os.linesep +\
-               "state: " + self.state + os.linesep +\
-               "version: " + self.version + os.linesep +\
-               "builder id: " + self.builderId + os.linesep
+        str = "id: " + self.id + os.linesep +\
+              "name: " + self.name + os.linesep +\
+              "nagEmailAddress: " + self.nagEmailAddress + os.linesep +\
+              "state: " + decodeState( self.state ) + os.linesep +\
+              "version: " + self.version + os.linesep +\
+              "builder id: " + self.builderId + os.linesep
+
+        if ( len( self.configuration.keys() ) > 0 ):
+            conf = ""
+            for key in self.configuration.keys():
+                conf += os.linesep + key + "=" + self.configuration[ key ]
+            str += conf
+
+        return str
 
 class Build:
     def __init__( self, map ):
@@ -97,7 +135,7 @@ class Build:
         map[ "totalTime" ] = map[ "totalTime" ]
 
         self.id = map[ "id" ]
-        self.state = map[ "state" ]
+        self.state = int( map[ "state" ] )
         self.startTime = map[ "startTime" ]
         self.endTime = map[ "endTime" ]
         self.totalTime = map[ "totalTime" ]
@@ -109,23 +147,27 @@ class Build:
             map[ "error" ] = ""
 
     def __str__( self ):
+        map = self.map
+
+        map[ "state" ] = decodeState( self.state )
+
         return  \
 """id: %(id)s
 State: %(state)s
 Start time: %(startTime)s
 End time: %(endTime)s
 Build time: %(totalTime)ss
-error: %(error)s""" % self.map
+error: %(error)s""" % map
 
 class BuildResult:
     def __init__( self, map ):
         self.success = map[ "success" ]
-        self.exitCode = map[ "exitCode" ]
+        self.exitCode = int( map[ "exitCode" ] )
         self.standardOutput = map[ "standardOutput" ]
         self.standardError = map[ "standardError" ]
 
     def __str__( self ):
         return "success: " + self.success + os.linesep +\
-               "exitCode: " + self.exitCode + os.linesep +\
+               "exitCode: " + str( self.exitCode ) + os.linesep +\
                "standardOutput: " + self.standardOutput + os.linesep +\
                "standardError: " + self.standardError + os.linesep

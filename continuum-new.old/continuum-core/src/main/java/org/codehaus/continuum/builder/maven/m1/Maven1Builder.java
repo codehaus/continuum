@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven1Builder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
+ * @version $Id: Maven1Builder.java,v 1.7 2005-03-28 14:10:58 trygvis Exp $
  */
 public class Maven1Builder
     extends AbstractContinuumBuilder
@@ -59,7 +59,7 @@ public class Maven1Builder
 
         File workingDirectory = new File( project.getWorkingDirectory() );
 
-        String[] goals = getConfigurationStringArray( configuration, CONFIGURATION_GOALS );
+        String[] goals = getConfigurationStringArray( configuration, CONFIGURATION_GOALS, "," );
 
         ExecutionResult executionResult;
 

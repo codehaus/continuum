@@ -17,6 +17,7 @@ package org.codehaus.continuum.builder.shell;
  */
 
 import java.io.File;
+import java.net.URL;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.AbstractContinuumBuilder;
@@ -26,33 +27,32 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.8 2005-03-28 12:11:43 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.9 2005-03-28 14:10:58 trygvis Exp $
  */
-public abstract class ShellBuilder
+public class ShellBuilder
     extends AbstractContinuumBuilder
 {
+    private static final String CONFIGURATION_SCRIPT = "script";
+
+    public final static String CONFIGURATION_ARGUMENTS = "arguments";
+
     /** @requirement */
     private ShellCommandHelper shellCommandHelper;
-
-    /** @configuration */
-    private String shellCommand;
-
-    /** @configuration */
-    private String[] arguments;
 
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
+    protected String getExecutable( ContinuumProject project )
+        throws ContinuumException
+    {
+        return getConfigurationString( project.getConfiguration(), CONFIGURATION_SCRIPT );
+    }
+
     protected String[] getArguments( ContinuumProject project )
         throws ContinuumException
     {
-        if ( arguments == null )
-        {
-            arguments = new String[ 0 ];
-        }
-
-        return arguments;
+        return getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_ARGUMENTS, " ", new String[ 0 ] );
     }
 
     // ----------------------------------------------------------------------
@@ -66,11 +66,13 @@ public abstract class ShellBuilder
 
         ExecutionResult executionResult;
 
+        String executable = getExecutable( project );
+
         String[] arguments = getArguments( project );
 
         try
         {
-            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, shellCommand, arguments );
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, executable, arguments );
         }
         catch ( Exception e )
         {
@@ -90,6 +92,18 @@ public abstract class ShellBuilder
         result.setExitCode( executionResult.getExitCode() );
 
         return result;
+    }
+
+    public ContinuumProject createProjectFromMetadata( URL metadata )
+        throws ContinuumException
+    {
+        throw new ContinuumException( "The Ant builder cannot create metadata from a URL." );
+    }
+
+    public void updateProjectFromCheckOut( File workingDirectory, ContinuumProject project )
+        throws ContinuumException
+    {
+        // Not much to do.
     }
 
     // ----------------------------------------------------------------------

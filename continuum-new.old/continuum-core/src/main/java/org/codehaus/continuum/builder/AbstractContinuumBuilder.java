@@ -29,7 +29,7 @@ import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuilder.java,v 1.4 2005-03-28 12:11:42 trygvis Exp $
+ * @version $Id: AbstractContinuumBuilder.java,v 1.5 2005-03-28 14:10:57 trygvis Exp $
  */
 public abstract class AbstractContinuumBuilder
     extends AbstractLogEnabled
@@ -48,10 +48,45 @@ public abstract class AbstractContinuumBuilder
         return string;
     }
 
-    protected String[] getConfigurationStringArray( Properties configuration, String property )
+    protected String getConfigurationString( Properties configuration, String property, String defaultValue )
         throws ContinuumException
     {
-        String[] array = StringUtils.split( getConfigurationString( configuration, property ), "," );
+        String string = configuration.getProperty( property );
+
+        if ( StringUtils.isEmpty( string ) )
+        {
+            return defaultValue;
+        }
+
+        return string;
+    }
+
+    protected String[] getConfigurationStringArray( Properties configuration, String property, String separator )
+        throws ContinuumException
+    {
+        String value = getConfigurationString( configuration, property );
+
+        String[] array = StringUtils.split( value, separator );
+
+        for ( int i = 0; i < array.length; i++ )
+        {
+            array[ i ] = array[ i ].trim();
+        }
+
+        return array;
+    }
+
+    protected String[] getConfigurationStringArray( Properties configuration, String property, String separator, String[] defaultValue )
+        throws ContinuumException
+    {
+        String value = getConfigurationString( configuration, property, null );
+
+        if ( value == null )
+        {
+            return defaultValue;
+        }
+
+        String[] array = StringUtils.split( value, separator );
 
         for ( int i = 0; i < array.length; i++ )
         {

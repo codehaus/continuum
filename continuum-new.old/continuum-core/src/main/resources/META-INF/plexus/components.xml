@@ -218,7 +218,7 @@
       <role-hint>maven2</role-hint>
       <implementation>org.codehaus.continuum.builder.maven.m2.MavenShellBuilder</implementation>
       <configuration>
-        <shell-command>m2</shell-command>
+        <executable>m2</executable>
       </configuration>
       <requirements>
         <requirement>
@@ -284,6 +284,17 @@
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
       <role-hint>ant</role-hint>
       <implementation>org.codehaus.continuum.builder.ant.AntBuilder</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <role-hint>shell</role-hint>
+      <implementation>org.codehaus.continuum.builder.shell.ShellBuilder</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
