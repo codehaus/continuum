@@ -33,7 +33,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestScmTest.java,v 1.2 2004-07-29 04:27:42 trygvis Exp $
+ * @version $Id: TestScmTest.java,v 1.3 2004-08-29 21:08:18 trygvis Exp $
  */
 public class TestScmTest
     extends PlexusTestCase
@@ -65,13 +65,13 @@ public class TestScmTest
 
         Command checkOut = scmManager.getCommand( CheckOutCommand.NAME );
 
-        String workingDirectory = getTestFile( "target/test-scm-test" );
+        File workingDirectory = getTestFile( "target/test-scm-test" );
 
         FileUtils.deleteDirectory( workingDirectory );
 
-        FileUtils.mkdir( workingDirectory );
+        assertTrue( workingDirectory.mkdir() );
 
-        checkOut.setWorkingDirectory( workingDirectory );
+        checkOut.setWorkingDirectory( workingDirectory.getAbsolutePath() );
 
         checkOut.execute();
 

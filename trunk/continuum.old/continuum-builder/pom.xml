@@ -1,32 +1,25 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
+
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>continuum-parent</artifactId>
     <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-cli</artifactId>
+  <artifactId>continuum-builder</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Continuum Command Line Interface</name>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
-      <artifactId>continuum-api</artifactId>
+      <artifactId>continuum-test</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
-<!--
     <dependency>
       <groupId>continuum</groupId>
-      <artifactId>continuum-xmlrpc-client</artifactId>
+      <artifactId>continuum-core</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-    </dependency>
--->
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>scm-cvslib</artifactId>
-      <version>0.9-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
