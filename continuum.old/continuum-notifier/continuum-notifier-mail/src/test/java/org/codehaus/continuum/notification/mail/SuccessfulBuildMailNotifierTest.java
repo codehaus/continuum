@@ -29,7 +29,7 @@ import org.codehaus.plexus.mailsender.test.MockMailSender;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.8 2004-10-24 22:21:04 trygvis Exp $
+ * @version $Id: SuccessfulBuildMailNotifierTest.java,v 1.9 2004-10-28 17:47:51 trygvis Exp $
  */
 public class SuccessfulBuildMailNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
@@ -51,17 +51,7 @@ public class SuccessfulBuildMailNotifierTest
         return "scm:local:src/test/repository:success";
     }
 
-    protected String getProjectNagEmailAddress()
-    {
-        return "foo@bar";
-    }
-
-    protected String getProjectVersion()
-    {
-        return "1.0";
-    }
-
-    protected String getProjectType()
+    protected String getProjectBuilder()
     {
         return "maven2";
     }
