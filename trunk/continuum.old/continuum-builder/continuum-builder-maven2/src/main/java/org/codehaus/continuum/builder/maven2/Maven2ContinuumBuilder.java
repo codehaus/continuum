@@ -23,7 +23,6 @@ package org.codehaus.continuum.builder.maven2;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,18 +39,16 @@ import org.codehaus.continuum.maven.MavenTool;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ProjectDescriptor;
+import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.scm.ContinuumScm;
-import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.9 2004-10-28 17:45:49 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.10 2004-10-28 21:23:30 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -78,23 +75,23 @@ public abstract class Maven2ContinuumBuilder
     // ContinuumBuilder implementation
     // ----------------------------------------------------------------------
 
-    public ProjectDescriptor createDescriptor( ContinuumProject project )
+    public ContinuumProject createProject( File workingDirectory )
         throws ContinuumException
     {
         Maven2ProjectDescriptor descriptor = new Maven2ProjectDescriptor();
 
-        try
-        {
-            scm.checkOutProject( project );
-        }
-        catch( ContinuumScmException ex )
-        {
-            throw new ContinuumException( "Error while checking out the project.", ex );
-        }
+//        try
+//        {
+//            scm.checkOutProject( project );
+//        }
+//        catch( ContinuumScmException ex )
+//        {
+//            throw new ContinuumException( "Error while checking out the project.", ex );
+//        }
 
         MavenProject mavenProject;
 
-        File pomFile = getPomFile( new File( project.getWorkingDirectory() ) );
+        File pomFile = getPomFile( workingDirectory );
 
         mavenProject = mavenTool.getProject( pomFile );
 
@@ -146,7 +143,7 @@ public abstract class Maven2ContinuumBuilder
             descriptor.getGoals().add( "jar:install" );
         }
 
-        descriptor.setName( mavenProject.getName() );
+//        descriptor.setName( mavenProject.getName() );
 
         // The public Url takes priority over the developer connection
         Scm scm = mavenProject.getScm();
@@ -163,7 +160,7 @@ public abstract class Maven2ContinuumBuilder
             throw new ContinuumException( "Missing both anonymous and developer scm connection urls." );
         }
 
-        descriptor.setScmUrl( scmUrl );
+//        descriptor.setScmUrl( scmUrl );
 
         CiManagement ciManagement = mavenProject.getCiManagement();
 
@@ -174,7 +171,7 @@ public abstract class Maven2ContinuumBuilder
             throw new ContinuumException( "Missing nag email address from the ci section of the project descriptor." );
         }
 
-        descriptor.setNagEmailAddress( nagEmailAddress );
+//        descriptor.setNagEmailAddress( nagEmailAddress );
 
         String version = mavenProject.getVersion();
 
@@ -183,16 +180,20 @@ public abstract class Maven2ContinuumBuilder
             throw new ContinuumException( "Missing version from the project descriptor." );
         }
 
-        descriptor.setVersion( version );
+//        descriptor.setVersion( version );
 
         // ----------------------------------------------------------------------
-        // Update the project
+        // Make the project
         // ----------------------------------------------------------------------
 
-        if ( !StringUtils.isEmpty( mavenProject.getName() ) )
+        ContinuumProject project = new GenericContinuumProject();
+
+        if ( StringUtils.isEmpty( mavenProject.getName() ) )
         {
-            project.setName( mavenProject.getName() );
+            throw new ContinuumException( "The project name cannot be empty." );
         }
+
+        project.setName( mavenProject.getName() );
 
         project.setScmUrl( scmUrl );
 
@@ -200,7 +201,9 @@ public abstract class Maven2ContinuumBuilder
 
         project.setVersion( version );
 
-        return descriptor;
+        project.setDescriptor( descriptor );
+
+        return project;
     }
 
     public synchronized ContinuumBuildResult build( File workingDirectory, ContinuumBuild build )
@@ -225,7 +228,7 @@ public abstract class Maven2ContinuumBuilder
 
             pom = mavenTool.getProject( file );
 
-            descriptor.setPom( IOUtil.toString( new FileInputStream( file ) ) );
+//            descriptor.setPom( IOUtil.toString( new FileInputStream( file ) ) );
 
             List goals = descriptor.getGoals();
 

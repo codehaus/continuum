@@ -34,7 +34,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellContinuumBuilder.java,v 1.2 2004-10-28 16:00:18 jvanzyl Exp $
+ * @version $Id: ShellContinuumBuilder.java,v 1.3 2004-10-28 21:23:59 trygvis Exp $
  */
 public abstract class ShellContinuumBuilder
     extends AbstractContinuumBuilder
@@ -74,6 +74,8 @@ public abstract class ShellContinuumBuilder
 
         int exitCode;
 
+        getLogger().info( "executing: " + cl );
+
         try
         {
             exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
@@ -87,7 +89,7 @@ public abstract class ShellContinuumBuilder
 
         String err = stderr.getOutput();
 
-        boolean success = out.indexOf( "BUILD SUCCESSFUL" ) != -1;
+        boolean success = exitCode == 0;
 
         if ( build != null )
         {

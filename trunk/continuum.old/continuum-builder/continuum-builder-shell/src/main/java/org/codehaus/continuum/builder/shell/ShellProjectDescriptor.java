@@ -24,12 +24,9 @@ package org.codehaus.continuum.builder.shell;
 
 import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
-import java.util.Map;
-import java.util.HashMap;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellProjectDescriptor.java,v 1.2 2004-10-28 16:14:34 jvanzyl Exp $
+ * @version $Id: ShellProjectDescriptor.java,v 1.3 2004-10-28 21:23:59 trygvis Exp $
  */
 public class ShellProjectDescriptor
     extends AbstractProjectDescriptor
@@ -38,52 +35,4 @@ public class ShellProjectDescriptor
     // o we need to know where tests go so we can look at the output
     // o we need developers lists for the blame mechanism
     // ----------------------------------------------------------------------
-
-    private String name;
-
-    private String scmConnection;
-
-    private String nagEmailAddress;
-
-    private String version;
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName( String name )
-    {
-        this.name = name;
-    }
-
-    public String getScmConnection()
-    {
-        return scmConnection;
-    }
-
-    public void setScmConnection( String scmConnection )
-    {
-        this.scmConnection = scmConnection;
-    }
-
-    public String getNagEmailAddress()
-    {
-        return nagEmailAddress;
-    }
-
-    public void setNagEmailAddress( String nagEmailAddress )
-    {
-        this.nagEmailAddress = nagEmailAddress;
-    }
-
-    public String getVersion()
-    {
-        return version;
-    }
-
-    public void setVersion( String version )
-    {
-        this.version = version;
-    }
 }
