@@ -197,18 +197,6 @@
 
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>updateProject</role-hint>
-      <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
-      <role-hint>updateProjectDescriptor</role-hint>
-      <implementation>org.codehaus.continuum.web.action.UpdateProjectDescriptor</implementation>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.action.Action</role>
       <role-hint>removeProject</role-hint>
       <implementation>org.codehaus.continuum.web.action.RemoveProject</implementation>
     </component>
