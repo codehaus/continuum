@@ -28,7 +28,7 @@ import org.codehaus.continuum.utils.ContinuumUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: UrlSocketRegistrar.java,v 1.3 2005-03-10 00:05:56 trygvis Exp $
+ * @version $Id: UrlSocketRegistrar.java,v 1.1 2005-03-21 00:12:00 trygvis Exp $
  */
 public class UrlSocketRegistrar
     extends AbstractContinuumRegistrar

@@ -17,6 +17,8 @@ package org.codehaus.continuum;
  */
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -27,8 +29,8 @@ import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.manager.BuilderManager;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.buildqueue.BuildQueueException;
-import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.scm.ContinuumScmException;
 import org.codehaus.continuum.store.ContinuumStore;
@@ -44,25 +46,48 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.10 2005-03-20 07:19:57 jvanzyl Exp $
+ * @version $Id: DefaultContinuum.java,v 1.11 2005-03-21 00:11:59 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
-    private BuilderManager builderManager;
-
-    private BuildController buildController;
-
-    private BuildQueue buildQueue;
-
-    private ContinuumStore store;
-
-    private ContinuumScm scm;
-
-    private String workingDirectory;
+    private final static String DATABASE_INITIALIZED = "database.initialized";
 
     private final static String continuumVersion = "1.0-alpha-1-SNAPSHOT";
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    // TODO: look up these requiremetns in start() to have better control of the
+    //       application initialization sequence. The application should make sure
+    //       that the database is properly initialized before starting the store.
+
+    /** @requirement */
+    private BuilderManager builderManager;
+
+    /** @requirement */
+    private BuildController buildController;
+
+    /** @requirement */
+    private BuildQueue buildQueue;
+
+    /** @requirement */
+    private ContinuumStore store;
+
+    /** @requirement */
+    private ContinuumScm scm;
+
+    /** @configuration */
+    private String appHome;
+
+    /** @configuration */
+    private String workingDirectory;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     private BuilderThread builderThread;
 
@@ -79,7 +104,7 @@ public class DefaultContinuum
     }
 
     public ContinuumBuild getLatestBuildForProject( String id )
-        throws ContinuumStoreException    
+        throws ContinuumStoreException
     {
         return store.getLatestBuildForProject( id );
     }
@@ -480,14 +505,6 @@ public class DefaultContinuum
     {
         getLogger().info( "Initializing Continuum." );
 
-        PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
-
-        PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
-
-        PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
-
-        PlexusUtils.assertConfiguration( workingDirectory, "working-directory" );
-
         File wdFile = new File( workingDirectory );
 
         if ( wdFile.exists() )
@@ -528,6 +545,38 @@ public class DefaultContinuum
         builderThreadThread.setDaemon( true );
 
         builderThreadThread.start();
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+
+        PlexusUtils.assertConfiguration( appHome, "app-home" );
+
+        // check to see if the tables exists or not.
+        File file = new File( appHome, "continuum.properties" );
+
+        Properties properties = new Properties();
+
+        if ( !file.exists() )
+        {
+            initializeStore( file );
+        }
+        else
+        {
+            properties.load( new FileInputStream( file ) );
+
+            String state = properties.getProperty( DATABASE_INITIALIZED );
+
+            if ( !state.equals( "true" ) )
+            {
+                initializeStore( file );
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
 
         String banner = StringUtils.repeat( "-", continuumVersion.length() );
 
@@ -586,5 +635,19 @@ public class DefaultContinuum
         }
 
         getLogger().info( "Continuum stopped." );
+    }
+
+    private void initializeStore( File file )
+        throws Exception
+    {
+        Properties properties = new Properties();
+
+        getLogger().warn( "This system isn't configured. Configuring." );
+
+        store.createDatabase();
+
+        properties.setProperty( DATABASE_INITIALIZED, "true" );
+
+        properties.store( new FileOutputStream( file ), null );
     }
 }

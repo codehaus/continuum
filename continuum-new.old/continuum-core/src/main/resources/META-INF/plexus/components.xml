@@ -21,6 +21,7 @@
         </requirement>
       </requirements>
       <configuration>
+        <app-home>${plexus.home}</app-home>
         <working-directory>${plexus.home}/temp</working-directory>
       </configuration>
     </component>
@@ -126,6 +127,8 @@
       </configuration>
     </component>
 
+    <!-- Connection factory  -->
+
     <component>
       <role>org.codehaus.continuum.network.ConnectionFactory</role>
       <role-hint>simple-socket-trigger-server</role-hint>
@@ -137,13 +140,41 @@
         </requirement>
       </requirements>
       <configuration>
-        <port>7890</port>
+        <port>6770</port>
       </configuration>
     </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>url-registrar-server</role-hint>
+      <implementation>org.codehaus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+          <role-hint>url-registrar</role-hint>
+        </requirement>
+      </requirements>
+      <configuration>
+        <port>6771</port>
+      </configuration>
+    </component>
+
+    <!-- ConnectionConsumer -->
     <component>
       <role>org.codehaus.continuum.network.ConnectionConsumer</role>
       <role-hint>simple-socket-trigger</role-hint>
       <implementation>org.codehaus.continuum.trigger.socket.SimpleSocketTrigger</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionConsumer</role>
+      <role-hint>url-registrar</role-hint>
+      <implementation>org.codehaus.continuum.registration.socket.UrlSocketRegistrar</implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.continuum.Continuum</role>
