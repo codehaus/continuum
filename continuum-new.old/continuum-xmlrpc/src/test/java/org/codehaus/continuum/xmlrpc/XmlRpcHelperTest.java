@@ -22,7 +22,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: XmlRpcHelperTest.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
+ * @version $Id: XmlRpcHelperTest.java,v 1.3 2005-03-23 16:14:53 trygvis Exp $
  */
 public class XmlRpcHelperTest
     extends PlexusTestCase
@@ -33,6 +33,12 @@ public class XmlRpcHelperTest
 
         private int bar;
 
+        private boolean bool;
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
         public String getFoo()
         {
             return foo;
@@ -42,6 +48,15 @@ public class XmlRpcHelperTest
         {
             return bar;
         }
+
+        public boolean isBool()
+        {
+            return bool;
+        }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
 
         public int get()
         {
@@ -104,13 +119,17 @@ public class XmlRpcHelperTest
 
         bean.bar = 24;
 
+        bean.bool = true;
+
         Hashtable hashtable = xmlRpcHelper.objectToHashtable( bean );
 
-        assertEquals( 2, hashtable.size() );
+        assertEquals( 3, hashtable.size() );
 
         assertProperty( "foo", "trygve", hashtable );
 
         assertProperty( "bar", "24", hashtable );
+
+        assertProperty( "bool", "true", hashtable );
     }
 
     public void testComplexBean()
@@ -124,11 +143,15 @@ public class XmlRpcHelperTest
 
         s1.bar = 24;
 
+        s1.bool = true;
+
         SimleBean s2 = new SimleBean();
 
         s2.foo = "anne";
 
         s2.bar = 22;
+
+        s2.bool = false;
 
         ComplexBean complexBean = new ComplexBean();
 
@@ -152,21 +175,25 @@ public class XmlRpcHelperTest
 
         Hashtable h1 = (Hashtable) hashtable.get( "s1" );
 
-        assertEquals( 2, h1.size() );
+        assertEquals( 3, h1.size() );
 
         assertProperty( "foo", "trygve", h1 );
 
         assertProperty( "bar", "24", h1 );
 
+        assertProperty( "bool", "true", h1 );
+
         assertTrue( hashtable.containsKey( "s2" ) );
 
         Hashtable h2 = (Hashtable) hashtable.get( "s2" );
 
-        assertEquals( 2, h2.size() );
+        assertEquals( 3, h2.size() );
 
         assertProperty( "foo", "anne", h2 );
 
         assertProperty( "bar", "22", h2 );
+
+        assertProperty( "bool", "false", h2 );
     }
 
     // ----------------------------------------------------------------------

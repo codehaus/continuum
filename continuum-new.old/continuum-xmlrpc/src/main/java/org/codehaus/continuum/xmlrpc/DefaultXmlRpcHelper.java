@@ -29,7 +29,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultXmlRpcHelper.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
+ * @version $Id: DefaultXmlRpcHelper.java,v 1.3 2005-03-23 16:14:53 trygvis Exp $
  */
 public class DefaultXmlRpcHelper
     extends AbstractLogEnabled
@@ -70,7 +70,8 @@ public class DefaultXmlRpcHelper
             String name = method.getName();
 
             // Only call getters
-            if ( !name.startsWith( "get" ) || name.length() <= 3 )
+            if ( (!name.startsWith( "get" ) || name.length() <= 3 ) &&
+                 (!name.startsWith( "is" ) || name.length() <= 2 ) )
             {
                 continue;
             }
@@ -91,7 +92,16 @@ public class DefaultXmlRpcHelper
             // Rewrite the name from the form 'getFoo' to 'foo'.
             // ----------------------------------------------------------------------
 
-            String propertyName = name.substring( 3 );
+            String propertyName;
+
+            if ( name.startsWith( "get" ) )
+            {
+                propertyName = name.substring( 3 );
+            }
+            else
+            {
+                propertyName = name.substring( 2 );
+            }
 
             propertyName = StringUtils.uncapitalise( propertyName );
 
@@ -118,6 +128,10 @@ public class DefaultXmlRpcHelper
             {
             }
             else if ( value instanceof Number )
+            {
+                value = value.toString();
+            }
+            else if ( value instanceof Boolean )
             {
                 value = value.toString();
             }
