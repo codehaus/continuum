@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.project.ContinuumProject;
+import org.apache.maven.continuum.project.AntProject;
 import org.apache.maven.continuum.store.ContinuumStoreException;
 
 /**
@@ -73,4 +74,11 @@ public interface Continuum
 
     ContinuumBuild getLatestBuildForProject( String id )
         throws ContinuumStoreException;
+
+    // ----------------------------------------------------------------------
+    // Different project types
+    // ----------------------------------------------------------------------
+
+    void addAntProject( AntProject project )
+        throws ContinuumException;
 }
