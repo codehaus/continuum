@@ -9,7 +9,6 @@
  <div id="projecttools" class="toolgroup">
   <div class="label">Add Project</div>
   <div class="body">
-    <div><a href="$link.setPage('addProjectScm.form')">Scm Url</a></div>
     <div><a href="$link.setPage('addProjectPomUrl.form')">Pom Url</a></div>
   </div>
  </div>
