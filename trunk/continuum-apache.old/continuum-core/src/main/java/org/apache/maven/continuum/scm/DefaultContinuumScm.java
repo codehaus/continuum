@@ -31,7 +31,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.1.1.1 2005-03-29 20:42:02 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.2 2005-03-31 00:01:44 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -114,13 +114,7 @@ public class DefaultContinuumScm
         checkOut( project, new File( workingDirectory ) );
     }
 
-    /**
-     * Updates the sources in the specified directory.
-     *
-     * @param project The project to update.
-     * @throws ContinuumScmException Thrown in case of a exception while updating the sources.
-     */
-    public boolean updateProject( ContinuumProject project )
+    public UpdateScmResult updateProject( ContinuumProject project )
         throws ContinuumScmException
     {
         try
@@ -128,8 +122,6 @@ public class DefaultContinuumScm
             getLogger().info( "Updating project: id: '" + project.getId() + "', name '" + project.getName() + "'." );
 
             File workingDirectory = new File( project.getWorkingDirectory() );
-
-            getLogger().info( "Working directory '" + workingDirectory.getAbsolutePath() + "'." );
 
             if ( !workingDirectory.exists() )
             {
@@ -160,7 +152,7 @@ public class DefaultContinuumScm
                 throw new ContinuumScmException( "Error while checking out the project.", result );
             }
 
-            return result.getUpdatedFiles().size() > 0;
+            return result;
         }
         catch ( ScmRepositoryException ex )
         {

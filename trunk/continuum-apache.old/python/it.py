@@ -2,8 +2,10 @@ import continuum
 import os
 import shutil
 import sys
-from os import linesep
-from time import sleep
+import time
+
+def progress( message ):
+    print "* " + message
 
 def fail( message ):
     print "FAILURE: " + message
@@ -21,14 +23,27 @@ def assertEquals( message, expected, actual ):
     if( expected == actual ):
         return
     
-    print message + linesep +\
-          "Expected " + str( expected ) + linesep +\
-          "Actual " + str( actual )
+    print
+    print "##############################################"
+    print "ASSERTION FAILURE!"
+    print "##############################################"
+    print "Message: " + message
+    print "Expected: " + str( expected )
+    print "Actual: " + str( actual )
+    print "##############################################"
+    print "Traceback"
+    print "##############################################"
+    traceback.print_stack()
+    print "##############################################"
+    print
 
     sys.exit( -1 )
 
 def assertTrue( message, condition ):
-    assertEquals( message, condition, True )
+    assertEquals( message, True, condition )
+
+def assertFalse( message, condition ):
+    assertEquals( message, False, condition )
 
 def assertNotNull( message, condition ):
     if( condition != None ):
@@ -38,20 +53,29 @@ def assertNotNull( message, condition ):
 
     sys.exit( -1 )
 
-def assertProject( id, name, nagEmailAddress, state, version, builderId, project ):
-    assertNotNull( "project.id", id )
+def assertProject( projectId, name, nagEmailAddress, state, version, builderId, project ):
+    assertNotNull( "project.id", projectId )
     assertEquals( "project.name", name, project.name )
     assertEquals( "project.nagEmailAddress", nagEmailAddress, project.nagEmailAddress )
     assertEquals( "project.state", state, project.state )
     assertEquals( "project.version", version, project.version )
     assertEquals( "project.builderId", builderId, project.builderId )
 
+def assertSuccessfulNoBuildPerformed( buildId ):
+    build = waitForBuild( buildId )
+    assertEquals( "The build wasn't successful.", continuum.STATE_OK, build.state )
+    buildResult = continuum.getBuildResult( buildId )
+    assertNotNull( "Build result was null.", buildResult )
+    assertTrue( "The build wasn't successful", buildResult.success )
+    assertFalse( "The build was executed", buildResult.buildExecuted )
+
 def assertSuccessfulMaven1Build( buildId ):
     build = waitForBuild( buildId )
     assertEquals( "The build wasn't successful.", continuum.STATE_OK, build.state )
     buildResult = continuum.getBuildResult( buildId )
     assertNotNull( "Build result was null.", buildResult )
-    assertEquals( "The build wasn't successful", buildResult.success, "true" )
+    assertTrue( "The build wasn't successful", buildResult.success )
+    assertTrue( "The build wasn't executed", buildResult.buildExecuted )
     assertTrue( "Standard output didn't contain the 'BUILD SUCCESSFUL' message.", buildResult.standardOutput.find( "BUILD SUCCESSFUL" ) != -1 )
     assertEquals( "Standard error wasn't empty.", 0, len( buildResult.standardError ) )
 
@@ -60,7 +84,8 @@ def assertSuccessfulMaven2Build( buildId ):
     assertEquals( "The build wasn't successful.", continuum.STATE_OK, build.state )
     buildResult = continuum.getBuildResult( buildId )
     assertNotNull( "Build result was null.", buildResult )
-    assertEquals( "The build wasn't successful", buildResult.success, "true" )
+    assertTrue( "The build wasn't successful", buildResult.success )
+    assertTrue( "The build wasn't executed", buildResult.buildExecuted )
     assertTrue( "Standard output didn't contain the 'BUILD SUCCESSFUL' message.", buildResult.standardOutput.find( "BUILD SUCCESSFUL" ) != -1 )
     assertEquals( "Standard error wasn't empty.", 0, len( buildResult.standardError ) )
 
@@ -69,7 +94,8 @@ def assertSuccessfulAntBuild( buildId ):
     assertEquals( "The build wasn't successful.", continuum.STATE_OK, build.state )
     buildResult = continuum.getBuildResult( buildId )
     assertNotNull( "Build result was null.", buildResult )
-    assertEquals( "The build wasn't successful", buildResult.success, "true" )
+    assertTrue( "The build wasn't successful", buildResult.success )
+    assertTrue( "The build wasn't executed", buildResult.buildExecuted )
     assertTrue( "Standard output didn't contain the 'BUILD SUCCESSFUL' message.", buildResult.standardOutput.find( "BUILD SUCCESSFUL" ) != -1 )
     assertEquals( "Standard error wasn't empty.", 0, len( buildResult.standardError ) )
 
@@ -78,9 +104,27 @@ def assertSuccessfulShellBuild( buildId, expectedStandardOutput ):
     assertEquals( "The build wasn't successful.", continuum.STATE_OK, build.state )
     buildResult = continuum.getBuildResult( buildId )
     assertNotNull( "Build result was null.", buildResult )
-    assertEquals( "The build wasn't successful", buildResult.success, "true" )
+    assertTrue( "The build wasn't successful", buildResult.success )
+    assertTrue( "The build wasn't executed", buildResult.buildExecuted )
     assertEquals( "Standard output didn't contain the expected output.", expectedStandardOutput, buildResult.standardOutput )
     assertEquals( "Standard error wasn't empty.", 0, len( buildResult.standardError ) )
+
+def execute( workingDirectory, command ):
+    cwd = os.getcwd()
+    os.chdir( workingDirectory )
+    file = os.popen( command )
+    os.chdir( cwd )
+
+    output = file.read()
+
+    ret = file.close()
+
+    if ( ret != None ):
+        print output
+        print "ret: " + str( ret )
+        fail( "The command didn't return 0." )
+
+    return output
 
 def waitForBuild( buildId ):
     timeout = 60
@@ -90,7 +134,7 @@ def waitForBuild( buildId ):
 
     while( build.state == continuum.STATE_BUILD_SIGNALED or build.state == continuum.STATE_BUILDING ):
         build = continuum.getBuild( buildId )
-        sleep( sleepInterval )
+        time.sleep( sleepInterval )
         timeout -= sleepInterval
 
         if ( timeout <= 0 ):
@@ -103,16 +147,13 @@ def cleanDirectory( dir ):
         shutil.rmtree( dir )
 
 def cvsCommit( basedir ):
-    cwd = os.getcwd()
-    os.chdir( basedir )
-    os.system( "cvs commit -m ''" )
-    os.chdir( cwd )
+    return execute( basedir, "cvs commit -m ''" );
+
+def cvsCheckout( cvsroot, module, coDir ):
+    return execute( basedir, "cvs -d " + cvsroot + " checkout -d " + coDir + " " + module );
 
 def cvsImport( basedir, cvsroot, artifactId ):
-    cwd = os.getcwd()
-    os.chdir( basedir )
-    os.system( "cvs -d " + cvsroot + " import -m '' " + artifactId + " continuum_test start" )
-    os.chdir( cwd )
+    return execute( basedir, "cvs -d " + cvsroot + " import -m '' " + artifactId + " continuum_test start" )
 
 def initMaven1Project( basedir, cvsroot, artifactId ):
     cleanDirectory( basedir )
@@ -220,40 +261,41 @@ maven1Project = basedir + "/maven-1"
 maven2Project = basedir + "/maven-2"
 antProject = basedir + "/ant"
 shellProject = basedir + "/shell"
+coDir = basedir + "/tmp-co"
 
 cleanDirectory( basedir )
 os.makedirs( basedir )
 os.makedirs( cvsroot )
 os.system( "cvs -d " + cvsroot + " init" )
 
-print "Initializing Maven 1 CVS project"
+progress( "Initializing Maven 1 CVS project" )
 initMaven1Project( maven1Project, cvsroot, "maven-1" )
 
-print "Initializing Maven 2 CVS project"
+progress( "Initializing Maven 2 CVS project" )
 
 initMaven2Project( maven2Project, cvsroot, "maven-2" )
 
-print "Initializing Ant CVS project"
+progress( "Initializing Ant CVS project" )
 initAntProject( antProject, cvsroot, "ant" )
 
-print "Initializing Shell CVS project"
+progress( "Initializing Shell CVS project" )
 initShellProject( shellProject, cvsroot, "shell" )
 
-print "Adding Maven 1 project"
+progress( "Adding Maven 1 project" )
 maven1Id = continuum.addProjectFromUrl( "file:" + maven1Project + "/project.xml", "maven-1" )
 
-print "Adding Maven 2 project"
+progress( "Adding Maven 2 project" )
 maven2Id = continuum.addProjectFromUrl( "file:" + maven2Project + "/pom.xml", "maven2" )
 
-print "Adding Ant project"
+progress( "Adding Ant project" )
 antId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:ant", "ant", "Ant Project", "foo@bar", "3.0", { "executable": "ant", "targets" : "clean, build"} )
 
-print "Adding Shell project"
-prefix = os.getcwd() + "/continuum-plexus-application/target/plexus-test-runtime/apps/continuum-plexus-application-1.0-alpha-1-SNAPSHOT-application/temp/Shell-Project/"
+progress( "Adding Shell project" )
+prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum-plexus-application-1.0-alpha-1-SNAPSHOT-application/temp/Shell-Project/"
 shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", "foo@bar", "3.0", 
         { "script": prefix + "script.sh", "arguments" : ""} )
 
-print "Asserting projects"
+progress( "Asserting projects" )
 
 maven1 = continuum.getProject( maven1Id )
 maven2 = continuum.getProject( maven2Id )
@@ -273,25 +315,28 @@ assertProject( "4", "Shell Project", "foo@bar", continuum.STATE_NEW, "3.0", "she
 # Project building
 ############################################################
 
+startTime = int( time.time() )
+
 if 1:
-    print "Building Maven 1 project"
+    progress( "Building Maven 1 project" )
     buildId = continuum.buildProject( maven1.id )
     assertSuccessfulMaven1Build( buildId )
 
-    print "Testing that the POM is updated before each build."
-    # Test that the POM is updated before each build
-    pom = file( maven1Project + "/project.xml", "r" )
-    str = pom.read()
+    progress( "Testing that the POM is updated before each build." )
+    cleanDirectory( coDir )
+    cvsCheckout( cvsroot, "maven-1", coDir )
+    pom = file( coDir + "/project.xml", "r" )
+    value = pom.read()
     pom.close()
 
-    str = str.replace( "Maven 1 Project", "Maven 1 Project - Changed" )
-    str = str.replace( "1.0", "1.1" )
+    value = value.replace( "Maven 1 Project", "Maven 1 Project - Changed" )
+    value = value.replace( "1.0", "1.1" )
 
-    pom = file( maven1Project + "/project.xml", "w+" )
-    pom.write( str )
+    pom = file( coDir + "/project.xml", "w+" )
+    pom.write( value )
     pom.close()
 
-    cvsImport( maven1Project, cvsroot, "maven-1" )
+    cvsCommit( coDir )
 
     continuum.updateProjectFromScm( maven1.id )
     maven1 = continuum.getProject( maven1.id )
@@ -299,21 +344,40 @@ if 1:
     assertEquals( "The project version wasn't changed.", "1.1", maven1.version )
 
 if 1:
-    print "Building Maven 2 project"
+    progress( "Building Maven 2 project" )
     build = continuum.buildProject( maven2.id )
     assertSuccessfulMaven2Build( build )
 
+    progress( "Test that a build without any files changed won't execute the builder" )
+    build = continuum.buildProject( maven2.id )
+    assertSuccessfulNoBuildPerformed( build )
+
 if 1:
-    print "Building Ant project"
+    progress( "Building Ant project" )
     build = continuum.buildProject( ant.id )
     assertSuccessfulAntBuild( build )
 
 if 1:
-    print "Building Shell project"
+    progress( "Building Shell project" )
     build = continuum.buildProject( shell.id )
     assertSuccessfulShellBuild( build, "" )
 
     # Test project reconfiguration
+    # Test that a project will be built after a changed file is committed
+    progress( "Building Shell project with alternative configuration" )
+
+    cleanDirectory( coDir )
+    cvsCheckout( cvsroot, "shell", coDir )
+    script = file( coDir + "/script.sh", "r" )
+    value = script.read() + "# Extra line" + os.linesep
+    script.close()
+
+    script = file( coDir + "/script.sh", "w+" )
+    script.write( value )
+    script.close()
+
+    output = cvsCommit( coDir )
+
     configuration = shell.configuration
     configuration[ "arguments" ] = "a b";
     continuum.updateProjectConfiguration( shell.id, configuration );
@@ -325,7 +389,12 @@ b
 
 # TODO: Add project failure tests
 
+endTime = int( time.time() )
+
 print ""
 print "##############################################"
 print "ALL TESTS PASSED"
 print "##############################################"
+print "Time elapsed: " + str( endTime - startTime ) + "s."
+print "##############################################"
+print ""

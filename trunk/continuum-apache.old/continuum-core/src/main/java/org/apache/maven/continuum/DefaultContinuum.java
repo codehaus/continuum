@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.1.1.1 2005-03-29 20:41:59 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.2 2005-03-31 00:01:44 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -352,34 +352,6 @@ public class DefaultContinuum
             getLogger().error( "Error while enqueuing project.", e );
 
             throw new ContinuumException( "Error while creating enqueuing object.", e );
-        }
-    }
-
-    public boolean checkIfProjectNeedsToBeBuilt( String projectId )
-        throws ContinuumException
-    {
-        try
-        {
-            ContinuumProject project = store.getProject( projectId );
-
-            boolean needsBuild = scm.updateProject( project );
-
-            if ( needsBuild )
-            {
-                getLogger().info( "Project needs to be built: " + project.getName() );
-
-                buildProject( projectId );
-            }
-
-            return needsBuild;
-        }
-        catch ( ContinuumScmException ex )
-        {
-            throw new ContinuumException( "Exception while checking the project.", ex );
-        }
-        catch ( ContinuumStoreException ex )
-        {
-            throw new ContinuumException( "Exception while checking the project.", ex );
         }
     }
 

@@ -19,10 +19,11 @@ package org.apache.maven.continuum.scm;
 import java.io.File;
 
 import org.apache.maven.continuum.project.ContinuumProject;
+import org.apache.maven.scm.command.update.UpdateScmResult;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.1.1.1 2005-03-29 20:42:02 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.2 2005-03-31 00:01:44 trygvis Exp $
  */
 public interface ContinuumScm
 {
@@ -34,6 +35,6 @@ public interface ContinuumScm
     void checkOutProject( ContinuumProject project )
         throws ContinuumScmException;
 
-    boolean updateProject( ContinuumProject project )
+    UpdateScmResult updateProject( ContinuumProject project )
         throws ContinuumScmException;
 }

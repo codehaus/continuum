@@ -64,9 +64,6 @@ public interface Continuum
     String buildProject( String projectId )
         throws ContinuumException;
 
-    boolean checkIfProjectNeedsToBeBuilt( String projectId )
-        throws ContinuumException;
-
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
