@@ -128,6 +128,12 @@ public class DefaultContinuum
                 getLogger().error( "Can't read POM from file system: " + projectUrl, e );
             }
         }
+
+        // If we successfully created a project we're ready to go!
+        if ( project != null )
+        {
+            addProject( project );
+        }
     }
 
     public void addProject( Project project )
