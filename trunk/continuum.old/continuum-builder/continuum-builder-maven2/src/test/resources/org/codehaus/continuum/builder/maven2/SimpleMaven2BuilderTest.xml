@@ -1,11 +1,10 @@
 <plexus>
   <components>
+<!--       
     <component>
       <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
       <role-hint>maven2</role-hint>
-<!--
       <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
--->
       <implementation>org.codehaus.continuum.builder.maven2.ExternalMaven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
@@ -21,7 +20,8 @@
         <maven-repository>/home/trygvis/.m2/repository</maven-repository>
       </configuration>
     </component>
-
+      -->
+<!--
     <component>
       <role>org.codehaus.continuum.scm.ContinuumScm</role>
       <implementation>org.codehaus.continuum.scm.DefaultContinuumScm</implementation>
@@ -34,7 +34,7 @@
         <checkout-directory>/tmp/continuum/checkout</checkout-directory>
       </configuration>
     </component>
-
+-->
 <!-- Maven SCM -->
 <!--
     <component>

@@ -12,14 +12,9 @@
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.Maven</role>
+            <role>org.codehaus.continuum.maven.MavenTool</role>
         </requirement>
       </requirements>
-      <configuration>
-        <maven-home>/home/trygvis/m2</maven-home>
-        <maven-home-local>/home/trygvis/.m2</maven-home-local>
-        <maven-repository>/home/trygvis/.m2/repository</maven-repository>
-      </configuration>
     </component>
   </components>
 </component-set>

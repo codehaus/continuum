@@ -22,15 +22,12 @@ package org.codehaus.continuum.builder.maven2;
  * SOFTWARE.
  */
 
-import java.io.File;
-
 import org.apache.maven.Maven;
-
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.TestUtils;
-import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.maven.DefaultMavenTool;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
@@ -38,10 +35,12 @@ import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
+import java.io.File;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.7 2004-10-24 20:39:04 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.8 2004-10-28 17:45:49 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
@@ -63,7 +62,7 @@ public class SimpleMaven2BuilderTest
 
         txManager.begin();
 
-        String projectId = continuum.addProject( "Continuum Test Project 1", repo, "foo@bar", "1.0", "maven2" );
+        String projectId = continuum.addProjectFromScm( repo, "maven2" );
 
         ContinuumProject project = store.getProject( projectId );
 
@@ -106,7 +105,10 @@ public class SimpleMaven2BuilderTest
 
         assertEquals( 0, queue.getLength() );
 
-        String repository = ( (Maven2ContinuumBuilder) lookup( ContinuumBuilder.ROLE, "maven2" ) ).getMavenRepository();
+//        String repository = ( (Maven2ContinuumBuilder) lookup( ContinuumBuilder.ROLE, "maven2" ) ).getMavenRepository();
+        DefaultMavenTool mavenTool = (DefaultMavenTool) lookup( DefaultMavenTool.ROLE );
+
+        String repository = mavenTool.getMavenRepository();
 
         File project1Jar = new File( repository, "plexus/jars/continuum-project1-1.0.jar" );
 

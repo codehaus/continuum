@@ -23,45 +23,25 @@ package org.codehaus.continuum.builder.maven2;
  */
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.builder.ContinuumBuilder;
+import org.codehaus.continuum.maven.ExternalMavenExecutionResult;
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.5 2004-10-24 20:39:04 trygvis Exp $
+ * @version $Id: ExternalMaven2ContinuumBuilder.java,v 1.6 2004-10-28 17:45:49 trygvis Exp $
  */
 public class ExternalMaven2ContinuumBuilder
     extends Maven2ContinuumBuilder
     implements ContinuumBuilder, Initializable
 {
-    private File classWorldsJar;
-
-    // ----------------------------------------------------------------------
-    // Component Lifecycle
-    // ----------------------------------------------------------------------
-
-    public void initialize()
-    	throws Exception
-    {
-        classWorldsJar = new File( getMavenHome(), "/core/boot/classworlds-1.1-SNAPSHOT.jar" );
-
-        if ( !classWorldsJar.exists() )
-        {
-            throw new ContinuumException( "Maven isn't installed correctly, could not find the classworlds jar (" + classWorldsJar.getAbsolutePath() + ")." );
-        }
-    }
-
     // ----------------------------------------------------------------------
     // ContinuumBuilder implementation
     // ----------------------------------------------------------------------
@@ -86,33 +66,18 @@ public class ExternalMaven2ContinuumBuilder
     //
     // ----------------------------------------------------------------------
 
-    protected Maven2BuildResult execute( File workingDirectory, MavenProject mavenProject, ContinuumBuild build, List goals )
+    protected Maven2BuildResult execute( File workingDirectory, MavenProject project, ContinuumBuild build, List goals )
         throws ContinuumException
     {
-        Commandline cl = getMaven2CommandLine( workingDirectory, goals );
+        ExternalMavenExecutionResult externalResult;
 
-        CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+        externalResult = getMavenTool().executeExternal( workingDirectory, project, goals );
 
-        CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
+        int exitCode = externalResult.getExitCode();
 
-        int exitCode;
+        String out = externalResult.getSystemOut();
 
-        try
-        {
-            exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
-        }
-        catch( Exception ex )
-        {
-            throw new ContinuumException( "Error while executing command.", ex );
-        }
-
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
-        String out = stdout.getOutput();
-
-        String err = stderr.getOutput();
+        String err = externalResult.getSystemErr();
 
         boolean success = out.indexOf( "BUILD SUCCESSFUL" ) != -1;
 
@@ -126,53 +91,5 @@ public class ExternalMaven2ContinuumBuilder
         {
             return null;
         }
-    }
-
-    private Commandline getMaven2CommandLine( File workingDirectory, List goals )
-    {
-        Commandline cl = new Commandline();
-
-        cl.setExecutable( "java" );
-
-        cl.setWorkingDirectory( workingDirectory.getAbsolutePath() );
-
-        cl.createArgument().setValue( "-classpath" );
-
-        cl.createArgument().setValue( classWorldsJar.getAbsolutePath() );
-
-        cl.createArgument().setValue( "-Dclassworlds.conf=" + getMavenHome() + "/bin/classworlds.conf" );
-
-        cl.createArgument().setValue( "-Dmaven.home=" + getMavenHome() );
-
-        cl.createArgument().setValue( "-Dmaven.home.local=" + getMavenHomeLocal() );
-
-        if ( !StringUtils.isEmpty( getMavenRepository() ) )
-        {
-            cl.createArgument().setValue( "-Dmaven.repo.local=" + getMavenRepository() );
-        }
-
-        cl.createArgument().setValue( "org.codehaus.classworlds.Launcher" );
-
-        for ( Iterator it = goals.iterator(); it.hasNext(); )
-        {
-            String goal = (String) it.next();
-
-            cl.createArgument().setValue( goal );
-        }
-
-        String[] args = cl.getCommandline();
-
-        String cmd = args[0];
-
-        for ( int i = 1; i < args.length; i++ )
-        {
-            cmd += " " + args[i];
-        }
-
-        getLogger().warn( "Executing external maven. Commandline: " + cmd );
-
-        getLogger().warn( "Executing external maven. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
-
-        return cl;
     }
 }
