@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor;
 import org.codehaus.continuum.mail.MailMessage;
 import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.project.BuildResult;
@@ -19,7 +21,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.1 2004-07-07 02:34:40 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.2 2004-07-08 01:12:47 trygvis Exp $
  */
 public class MailContinuumNotifier
     extends AbstractLogEnabled
@@ -68,10 +70,14 @@ public class MailContinuumNotifier
         PlexusUtils.assertConfiguration( smtpServer, "smtp-server" );
 
         if ( to == null )
+        {
             getLogger().info( "To address is not configured, will use the nag email address from the project." );
+        }
 
         if ( from == null )
+        {
             getLogger().info( "From address is not configured, will use the nag email address from the project." );
+        }
 
         if ( smtpPort == null )
         {
@@ -146,13 +152,13 @@ public class MailContinuumNotifier
     {
         getLogger().info( "Sending message to: " + smtpServer + ":" + port );
 
+        MavenProject mavenProject = getMavenProject( project );
+
         try
         {
             MailMessage mailMessage = new MailMessage( smtpServer, port );
 
-            String from = getFromAddress( project );
-
-            MavenProject mavenProject = getMavenProject( project );
+            String from = getFromAddress( mavenProject );
 
             if ( from == null )
             {
@@ -163,7 +169,7 @@ public class MailContinuumNotifier
 
             mailMessage.from( from );
 
-            String to = getToAddress( project );
+            String to = getToAddress( mavenProject );
 
             if ( to == null )
             {
@@ -173,18 +179,17 @@ public class MailContinuumNotifier
             }
 
             mailMessage.to( to );
-    
+
             mailMessage.setSubject( "[continuum] " + project.getName() );
-    
+
             mailMessage.getPrintStream().print( message );
 
-            mailMessage.sendAndClose();
-/*
+//            mailMessage.sendAndClose();
+
             // TODO: remove me
             getLogger().info( "The following message has been sent: " );
 
             getLogger().info( message );
-*/
         }
         catch( IOException ex )
         {
@@ -192,44 +197,61 @@ public class MailContinuumNotifier
         }
     }
 
-    private String getFromAddress( ContinuumProject project )
+    private String getFromAddress( MavenProject mavenProject )
     {
         String address;
 
         if ( from != null )
+        {
             return from;
+        }
 
-        MavenProject mavenProject = getMavenProject( project );
+        CiManagement ciManagement = mavenProject.getCiManagement();
 
-        address = StringUtils.trim( mavenProject.getCiManagement().getNagEmailAddress() );
+        if ( ciManagement == null )
+        {
+            return null;
+        }
+
+        address = StringUtils.trim( ciManagement.getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
+        {
             return null;
+        }
 
         return address;
     }
 
-    private String getToAddress( ContinuumProject project )
+    private String getToAddress( MavenProject mavenProject )
     {
         String address;
 
-        MavenProject mavenProject = getMavenProject( project );
-
         if ( to != null )
+        {
             return to;
+        }
 
         address = StringUtils.trim( mavenProject.getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
+        {
             return null;
+        }
 
         return address;
     }
 
     private MavenProject getMavenProject( ContinuumProject project )
+        throws ContinuumException
     {
-        MavenProject mavenProject = (MavenProject) project.getDescriptor();
+        if ( !project.getType().equals( "maven2" ) )
+        {
+            throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
+        }
 
-        return mavenProject;
+        Maven2ProjectDescriptor descriptor = (Maven2ProjectDescriptor) project.getDescriptor();
+
+        return descriptor.getMavenProject();
     }
 }
