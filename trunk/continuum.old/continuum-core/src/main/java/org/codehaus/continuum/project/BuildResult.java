@@ -6,9 +6,11 @@ package org.codehaus.continuum.project;
 
 import java.io.Serializable;
 
+import org.apache.maven.ExecutionResponse;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildResult.java,v 1.4 2004-07-07 02:34:35 trygvis Exp $
+ * @version $Id: BuildResult.java,v 1.5 2004-07-11 23:58:47 trygvis Exp $
  */
 public interface BuildResult
     extends Serializable
@@ -84,4 +86,8 @@ public interface BuildResult
      * @param error The error to set.
      */
     public void setError( Throwable Error );
+
+    public ExecutionResponse getMaven2Result();
+
+    public void setMaven2Result( ExecutionResponse executionResponse );
 }
