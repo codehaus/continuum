@@ -28,14 +28,11 @@ import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.4 2004-10-28 17:17:38 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.5 2004-10-29 15:30:25 trygvis Exp $
  */
 public interface ContinuumScm
 {
     String ROLE = ContinuumScm.class.getName();
-
-    void clean( ContinuumProject project )
-        throws ContinuumScmException;
 
     void checkOut( File workingDirectory, String scmUrl )
         throws ContinuumScmException;
