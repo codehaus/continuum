@@ -9,13 +9,13 @@ import java.io.PrintStream;
 
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.builder.ContinuumBuilder;
-import org.codehaus.continuum.builder.TestContinuumBuilder;
+import org.codehaus.continuum.builder.test.TestContinuumBuilder;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.3 2004-07-19 16:21:27 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.4 2004-07-26 23:55:26 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends PlexusTestCase
@@ -30,9 +30,9 @@ public class AlarmClockTriggerTest
 
         assertEquals( 0, continuum.getBuildQueueLength() );
 
-        continuum.addProject( "Test Project 1", "scm:foo", "test" );
+        continuum.addProject( "Test Project 1", "scm:test:", "test" );
 
-        continuum.addProject( "Test Project 2", "scm:foo", "test" );
+        continuum.addProject( "Test Project 2", "scm:test:", "test" );
 
         // The lookup starts the trigger
         AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, "alarm-clock-test" );
@@ -87,7 +87,7 @@ public class AlarmClockTriggerTest
     private AlarmClockTrigger getAlarmClockTrigger( String roleHint )
         throws Exception
     {
-        AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( AlarmClockTrigger.ROLE, roleHint );
+        AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, roleHint );
 
         assertNotNull( trigger );
 
