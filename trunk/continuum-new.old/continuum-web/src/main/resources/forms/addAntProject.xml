@@ -42,12 +42,12 @@
       <type>text</type>
     </element>
     <element>
-    <id>addAntProject.targets</id>
-    <validator>default</validator>
-    <message-key>addAntProject.targets.message</message-key>
-    <label-key>addAntProject.targets.label</label-key>
-    <error-message-key>addAntProject.targets.error</error-message-key>
-    <type>text</type>
+      <id>addAntProject.targets</id>
+      <validator>default</validator>
+      <message-key>addAntProject.targets.message</message-key>
+      <label-key>addAntProject.targets.label</label-key>
+      <error-message-key>addAntProject.targets.error</error-message-key>
+      <type>text</type>
     </element>
   </elements>
   <add>

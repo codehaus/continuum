@@ -33,7 +33,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ActionValve.java,v 1.4 2005-03-10 00:05:57 trygvis Exp $
+ * @version $Id: ActionValve.java,v 1.5 2005-03-20 07:19:13 jvanzyl Exp $
  */
 public class ActionValve
     extends AbstractValve
@@ -44,6 +44,10 @@ public class ActionValve
         throws IOException, SummitException
     {
         String actionId = data.getRequest().getParameter( "action" );
+
+        String target = data.getRequest().getParameter( "target" );
+
+        System.out.println( "target = " + target );
 
         if ( actionId != null )
         {

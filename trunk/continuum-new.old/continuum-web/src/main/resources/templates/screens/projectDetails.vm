@@ -1,15 +1,15 @@
-$css.reset()
-<div class="app">
+<div class="app">         .
   <h3>Project Details: $project.name</h3>
-#if ( $buildId )
+  #if ( $buildId )
   <p>
     Build enqueued, build id: $buildId.
   </p>
-#end
+  #end
+
   <p>
     <table border="1" cellspacing="2" cellpadding="3" width="100%">
       <tr class="$css.nextClass">
-        <td>Project Name</td>
+        <th>Project Name</th>
         <td>$project.name</td>
       </tr>
       <tr class="$css.nextClass">
@@ -36,48 +36,44 @@ $css.reset()
         <td>Working directory</td>
         <td>$project.workingDirectory</td>
       </tr>
-#if ( $project.builderId == "maven2" )
-#set ( $desc = $project.descriptor )
+      #if ( $project.builderId == "maven2" )
+      #set ( $desc = $project.descriptor )
       <tr class="$css.nextClass">
         <td>Goals</td>
         <td>$project.configuration.getProperty( 'goals' )</td>
       </tr>
-#elseif ( $project.builderId == "maven-1" )
+      #elseif ( $project.builderId == "maven-1" )
       <tr class="$css.nextClass">
         <td>Goals</td>
         <td>$project.configuration.getProperty( 'goals' )</td>
       </tr>
-#elseif ( $project.builderId == "ant" )
+      #elseif ( $project.builderId == "ant" )
       <tr class="$css.nextClass">
         <td>Targets</td>
         <td>$project.configuration.getProperty( 'targets' )</td>
       </tr>
-#else
+      #else
       <tr class="$css.nextClass">
         <td><font color="red">UNKNOWN PROJECT TYPE '$project.builderId'</td>
         <td>&nbsp;</td>
       </tr>
-#end
-      <tr class="$css.nextClass">
-        <td>Actions</td>
-        <td>
-          <a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.Id" ).setPage('editProject.vm')">Edit project</a> |
-          <a href="$link.addQueryData( "action", "showProject" ).addQueryData( "id", "$project.Id" ).setPage('confirmRemoveProject.vm')">Remove project</a> |
-          <a href="$link.addQueryData( "action", "enqueueProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Enqueue for build</a> |
-          <a href="$link.addQueryData( "action", "showProjectBuilds" ).addQueryData( "id", "$project.Id" ).setPage('projectBuilds.vm')">Builds</a> |
-          <a href="$link.addQueryData( "action", "updateProjectDescriptor" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Update project descriptor from SCM</a>
-        </td>
-      </tr>
-    </table>
+      #end
+      </table>
+     </p>
+      <p>
+        <a href="$link.addQueryData( "id", "$project.Id" ).setPage('editProject.vm')">Edit project</a> |
+        <a href="$link.addQueryData( "id", "$project.Id" ).setPage('confirmRemoveProject.vm')">Remove project</a> |
+        <a href="$link.addQueryData( "action", "enqueueProject" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Enqueue for build</a> |
+        <a href="$link.addQueryData( "action", "showProjectBuilds" ).addQueryData( "id", "$project.Id" ).setPage('projectBuilds.vm')">Builds</a> |
+        <a href="$link.addQueryData( "action", "updateProjectDescriptor" ).addQueryData( "id", "$project.Id" ).setPage('projectDetails.vm')">Update project descriptor from SCM</a>
   </p>
 </div>
 #if( $latestBuild && ( $latestBuild.state == "ok" || $latestBuild.state == "failed" || $latestBuild.state == "error" ) )
-#set ( $build = $latestBuild )
-#if ( $project.type == "maven-2" )
-#parse ( "screens/ExternalMaven2BuildResult.vm" )
-#elseif( $project.type == "maven" )
-#parse ( "screens/ShellBuildResult.vm" )
-#else
-
-#end
+  #set ( $build = $latestBuild )
+  #if ( $project.type == "maven-2" )
+    #parse ( "screens/ExternalMaven2BuildResult.vm" )
+  #elseif( $project.type == "maven" )
+    #parse ( "screens/ShellBuildResult.vm" )
+  #else
+  #end
 #end
