@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CP=target/classes
+CP=src/main/resources
+for jar in `ls generated-runtime/core/boot/*.jar`
+do
+  CP=$CP:$jar
+done;
+for jar in `ls generated-runtime/core/*.jar`
+do
+  CP=$CP:$jar
+done;
+for jar in `ls generated-runtime/apps/continuum-cli/lib/*.jar`
+do
+  CP=$CP:$jar
+done;
+
+java -cp $CP org.codehaus.continuum.cli.ContinuumCC addProject "$@"

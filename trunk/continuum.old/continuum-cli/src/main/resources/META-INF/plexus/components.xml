@@ -1,0 +1,23 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
+      <implementation>org.codehaus.continuum.cli.MockXmlRpcContinuumClient</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.cli.CliCommand</role>
+      <implementation>org.codehaus.continuum.cli.AddProjectCliCommand</implementation>
+      <role-hint>addProject</role-hint>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+</component-set>
