@@ -24,10 +24,10 @@
         <version>1.0-SNAPSHOT</version>
         <goals>
           <goal>
-            <id>plexus:app</id>
+            <id>app</id>
           </goal>
           <goal>
-            <id>plexus:bundle-application</id>
+            <id>bundle-application</id>
           </goal>
         </goals>
         <configuration>
