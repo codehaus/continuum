@@ -4,25 +4,27 @@ package org.codehaus.continuum.notification;
  * LICENSE
  */
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultNotifierManager.java,v 1.1 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: DefaultNotifierManager.java,v 1.2 2004-07-27 00:06:04 trygvis Exp $
  */
 public class DefaultNotifierManager
     extends AbstractLogEnabled
     implements Initializable, NotifierManager
 {
     /** @requirement */
-    private List notifiers;
+    private Map notifiers;
 
     /** */
     private List wrappers;
@@ -36,15 +38,26 @@ public class DefaultNotifierManager
     {
         wrappers = new LinkedList();
 
-        if ( notifiers == null || notifiers.size() == 0 )
+        if ( notifiers == null )
+        {
+            notifiers = Collections.EMPTY_MAP;
+        }
+
+        if ( notifiers.size() == 0 )
         {
             getLogger().warn( "No notifiers registered." );
         }
         else
         {
-            for ( Iterator it = notifiers.iterator(); it.hasNext(); )
+            getLogger().info( "Notifiers:" );
+
+            for ( Iterator it = notifiers.entrySet().iterator(); it.hasNext(); )
             {
-                ContinuumNotifier notifier = (ContinuumNotifier) it.next();
+                Map.Entry entry = (Map.Entry)it.next();
+
+                ContinuumNotifier notifier = (ContinuumNotifier) entry.getValue();
+
+                getLogger().info( "  " + entry.getKey() );
 
                 wrappers.add( new NotifierWrapper( notifier, getLogger() ) );
             }
@@ -55,7 +68,7 @@ public class DefaultNotifierManager
     // NotifierManager Implementation
     // ----------------------------------------------------------------------
 
-    public void buildStarted( BuildResult build )
+    public void buildStarted( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
@@ -63,7 +76,7 @@ public class DefaultNotifierManager
         }
     }
     
-    public void checkoutStarted( BuildResult build )
+    public void checkoutStarted( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
@@ -79,15 +92,15 @@ public class DefaultNotifierManager
      * @param ex Possibly a exception.
      * @throws ContinuumException
      */
-    public void checkoutComplete( BuildResult build, Exception ex )
+    public void checkoutComplete( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
-            ( (NotifierWrapper) it.next() ).checkoutComplete( build, ex );
+            ( (NotifierWrapper) it.next() ).checkoutComplete( build );
         }
     }
 
-    public void runningGoals( BuildResult build )
+    public void runningGoals( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
@@ -95,19 +108,19 @@ public class DefaultNotifierManager
         }
     }
     
-    public void goalsCompleted( BuildResult build, Exception ex )
+    public void goalsCompleted( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
-            ( (NotifierWrapper) it.next() ).goalsCompleted( build, ex );
+            ( (NotifierWrapper) it.next() ).goalsCompleted( build );
         }
     }
     
-    public void buildComplete( BuildResult build, Exception ex )
+    public void buildComplete( ContinuumBuild build )
     {
         for ( Iterator it = wrappers.iterator(); it.hasNext(); )
         {
-            ( (NotifierWrapper) it.next() ).buildComplete( build, ex );
+            ( (NotifierWrapper) it.next() ).buildComplete( build );
         }
     }
 }

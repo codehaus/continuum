@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+  <class
+    name="org.codehaus.continuum.builder.maven2.Maven2Goal"
+    table="Maven2Goal">
+    <id name="projectId" type="java.lang.String">
+      <generator class="assigned"/>
+    </id>
+    <property name="index" type="java.lang.String"/>
+    <property name="name" type="java.lang.String"/>
+  </class>
+
+  <class
+    name="org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor"
+    table="Maven2ProjectDescriptor"
+    discriminator-value="maven2">
+    <id name="projectId" type="java.lang.String">
+      <generator class="assigned"/>
+    </id>
+    <property name="pom" type="java.lang.String" length="8000"/>
+    <list name="goals" table="Maven2Goal">
+      <key column="projectId"/>
+      <index column="index"/>
+      <element column="name" type="java.lang.String"/>
+    </list>
+    <one-to-one name="project" class="org.codehaus.continuum.project.GenericContinuumProject" constrained="true"/>
+  </class>
+
+</hibernate-mapping>

@@ -4,12 +4,14 @@ package org.codehaus.continuum.scm;
  * LICENSE
  */
 
+import java.io.File;
+
 import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumScm.java,v 1.1 2004-07-20 18:26:16 trygvis Exp $
+ * @version $Id: ContinuumScm.java,v 1.2 2004-07-27 00:06:03 trygvis Exp $
  */
 public interface ContinuumScm
 {
@@ -18,9 +20,9 @@ public interface ContinuumScm
     void clean( ContinuumProject project )
         throws ContinuumException;
 
-    String checkout( ContinuumProject project )
+    File checkout( ContinuumProject project )
         throws ContinuumException;
 
-    String update( ContinuumProject project )
+    File update( ContinuumProject project )
         throws ContinuumException;
 }

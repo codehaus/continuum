@@ -16,6 +16,7 @@ function build
     echo "BUILDING " $project
     echo "-----------------------------------------------------------------"
     m2 $goals
+    ret=$?; if [ $ret != 0 ]; then exit $ret; fi
     cd ..
   )
 }
@@ -23,21 +24,24 @@ function build
 find . -name target -type d | xargs rm -rf
 
 m2 pom:install
-#m2 -r -Dmaven.reactor.includes=*/pom.xml install:install
-#m2 -r -Dmaven.reactor.includes=pom.xml,*/pom.xml pom:install
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
+# m2 -r -Dmaven.reactor.includes=*/pom.xml install:install
+# m2 -r -Dmaven.reactor.includes=pom.xml,*/pom.xml pom:install
 
-build "continuum-core"
+build "continuum-api"
 build "continuum-test"
+build "continuum-core"
 build "continuum-hibernate-store"
 #build "continuum-cli"
 build "continuum-mail-notifier"
 build "continuum-alarm-trigger"
-build "continuum-standalone"
+#build "continuum-standalone"
 #build "continuum-xmlrpc-server"
 #build "continuum-xmlrpc-client"
 
 (
-  cd continuum-standalone
+#  cd continuum-standalone
+  cd continuum-web
   sh make.sh
   cd ..
 )

@@ -1,4 +1,4 @@
-package org.codehaus.continuum.store;
+package org.codehaus.continuum.store.memory;
 
 /*
  * LICENSE
@@ -12,17 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.maven.ExecutionResponse;
-
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.GenericBuildResult;
+import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.GenericContinuumBuild;
 import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
+import org.codehaus.continuum.store.AbstractContinuumStore;
+import org.codehaus.continuum.store.ContinuumStoreException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.5 2004-07-19 16:28:17 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.1 2004-07-27 00:06:04 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -33,7 +35,7 @@ public class MemoryContinuumStore
 
     private Map projects = new HashMap();
 
-    private Map buildResults = new HashMap();
+    private Map builds = new HashMap();
 
     /** */
     public MemoryContinuumStore()
@@ -94,7 +96,7 @@ public class MemoryContinuumStore
 
         project.setScmConnection( scmConnection );
 
-        project.setState( ContinuumProject.PROJECT_STATE_NEW );
+        project.setState( ContinuumProjectState.NEW );
 
         project.setType( type );
 
@@ -109,6 +111,26 @@ public class MemoryContinuumStore
         ContinuumProject project = getProject( projectId );
 
         project.setDescriptor( descriptor );
+    }
+
+    public void updateProject( String projectId, String name, String scmUrl )
+        throws ContinuumStoreException
+    {
+        GenericContinuumProject project = getGenericProject( projectId );
+
+        if ( name == null || name.trim().length() == 0 )
+        {
+            throw new ContinuumStoreException( "The name must be set." );
+        }
+
+        if ( scmUrl == null || scmUrl.trim().length() == 0 )
+        {
+            throw new ContinuumStoreException( "The scm url must be set." );
+        }
+
+        project.setName( name );
+
+        project.setScmConnection( scmUrl );
     }
 
     public Iterator getAllProjects()
@@ -156,71 +178,75 @@ public class MemoryContinuumStore
     // Build
     // ----------------------------------------------------------------------
 
-    public String createBuildResult( String projectId )
+    public String createBuild( String projectId )
         throws ContinuumStoreException
     {
         ContinuumProject project = getProject( projectId );
 
-        String buildId = Integer.toString( buildResultSerial++ );
+        String id = Integer.toString( buildResultSerial++ );
 
-        GenericBuildResult buildResult = new GenericBuildResult( buildId );
+        GenericContinuumBuild build = new GenericContinuumBuild( id );
 
-        buildResult.setProject( project );
+        build.setProject( project );
 
-        buildResult.setState( BuildResult.BUILD_BUILDING );
+        build.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        buildResult.setStartTime( new Date().getTime() );
+        build.setStartTime( new Date().getTime() );
 
-        buildResults.put( buildId, buildResult );
+        builds.put( id, build );
 
-        return buildId;
+        return id;
     }
 
-    public void setBuildResult( String buildId, int state, Throwable error, ExecutionResponse executionResponse )
+    public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )
         throws ContinuumStoreException
     {
-        BuildResult buildResult = getBuildResult( buildId );
+        GenericContinuumBuild build = getGenericBuild( id );
 
-        buildResult.setState( state );
+        GenericContinuumProject project = (GenericContinuumProject)build.getProject();
 
-        buildResult.setEndTime( new Date().getTime() );
+        project.setState( state );
 
-        buildResult.setError( error );
+        build.setState( state );
 
-        buildResult.setMaven2Result( executionResponse );
+        build.setEndTime( new Date().getTime() );
+
+        build.setBuildResult( buildResult );
+
+        build.setError( error );
     }
 
-    public BuildResult getBuildResult( String buildId )
+    public ContinuumBuild getBuild( String id )
         throws ContinuumStoreException
     {
-        BuildResult result = (BuildResult) buildResults.get( buildId );
+        ContinuumBuild result = (ContinuumBuild) builds.get( id );
 
         if ( result == null )
         {
-            throw new ContinuumStoreException( "No such build result: " + buildId );
+            throw new ContinuumStoreException( "No such build result: " + id );
         }
 
         return result;
     }
 
     // TODO: Implement start and end
-    public Iterator getBuildResultsForProject( String projectId, int start, int end )
+    public Iterator getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
     {
         ContinuumProject project = getProject( projectId );
 
-        List builds = new ArrayList();
+        List result = new ArrayList();
 
-        for ( Iterator it = buildResults.values().iterator(); it.hasNext(); )
+        for ( Iterator it = builds.values().iterator(); it.hasNext(); )
         {
-            BuildResult buildResult = (BuildResult) it.next();
+            ContinuumBuild buildResult = (ContinuumBuild) it.next();
 
             if ( buildResult.getProject() == project )
             {
-                builds.add( buildResult );
+                result.add( buildResult );
             }
         }
 
-        return builds.iterator();
+        return result.iterator();
     }
 }

@@ -4,6 +4,7 @@ package org.codehaus.continuum.store.hibernate;
  * LICENSE
  */
 
+import net.sf.hibernate.Session;
 import net.sf.hibernate.Transaction;
 import net.sf.hibernate.cfg.Configuration;
 import net.sf.hibernate.tool.hbm2ddl.SchemaExport;
@@ -16,12 +17,16 @@ import org.codehaus.plexus.hibernate.HibernateSessionService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStoreTest.java,v 1.3 2004-07-19 16:39:33 trygvis Exp $
+ * @version $Id: HibernateContinuumStoreTest.java,v 1.4 2004-07-27 00:06:08 trygvis Exp $
  */
 public class HibernateContinuumStoreTest
     extends AbstractContinuumStoreTest
 {
     private HibernateSessionService sessionService;
+
+    private ContinuumStore store;
+
+    private Session session;
 
     private Transaction tx;
 
@@ -33,7 +38,7 @@ public class HibernateContinuumStoreTest
     protected void beginTx()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
+        session = sessionService.getSession();
 
         store.beginTransaction();
     }
@@ -41,9 +46,17 @@ public class HibernateContinuumStoreTest
     protected void commitTx()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
-
         store.commitTransaction();
+
+        sessionService.closeSession();
+    }
+
+    protected void rollbackTx()
+        throws Exception
+    {
+        store.rollbackTransaction();
+
+        sessionService.closeSession();
     }
 
     public void setUp()
@@ -62,5 +75,9 @@ public class HibernateContinuumStoreTest
         exporter.setDelimiter( ";" );
 
         exporter.create( false, true );
+
+        session = sessionService.getSession();
+
+        store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
     }
 }

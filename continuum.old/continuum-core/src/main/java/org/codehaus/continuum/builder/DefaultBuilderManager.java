@@ -4,11 +4,12 @@ package org.codehaus.continuum.builder;
  * LICENSE
  */
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
@@ -18,7 +19,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuilderManager.java,v 1.1 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: DefaultBuilderManager.java,v 1.2 2004-07-27 00:06:03 trygvis Exp $
  */
 public class DefaultBuilderManager
     extends AbstractLogEnabled
@@ -39,7 +40,12 @@ public class DefaultBuilderManager
     {
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
 
-        if ( builders == null || builders.size() == 0 )
+        if ( builders == null )
+        {
+            builders = new HashMap();
+        }
+
+        if ( builders.size() == 0 )
         {
             getLogger().warn( "No builders defined." );
         }
@@ -85,7 +91,7 @@ public class DefaultBuilderManager
     {
         try
         {
-            BuildResult build = store.getBuildResult( buildId );
+            ContinuumBuild build = store.getBuild( buildId );
     
             String type = build.getProject().getType();
     

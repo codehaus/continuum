@@ -4,15 +4,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.continuum.TestUtils;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.project.TestProjectDescriptor;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.1 2004-07-19 16:54:47 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.2 2004-07-27 00:06:11 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends PlexusTestCase
@@ -27,6 +28,9 @@ public abstract class AbstractContinuumStoreTest
     protected abstract void commitTx()
         throws Exception;
 
+    protected abstract void rollbackTx()
+        throws Exception;
+
     public void setUp()
         throws Exception
     {
@@ -34,6 +38,10 @@ public abstract class AbstractContinuumStoreTest
 
         store = (ContinuumStore) lookup( ContinuumStore.ROLE, getRoleHint() );
     }
+
+    // ----------------------------------------------------------------------
+    // Project tests
+    // ----------------------------------------------------------------------
 
     public void testContinuumProject()
         throws Exception
@@ -66,7 +74,7 @@ public abstract class AbstractContinuumStoreTest
 
         assertEquals( type, project.getType() );
 
-        assertEquals( ContinuumProject.PROJECT_STATE_NEW, project.getState() );
+        assertEquals( ContinuumProjectState.NEW, project.getState() );
 
         assertNull( project.getDescriptor() );
 
@@ -111,38 +119,145 @@ public abstract class AbstractContinuumStoreTest
         commitTx();
     }
 
-    public void testBuildResult()
+    public void testUpdateProjectWithValidParameters()
+        throws Exception
+    {
+        String name1 = "Foo Project";
+
+        String scmConnection1 = "scm:test:";
+
+        String type = "maven2";
+
+        beginTx();
+
+        String projectId = store.addProject( name1, scmConnection1, type );
+
+        commitTx();
+
+        beginTx();
+
+        ContinuumProject project = store.getProject( projectId );
+
+        assertProject( projectId, name1, scmConnection1, type, project );
+
+        String name2 = "Bar Project";
+
+        String scmConnection2 = "Bar Project";
+
+        store.updateProject( projectId, name2, scmConnection2 );
+
+        project = store.getProject( projectId );
+
+        assertProject( projectId, name2, scmConnection2, type, project );
+
+        commitTx();
+    }
+
+    public void testUpdateProjectWithInvalidParameters()
         throws Exception
     {
         beginTx();
 
         String projectId = store.addProject( "Foo Project", "scm", "maven2" );
 
-        String buildId = store.createBuildResult( projectId );
+        commitTx();
+
+        assertProjectUpdateFails( projectId, null, null );
+
+        assertProjectUpdateFails( projectId, "foo", null );
+
+        assertProjectUpdateFails( projectId, null, null );
+    }
+
+    // ----------------------------------------------------------------------
+    // Build tests
+    // ----------------------------------------------------------------------
+
+    public void testBuild()
+        throws Exception
+    {
+        beginTx();
+
+        String projectId = store.addProject( "Foo Project", "scm", "maven2" );
+
+        String buildId = store.createBuild( projectId );
 
         commitTx();
 
         beginTx();
 
-        Iterator it = store.getBuildResultsForProject( projectId, 0, 0 );
+        ContinuumProject project = store.getProject( projectId );
+
+        ContinuumBuild build = store.getBuild( buildId );
+
+        assertEquals( ContinuumProjectState.BUILD_SIGNALED, project.getState() );
+
+        assertEquals( ContinuumProjectState.BUILD_SIGNALED, build.getState() );
+
+        Iterator it = store.getBuildsForProject( projectId, 0, 0 );
 
         List list = TestUtils.iteratorToList( it );
 
         assertEquals( 1, list.size() );
 
-        BuildResult buildResult = (BuildResult) list.get( 0 );
+        build = (ContinuumBuild) list.get( 0 );
 
-        assertBuildResult( projectId, buildId, BuildResult.BUILD_BUILDING, buildResult );
+        assertBuildResult( projectId, buildId, ContinuumProjectState.BUILD_SIGNALED, build );
+
+        commitTx();
+
+        beginTx();
+
+        store.setBuildResult( buildId, ContinuumProjectState.OK, null, null );
+
+        commitTx();
+
+        beginTx();
+
+        build = store.getBuild( buildId );
+
+        assertEquals( ContinuumProjectState.OK, build.getState() );
 
         commitTx();
     }
 
-    private void assertBuildResult( String projectId, String buildId, int state, BuildResult buildResult )
+    // ----------------------------------------------------------------------
+    // Assertions
+    // ----------------------------------------------------------------------
+
+    private void assertProject( String id, String name, String scmConnection, String type, ContinuumProject project )
+    {
+        assertNotNull( project );
+
+        assertEquals( id, project.getId() );
+
+        assertEquals( name, project.getName() );
+
+        assertEquals( scmConnection, project.getScmConnection() );
+
+        assertEquals( type, project.getType() );
+    }
+
+    private void assertProjectUpdateFails( String projectId, String name, String scmUrl )
+    {
+        try
+        {
+            store.updateProject( projectId, name, scmUrl );
+
+            fail( "Expected exception" );
+        }
+        catch( ContinuumStoreException ex )
+        {
+            // expected
+        }
+    }
+
+    private void assertBuildResult( String projectId, String buildId, ContinuumProjectState state, ContinuumBuild buildResult )
     {
         // Check the reloaded build result
         assertNotNull( buildResult );
 
-        assertEquals( buildId, buildResult.getBuildId() );
+        assertEquals( buildId, buildResult.getId() );
 
         assertEquals( projectId, buildResult.getProject().getId() );
 

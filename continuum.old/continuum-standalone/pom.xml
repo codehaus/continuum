@@ -27,9 +27,19 @@
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-alarm-trigger</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>maven</groupId>
       <artifactId>scm-cvslib</artifactId>
       <version>0.9-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>2.0.3</version>
     </dependency>
   </dependencies>
 </project>

@@ -1,7 +1,7 @@
 package org.codehaus.continuum.notification;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * Approximate sequence:
@@ -18,16 +18,16 @@ import org.codehaus.continuum.project.BuildResult;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ContinuumNotifier.java,v 1.1 2004-07-20 18:25:57 trygvis Exp $
+ * @version $Id: ContinuumNotifier.java,v 1.2 2004-07-27 00:06:02 trygvis Exp $
  */
 public interface ContinuumNotifier
 {
     static String ROLE = ContinuumNotifier.class.getName();
 
-    void buildStarted( BuildResult build )
+    void buildStarted( ContinuumBuild build )
         throws ContinuumException;
 
-    void checkoutStarted( BuildResult build )
+    void checkoutStarted( ContinuumBuild build )
         throws ContinuumException;
 
     /**
@@ -38,15 +38,15 @@ public interface ContinuumNotifier
      * @param ex Possibly a exception.
      * @throws ContinuumException
      */
-    void checkoutComplete( BuildResult build, Exception ex )
+    void checkoutComplete( ContinuumBuild build )
         throws ContinuumException;
 
-    void runningGoals( BuildResult build )
+    void runningGoals( ContinuumBuild build )
         throws ContinuumException;
 
-    void goalsCompleted( BuildResult build, Exception ex )
+    void goalsCompleted( ContinuumBuild build )
         throws ContinuumException;
 
-    void buildComplete( BuildResult build, Exception ex )
+    void buildComplete( ContinuumBuild build )
         throws ContinuumException;
 }

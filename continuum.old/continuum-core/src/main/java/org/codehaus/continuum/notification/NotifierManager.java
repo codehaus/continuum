@@ -1,7 +1,7 @@
 package org.codehaus.continuum.notification;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 
 /*
  * LICENSE
@@ -9,16 +9,16 @@ import org.codehaus.continuum.project.BuildResult;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierManager.java,v 1.1 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: NotifierManager.java,v 1.2 2004-07-27 00:06:04 trygvis Exp $
  */
 public interface NotifierManager
 {
     String ROLE = NotifierManager.class.getName();
 
-    void buildStarted( BuildResult build );
+    void buildStarted( ContinuumBuild build );
 
-    void checkoutStarted( BuildResult build );
-    
+    void checkoutStarted( ContinuumBuild build );
+
     /**
      * This method is called upon a completed checkout. If a error ocurred
      * <code>ex</code> will be non-null.
@@ -27,11 +27,11 @@ public interface NotifierManager
      * @param ex Possibly a exception.
      * @throws ContinuumException
      */
-    void checkoutComplete( BuildResult build, Exception ex );    
+    void checkoutComplete( ContinuumBuild build );    
 
-    void runningGoals( BuildResult build );
-    
-    void goalsCompleted( BuildResult build, Exception ex );
-    
-    void buildComplete( BuildResult build, Exception ex );
+    void runningGoals( ContinuumBuild build );
+
+    void goalsCompleted( ContinuumBuild build );
+
+    void buildComplete( ContinuumBuild build );
 }

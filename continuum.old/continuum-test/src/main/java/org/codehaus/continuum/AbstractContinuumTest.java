@@ -4,13 +4,9 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import org.apache.maven.Maven;
-import org.apache.maven.project.MavenProjectBuilder;
-
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
 import org.codehaus.continuum.notification.ContinuumNotifier;
-import org.codehaus.continuum.notification.NotifierManager;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusTestCase;
@@ -18,7 +14,7 @@ import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.1 2004-07-19 16:54:47 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.2 2004-07-27 00:06:10 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends PlexusTestCase
@@ -42,24 +38,30 @@ public abstract class AbstractContinuumTest
         return (ContinuumBuilder) lookupComponent( ContinuumBuilder.ROLE );
     }
 
+    protected ContinuumStore getContinuumStore( String role )
+        throws Exception
+    {
+        return (ContinuumStore) lookupComponent( ContinuumStore.ROLE, role );
+    }
+
     protected BuildQueue getBuildQueue()
         throws Exception
     {
         return (BuildQueue) lookupComponent( BuildQueue.ROLE );
     }
 
-    protected ContinuumNotifier getContinuumNotifier()
+    protected ContinuumNotifier getContinuumNotifier( String roleHint )
         throws Exception
     {
-        return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE );
+        return (ContinuumNotifier) lookupComponent( ContinuumNotifier.ROLE, roleHint );
     }
-
+/*
     protected NotifierManager getNotifierManager()
         throws Exception
     {
         return (NotifierManager) lookupComponent( NotifierManager.ROLE );
     }
-
+*/
     protected ContinuumScm getContinuumScm()
         throws Exception
     {
@@ -71,7 +73,7 @@ public abstract class AbstractContinuumTest
     {
         return (ContinuumStore) lookupComponent( ContinuumStore.ROLE );
     }
-
+/*
     protected MavenProjectBuilder getMavenProjectBuilder()
         throws Exception
     {
@@ -89,13 +91,23 @@ public abstract class AbstractContinuumTest
     {
         return getMaven().getLocalRepository();
     }
-
+*/
     private Object lookupComponent( String role )
         throws Exception
     {
         Object component = lookup( role );
 
-        assertNotNull( "Missing component '" + role + "'", component );
+        assertNotNull( "Missing component: role " + role + ".", component );
+
+        return component;
+    }
+
+    private Object lookupComponent( String role, String roleHint )
+        throws Exception
+    {
+        Object component = lookup( role, roleHint );
+
+        assertNotNull( "Missing component: role: " + role + ", hint: " + roleHint + ".", component );
 
         return component;
     }

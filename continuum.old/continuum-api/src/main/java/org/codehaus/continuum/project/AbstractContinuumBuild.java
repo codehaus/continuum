@@ -7,19 +7,19 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuildResult.java,v 1.1 2004-07-20 18:25:57 trygvis Exp $
+ * @version $Id: AbstractContinuumBuild.java,v 1.1 2004-07-27 00:06:02 trygvis Exp $
  */
-public abstract class AbstractBuildResult
-    implements BuildResult
+public abstract class AbstractContinuumBuild
+    implements ContinuumBuild
 {
     /** */
-    private String buildId;
+    private String id;
 
     /** */
     private ContinuumProject project;
 
     /** */
-    private BuildResultState state;
+    private ContinuumProjectState state;
 
     /** */
     private long startTime;
@@ -30,32 +30,28 @@ public abstract class AbstractBuildResult
     /** */
     private Throwable error;
 
-    /**
-     * TODO: Refactor to a new Maven2BuildResult class.
-     */
-//    private ExecutionResponse maven2Result;
-    private Object buildResult;
+    private ContinuumBuildResult buildResult;
 
     /**
      */
-    public AbstractBuildResult()
+    public AbstractContinuumBuild()
     {
     }
 
     /**
-     * @return Returns the buildId.
+     * @return Returns the id.
      */
-    public String getBuildId()
+    public String getId()
     {
-        return buildId;
+        return id;
     }
 
     /**
-     * @param buildId The buildId to set.
+     * @param id The id to set.
      */
-    public void setBuildId( String buildId )
+    public void setId( String id )
     {
-        this.buildId = buildId;
+        this.id = id;
     }
 
     /**
@@ -69,7 +65,7 @@ public abstract class AbstractBuildResult
     /**
      * @return Returns the state.
      */
-    public BuildResultState getState()
+    public ContinuumProjectState getState()
     {
         return state;
     }
@@ -77,7 +73,7 @@ public abstract class AbstractBuildResult
     /**
      * @param state The state to set.
      */
-    public void setState( BuildResultState state )
+    public void setState( ContinuumProjectState state )
     {
         this.state = state;
     }
@@ -137,42 +133,32 @@ public abstract class AbstractBuildResult
     {
         this.error = error;
     }
-/*
-    public ExecutionResponse getMaven2Result()
-    {
-        return maven2Result;
-    }
 
-    public void setMaven2Result( ExecutionResponse executionResponse )
-    {
-        this.maven2Result = executionResponse;
-    }
-*/
-    public Object getBuilderBuildResult()
+    public ContinuumBuildResult getBuildResult()
     {
         return buildResult;
     }
 
-    public void setBuilderBuildResult( Object buildResult )
+    public void setBuildResult( ContinuumBuildResult buildResult )
     {
         this.buildResult = buildResult;
     }
 
-    public static String buildStateToString( BuildResultState state )
+    public static String buildStateToString( ContinuumProjectState state )
     {
-        if( state == BuildResultState.BUILDING )
+        if( state == ContinuumProjectState.BUILDING )
         {
             return "building";
         }
-        else if ( state == BuildResultState.RESULT_OK )
+        else if ( state == ContinuumProjectState.OK )
         {
             return "ok";
         }
-        else if ( state == BuildResultState.RESULT_FAILURE )
+        else if ( state == ContinuumProjectState.FAILED )
         {
-            return "failure";
+            return "failed";
         }
-        else if ( state == BuildResultState.RESULT_ERROR )
+        else if ( state == ContinuumProjectState.ERROR )
         {
             return "error";
         }

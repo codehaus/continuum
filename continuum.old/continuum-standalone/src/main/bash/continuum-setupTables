@@ -1,21 +1,14 @@
 #!/bin/bash
 
+THIS_PROG="$0"
+PRGDIR=`dirname "$THIS_PROG"`
+basedir=`cd "$PRGDIR/.." ; pwd`
+
 CP=src/main/resources:apps/continuum/resources:target/classes
 
-if [ -d apps/continuum/lib/ ]
-then
-  for jar in `find apps/continuum/lib/ -name '*.jar'`
-  do
-    CP=$CP:$jar
-  done
-fi
-
-if [ -d generated-runtime/apps/continuum/lib ]
-then
-  for jar in `find generated-runtime/apps/continuum/lib -name '*.jar'`
-  do
-    CP=$CP:$jar
-  done
-fi
+for jar in `find $basedir -path '*/apps/*/lib/*.jar' -or -path '*/core/*.jar'|sort`
+do
+  CP=$CP:$jar
+done
 
 java -classpath $CP org.codehaus.continuum.standalone.SetupTables "$@"

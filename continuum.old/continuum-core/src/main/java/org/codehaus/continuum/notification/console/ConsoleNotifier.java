@@ -5,53 +5,66 @@ package org.codehaus.continuum.notification.console;
  */
 
 import org.codehaus.continuum.notification.ContinuumNotifier;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.6 2004-07-03 03:21:15 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.7 2004-07-27 00:06:04 trygvis Exp $
  */
 public class ConsoleNotifier
+    extends AbstractLogEnabled
     implements ContinuumNotifier
 {
-    public void buildStarted( BuildResult build )
+    public void buildStarted( ContinuumBuild build )
     {
         out( build, "Build started." );
     }
 
-    public void checkoutStarted( BuildResult build )
+    public void checkoutStarted( ContinuumBuild build )
     {
         out( build, "Checkout started." );
     }
 
-    public void checkoutComplete( BuildResult build, Exception ex )
+    public void checkoutComplete( ContinuumBuild build )
     {
-        out( build, "Checkout complete.", ex );
+        out( build, "Checkout complete." );
     }
 
-    public void runningGoals( BuildResult build )
+    public void runningGoals( ContinuumBuild build )
     {
         out( build, "Running goals." );
     }
 
-    public void goalsCompleted( BuildResult build, Exception ex )
+    public void goalsCompleted( ContinuumBuild build )
     {
-        out( build, "Goals completed.", ex );
+        if ( build.getBuildResult() != null )
+        {
+            out( build, "Goals completed. success: " + build.getBuildResult().isSuccess() );
+        }
+        else
+        {
+            out( build, "Goals completed." );
+        }
     }
 
-    public void buildComplete( BuildResult build, Exception ex )
+    public void buildComplete( ContinuumBuild build )
     {
-        out( build, "Build complete.", ex );
+        if ( build.getBuildResult() != null )
+        {
+            out( build, "Build complete. success: " + build.getState() );
+        }
+        else
+        {
+            out( build, "Build complete." );
+        }
     }
 
-    private void out( BuildResult build, String msg )
+    private void out( ContinuumBuild build, String msg )
     {
-        out( build, msg, null );
-    }
+        System.out.println( build.getId() + ":" + msg );
 
-    private void out( BuildResult build, String msg, Exception ex )
-    {
-        System.out.println( build.getBuildId() + ":" + msg );
+        Throwable ex = build.getError();
 
         if ( ex != null )
         {

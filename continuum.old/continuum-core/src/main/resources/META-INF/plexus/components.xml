@@ -8,10 +8,16 @@
           <role>org.codehaus.continuum.buildqueue.BuildQueue</role>
         </requirement>
         <requirement>
+          <role>org.codehaus.continuum.builder.BuilderManager</role>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.continuum.notification.NotifierManager</role>
+        </requirement>
+        <requirement>
           <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
-          <role>org.codehaus.continuum.builder.BuilderManager</role>
+          <role>org.codehaus.continuum.scm.ContinuumScm</role>
         </requirement>
       </requirements>
     </component>
@@ -99,13 +105,7 @@
       <implementation>org.codehaus.continuum.builder.maven2.Maven2ContinuumBuilder</implementation>
       <requirements>
         <requirement>
-          <role>org.codehaus.continuum.notification.NotifierManager</role>
-        </requirement>
-        <requirement>
           <role>org.codehaus.continuum.scm.ContinuumScm</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.store.ContinuumStore</role>
         </requirement>
         <requirement>
           <role>org.apache.maven.Maven</role>
@@ -143,7 +143,12 @@
 <!--
       <role-hint>memory</role-hint>
 -->
-      <implementation>org.codehaus.continuum.store.MemoryContinuumStore</implementation>
+      <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.store.ContinuumStore</role>
+      <role-hint>memory</role-hint>
+      <implementation>org.codehaus.continuum.store.memory.MemoryContinuumStore</implementation>
     </component>
   </components>
 </component-set>

@@ -4,7 +4,6 @@ package org.codehaus.continuum.test.scm;
  * LICENSE
  */
 
-import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.command.Command;
 import org.apache.maven.scm.repository.Repository;
 
@@ -13,7 +12,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractTestCommand.java,v 1.1 2004-07-19 16:54:47 trygvis Exp $
+ * @version $Id: AbstractTestCommand.java,v 1.2 2004-07-27 00:06:11 trygvis Exp $
  */
 public abstract class AbstractTestCommand
     implements Command
@@ -49,7 +48,6 @@ public abstract class AbstractTestCommand
     }
 
     public void setRepository( Repository repository )
-        throws ScmException
     {
         this.repository = repository;
     }
@@ -90,7 +88,6 @@ public abstract class AbstractTestCommand
     }
 
     public void setConsumer( StreamConsumer consumer )
-        throws ScmException
     {
         this.streamConsumer = consumer;
     }
@@ -101,7 +98,6 @@ public abstract class AbstractTestCommand
     }
 
     public Commandline getCommandLine()
-        throws ScmException
     {
         return null;
     }

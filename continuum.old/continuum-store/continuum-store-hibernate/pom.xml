@@ -13,6 +13,11 @@
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
+      <artifactId>continuum-api</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
@@ -22,10 +27,16 @@
       <version>0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-hibernate</artifactId>
       <version>1.0-beta-1</version>
     </dependency>
+    <!-- crappy hibernate dependencies -->
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -35,6 +46,11 @@
       <artifactId>hibernate</artifactId>
       <groupId>hibernate</groupId>
       <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <artifactId>commons-lang</artifactId>
+      <groupId>commons-lang</groupId>
+      <version>1.0.1</version>
     </dependency>
   </dependencies>
 </project>

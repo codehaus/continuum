@@ -1,4 +1,4 @@
-package org.codehaus.continuum.builder.maven2;
+package org.codehaus.continuum.builder;
 
 /*
  * LICENSE
@@ -6,12 +6,13 @@ package org.codehaus.continuum.builder.maven2;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuilderTest.java,v 1.1 2004-07-19 16:54:47 trygvis Exp $
+ * @version $Id: AbstractBuilderTest.java,v 1.1 2004-07-27 00:06:10 trygvis Exp $
  */
 public abstract class AbstractBuilderTest
     extends AbstractContinuumTest
@@ -33,9 +34,9 @@ public abstract class AbstractBuilderTest
 
         String buildId = continuum.buildProject( projectId );
 
-        BuildResult buildResult = store.getBuildResult( buildId );
+        ContinuumBuild buildResult = store.getBuild( buildId );
 
-        assertEquals( BuildResult.BUILD_RESULT_OK, buildResult.getState() );
+        assertEquals( ContinuumProjectState.OK, buildResult.getState() );
     }
 
     private void waitForBuild()

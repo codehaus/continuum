@@ -29,14 +29,14 @@ cp -r src/main/bash/continuum-* $bin
 
 cp src/main/configuration/plexus.conf $runtime/conf/plexus.conf
 
-#cp ../continuum-alarm-trigger/target/*.jar $lib
+cp ../continuum-alarm-trigger/target/*.jar $lib
 #cp ../continuum-cli/target/*.jar $lib
 cp ../continuum-core/target/*.jar $lib
 #cp ../continuum-fbi-trigger/target/*.jar $lib
 cp ../continuum-hibernate-store/target/*.jar $lib
 cp ../continuum-mail-notifier/target/*.jar $lib
 cp ../continuum-standalone/target/*.jar $lib
-#cp ../continuum-test/target/*.jar $lib
+cp ../continuum-test/target/*.jar $lib
 #cp ../continuum-tools/target/*.jar $lib
 #cp ../continuum-xmlrpc-client/target/*.jar $lib
 #cp ../continuum-xmlrpc-server/target/*.jar $lib

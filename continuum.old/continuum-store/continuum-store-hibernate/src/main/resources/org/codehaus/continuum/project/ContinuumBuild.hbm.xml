@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class 
+    name="org.codehaus.continuum.project.GenericContinuumBuild"
+    table="Build">
+    <id name="id" type="java.lang.String">
+      <generator class="uuid.hex"/>
+    </id>
+    <property name="state" type="org.codehaus.continuum.store.hibernate.ContinuumProjectStateType" not-null="true"/>
+    <property name="startTime" type="long"/>
+    <property name="endTime" type="long"/>
+    <any
+        name="buildResult"
+        id-type="java.lang.String"
+        meta-type="org.codehaus.continuum.project.ContinuumBuildResult">
+      <column name="buildResultType"/>
+      <column name="buildId"/>
+    </any>
+    <many-to-one
+      name="project"
+      class="org.codehaus.continuum.project.GenericContinuumProject"
+      column="projectId"
+      not-null="true"/>
+  </class>
+</hibernate-mapping>

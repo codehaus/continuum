@@ -14,7 +14,7 @@ import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ProjectDescriptor.java,v 1.2 2004-07-08 01:13:35 trygvis Exp $
+ * @version $Id: Maven2ProjectDescriptor.java,v 1.3 2004-07-27 00:06:04 trygvis Exp $
  */
 public class Maven2ProjectDescriptor
     extends AbstractProjectDescriptor
@@ -70,11 +70,6 @@ public class Maven2ProjectDescriptor
     public MavenProject getMavenProject()
         throws ContinuumException
     {
-        if ( mavenProject == null )
-        {
-            throw new ContinuumException( "The maven project isn't set." );
-        }
-
         return mavenProject;
     }
 
