@@ -4,16 +4,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.continuum.TestUtils;
+import org.codehaus.continuum.builder.test.TestBuildResult;
+import org.codehaus.continuum.builder.test.TestProjectDescriptor;
 import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.project.ProjectDescriptor;
-import org.codehaus.continuum.project.TestProjectDescriptor;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.2 2004-07-27 00:06:11 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.3 2004-07-29 04:24:14 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends PlexusTestCase
@@ -115,6 +117,74 @@ public abstract class AbstractContinuumStoreTest
         descriptor = (TestProjectDescriptor)desc;
 
         assertEquals( 666, descriptor.getAttribute() );
+
+        commitTx();
+    }
+
+    public void testRemoveProject()
+        throws Exception
+    {
+        beginTx();
+
+        String projectId1 = store.addProject( "p1", "scm:test:", "test" );
+
+        String projectId2 = store.addProject( "p2", "scm:test:", "test" );
+
+//        ContinuumProject project1
+
+        String buildId1 = store.createBuild( projectId1 );
+
+        String buildId2 = store.createBuild( projectId2 );
+
+        ContinuumBuild build1 = store.getBuild( buildId1 );
+
+        ContinuumBuildResult result = new TestBuildResult( build1, true );
+
+        store.setBuildResult( buildId1, ContinuumProjectState.OK, result, null );
+
+        commitTx();
+
+        beginTx();
+
+        store.removeProject( projectId1 );
+
+        commitTx();
+
+        beginTx();
+
+        store.getBuild( buildId2 );
+
+        store.getProject( projectId2 );
+
+        try
+        {
+            store.getBuild( buildId1 );
+
+            fail( "Expected exception" );
+        }
+        catch( ContinuumStoreException ex )
+        {
+            // expected
+        }
+
+        try
+        {
+            store.getProject( projectId1 );
+
+            fail( "Expected exception." );
+        }
+        catch( ContinuumStoreException ex )
+        {
+            // expected
+        }
+
+        Iterator it = store.getAllProjects();
+
+        assertTrue( it.hasNext() );
+
+        it.next();
+
+        assertFalse( it.hasNext() );
 
         commitTx();
     }
