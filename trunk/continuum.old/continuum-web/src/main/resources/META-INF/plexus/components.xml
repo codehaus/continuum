@@ -1,0 +1,118 @@
+<component-set>
+  <components>
+
+    <!--
+     |
+     | System components
+     |
+     |-->
+
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.Pipeline</role>
+      <implementation>org.codehaus.plexus.summit.pipeline.SummitPipeline</implementation>
+      <configuration>
+        <valves>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve"/>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.LoginValve"/>
+          <valve implementation="org.codehaus.continuum.web.pipeline.valve.ActionValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.ResolverValve"/>
+          <value implementation="org.codehaus.plexus.summit.pull.PullToolValve"/>
+          <valve implementation="org.codehaus.plexus.summit.pipeline.valve.DisplayValve"/>
+        </valves>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.web.action.ActionManager</role>
+      <implementation>org.codehaus.continuum.web.action.DefaultActionManager</implementation>
+      <requirements>
+        <requirement>
+          <field-name>actions</field-name>
+          <role>org.codehaus.continuum.web.action.Action</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!--
+     |
+     | Actions
+     |
+     |-->
+
+    <!-- login -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>login</role-hint>
+      <implementation>org.codehaus.continuum.web.action.Login</implementation>
+    </component>
+
+    <!-- addProjectScm -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addProjectScm</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddProjectScm</implementation>
+    </component>
+
+    <!-- addProjectPomUrl -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addProjectPomUrl</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.Maven</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- showProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProject</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- updateProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>updateProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.UpdateProject</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- showProjectBuilds -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>showProjectBuilds</role-hint>
+      <implementation>org.codehaus.continuum.web.action.ShowProjectBuilds</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <!-- enqueueProject -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>enqueueProject</role-hint>
+      <implementation>org.codehaus.continuum.web.action.EnqueueProject</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.i18n.I18N</role>
+        </requirement>
+      </requirements>
+    </component>
+
+  </components>
+</component-set>

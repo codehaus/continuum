@@ -1,0 +1,24 @@
+<form>
+  <id>addProjectScm</id>
+  <title-key>addProjectScm.title</title-key>
+  <action>addProjectScm</action>
+  <view>projectOverview.vm</view>
+  <elements>
+    <element>
+      <id>addProject.name</id>
+      <validator>default</validator>
+      <message-key>addProject.name.message</message-key>
+      <label-key>addProject.name.label</label-key>
+      <error-message-key>addProject.name.error</error-message-key>
+      <type>text</type>
+    </element>
+    <element>
+      <id>addProject.scm</id>
+      <validator>default</validator>
+      <message-key>addProject.scm.message</message-key>
+      <label-key>addProject.scm.label</label-key>
+      <error-message-key>addProject.scm.error</error-message-key>
+      <type>text</type>
+    </element>
+  </elements>
+</form>
