@@ -10,6 +10,9 @@
   <groupId>continuum</groupId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Test Utils</name>
+  <scm>
+    <connection>scm:cvs:pserver:anoncvs@cvs.continuum.codehaus.org:/scm/continuum:continuum/continuum-test</connection>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
