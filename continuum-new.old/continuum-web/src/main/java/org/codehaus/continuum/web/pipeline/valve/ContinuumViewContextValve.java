@@ -16,29 +16,19 @@ package org.codehaus.continuum.web.pipeline.valve;
  * limitations under the License.
  */
 
-import org.codehaus.continuum.web.ContinuumWeb;
-import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
 import org.codehaus.plexus.summit.rundata.RunData;
 import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.7 2005-03-20 19:37:23 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.8 2005-03-20 20:39:49 jvanzyl Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
 {
-    private ContinuumWeb continuum;
-
-    private I18N i18n;
-
     protected void populateViewContext( RunData data, ViewContext context )
     {
-        context.put( "continuum", continuum );
-
-        context.put( "i18n", i18n );
-
         context.put( "data", data );
     }
 }
