@@ -12,6 +12,11 @@
   <name>Continuum Core</name>
   <dependencies>
     <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-scm-provider-local</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
@@ -62,6 +67,11 @@
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>jdbm</groupId>
+      <artifactId>jdbm</artifactId>
+      <version>0.20-dev</version>
+    </dependency>
+    <dependency>
       <groupId>prevayler</groupId>
       <artifactId>prevayler</artifactId>
       <version>2.02.005</version>
@@ -100,6 +110,9 @@
         <model>src/main/resources/continuum.mdo</model>
         <packageWithVersion>false</packageWithVersion>
       </configuration>
+    </plugin>
+    <plugin>
+      <id>jpox</id>
     </plugin>
   </plugins>
 </project>
