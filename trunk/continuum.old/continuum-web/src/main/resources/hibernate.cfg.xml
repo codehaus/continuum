@@ -33,6 +33,8 @@
         <mapping resource="org/codehaus/continuum/project/ContinuumBuild.hbm.xml"/>
         <mapping resource="org/codehaus/continuum/project/Maven2ProjectDescriptor.hbm.xml"/>
         <mapping resource="org/codehaus/continuum/project/Maven2BuildResult.hbm.xml"/>
+        <mapping resource="org/codehaus/continuum/project/ShellProjectDescriptor.hbm.xml"/>
+        <mapping resource="org/codehaus/continuum/project/ShellBuildResult.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
