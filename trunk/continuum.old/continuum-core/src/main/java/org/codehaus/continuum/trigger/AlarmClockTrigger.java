@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.trigger;
+package org.codehaus.continuum.trigger;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
@@ -11,7 +11,7 @@ import java.util.TimerTask;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.1 2004-01-18 07:27:27 jvanzyl Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger

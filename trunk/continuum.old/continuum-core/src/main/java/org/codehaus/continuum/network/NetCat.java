@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.network;
+package org.codehaus.continuum.network;
 
 /*
  * LICENSE
@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.StringInputStream;
  * This class emulates the unix tool <code>nc</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NetCat.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: NetCat.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public class NetCat
 {

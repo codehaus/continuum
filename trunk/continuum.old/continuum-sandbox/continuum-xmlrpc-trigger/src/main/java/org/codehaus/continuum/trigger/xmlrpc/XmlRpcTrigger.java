@@ -1,13 +1,13 @@
-package org.codehaus.plexus.continuum.trigger.xmlrpc;
+package org.codehaus.continuum.trigger.xmlrpc;
 
-import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
+import org.codehaus.continuum.trigger.AbstractContinuumTrigger;
 
 /**
  *
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: XmlRpcTrigger.java,v 1.1 2004-01-18 15:30:40 jvanzyl Exp $
+ * @version $Id: XmlRpcTrigger.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public class XmlRpcTrigger
     extends AbstractContinuumTrigger

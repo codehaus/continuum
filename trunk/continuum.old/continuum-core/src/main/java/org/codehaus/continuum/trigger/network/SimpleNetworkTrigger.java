@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.trigger.network;
+package org.codehaus.continuum.trigger.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.codehaus.plexus.continuum.ContinuumException;
-import org.codehaus.plexus.continuum.network.ConnectionConsumer;
-import org.codehaus.plexus.continuum.trigger.AbstractContinuumTrigger;
+import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.network.ConnectionConsumer;
+import org.codehaus.continuum.trigger.AbstractContinuumTrigger;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.IOUtil;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkTrigger.java,v 1.3 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.4 2004-05-13 17:48:17 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger

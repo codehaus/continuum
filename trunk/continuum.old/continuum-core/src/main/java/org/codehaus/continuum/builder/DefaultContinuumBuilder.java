@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 /*
  * LICENSE
@@ -19,8 +19,8 @@ import org.apache.maven.scm.command.checkout.CheckOutCommand;
 import org.apache.maven.scm.repository.RepositoryInfo;
 
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.continuum.notification.ContinuumNotifier;
-import org.codehaus.plexus.continuum.notification.NotifierWrapper;
+import org.codehaus.continuum.notification.ContinuumNotifier;
+import org.codehaus.continuum.notification.NotifierWrapper;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.FileUtils;
@@ -28,7 +28,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumBuilder.java,v 1.2 2004-04-26 00:18:32 trygvis Exp $
+ * @version $Id: DefaultContinuumBuilder.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public class DefaultContinuumBuilder
     extends AbstractLogEnabled

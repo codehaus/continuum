@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.projectstorage;
+package org.codehaus.continuum.projectstorage;
 
 /*
  * LICENSE
@@ -15,7 +15,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractProjectStorageTest.java,v 1.2 2004-04-24 23:54:14 trygvis Exp $
+ * @version $Id: AbstractProjectStorageTest.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public abstract class AbstractProjectStorageTest
     extends PlexusTestCase

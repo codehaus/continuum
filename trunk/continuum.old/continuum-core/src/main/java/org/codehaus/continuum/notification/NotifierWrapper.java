@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.notification;
+package org.codehaus.continuum.notification;
 
 /*
  * LICENSE
@@ -6,7 +6,7 @@ package org.codehaus.plexus.continuum.notification;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.continuum.ContinuumException;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -17,7 +17,7 @@ import org.codehaus.plexus.logging.Logger;
  * <code>logger.fatalError( ex )</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierWrapper.java,v 1.2 2004-04-26 00:21:18 trygvis Exp $
+ * @version $Id: NotifierWrapper.java,v 1.3 2004-05-13 17:48:17 trygvis Exp $
  */
 public class NotifierWrapper
 {

@@ -5,7 +5,7 @@
  * Software License version 1.1, a copy of which has been included
  * with this distribution in the LICENSE.txt file.
  */
-package org.codehaus.plexus.continuum.trigger.network;
+package org.codehaus.continuum.trigger.network;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,7 +15,7 @@ import java.net.ServerSocket;
  * Factory implementation for vanilla TCP socket.
  *
  * @author <a href="mailto:peter at realityforge.org">Peter Donald</a>
- * @version $Revision: 1.1 $ $Date: 2004-01-18 17:45:38 $
+ * @version $Revision: 1.2 $ $Date: 2004-05-13 17:48:17 $
  */
 public class DefaultServerSocketFactory
 {

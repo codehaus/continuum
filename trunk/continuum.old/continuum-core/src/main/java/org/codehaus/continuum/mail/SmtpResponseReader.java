@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.mail;
+package org.codehaus.continuum.mail;
 
 /*
  * The Apache Software License, Version 1.1

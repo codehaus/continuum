@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 import java.io.File;
 import java.io.FileReader;
@@ -19,9 +19,9 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.continuum.buildqueue.BuildQueue;
-import org.codehaus.plexus.continuum.projectstorage.ProjectStorage;
-import org.codehaus.plexus.continuum.projectstorage.ProjectStorageException;
+import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.projectstorage.ProjectStorage;
+import org.codehaus.continuum.projectstorage.ProjectStorageException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;

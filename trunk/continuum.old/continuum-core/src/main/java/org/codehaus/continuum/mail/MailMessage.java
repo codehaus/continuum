@@ -60,7 +60,7 @@
  *
  */
 
-package org.codehaus.plexus.continuum.mail;
+package org.codehaus.continuum.mail;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

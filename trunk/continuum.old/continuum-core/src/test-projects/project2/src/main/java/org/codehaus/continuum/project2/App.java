@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.project2;
+package org.codehaus.continuum.project2;
 
 public class App
 {

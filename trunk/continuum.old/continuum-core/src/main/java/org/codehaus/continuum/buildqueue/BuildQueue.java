@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.buildqueue;
+package org.codehaus.continuum.buildqueue;
 
 /*
  * LICENSE
@@ -6,7 +6,7 @@ package org.codehaus.plexus.continuum.buildqueue;
 
 import org.apache.maven.project.MavenProject;
 
-import org.codehaus.plexus.continuum.ContinuumException;
+import org.codehaus.continuum.ContinuumException;
 
 /**
  * A queue of <code>MavenProjectBuild</code>'s.
@@ -14,7 +14,7 @@ import org.codehaus.plexus.continuum.ContinuumException;
  * A <code>BuildQueue</code> implementation MUST be thread safe.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: BuildQueue.java,v 1.1 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: BuildQueue.java,v 1.2 2004-05-13 17:48:17 trygvis Exp $
  */
 public interface BuildQueue
 {

@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum;
+package org.codehaus.continuum;
 
 import java.util.List;
 
