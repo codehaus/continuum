@@ -24,7 +24,7 @@ package org.codehaus.continuum.web.model;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ProjectModel.java,v 1.4 2004-10-24 20:39:11 trygvis Exp $
+ * @version $Id: ProjectModel.java,v 1.5 2004-10-30 13:14:04 trygvis Exp $
  */
 public class ProjectModel
 {
@@ -40,6 +40,8 @@ public class ProjectModel
 
     private String version;
 
+    private String workingDirectory;
+
     private String type;
 
     private ProjectDescriptorModel descriptor;
@@ -49,17 +51,20 @@ public class ProjectModel
      * @param scmUrl
      * @param nagEmailAddress
      * @param version
+     * @param workingDirectory
      * @param state
      * @param type
      * @param descriptor
      */
-    public ProjectModel( String id, String name, String scmUrl, String nagEmailAddress, String version, String state, String type, ProjectDescriptorModel descriptor )
+    public ProjectModel( String id, String name, String scmUrl, String nagEmailAddress, String version, String workingDirectory,
+                         String state, String type, ProjectDescriptorModel descriptor )
     {
         this.id = id;
         this.name = name;
         this.scmUrl = scmUrl;
         this.nagEmailAddress = nagEmailAddress;
         this.version = version;
+        this.workingDirectory = workingDirectory;
         this.state = state;
         this.type = type;
         this.descriptor = descriptor;
@@ -98,11 +103,19 @@ public class ProjectModel
     }
 
     /**
-     * @return Returns the version
+     * @return Returns the version.
      */
     public String getVersion()
     {
         return version;
+    }
+
+    /**
+     * @return Returns the working directory.
+     */
+    public String getWorkingDirectory()
+    {
+        return workingDirectory;
     }
 
     /**
