@@ -53,6 +53,11 @@ public class ShellBuildResult
         this.exitCode = exitCode;
     }
 
+    public void setSuccess( boolean success )
+    {
+        this.success = success;
+    }
+
     public boolean isSuccess()
     {
         return success;
