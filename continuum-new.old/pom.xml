@@ -2,16 +2,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
   <artifactId>continuum-parent</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Continuum Parent Project</name>
-  <version>1.0-alpha-1-SNAPSHOT</version>
   <url>http://cvs.continuum.codehaus.org/</url>
   <ciManagement>
     <system>continuum</system>
     <url>http://continuum.codehaus.org/continuumweb/servlet/continuum</url>
     <notifiers>
       <notifier>
-        <type>email</type>
         <address>dev@continuum.codehaus.org</address>
       </notifier>
     </notifiers>
@@ -54,36 +53,22 @@
       <groupId>plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
       <version>1.0-alpha-2-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-container-artifact</artifactId>
       <version>1.0-alpha-2-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>classworlds</groupId>
-      <artifactId>classworlds</artifactId>
-      <version>1.1-alpha-1</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
-      <type>jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <scm>
@@ -100,4 +85,10 @@
       <url>scp://beaver.codehaus.org//home/users/trygvis/public_html</url>
     </repository>
   </distributionManagement>
+  <modules>
+    <module>continuum-model</module>
+    <module>continuum-core</module>
+    <module>continuum-plexus-application</module>
+    <module>continuum-runtime</module>
+  </modules>
 </model>

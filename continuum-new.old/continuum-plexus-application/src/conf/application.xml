@@ -12,16 +12,16 @@
 
   <services>
     <service>
-      <id>servlet-container</id>
+      <id>jetty</id>
       <configuration>
         <webapps>
           <webapp>
-            <path>${plexus.home}/lib/continuum-web-1.0-alpha-1-SNAPSHOT.jar</path>
+            <file>${plexus.home}/lib/continuum-web-1.0-alpha-1-SNAPSHOT.jar</file>
             <context>/continuum</context>
           </webapp>
         </webapps>
       </configuration>
-      </service>
+    </service>
   </services>
 
 </application>

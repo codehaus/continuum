@@ -1,27 +1,24 @@
-<model>
+<project>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>continuum-runtime</artifactId>
   <parent>
     <groupId>continuum</groupId>
     <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
+  <groupId>continuum</groupId>
+  <artifactId>continuum-runtime</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Runtime</name>
-  <packaging>jar</packaging>
   <dependencies>
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-plexus-application</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-service-jetty</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -33,11 +30,11 @@
         <configuration>
           <configurationDirectory>src/conf</configurationDirectory>
           <applicationName>continuum</applicationName>
-          <plexusConfigurationPropertiesFile>src/conf/plexus.properties</plexusConfigurationPropertiesFile>
+          <plexusConfigurationProperties>src/conf/plexus.properties</plexusConfigurationProperties>
           <plexusConfiguration>src/conf/plexus.xml</plexusConfiguration>
           <basedir>target</basedir>
         </configuration>
       </plugin>
     </plugins>
   </build>
-</model>
+</project>

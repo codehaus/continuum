@@ -16,35 +16,19 @@ package org.codehaus.continuum.store;
  * limitations under the License.
  */
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStore.java,v 1.4 2005-03-10 00:05:53 trygvis Exp $
+ * @version $Id: AbstractContinuumStore.java,v 1.5 2005-03-13 22:30:28 trygvis Exp $
  */
 public abstract class AbstractContinuumStore
     extends AbstractLogEnabled
     implements ContinuumStore
 {
-    // TODO: Remove
-    protected ContinuumProject getGenericProject( String id )
-        throws ContinuumStoreException
-    {
-        return getProject( id );
-    }
-
-    // TODO: Remove
-    protected ContinuumBuild getGenericBuild( String id )
-        throws ContinuumStoreException
-    {
-        return getBuild( id );
-    }
-
     public static String throwableToString( Throwable error )
     {
         if ( error == null )

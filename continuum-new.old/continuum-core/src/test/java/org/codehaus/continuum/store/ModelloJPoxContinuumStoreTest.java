@@ -32,7 +32,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.3 2005-03-10 00:05:56 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.4 2005-03-13 22:30:30 trygvis Exp $
  */
 public class ModelloJPoxContinuumStoreTest
     extends PlexusTestCase
@@ -48,7 +48,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testStoreProject()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         assertEquals( ModelloJPoxContinuumStore.class, store.getClass() );
 
@@ -81,7 +81,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testGetNonExistingProject()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         try
         {
@@ -98,7 +98,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testProjectCRUD()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         String name = "Test Project";
         String scmUrl = "scm:local:src/test/repo";
@@ -129,7 +129,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testGetAllProjects()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         String name1 = "Test Project 1";
         String scmUrl1 = "scm:local:src/test/repo";
@@ -183,7 +183,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testBuild()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         JdoFactory jdoFactory = (JdoFactory) lookup( JdoFactory.ROLE );
 
@@ -211,7 +211,7 @@ public class ModelloJPoxContinuumStoreTest
     public void testTheAssociationBetweenTheProjectAndItsBuilds()
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         JdoFactory jdoFactory = (JdoFactory) lookup( JdoFactory.ROLE );
 
@@ -271,7 +271,7 @@ public class ModelloJPoxContinuumStoreTest
     private String addProject( String name )
         throws Exception
     {
-        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE, "modello-jpox" );
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
 
         String scmUrl = "scm:local:src/test/repo";
         String nagEmailAddress = "foo@bar.com";
