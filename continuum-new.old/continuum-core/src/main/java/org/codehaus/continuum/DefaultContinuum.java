@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.13 2005-03-22 12:42:42 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.14 2005-03-28 11:27:53 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -218,7 +218,7 @@ public class DefaultContinuum
         return project.getId();
     }
 
-    public void updateProject( String projectId )
+    public void updateProjectFromScm( String projectId )
         throws ContinuumException
     {
         try
@@ -256,7 +256,22 @@ public class DefaultContinuum
         {
             getLogger().error( "Error while updating project.", ex );
 
-            throw new ContinuumException( "Error while updating project.", ex );
+            throw new ContinuumException( "Error while updating project from SCM.", ex );
+        }
+    }
+
+    public void updateProjectConfiguration( String projectId, Properties configuration )
+        throws ContinuumException
+    {
+        try
+        {
+            store.updateProjectConfiguration( projectId, configuration );
+        }
+        catch ( ContinuumStoreException ex )
+        {
+            getLogger().error( "Error while updating project configuration.", ex );
+
+            throw new ContinuumException( "Error while updating project configuration.", ex );
         }
     }
 
@@ -469,6 +484,8 @@ public class DefaultContinuum
 
         ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
 
+        String id = project.getId();
+
         builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
 
         // ----------------------------------------------------------------------
@@ -477,12 +494,13 @@ public class DefaultContinuum
 
         try
         {
-            store.updateProject( project.getId(),
+            store.updateProject( id,
                                  project.getName(),
                                  project.getScmUrl(),
                                  project.getNagEmailAddress(),
-                                 project.getVersion(),
-                                 project.getConfiguration() );
+                                 project.getVersion() );
+
+            store.updateProjectConfiguration( id, project.getConfiguration() );
         }
         catch ( ContinuumStoreException e )
         {

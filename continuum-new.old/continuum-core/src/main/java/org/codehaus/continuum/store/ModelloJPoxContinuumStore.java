@@ -35,7 +35,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.6 2005-03-23 16:24:21 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.7 2005-03-28 11:27:49 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -119,8 +119,7 @@ public class ModelloJPoxContinuumStore
         }
     }
 
-    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version,
-                               Properties properties )
+    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException
     {
         try
@@ -141,6 +140,27 @@ public class ModelloJPoxContinuumStore
             rollback( store );
 
             throw new ContinuumStoreException( "Error while updating project.", e );
+        }
+    }
+
+    public void updateProjectConfiguration( String projectId, Properties configuration )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            store.begin();
+
+            ContinuumProject project = store.getContinuumProject( projectId, false );
+
+            project.setConfiguration( configuration );
+
+            store.commit();
+        }
+        catch ( Exception e )
+        {
+            rollback( store );
+
+            throw new ContinuumStoreException( "Error while updating project configuration.", e );
         }
     }
 

@@ -36,7 +36,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.6 2005-03-23 16:24:21 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.7 2005-03-28 11:27:49 trygvis Exp $
  */
 public class ModelloJPoxContinuumStoreTest
     extends PlexusTestCase
@@ -145,6 +145,10 @@ public class ModelloJPoxContinuumStoreTest
         assertNull( store.getThreadState() );
     }
 
+    // ----------------------------------------------------------------------
+    // Project
+    // ----------------------------------------------------------------------
+
     public void testStoreProject()
         throws Exception
     {
@@ -226,7 +230,7 @@ public class ModelloJPoxContinuumStoreTest
         String version2 = "v2";
         Properties properties2 = new Properties();
 
-        store.updateProject( projectId, name2, scmUrl2, nagEmailAddress2, version2, properties2 );
+        store.updateProject( projectId, name2, scmUrl2, nagEmailAddress2, version2  );
 
         ContinuumProject project = store.getProject( projectId );
 
@@ -307,6 +311,42 @@ public class ModelloJPoxContinuumStoreTest
         assertProjectEquals( id2, name2, scmUrl2, nagEmailAddress2, version2, builderId2, workingDirectory2,
                              configuration2, project2 );
     }
+
+    public void testUpdateProjectConfiguration()
+        throws Exception
+    {
+        ContinuumStore store = (ContinuumStore) lookup( ContinuumStore.ROLE );
+
+        String projectId = addProject( "Test Project" );
+
+        ContinuumProject project = store.getProject( projectId );
+
+        assertEquals( 0, project.getConfiguration().size() );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        Properties expected = new Properties();
+
+        expected.put( "key", "value" );
+
+        store.updateProjectConfiguration( projectId, expected );
+
+        Properties actual = store.getProject( projectId ).getConfiguration();
+
+        assertNotNull( "The configuration is null", actual );
+
+        assertEquals( expected.size(), actual.size() );
+
+        assertTrue( actual.containsKey( "key" ) );
+
+        assertEquals( "value", actual.getProperty( "key" ) );
+    }
+
+    // ----------------------------------------------------------------------
+    // Build
+    // ----------------------------------------------------------------------
 
     public void testBuild()
         throws Exception

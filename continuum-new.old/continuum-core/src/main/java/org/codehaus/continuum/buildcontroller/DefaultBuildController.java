@@ -33,7 +33,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.10 2005-03-23 16:24:17 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.11 2005-03-28 11:27:51 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -164,14 +164,17 @@ public class DefaultBuildController
             notifier.checkoutComplete( build );
         }
 
+        String id = project.getId();
+
         builder.updateProjectFromCheckOut( new File( project.getWorkingDirectory() ), project );
 
-        store.updateProject( project.getId(),
+        store.updateProject( id,
                              project.getName(),
                              project.getScmUrl(),
                              project.getNagEmailAddress(),
-                             project.getVersion(),
-                             project.getConfiguration() );
+                             project.getVersion() );
+
+        store.updateProjectConfiguration( id, project.getConfiguration() );
 
         notifier.runningGoals( build );
 
