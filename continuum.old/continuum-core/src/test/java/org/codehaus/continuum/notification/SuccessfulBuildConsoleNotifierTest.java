@@ -1,5 +1,7 @@
 package org.codehaus.continuum.notification;
 
+import org.codehaus.continuum.project.ContinuumBuild;
+
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
  *
@@ -24,14 +26,18 @@ package org.codehaus.continuum.notification;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.4 2004-10-15 13:01:03 trygvis Exp $
+ * @version $Id: SuccessfulBuildConsoleNotifierTest.java,v 1.5 2004-10-20 19:49:36 trygvis Exp $
  */
 public class SuccessfulBuildConsoleNotifierTest
     extends AbstractSuccessfulBuildNotifierTest
 {
+    // ----------------------------------------------------------------------
+    // AbstractSuccessfulBuildNotifierTest Implementation
+    // ----------------------------------------------------------------------
+
     protected String getProjectScmUrl()
     {
-        return "scm:test:success";
+        return "scm:local:src/test/repository:console-notifier";
     }
 
     protected String getProjectNagEmailAddress()
@@ -52,5 +58,15 @@ public class SuccessfulBuildConsoleNotifierTest
     protected String getNotifierRoleHint()
     {
         return "console";
+    }
+
+    protected void assertPreBuildState()
+    	throws Exception
+    {
+    }
+
+    protected void assertPostBuildState( ContinuumBuild build )
+    	throws Exception
+    {
     }
 }
