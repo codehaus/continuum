@@ -11,23 +11,29 @@
     <id name="id" type="java.lang.String">
       <generator class="uuid.hex"/>
     </id>
-    <property name="name" type="java.lang.String" not-null="true"/>
-    <property name="scmConnection" type="java.lang.String" not-null="true"/>
-<!--
-    <property name="state" type="int" not-null="true"/>
--->
-    <property name="state" type="org.codehaus.continuum.store.hibernate.ContinuumProjectStateType" not-null="true"/>
-
-    <property name="type" type="java.lang.String" not-null="true"/>
-    <any name="descriptor" id-type="java.lang.String" meta-type="org.codehaus.continuum.project.ProjectDescriptor">
+    <property
+      name="name"
+      type="java.lang.String"
+      not-null="true"/>
+    <property
+      name="scmConnection"
+      type="java.lang.String"
+      not-null="true"/>
+    <property
+      name="state"
+      type="org.codehaus.continuum.store.hibernate.ContinuumProjectStateType"
+      not-null="true"/>
+    <property
+      name="type"
+      type="java.lang.String"
+      not-null="true"/>
+    <any
+      name="descriptor"
+      id-type="java.lang.String"
+      meta-type="org.codehaus.continuum.project.ProjectDescriptor"
+      cascade="all">
       <column name="subType"/>
       <column name="projectId"/>
     </any>
-<!--
-    <one-to-one
-        name="descriptor"
-        class="org.codehaus.continuum.project.AbstractProjectDescriptor"
-        cascade="none"/>
--->
   </class>
 </hibernate-mapping>
