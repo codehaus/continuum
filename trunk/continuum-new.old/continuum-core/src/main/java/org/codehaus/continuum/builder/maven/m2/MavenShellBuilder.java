@@ -23,10 +23,11 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.7 2005-03-28 14:10:58 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.8 2005-03-28 15:35:48 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
@@ -38,6 +39,9 @@ public class MavenShellBuilder
 
     /** @configuration */
     private String executable;
+
+    /** @configuration */
+    private String arguments;
 
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
@@ -60,12 +64,17 @@ public class MavenShellBuilder
     protected String[] getArguments( ContinuumProject project )
         throws ContinuumException
     {
-        String[] arguments = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS, "," );
+        String[] a = splitAndTrimString( this.arguments, " " );
 
-        for ( int i = 0; i < arguments.length; i++ )
-        {
-            arguments[ i ] = arguments[ i ].trim();
-        }
+        String[] goals = getConfigurationStringArray( project.getConfiguration(), CONFIGURATION_GOALS, "," );
+
+        String[] arguments = new String[ a.length + goals.length ];
+
+        System.arraycopy( a, 0, arguments, 0, a.length );
+
+        System.arraycopy( goals, 0, arguments, a.length, goals.length );
+
+        System.err.println( "arguments: " + Arrays.asList( arguments ) );
 
         return arguments;
     }
