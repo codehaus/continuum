@@ -19,7 +19,7 @@ import org.codehaus.plexus.util.IOUtil;
  * all the projects.
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkTrigger.java,v 1.6 2004-07-03 03:21:16 trygvis Exp $
+ * @version $Id: SimpleNetworkTrigger.java,v 1.7 2004-07-11 23:56:25 trygvis Exp $
  */
 public class SimpleNetworkTrigger
     extends AbstractContinuumTrigger
@@ -55,9 +55,9 @@ public class SimpleNetworkTrigger
 
             printer.println( "OK" );
 
-            printer.println( buildId );
+            printer.println( "id=" + buildId );
 
-            printer.println( "Build of " + id + " scheduled. Build id: " + buildId);
+            printer.println( "Build of " + id + " scheduled." );
         }
         catch( ContinuumException ex )
         {
