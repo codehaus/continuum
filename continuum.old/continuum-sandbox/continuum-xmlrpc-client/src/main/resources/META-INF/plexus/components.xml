@@ -1,8 +1,0 @@
-<component-set>
-  <components>
-    <component>
-      <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
-      <implementation>org.codehaus.continuum.xmlrpc.DefaultXmlRpcContinuumClient</implementation>
-    </component>
-  </components>
-</component-set>
