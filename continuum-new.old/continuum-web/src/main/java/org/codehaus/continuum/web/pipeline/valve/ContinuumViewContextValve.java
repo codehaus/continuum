@@ -17,7 +17,6 @@ package org.codehaus.continuum.web.pipeline.valve;
  */
 
 import org.codehaus.continuum.web.ContinuumWeb;
-import org.codehaus.continuum.web.tool.CssTool;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.summit.pipeline.valve.CreateViewContextValve;
 import org.codehaus.plexus.summit.rundata.RunData;
@@ -25,7 +24,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.6 2005-03-20 19:36:29 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.7 2005-03-20 19:37:23 jvanzyl Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
