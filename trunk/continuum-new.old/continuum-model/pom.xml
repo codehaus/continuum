@@ -6,7 +6,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>continuum</groupId>
-  <artifactId>continuum-core</artifactId>
+  <artifactId>continuum-model</artifactId>
   <packaging>jar</packaging>
   <name>Continuum Core</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
