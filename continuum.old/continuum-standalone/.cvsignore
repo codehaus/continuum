@@ -1,7 +1,13 @@
 target
+*~
+*.log
 .classpath
 .project
+*.ipr
+*.iws
+*.iml
+
 generated-runtime
+continuumdb.*
 rg*
 *.tar.gz
-continuumdb.*

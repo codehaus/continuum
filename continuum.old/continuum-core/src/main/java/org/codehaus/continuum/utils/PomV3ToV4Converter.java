@@ -1,7 +1,25 @@
 package org.codehaus.continuum.utils;
 
 /*
- * LICENSE
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import java.io.File;
@@ -39,7 +57,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PomV3ToV4Converter.java,v 1.1 2004-07-13 20:54:49 trygvis Exp $
+ * @version $Id: PomV3ToV4Converter.java,v 1.2 2004-07-27 05:42:14 trygvis Exp $
  */
 public class PomV3ToV4Converter
 {
@@ -100,7 +118,7 @@ public class PomV3ToV4Converter
             try
             {
                 convertFile( input );
-    
+
                 info( "Converted: " + input.getAbsolutePath() );
             }
             catch( Exception ex )
@@ -395,9 +413,9 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3MailingLists.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.MailingList v3MailingList = 
+            org.apache.maven.model.v300.MailingList v3MailingList =
                 (org.apache.maven.model.v300.MailingList) it.next();
-            
+
             MailingList mailingList = new MailingList();
 
             mailingList.setName( v3MailingList.getName() );
@@ -427,7 +445,7 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Developers.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Developer v3Developer = 
+            org.apache.maven.model.v300.Developer v3Developer =
                 (org.apache.maven.model.v300.Developer) it.next();
 
             Developer developer = new Developer();
@@ -465,7 +483,7 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Contributors.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Contributor v3Contributor = 
+            org.apache.maven.model.v300.Contributor v3Contributor =
                 (org.apache.maven.model.v300.Contributor) it.next();
 
             Contributor contributor = new Contributor();
@@ -502,7 +520,7 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Dependencies.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Dependency v3Dependency = 
+            org.apache.maven.model.v300.Dependency v3Dependency =
                 (org.apache.maven.model.v300.Dependency) it.next();
 
             Dependency dependency = new Dependency();
@@ -575,7 +593,7 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Licenses.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.License v3License = 
+            org.apache.maven.model.v300.License v3License =
                 (org.apache.maven.model.v300.License) it.next();
 
             License license = new License();
@@ -637,17 +655,17 @@ public class PomV3ToV4Converter
 
             for ( Iterator it = v3SourceModifications.iterator(); it.hasNext(); )
             {
-                org.apache.maven.model.v300.SourceModification v3SourceModification = 
+                org.apache.maven.model.v300.SourceModification v3SourceModification =
                     (org.apache.maven.model.v300.SourceModification) it.next();
-    
+
                 SourceModification sourceModification = new SourceModification();
-    
+
                 sourceModification.setClassName( v3SourceModification.getClassName() );
-    
+
                 sourceModification.setIncludes( getIncludes( v3SourceModification.getIncludes() ) );
-    
+
                 sourceModification.setExcludes( getExcludes( v3SourceModification.getExcludes() ) );
-    
+
                 sourceModifications.add( sourceModification );
             }
 
@@ -784,25 +802,25 @@ public class PomV3ToV4Converter
         if ( !isEmpty( id ) )
         {
             int i = id.indexOf( "+" );
-    
+
             int j = id.indexOf( ":" );
-    
+
             if ( i > 0 )
             {
                 model.setGroupId( id.substring( 0, i ) );
-    
+
                 model.setArtifactId( id.replace( '+', '-' ) );
             }
             else if ( j > 0 )
             {
                 model.setGroupId( id.substring( 0, j ) );
-    
+
                 model.setArtifactId( id.substring( j + 1 ) );
             }
             else
             {
                 model.setGroupId( id );
-    
+
                 model.setArtifactId( id );
             }
 
@@ -855,7 +873,7 @@ public class PomV3ToV4Converter
 
         for ( Iterator it = v3Resources.iterator(); it.hasNext(); )
         {
-            org.apache.maven.model.v300.Resource v3Resource = 
+            org.apache.maven.model.v300.Resource v3Resource =
                 (org.apache.maven.model.v300.Resource) it.next();
 
             Resource resource = new Resource();

@@ -1,7 +1,25 @@
 package org.codehaus.continuum.trigger.alarmclock;
 
 /*
- * LICENSE
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import java.io.ByteArrayOutputStream;
@@ -15,7 +33,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.4 2004-07-26 23:55:26 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.5 2004-07-27 05:42:09 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends PlexusTestCase
@@ -40,7 +58,7 @@ public class AlarmClockTriggerTest
         // before any of the builds is triggered
         assertEquals( 0, continuum.getBuildQueueLength() );
 
-        // The alarm goes of every second and the builder should 
+        // The alarm goes of every second and the builder should
         // build every 100th second
         Thread.sleep( 2000 );
 
