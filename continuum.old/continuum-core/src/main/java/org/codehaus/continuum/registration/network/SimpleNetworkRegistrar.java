@@ -20,7 +20,7 @@ import java.net.Socket;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkRegistrar.java,v 1.2 2004-01-18 18:36:02 jvanzyl Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.3 2004-01-18 19:03:07 jvanzyl Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -95,6 +95,8 @@ public class SimpleNetworkRegistrar
                         BufferedReader reader = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
 
                         String instruction = reader.readLine().trim();
+
+                        socket.close();
 
                         getContinuum().addProject( instruction );
                     }

@@ -2,7 +2,7 @@
 
   <load-on-start>
     <service role="org.codehaus.plexus.continuum.trigger.ContinuumTrigger"/>
-    <service role="org.codehaus.plexus.continuum.registrar.ContinuumRegistrar"/>
+    <service role="org.codehaus.plexus.continuum.registration.ContinuumRegistrar"/>
   </load-on-start>
 
   <components>
@@ -83,8 +83,8 @@
     </component>
     <!-- Registrar -->
     <component>
-      <role>org.codehaus.plexus.continuum.registrar.ContinuumRegistrar</role>
-      <implementation>org.codehaus.plexus.continuum.registar.network.SimpleNetworkRegistrar</implementation>
+      <role>org.codehaus.plexus.continuum.registration.ContinuumRegistrar</role>
+      <implementation>org.codehaus.plexus.continuum.registration.network.SimpleNetworkRegistrar</implementation>
       <configuration>
         <port>10001</port>
       </configuration>
