@@ -6,29 +6,29 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
 
-import org.apache.maven.ExecutionResponse;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.maven2.Maven2BuildResult;
 import org.codehaus.continuum.builder.maven2.Maven2ProjectDescriptor;
 import org.codehaus.continuum.mail.MailMessage;
-import org.codehaus.continuum.notification.ContinuumNotifier;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.notification.AbstractContinuumNotifier;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.utils.PlexusUtils;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: MailContinuumNotifier.java,v 1.5 2004-07-19 16:40:59 trygvis Exp $
+ * @version $Id: MailContinuumNotifier.java,v 1.6 2004-07-27 00:06:08 trygvis Exp $
  */
 public class MailContinuumNotifier
-    extends AbstractLogEnabled
-    implements Initializable, ContinuumNotifier
+    extends AbstractContinuumNotifier
+    implements Initializable
 {
     /**
      * The hostname of the SMTP server.
@@ -44,6 +44,13 @@ public class MailContinuumNotifier
      * @default
      */
     private String to;
+
+    /**
+     * The email address of the administrator.
+     * 
+     * @default
+     */
+    private String administrator;
 
     /**
      * If set; all emails will be send from this address. If not all the nag email
@@ -71,6 +78,7 @@ public class MailContinuumNotifier
         throws Exception
     {
         PlexusUtils.assertConfiguration( smtpServer, "smtp-server" );
+        PlexusUtils.assertConfiguration( administrator, "administrator" );
 
         if ( to == null )
         {
@@ -106,43 +114,56 @@ public class MailContinuumNotifier
     // Notifier Implementation
     // ----------------------------------------------------------------------
 
-    public void buildStarted( BuildResult build )
+    public void buildStarted( ContinuumBuild build )
         throws ContinuumException
     {
     }
 
-    public void checkoutStarted( BuildResult build )
+    public void checkoutStarted( ContinuumBuild build )
         throws ContinuumException
     {
     }
 
-    public void checkoutComplete( BuildResult build, Exception ex)
+    public void checkoutComplete( ContinuumBuild build )
         throws ContinuumException
     {
     }
 
-    public void runningGoals( BuildResult build )
+    public void runningGoals( ContinuumBuild build )
         throws ContinuumException
     {
     }
 
-    public void goalsCompleted( BuildResult build, Exception ex)
+    public void goalsCompleted( ContinuumBuild build )
         throws ContinuumException
     {
     }
 
-    public void buildComplete( BuildResult build, Exception ex)
+    public void buildComplete( ContinuumBuild build )
         throws ContinuumException
     {
         StringWriter message = new StringWriter();
 
         PrintWriter output = new PrintWriter( message );
 
-        ExecutionResponse response = build.getMaven2Result();
+        ContinuumProject project = build.getProject();
 
-        if ( response == null )
+        if ( !project.getType().equals( "maven2" ) )
+        {
+            throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
+        }
+
+        Maven2BuildResult result = (Maven2BuildResult)build.getBuildResult();
+
+        ContinuumProjectState state = build.getState();
+
+        String subject;
+
+        if ( state == ContinuumProjectState.ERROR )
         {
             output.println( "BUILD ERROR" );
+
+            subject = "[continuum] BUILD ERROR: " + project.getName();
 
             Throwable error = build.getError();
 
@@ -158,50 +179,93 @@ public class MailContinuumNotifier
 
                 line( output );
             }
-
-            if ( ex != null )
-            {
-                line( output );
-
-                output.println( "Build exeption:" );
-
-                line( output );
-
-                ex.printStackTrace( output );
-
-                line( output );
-            }
         }
-        else
+        else if ( state == ContinuumProjectState.OK || state == ContinuumProjectState.FAILED )
         {
-            if ( !response.isExecutionFailure() )
+//            ExecutionResponse response = result.getExecutionResponse();
+            String response = result.getExecutionResponse();
+/*
+            // TODO: add isExecutionError() in the repsponse
+            if ( response.getException() != null )
             {
-                output.println( "BUILD SUCCESSFUL" );
-    
+                subject = "[continuum] BUILD ERROR: " + project.getName();
+
+                line( output );
+
+                output.println( "BUILD ERROR" );
+
+                line( output );
+
+                Throwable error = response.getException();
+
+                if ( error != null )
+                {
+                    output.println( "Build exeption:" );
+
+                    line( output );
+
+                    error.printStackTrace( output );
+
+                    line( output );
+                }
+            }
+            else */
+            if ( !result.isSuccess() )
+            {
+                subject = "[continuum] BUILD FAILURE: " + project.getName();
+
+                line( output );
+
+                output.println( "BUILD FAILURE" );
+
+                line( output );
+
+                output.println( "Reason: " + result.getShortFailureResponse() );
+
+                output.println( result.getLongFailureResponse() );
+
+                line( output );
+
+                output.println( "Execution response: " );
+
+                output.println( response );
+
                 writeStats( output, build );
             }
             else
             {
-                output.println( "BUILD FAILURE" );
-    
-                output.println( "Reason: " + response.getFailureResponse().shortMessage() );
-    
-                output.println( response.getFailureResponse().longMessage() );
-    
+                subject = "[continuum] BUILD SUCCESSFUL: " + project.getName();
+
+                line( output );
+
+                output.println( "BUILD SUCCESSFUL" );
+
+                if ( response.trim().length() > 0 )
+                {
+                    line( output );
+
+                    output.println( response );
+                }
                 writeStats( output, build );
             }
+        }
+        else
+        {
+            getLogger().warn( "Unexpected build state: " + state );
+
+            subject = "[continuum] BUILD ERROR: Unknown build state";
         }
 
         output.close();
 
-        sendMessage( build, message.toString() );
+        sendMessage( build, subject, message.toString() );
     }
 
     // ----------------------------------------------------------------------
     // Private
     // ----------------------------------------------------------------------
 
-    private void sendMessage( BuildResult build, String message )
+    private void sendMessage( ContinuumBuild build, String subject, String message )
         throws ContinuumException
     {
         getLogger().info( "Sending message to: " + smtpServer + ":" + port );
@@ -235,8 +299,14 @@ public class MailContinuumNotifier
             }
 
             mailMessage.to( to );
+/*
+            ExecutionResponse response = (ExecutionResponse)build.getBuildResult();
 
-            if ( build.getMaven2Result() != null || build.getMaven2Result().isExecutionFailure() )
+            if ( response == null )
+            {
+                mailMessage.setSubject( "[continuum] BUILD ERROR: " + project.getName() );
+            }
+            else if ( response.isExecutionFailure() )
             {
                 mailMessage.setSubject( "[continuum] BUILD UNSUCCESSFUL: " + project.getName() );
             }
@@ -244,6 +314,8 @@ public class MailContinuumNotifier
             {
                 mailMessage.setSubject( "[continuum] BUILD SUCCESSFUL: " + project.getName() );
             }
+*/
+            mailMessage.setSubject( subject );
 
             mailMessage.getPrintStream().print( message );
 
@@ -267,6 +339,11 @@ public class MailContinuumNotifier
         if ( from != null )
         {
             return from;
+        }
+
+        if ( mavenProject == null )
+        {
+            return "Continuum Internal Mail Service <continuum>";
         }
 
         CiManagement ciManagement = mavenProject.getCiManagement();
@@ -295,6 +372,11 @@ public class MailContinuumNotifier
             return to;
         }
 
+        if ( mavenProject == null )
+        {
+            return administrator;
+        }
+
         address = StringUtils.trim( mavenProject.getCiManagement().getNagEmailAddress() );
 
         if ( StringUtils.isEmpty( address ) )
@@ -308,17 +390,17 @@ public class MailContinuumNotifier
     private MavenProject getMavenProject( ContinuumProject project )
         throws ContinuumException
     {
-        if ( !project.getType().equals( "maven2" ) )
-        {
-            throw new ContinuumException( "Uknown project type: '" + project.getType() + "'." );
-        }
-
         Maven2ProjectDescriptor descriptor = (Maven2ProjectDescriptor) project.getDescriptor();
+
+        if ( descriptor == null )
+        {
+            return null;
+        }
 
         return descriptor.getMavenProject();
     }
 
-    private void writeStats( PrintWriter output, BuildResult build )
+    private void writeStats( PrintWriter output, ContinuumBuild build )
     {
         long fullDiff = build.getEndTime() - build.getStartTime();
 

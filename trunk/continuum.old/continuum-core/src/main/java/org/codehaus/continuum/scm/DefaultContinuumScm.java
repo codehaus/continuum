@@ -20,7 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.8 2004-07-19 16:28:17 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.9 2004-07-27 00:06:04 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
@@ -77,12 +77,12 @@ public class DefaultContinuumScm
      * @param project The project to check out.
      * @throws ContinuumException Thrown in case of a exception while checking out the sources.
      */
-    public String checkout( ContinuumProject project )
+    public File checkout( ContinuumProject project )
         throws ContinuumException
     {
         try
         {
-            String dir = getProjectScmDirectory( project, checkoutDirectory );
+            File workingDirectory = getProjectScmDirectory( project, checkoutDirectory );
 
             RepositoryInfo repositoryInfo = ScmUtils.createRepositoryInfo( project );
 
@@ -90,14 +90,18 @@ public class DefaultContinuumScm
             {
                 scmManager.setRepositoryInfo( repositoryInfo );
 
-                scmManager.checkout( dir );
+                if ( !workingDirectory.exists() )
+                {
+                    FileUtils.mkdir( workingDirectory.getAbsolutePath() );
+                }
+
+                scmManager.checkout( workingDirectory.getAbsolutePath() );
             }
 
             // TODO: yes, this is CVS specific and pure bad
             String connection = repositoryInfo.getConnection();
 
-            return dir + File.separator + 
-                   connection.substring( connection.lastIndexOf( ":" ) + 1 );
+            return new File( workingDirectory, connection.substring( connection.lastIndexOf( ":" ) + 1 ) );
         }
         catch ( Exception e )
         {
@@ -111,18 +115,18 @@ public class DefaultContinuumScm
      * @param project The project to update.
      * @throws ContinuumException Thrown in case of a exception while updating the sources.
      */
-    public synchronized String update( ContinuumProject project )
+    public synchronized File update( ContinuumProject project )
         throws ContinuumException
     {
         try
         {
-            String dir = getProjectScmDirectory( project, checkoutDirectory );
+            File dir = getProjectScmDirectory( project, checkoutDirectory );
 
             synchronized( this )
             {
                 scmManager.setRepositoryInfo( ScmUtils.createRepositoryInfo( project ) );
 
-                scmManager.update( dir );
+                scmManager.update( dir.getAbsolutePath() );
             }
 
             return dir;
@@ -137,8 +141,8 @@ public class DefaultContinuumScm
     // Private
     // ----------------------------------------------------------------------
 
-    private String getProjectScmDirectory( ContinuumProject project, String checkoutDirectory )
+    private File getProjectScmDirectory( ContinuumProject project, String checkoutDirectory )
     {
-        return checkoutDirectory + File.separator + project.getId();
+        return new File( checkoutDirectory, project.getId() );
     }
 }

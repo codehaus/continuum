@@ -9,8 +9,10 @@ import java.util.Iterator;
 import org.codehaus.continuum.builder.BuilderManager;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.buildqueue.BuildQueue;
+import org.codehaus.continuum.notification.NotifierManager;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
+import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
 import org.codehaus.continuum.utils.PlexusUtils;
@@ -20,17 +22,29 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.36 2004-07-14 05:35:56 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.37 2004-07-27 00:06:03 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
     implements Continuum, Initializable, Startable
 {
+    /** @requirement */
     private BuilderManager builderManager;
 
+    /** @requirement */
     private BuildQueue buildQueue;
 
+    /** @requirement */
+    private ContinuumScm scm;
+
+    /** @requirement */
+    private NotifierManager notifierManager;
+
+    /** @requirement */
     private ContinuumStore store;
+
+    /** @configuration */
+    private String checkoutDirectory;
 
     private BuilderThread builderThread;
 
@@ -46,6 +60,8 @@ public class DefaultContinuum
         PlexusUtils.assertRequirement( builderManager, BuilderManager.ROLE );
         PlexusUtils.assertRequirement( buildQueue, BuildQueue.ROLE );
         PlexusUtils.assertRequirement( store, ContinuumStore.ROLE );
+        PlexusUtils.assertRequirement( scm, ContinuumScm.ROLE );
+        PlexusUtils.assertRequirement( notifierManager, NotifierManager.ROLE );
 
         getLogger().info( "Showing all projects:" );
 
@@ -63,7 +79,7 @@ public class DefaultContinuum
         getLogger().info( "Starting continuum." );
 
         // start the builder thread
-        builderThread = new BuilderThread( builderManager, buildQueue, getLogger() );
+        builderThread = new BuilderThread( builderManager, buildQueue, store, notifierManager, scm, getLogger() );
 
         Thread thread = new Thread( builderThread );
 
@@ -167,7 +183,7 @@ public class DefaultContinuum
         {
             store.beginTransaction();
 
-            buildId = store.createBuildResult( project.getId() );
+            buildId = store.createBuild( project.getId() );
 
             buildQueue.enqueue( buildId );
 

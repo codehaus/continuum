@@ -6,7 +6,7 @@ package org.codehaus.continuum.project;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProjectState.java,v 1.1 2004-07-20 18:25:57 trygvis Exp $
+ * @version $Id: ContinuumProjectState.java,v 1.2 2004-07-27 00:06:03 trygvis Exp $
  */
 public class ContinuumProjectState
 {
@@ -49,13 +49,18 @@ public class ContinuumProjectState
 
     private String name;
 
-    private ContinuumProjectState( String name )
+    protected ContinuumProjectState( String name )
     {
         this.name = name;
     }
 
     public String getI18nKey()
     {
-        return "org.codehaus.continuum.project.ContinuumProject.state." + name;
+        return "org.codehaus.continuum.project.state." + name;
+    }
+
+    public String toString()
+    {
+        return name;
     }
 }

@@ -5,7 +5,7 @@ package org.codehaus.continuum.notification;
  */
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -16,7 +16,7 @@ import org.codehaus.plexus.logging.Logger;
  * <code>logger.fatalError( ex )</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NotifierWrapper.java,v 1.5 2004-07-07 02:34:34 trygvis Exp $
+ * @version $Id: NotifierWrapper.java,v 1.6 2004-07-27 00:06:04 trygvis Exp $
  */
 public class NotifierWrapper
 {
@@ -30,7 +30,7 @@ public class NotifierWrapper
         this.logger = logger;
     }
 
-    public void buildStarted( BuildResult build )
+    public void buildStarted( ContinuumBuild build )
     {
         try
         {
@@ -42,7 +42,7 @@ public class NotifierWrapper
         }
     }
 
-    public void checkoutStarted( BuildResult build )
+    public void checkoutStarted( ContinuumBuild build )
     {
         try
         {
@@ -54,11 +54,11 @@ public class NotifierWrapper
         }
     }
 
-    public void checkoutComplete( BuildResult build, Exception ex )
+    public void checkoutComplete( ContinuumBuild build )
     {
         try
         {
-            notifier.checkoutComplete( build, ex );
+            notifier.checkoutComplete( build );
         }
         catch( ContinuumException e )
         {
@@ -66,7 +66,7 @@ public class NotifierWrapper
         }
     }
 
-    public void runningGoals( BuildResult build )
+    public void runningGoals( ContinuumBuild build )
     {
         try
         {
@@ -78,11 +78,11 @@ public class NotifierWrapper
         }
     }
 
-    public void goalsCompleted( BuildResult build, Exception ex )
+    public void goalsCompleted( ContinuumBuild build )
     {
         try
         {
-            notifier.goalsCompleted( build, ex );
+            notifier.goalsCompleted( build );
         }
         catch( ContinuumException e )
         {
@@ -90,11 +90,11 @@ public class NotifierWrapper
         }
     }
 
-    public void buildComplete( BuildResult build, Exception ex )
+    public void buildComplete( ContinuumBuild build )
     {
         try
         {
-            notifier.buildComplete( build, ex );
+            notifier.buildComplete( build );
         }
         catch( ContinuumException e )
         {

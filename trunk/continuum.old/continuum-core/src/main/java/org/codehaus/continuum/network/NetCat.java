@@ -17,7 +17,7 @@ import org.codehaus.plexus.util.StringInputStream;
  * This class emulates the unix tool <code>nc</code>.
  * 
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: NetCat.java,v 1.4 2004-07-01 15:30:57 trygvis Exp $
+ * @version $Id: NetCat.java,v 1.5 2004-07-27 00:06:04 trygvis Exp $
  */
 public class NetCat
 {
@@ -49,7 +49,7 @@ public class NetCat
             output = socket.getOutputStream();
             input = socket.getInputStream();
 
-            while ( -1 != ( n = contents.read( buffer ) ) )
+            while ( ( n = contents.read( buffer ) ) != -1 )
             {
 //                for( int i = 0; i < n; i++)
 //                    System.err.print( (char)buffer[i] );
@@ -58,7 +58,7 @@ public class NetCat
 
             System.err.println( "Reading return value" );
 
-            while ( -1 != ( n = input.read( buffer ) ) )
+            while ( ( n = input.read( buffer ) ) != -1  )
             {
 //                for( int i = 0; i < n; i++)
 //                    System.err.print( (char)buffer[i] );

@@ -12,11 +12,11 @@ import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
 import net.sf.hibernate.Transaction;
 
-import org.apache.maven.ExecutionResponse;
-
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.project.GenericBuildResult;
+import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.project.GenericContinuumBuild;
 import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.AbstractContinuumStore;
@@ -28,7 +28,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.5 2004-07-19 16:39:33 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.6 2004-07-27 00:06:07 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -101,8 +101,6 @@ public class HibernateContinuumStore
         try
         {
             tx.commit();
-
-//            hibernate.closeSession();
         }
         catch( HibernateException ex )
         {
@@ -110,6 +108,8 @@ public class HibernateContinuumStore
         }
         finally
         {
+            closeSession();
+
             tx = null;
         }
     }
@@ -125,8 +125,6 @@ public class HibernateContinuumStore
         try
         {
             tx.rollback();
-
-            hibernate.closeSession();
         }
         catch( HibernateException ex )
         {
@@ -134,6 +132,8 @@ public class HibernateContinuumStore
         }
         finally
         {
+            closeSession();
+
             tx = null;
         }
     }
@@ -151,7 +151,7 @@ public class HibernateContinuumStore
 
         project.setScmConnection( scmConnection );
 
-        project.setState( ContinuumProject.PROJECT_STATE_NEW );
+        project.setState( ContinuumProjectState.NEW );
 
         project.setType( type );
 
@@ -163,7 +163,7 @@ public class HibernateContinuumStore
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while adding project.", ex );
         }
 
         return project.getId();
@@ -194,6 +194,26 @@ public class HibernateContinuumStore
         }
     }
 
+    public void updateProject( String projectId, String name, String scmUrl )
+        throws ContinuumStoreException
+    {
+        GenericContinuumProject project = getGenericProject( projectId );
+
+        if ( name == null || name.trim().length() == 0 )
+        {
+            throw new ContinuumStoreException( "The name must be set." );
+        }
+
+        if ( scmUrl == null || scmUrl.trim().length() == 0 )
+        {
+            throw new ContinuumStoreException( "The scm url must be set." );
+        }
+
+        project.setName( name );
+
+        project.setScmConnection( scmUrl );
+    }
+
     public Iterator getAllProjects()
         throws ContinuumStoreException
     {
@@ -203,12 +223,11 @@ public class HibernateContinuumStore
 
         try
         {
-//          it = session.find( "select cp from ContinuumProject as cp where 1=1" ).iterator();
             it = session.find( "from " + ContinuumProject.class.getName() ).iterator();
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while querying database.", ex );
+            throw new ContinuumStoreException( "Error while loading all projects.", ex );
         }
 
         return it;
@@ -227,7 +246,7 @@ public class HibernateContinuumStore
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while loading project.", ex );
         }
 
         return continuumProject;
@@ -237,96 +256,119 @@ public class HibernateContinuumStore
     // Build
     // ----------------------------------------------------------------------
 
-    public String createBuildResult( String projectId )
+    public String createBuild( String projectId )
         throws ContinuumStoreException
     {
-        ContinuumProject project = getProject( projectId );
+        GenericContinuumProject project = getGenericProject( projectId );
 
-        GenericBuildResult buildResult = new GenericBuildResult();
+        GenericContinuumBuild build = new GenericContinuumBuild();
 
-        buildResult.setProject( project );
+        project.setState( ContinuumProjectState.BUILD_SIGNALED );
 
-        buildResult.setState( BuildResult.BUILD_BUILDING );
+        build.setProject( project );
 
-        buildResult.setStartTime( System.currentTimeMillis() );
+        build.setState( ContinuumProjectState.BUILD_SIGNALED );
+
+        build.setStartTime( System.currentTimeMillis() );
 
         try
         {
             Session session = getHibernateSession();
 
-            session.save( buildResult );
+            session.update( project );
 
-            getLogger().info( "Saved: " + buildResult.getBuildId() );
-            getLogger().info( "Saved: " + buildResult.getProject().getId() );
+            session.save( build );
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while creating build result.", ex );
         }
 
-        return buildResult.getBuildId();
+        return build.getId();
     }
 
-    public void setBuildResult( String buildId, int state, Throwable error, ExecutionResponse exectionResponse )
+    public void setBuildResult( String id, ContinuumProjectState state, ContinuumBuildResult buildResult, Throwable error )
         throws ContinuumStoreException
     {
+        if ( state == null )
+        {
+            throw new NullPointerException( "'state' cannot be null." );
+        }
+
+        getLogger().warn( "Setting build " + id + " state to " + state );
+
         try
         {
             Session session = getHibernateSession();
 
-            BuildResult buildResult = getBuildResult( buildId );
+            GenericContinuumBuild build = getGenericBuild( id );
 
-            buildResult.setState( state );
+            GenericContinuumProject project = (GenericContinuumProject)build.getProject();
 
-            buildResult.setEndTime( System.currentTimeMillis() );
+            build.setState( state );
 
-            buildResult.setError( error );
+            build.setEndTime( System.currentTimeMillis() );
 
-            session.update( buildResult );
+            if ( error != null )
+            {
+                build.setError( error );
+            }
+
+            if ( buildResult != null )
+            {
+                build.setBuildResult( buildResult );
+
+                session.save( buildResult );
+            }
+
+            project.setState( state );
+
+            session.update( build );
+
+            session.update( project );
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while setting the build result.", ex );
         }
     }
 
-    public BuildResult getBuildResult( String buildId )
+    public ContinuumBuild getBuild( String id )
         throws ContinuumStoreException
     {
-        BuildResult buildResult;
+        ContinuumBuild buildResult;
 
         try
         {
             Session session = getHibernateSession();
 
-            buildResult = (BuildResult) session.load( GenericBuildResult.class, buildId );
+            buildResult = (ContinuumBuild) session.load( GenericContinuumBuild.class, id );
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while loading build.", ex );
         }
 
         return buildResult;
     }
 
     // TODO: Implement start and end
-    public Iterator getBuildResultsForProject( String projectId, int start, int end )
+    public Iterator getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
     {
         Iterator it;
 
-        getLogger().warn( "projectId: " + projectId );
         try
         {
             Session session = getHibernateSession();
 
-            List list = session.find( "from GenericBuildResult where projectId=?", projectId, Hibernate.STRING );
+            List list = session.find( "from GenericContinuumBuild where projectId=?", projectId, Hibernate.STRING );
 
             it = list.iterator();
         }
         catch( HibernateException ex )
         {
-            throw new ContinuumStoreException( "Error while storing project.", ex );
+            throw new ContinuumStoreException( "Error while loading the builds for the project.", ex );
         }
 
         return it;
@@ -346,6 +388,18 @@ public class HibernateContinuumStore
         catch( HibernateException ex )
         {
             throw new ContinuumStoreException( "Exception while getting hibernate session.", ex );
+        }
+    }
+
+    private void closeSession()
+    {
+        try
+        {
+            hibernate.closeSession();
+        }
+        catch( HibernateException ex )
+        {
+            getLogger().warn( "Exception while closing hibernate session.", ex );
         }
     }
 }

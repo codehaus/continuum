@@ -21,8 +21,10 @@
     <property name="hibernate.connection.pool_size">10</property>
 
     <mapping resource="org/codehaus/continuum/project/ContinuumProject.hbm.xml"/>
-    <mapping resource="org/codehaus/continuum/project/BuildResult.hbm.xml"/>
-    <mapping resource="org/codehaus/continuum/project/TestProjectDescriptor.hbm.xml"/>
+    <mapping resource="org/codehaus/continuum/project/ContinuumBuild.hbm.xml"/>
     <mapping resource="org/codehaus/continuum/project/Maven2ProjectDescriptor.hbm.xml"/>
+    <mapping resource="org/codehaus/continuum/project/Maven2BuildResult.hbm.xml"/>
+
+    <mapping resource="org/codehaus/continuum/project/TestProjectDescriptor.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

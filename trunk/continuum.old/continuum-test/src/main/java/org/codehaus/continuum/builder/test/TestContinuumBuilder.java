@@ -1,10 +1,15 @@
-package org.codehaus.continuum.builder;
+package org.codehaus.continuum.builder.test;
 
 /*
  * LICENSE
  */
 
+import java.io.File;
+
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.ContinuumBuilder;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.project.TestProjectDescriptor;
@@ -12,7 +17,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestContinuumBuilder.java,v 1.1 2004-07-14 05:26:49 trygvis Exp $
+ * @version $Id: TestContinuumBuilder.java,v 1.1 2004-07-27 00:06:10 trygvis Exp $
  */
 public class TestContinuumBuilder
     extends AbstractLogEnabled
@@ -39,10 +44,10 @@ public class TestContinuumBuilder
         return projectDescriptor;
     }
 
-    public void build( String buildId )
+    public ContinuumBuildResult build( File workingDirectory, ContinuumBuild build )
         throws ContinuumException
     {
-        getLogger().info( "Building " + buildId );
+        getLogger().info( "Building " + build.getId() );
 
         buildCount++;
 
@@ -54,6 +59,8 @@ public class TestContinuumBuilder
         {
             // ignore
         }
+
+        return new TestBuildResult( true );
     }
 
     // ----------------------------------------------------------------------

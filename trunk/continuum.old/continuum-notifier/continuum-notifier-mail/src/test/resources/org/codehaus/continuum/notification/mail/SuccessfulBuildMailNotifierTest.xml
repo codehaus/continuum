@@ -1,0 +1,14 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.continuum.notification.ContinuumNotifier</role>
+      <role-hint>mail</role-hint>
+      <implementation>org.codehaus.continuum.notification.mail.MailContinuumNotifier</implementation>
+      <configuration>
+        <smtp-server>localhost</smtp-server>
+        <smtp-port>25</smtp-port>
+        <administrator>nobody@localhost</administrator>
+      </configuration>
+    </component>
+  </components>
+</component-set>

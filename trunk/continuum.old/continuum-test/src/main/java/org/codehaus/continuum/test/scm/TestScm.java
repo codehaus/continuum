@@ -18,7 +18,7 @@ import org.apache.maven.scm.repository.RepositoryInfo;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestScm.java,v 1.1 2004-07-19 16:54:47 trygvis Exp $
+ * @version $Id: TestScm.java,v 1.2 2004-07-27 00:06:11 trygvis Exp $
  */
 public class TestScm
     implements Scm
@@ -58,13 +58,19 @@ public class TestScm
             throw new ScmException( "Unknown command: '" + commandName + "'." );
         }
 
+        Command command;
+
         try
         {
-            return (Command) clazz.newInstance();
+            command = (Command) clazz.newInstance();
         }
         catch( Exception ex )
         {
             throw new ScmException( "Exception while instanciating command." );
         }
+
+        command.setRepository( new TestRepository( repoInfo.getConnection() ) );
+
+        return command;
     }
 }

@@ -5,13 +5,15 @@ package org.codehaus.continuum;
  */
 
 import org.codehaus.continuum.buildqueue.BuildQueue;
-import org.codehaus.continuum.project.BuildResult;
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProject;
+import org.codehaus.continuum.project.ContinuumProjectState;
 import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumTest.java,v 1.20 2004-07-07 02:34:36 trygvis Exp $
+ * @version $Id: DefaultContinuumTest.java,v 1.21 2004-07-27 00:06:07 trygvis Exp $
  */
 public class DefaultContinuumTest
     extends AbstractContinuumTest
@@ -29,6 +31,10 @@ public class DefaultContinuumTest
 
         String projectId = continuum.addProject( "Continuum Test Project 1", repo, "maven2" );
 
+        ContinuumProject project = store.getProject( projectId );
+
+        assertEquals( ContinuumProjectState.NEW, project.getState() );
+
         assertEquals( 0, queue.getLength() );
 
         String buildId = continuum.buildProject( projectId );
@@ -41,7 +47,7 @@ public class DefaultContinuumTest
 
         int interval = 100;
 
-        BuildResult result = null;
+        ContinuumBuild result = null;
 
         while( time > 0 )
         {
@@ -49,9 +55,9 @@ public class DefaultContinuumTest
 
             time -= interval;
 
-            result = store.getBuildResult( buildId );
+            result = store.getBuild( buildId );
 
-            if ( result.getState() != BuildResult.BUILD_BUILDING )
+            if ( result.getState() != ContinuumProjectState.BUILDING )
             {
                 break;
             }
@@ -61,10 +67,9 @@ public class DefaultContinuumTest
         {
             fail( "Timeout while waiting for the build to finnish." );
         }
-/*
-        assertEquals( BuildResult.BUILD_RESULT_OK, result.getState() );
+
+        assertEquals( ContinuumProjectState.OK, project.getState() );
 
         assertEquals( 0, queue.getLength() );
-*/
     }
 }

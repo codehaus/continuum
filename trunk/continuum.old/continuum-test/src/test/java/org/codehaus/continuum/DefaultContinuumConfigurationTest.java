@@ -4,13 +4,11 @@ package org.codehaus.continuum;
  * LICENSE
  */
 
-import org.codehaus.continuum.network.NetCat;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumConfigurationTest.java,v 1.5 2004-07-14 05:26:50 trygvis Exp $
+ * @version $Id: DefaultContinuumConfigurationTest.java,v 1.6 2004-07-27 00:06:12 trygvis Exp $
  */
 public class DefaultContinuumConfigurationTest
     extends PlexusTestCase
@@ -96,7 +94,7 @@ public class DefaultContinuumConfigurationTest
         assertTrue( result.indexOf( NEWLINE ) >= 0 );
         assertEquals( "ERROR", result.substring( 0, result.indexOf( NEWLINE ) ) );
     }
-*/
+*//*
     private void register( String url )
         throws Exception
     {
@@ -120,4 +118,5 @@ public class DefaultContinuumConfigurationTest
         // The build number
         assertEquals( Integer.toString( buildNo ), lines[1] );
     }
+*/
 }
