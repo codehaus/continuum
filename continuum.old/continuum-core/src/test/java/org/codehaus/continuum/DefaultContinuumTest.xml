@@ -11,6 +11,7 @@
         <work-directory>${plexus.home}/continuum</work-directory>
         <build-interval>1</build-interval>
         <smtp-server>mail.maven.org</smtp-server>
+        <reply-to>jason@maven.org</reply-to>
       </configuration>
     </component>
     <component>
