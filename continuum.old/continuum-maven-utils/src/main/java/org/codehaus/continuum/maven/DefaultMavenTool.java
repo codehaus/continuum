@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.9 2004-10-30 00:00:49 jvanzyl Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.10 2004-10-30 11:42:08 trygvis Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -68,8 +68,6 @@ public class DefaultMavenTool
 
     /** @configuration default ${maven.repo.local} */
     private String mavenRepository;
-
-    private File classWorldsJar;
 
     // ----------------------------------------------------------------------
     // Component Lifecycle
