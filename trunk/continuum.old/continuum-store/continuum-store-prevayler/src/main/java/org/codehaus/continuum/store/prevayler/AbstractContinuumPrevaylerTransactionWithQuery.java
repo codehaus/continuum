@@ -6,11 +6,13 @@ package org.codehaus.continuum.store.prevayler;
 
 import java.util.Date;
 
+import org.codehaus.continuum.store.memory.ContinuumDatabase;
+
 import org.prevayler.TransactionWithQuery;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumPrevaylerTransactionWithQuery.java,v 1.1 2004-10-06 13:52:43 trygvis Exp $
+ * @version $Id: AbstractContinuumPrevaylerTransactionWithQuery.java,v 1.2 2004-10-08 13:51:07 trygvis Exp $
  */
 public abstract class AbstractContinuumPrevaylerTransactionWithQuery
     implements TransactionWithQuery
