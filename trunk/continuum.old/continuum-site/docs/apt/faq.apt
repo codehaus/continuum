@@ -1,0 +1,10 @@
+ -----
+ Continuum FAQ
+ -----
+ Jason van Zyl
+ -----
+
+Continuum FAQ
+
+ I have added my POM to Continuum and then I subsequently changed my POM
+ in CVS. How does Continuum handle that?
