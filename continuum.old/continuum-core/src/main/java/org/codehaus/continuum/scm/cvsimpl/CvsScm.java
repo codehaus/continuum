@@ -34,7 +34,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
-package org.codehaus.plexus.continuum.scm.cvs;
+package org.codehaus.plexus.continuum.scm.cvsimpl;
 
 import org.codehaus.plexus.continuum.ContinuumException;
 import org.codehaus.plexus.continuum.scm.AbstractScm;
@@ -59,7 +59,7 @@ import java.util.StringTokenizer;
 /**
  * This class implements the SourceControlElement methods for a CVS repository.
  * The call to CVS is assumed to work without any setup. This implies that if
- * the authentication type is pserver the call to cvs login should be done
+ * the authentication type is pserver the call to cvsimpl login should be done
  * prior to calling this class.
  *
  * @author  <a href="mailto:pj@thoughtworks.com">Paul Julius</a>
@@ -179,7 +179,7 @@ public class CvsScm
     }
 
     /**
-     *@return CommandLine for "cvs -d CVSROOT -q log -d ">lastbuildtime" "
+     *@return CommandLine for "cvsimpl -d CVSROOT -q log -d ">lastbuildtime" "
      */
     public Commandline buildHistoryCommand( Map parameters )
         throws ContinuumException
@@ -190,7 +190,7 @@ public class CvsScm
         String tag = (String) parameters.get( "tag" );
 
         Commandline commandLine = new Commandline();
-        commandLine.setExecutable( "cvs" );
+        commandLine.setExecutable( "cvsimpl" );
 
         if ( local != null )
         {
@@ -248,7 +248,7 @@ public class CvsScm
     }
 
     /**
-     * Parses the input stream, which should be from the cvs log command. This
+     * Parses the input stream, which should be from the cvsimpl log command. This
      * method will format the data found in the input stream into a List of
      * Modification instances.
      *
@@ -441,7 +441,7 @@ public class CvsScm
             }
             catch ( ParseException pe )
             {
-                getLogger().error( "Error parsing cvs log for date and time", pe );
+                getLogger().error( "Error parsing cvsimpl log for date and time", pe );
                 return null;
             }
 
@@ -571,7 +571,7 @@ public class CvsScm
     }
 
     /**
-     * @return CommandLine for "cvs -d CVSROOT checkout <module>"
+     * @return CommandLine for "cvsimpl -d CVSROOT checkout <module>"
      */
     private Commandline buildCheckoutCommand( Map parameters )
         throws ContinuumException
@@ -582,19 +582,19 @@ public class CvsScm
 
         if ( cvsroot == null )
         {
-            throw new IllegalStateException( "cvsroot parameter cannot be null for cvs checkout operation." );
+            throw new IllegalStateException( "cvsroot parameter cannot be null for cvsimpl checkout operation." );
         }
 
         if ( module == null )
         {
-            throw new IllegalStateException( "module parameter cannot be null for cvs checkout operation." );
+            throw new IllegalStateException( "module parameter cannot be null for cvsimpl checkout operation." );
         }
 
         String tag = (String) parameters.get( "tag" );
 
         Commandline commandLine = new Commandline();
 
-        commandLine.setExecutable( "cvs" );
+        commandLine.setExecutable( "cvsimpl" );
 
         if ( local != null )
         {

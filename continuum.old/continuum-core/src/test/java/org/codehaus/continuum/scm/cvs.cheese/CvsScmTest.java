@@ -1,4 +1,4 @@
-package org.codehaus.plexus.continuum.scm.cvs;
+package org.codehaus.plexus.continuum.scm.cvsimpl;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.continuum.scm.Scm;
@@ -11,7 +11,7 @@ import java.util.Map;
  * 
  * @author <a href="mailto:jason@plexus.org">Jason van Zyl</a>
  *
- * @version $Id: CvsScmTest.java,v 1.1.1.1 2003-09-01 16:06:05 jvanzyl Exp $
+ * @version $Id: CvsScmTest.java,v 1.2 2003-09-02 16:06:04 jvanzyl Exp $
  */
 public class CvsScmTest
     extends PlexusTestCase
@@ -34,7 +34,7 @@ public class CvsScmTest
 
         Map parameters = new HashMap();
 
-        parameters.put( "cvsroot", ":pserver:anonymous@cvs.codehaus.org:/scm/cvspublic" );
+        parameters.put( "cvsroot", ":pserver:anonymous@cvsimpl.codehaus.org:/scm/cvspublic" );
         parameters.put( "module", "classworlds" );
 
         scm.checkout( parameters );
