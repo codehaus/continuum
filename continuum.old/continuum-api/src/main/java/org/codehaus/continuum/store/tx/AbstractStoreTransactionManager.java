@@ -10,7 +10,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractStoreTransactionManager.java,v 1.2 2004-10-09 13:00:18 trygvis Exp $
+ * @version $Id: AbstractStoreTransactionManager.java,v 1.3 2004-10-15 13:00:57 trygvis Exp $
  */
 public abstract class AbstractStoreTransactionManager
     extends AbstractLogEnabled
@@ -76,7 +76,7 @@ public abstract class AbstractStoreTransactionManager
         {
             state.transaction = beginTransaction();
 
-            getLogger().info( "Started tx: " + state.transaction + ". Thread '" + Thread.currentThread().getName() + "'." );
+            getLogger().debug( "Started tx: " + state.transaction + ". Thread '" + Thread.currentThread().getName() + "'." );
         }
         catch( Exception ex )
         {
@@ -157,7 +157,7 @@ public abstract class AbstractStoreTransactionManager
 
             Object tx = state.transaction;
 
-            getLogger().info( "Committing transaction " + tx + ". Thread '" + Thread.currentThread().getName() + "'." );
+            getLogger().debug( "Committing transaction " + tx + ". Thread '" + Thread.currentThread().getName() + "'." );
 
             commitTransaction( tx );
         }

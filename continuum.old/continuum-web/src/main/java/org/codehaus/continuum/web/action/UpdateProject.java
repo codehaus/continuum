@@ -32,7 +32,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: UpdateProject.java,v 1.3 2004-10-06 14:24:25 trygvis Exp $
+ * @version $Id: UpdateProject.java,v 1.4 2004-10-15 13:01:10 trygvis Exp $
  */
 public class UpdateProject
     extends AbstractAction
@@ -52,22 +52,17 @@ public class UpdateProject
 
         if ( button != null && button.trim().length() > 0 && button.equals( "Update" ) )
         {
-//            try
-//            {
-                project = getContinuumStore().getProject( projectId );
-//            }
-//            catch( ContinuumStoreException ex )
-//            {
-//                handleError( request, "Project doesn't exist." );
-//
-//                return;
-//            }
+            project = getContinuumStore().getProject( projectId );
 
             String name = (String) request.get( "name" );
 
             String scmConnection = (String) request.get( "scmConnection" );
 
-            getContinuumStore().updateProject( projectId, name, scmConnection );
+            String nagEmailAddress = (String) request.get( "nagEmailAddress" );
+
+            String version = (String) request.get( "version" );
+
+            getContinuumStore().updateProject( projectId, name, scmConnection, nagEmailAddress, version );
         }
 
         project = getContinuumStore().getProject( projectId );

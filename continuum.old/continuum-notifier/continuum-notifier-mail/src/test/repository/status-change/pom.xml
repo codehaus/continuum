@@ -3,4 +3,10 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-notifier-mail-test</artifactId>
   <version>1.0</version>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:test:target/repository:status-change</connection>
+  </scm>
 </project>

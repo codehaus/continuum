@@ -14,7 +14,7 @@ import org.codehaus.plexus.hibernate.HibernateSessionService;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateStoreTransactionManager.java,v 1.1 2004-10-06 13:48:09 trygvis Exp $
+ * @version $Id: HibernateStoreTransactionManager.java,v 1.2 2004-10-15 13:01:05 trygvis Exp $
  */
 public class HibernateStoreTransactionManager
     extends AbstractStoreTransactionManager
@@ -28,8 +28,6 @@ public class HibernateStoreTransactionManager
         Session session = getHibernateSession();
 
         Transaction tx = session.beginTransaction();
-
-        getLogger().warn( "Started transaction: " + tx );
 
         return tx;
     }

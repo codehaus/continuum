@@ -44,10 +44,11 @@ import org.codehaus.continuum.utils.PlexusUtils;
 import org.codehaus.plexus.hibernate.HibernateSessionService;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: HibernateContinuumStore.java,v 1.14 2004-10-08 09:10:46 trygvis Exp $
+ * @version $Id: HibernateContinuumStore.java,v 1.15 2004-10-15 13:01:05 trygvis Exp $
  */
 public class HibernateContinuumStore
     extends AbstractContinuumStore
@@ -140,7 +141,7 @@ public class HibernateContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String type )
+    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
         try
@@ -154,6 +155,10 @@ public class HibernateContinuumStore
             project.setName( name );
 
             project.setScmConnection( scmConnection );
+
+            project.setNagEmailAddress( nagEmailAddress );
+
+            project.setVersion( version );
 
             project.setState( ContinuumProjectState.NEW );
 
@@ -292,7 +297,7 @@ public class HibernateContinuumStore
         }
     }
 
-    public void updateProject( String projectId, String name, String scmUrl )
+    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException
     {
         try
@@ -301,19 +306,33 @@ public class HibernateContinuumStore
 
             GenericContinuumProject project = getGenericProject( projectId );
 
-            if ( name == null || name.trim().length() == 0 )
+            if ( StringUtils.isEmpty( name ) )
             {
                 throw new ContinuumStoreException( "The name must be set." );
             }
 
-            if ( scmUrl == null || scmUrl.trim().length() == 0 )
+            if ( StringUtils.isEmpty( scmUrl ) )
             {
                 throw new ContinuumStoreException( "The scm url must be set." );
+            }
+
+            if ( StringUtils.isEmpty( nagEmailAddress ) )
+            {
+                throw new ContinuumStoreException( "The nag email address must be set." );
+            }
+
+            if ( StringUtils.isEmpty( version ) )
+            {
+                throw new ContinuumStoreException( "The version must be set." );
             }
 
             project.setName( name );
 
             project.setScmConnection( scmUrl );
+
+            project.setNagEmailAddress( nagEmailAddress );
+
+            project.setVersion( version );
         }
         finally
         {
@@ -586,18 +605,6 @@ public class HibernateContinuumStore
         catch( HibernateException ex )
         {
             throw new ContinuumStoreException( "Exception while getting hibernate session.", ex );
-        }
-    }
-
-    private void closeSession()
-    {
-        try
-        {
-            hibernate.closeSession();
-        }
-        catch( HibernateException ex )
-        {
-            getLogger().warn( "Exception while closing hibernate session.", ex );
         }
     }
 }

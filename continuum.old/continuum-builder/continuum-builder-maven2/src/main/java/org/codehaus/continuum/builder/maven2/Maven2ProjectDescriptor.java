@@ -30,7 +30,7 @@ import org.codehaus.continuum.project.AbstractProjectDescriptor;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ProjectDescriptor.java,v 1.3 2004-10-09 13:03:19 trygvis Exp $
+ * @version $Id: Maven2ProjectDescriptor.java,v 1.4 2004-10-15 13:00:58 trygvis Exp $
  */
 public class Maven2ProjectDescriptor
     extends AbstractProjectDescriptor
@@ -44,6 +44,10 @@ public class Maven2ProjectDescriptor
     private String name;
 
     private String scmConnection;
+
+    private String nagEmailAddress;
+
+    private String version;
 
     private transient MavenProject mavenProject;
 
@@ -114,6 +118,38 @@ public class Maven2ProjectDescriptor
     public void setScmConnection( String scmConnection )
     {
         this.scmConnection = scmConnection;
+    }
+
+    /**
+     * @return Returns the nag email address.
+     */
+    public String getNagEmailAddress()
+    {
+        return nagEmailAddress;
+    }
+
+    /**
+     * @param nagEmailAddress The nag email address to set.
+     */
+    public void setNagEmailAddress( String nagEmailAddress )
+    {
+        this.nagEmailAddress = nagEmailAddress;
+    }
+
+    /**
+     * @return Returns the version.
+     */
+    public String getVersion()
+    {
+        return version;
+    }
+
+    /**
+     * @param version The version to set.
+     */
+    public void setVersion( String version )
+    {
+        this.version = version;
     }
 
     /**

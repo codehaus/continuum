@@ -4,10 +4,10 @@
   <groupId>plexus</groupId>
   <version>1.0</version>
   <name>Continuum Test Project 1</name>
-<!--
+  <ciManagement>
+    <nagEmailAddress>pom nag email address</nagEmailAddress>
+  </ciManagement>
   <scm>
-    <connection>scm:cvs:local:ignored:/cvs/root:project1</connection>
-    <url>http://cvs.plexus.codehaus.org/plexus-components/native/continuum/src/test-projects/project1</url>
+    <connection>scm:test:src/test/repository:project1</connection>
   </scm>
--->
 </project>

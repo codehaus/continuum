@@ -23,10 +23,11 @@ import org.codehaus.continuum.project.GenericContinuumProject;
 import org.codehaus.continuum.project.ProjectDescriptor;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.continuum.store.ContinuumStoreException;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.2 2004-10-09 13:01:54 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.3 2004-10-15 13:01:03 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -152,17 +153,27 @@ public class ContinuumDatabase
         buildIdIndex = null;
     }
 
-    public String addProject( String name, String scmConnection, String type )
+    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
-        if ( name == null )
+        if ( StringUtils.isEmpty( name ) )
         {
             throw new ContinuumStoreException( "name cannot be null." );
         }
 
-        if ( scmConnection == null )
+        if ( StringUtils.isEmpty( scmConnection ) )
         {
             throw new ContinuumStoreException( "scmConnection cannot be null." );
+        }
+
+        if ( StringUtils.isEmpty( nagEmailAddress ) )
+        {
+            throw new ContinuumStoreException( "nagEmailAddress cannot be null." );
+        }
+
+        if ( StringUtils.isEmpty( version ) )
+        {
+            throw new ContinuumStoreException( "version cannot be null." );
         }
 
         if ( type == null )
@@ -184,6 +195,10 @@ public class ContinuumDatabase
         project.setName( name );
 
         project.setScmConnection( scmConnection );
+
+        project.setNagEmailAddress( nagEmailAddress );
+
+        project.setVersion( version );
 
         project.setState( ContinuumProjectState.NEW );
 
@@ -246,24 +261,38 @@ public class ContinuumDatabase
         project.setDescriptor( descriptor );
     }
 
-    public void updateProject( String projectId, String name, String scmUrl )
+    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException
     {
         GenericContinuumProject project = getGenericProject( projectId );
 
-        if ( name == null || name.trim().length() == 0 )
+        if ( StringUtils.isEmpty( name ) )
         {
             throw new ContinuumStoreException( "The name must be set." );
         }
 
-        if ( scmUrl == null || scmUrl.trim().length() == 0 )
+        if ( StringUtils.isEmpty( scmUrl ) )
         {
             throw new ContinuumStoreException( "The scm url must be set." );
+        }
+
+        if ( StringUtils.isEmpty( nagEmailAddress ) )
+        {
+            throw new ContinuumStoreException( "The nag email address must be set." );
+        }
+
+        if ( StringUtils.isEmpty( version ) )
+        {
+            throw new ContinuumStoreException( "The version must be set." );
         }
 
         project.setName( name );
 
         project.setScmConnection( scmUrl );
+
+        project.setNagEmailAddress( nagEmailAddress );
+
+        project.setVersion( version );
     }
 
     public Iterator getAllProjects()

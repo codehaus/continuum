@@ -22,10 +22,9 @@ package org.codehaus.continuum.project;
  * SOFTWARE.
  */
 
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: GenericContinuumProject.java,v 1.3 2004-07-27 05:42:10 trygvis Exp $
+ * @version $Id: GenericContinuumProject.java,v 1.4 2004-10-15 13:00:57 trygvis Exp $
  */
 public class GenericContinuumProject
     extends AbstractContinuumProject

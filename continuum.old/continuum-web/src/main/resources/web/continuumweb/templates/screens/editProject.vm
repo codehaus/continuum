@@ -10,8 +10,16 @@
             <td><input type="text" name="name" value="$project.name"/></td>
           </tr>
           <tr class="a">
-            <td>Scm connection</td>
+            <td>Scm url</td>
             <td><input type="text" name="scmConnection" value="$project.scmConnection"/></td>
+          </tr>
+          <tr class="a">
+            <td>Nag email address</td>
+            <td><input type="text" name="nagEmailAddress" value="$project.nagEmailAddress"/></td>
+          </tr>
+          <tr class="a">
+            <td>Version</td>
+            <td><input type="text" name="version" value="$project.version"/></td>
           </tr>
         </table>
       </p>

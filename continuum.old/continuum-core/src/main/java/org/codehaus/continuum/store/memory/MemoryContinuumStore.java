@@ -38,7 +38,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MemoryContinuumStore.java,v 1.9 2004-10-09 13:01:54 trygvis Exp $
+ * @version $Id: MemoryContinuumStore.java,v 1.10 2004-10-15 13:01:03 trygvis Exp $
  */
 public class MemoryContinuumStore
     extends AbstractContinuumStore
@@ -86,14 +86,14 @@ public class MemoryContinuumStore
     // ContinuumProject
     // ----------------------------------------------------------------------
 
-    public String addProject( String name, String scmConnection, String type )
+    public String addProject( String name, String scmConnection, String nagEmailAddress, String version, String type )
         throws ContinuumStoreException
     {
         try
         {
             enter();
 
-            String projectId = database.addProject( name, scmConnection, type );
+            String projectId = database.addProject( name, scmConnection, nagEmailAddress, version, type );
 
             leave();
 
@@ -156,14 +156,14 @@ public class MemoryContinuumStore
         }
     }
 
-    public void updateProject( String projectId, String name, String scmUrl )
+    public void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )
         throws ContinuumStoreException
     {
         try
         {
             enter();
 
-            database.updateProject( projectId, name, scmUrl );
+            database.updateProject( projectId, name, scmUrl, nagEmailAddress, version );
 
             leave();
         }

@@ -26,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Map;
 
 import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
@@ -36,14 +35,11 @@ import org.codehaus.continuum.project.ContinuumProjectState;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumProjectStateType.java,v 1.2 2004-07-27 05:42:15 trygvis Exp $
+ * @version $Id: ContinuumProjectStateType.java,v 1.3 2004-10-15 13:01:05 trygvis Exp $
  */
 public class ContinuumProjectStateType
     implements UserType
 {
-    private static Map intIndex;
-    private static Map stateIndex;
-
     public boolean isMutable()
     {
         return false;

@@ -20,6 +20,14 @@
       type="java.lang.String"
       not-null="true"/>
     <property
+      name="nagEmailAddress"
+      type="java.lang.String"
+      not-null="true"/>
+    <property
+      name="version"
+      type="java.lang.String"
+      not-null="true"/>
+    <property
       name="state"
       type="org.codehaus.continuum.store.hibernate.ContinuumProjectStateType"
       not-null="true"/>

@@ -41,7 +41,7 @@ import org.codehaus.continuum.store.tx.StoreTransactionManager;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.5 2004-10-09 13:03:19 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.6 2004-10-15 13:00:58 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
@@ -63,7 +63,7 @@ public class SimpleMaven2BuilderTest
 
         txManager.begin();
 
-        String projectId = continuum.addProject( "Continuum Test Project 1", repo, "maven2" );
+        String projectId = continuum.addProject( "Continuum Test Project 1", repo, "foo@bar", "1.0", "maven2" );
 
         ContinuumProject project = store.getProject( projectId );
 

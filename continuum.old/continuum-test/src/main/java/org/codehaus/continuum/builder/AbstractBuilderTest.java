@@ -30,7 +30,7 @@ import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractBuilderTest.java,v 1.3 2004-10-06 13:33:49 trygvis Exp $
+ * @version $Id: AbstractBuilderTest.java,v 1.4 2004-10-15 13:01:07 trygvis Exp $
  */
 public abstract class AbstractBuilderTest
     extends AbstractContinuumTest
@@ -46,7 +46,7 @@ public abstract class AbstractBuilderTest
 
         String scm = "scm:test:src/test/projects/" + getProjectType() + ":normal";
 
-        String projectId = continuum.addProject( "Normal project", scm, getProjectType() );
+        String projectId = continuum.addProject( "Normal project", scm, "foo@bar", "1.0", getProjectType() );
 
         String buildId = continuum.buildProject( projectId );
 

@@ -44,7 +44,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumWeb.java,v 1.4 2004-10-07 11:47:46 trygvis Exp $
+ * @version $Id: DefaultContinuumWeb.java,v 1.5 2004-10-15 13:01:10 trygvis Exp $
  */
 public class DefaultContinuumWeb
     extends AbstractLogEnabled
@@ -121,15 +121,18 @@ public class DefaultContinuumWeb
     public void stop()
         throws Exception
     {
-/*
-        container.release( servletContainer );
+        if ( false )
+        {
+            container.release( servletContainer );
 
-        container.release( actionManager );
+            container.release( actionManager );
 
-        container.release( store );
+            container.release( store );
 
-        container.release( triggers );
-*/
+            container.release( triggers );
+
+            container.release( connectionFactories );
+        }
     }
 
     private void initializeStore( File file )

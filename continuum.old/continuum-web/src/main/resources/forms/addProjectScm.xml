@@ -20,5 +20,21 @@
       <error-message-key>addProject.scm.error</error-message-key>
       <type>text</type>
     </element>
+    <element>
+      <id>addProject.nagEmailAddress</id>
+      <validator>default</validator>
+      <message-key>addProject.nagEmailAddress.message</message-key>
+      <label-key>addProject.nagEmailAddress.label</label-key>
+      <error-message-key>addProject.nagEmailAddress.error</error-message-key>
+      <type>text</type>
+    </element>
+    <element>
+      <id>addProject.version</id>
+      <validator>default</validator>
+      <message-key>addProject.version.message</message-key>
+      <label-key>addProject.version.label</label-key>
+      <error-message-key>addProject.version.error</error-message-key>
+      <type>text</type>
+    </element>
   </elements>
 </form>

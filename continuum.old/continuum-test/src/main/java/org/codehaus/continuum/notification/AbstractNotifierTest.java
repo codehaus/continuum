@@ -29,7 +29,7 @@ import org.codehaus.continuum.store.ContinuumStore;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractNotifierTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
+ * @version $Id: AbstractNotifierTest.java,v 1.5 2004-10-15 13:01:08 trygvis Exp $
  */
 public abstract class AbstractNotifierTest
     extends AbstractContinuumTest
@@ -49,6 +49,10 @@ public abstract class AbstractNotifierTest
     }
 
     protected abstract String getProjectScmUrl();
+
+    protected abstract String getProjectNagEmailAddress();
+
+    protected abstract String getProjectVersion();
 
     protected abstract String getProjectType();
 
@@ -124,7 +128,8 @@ public abstract class AbstractNotifierTest
 
         getStoreTransactionManager().begin();
 
-        String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectType() );
+        System.err.println(getProjectNagEmailAddress());
+        String projectId = continuum.addProject( projectName, getProjectScmUrl(), getProjectNagEmailAddress(), getProjectVersion(), getProjectType() );
 
         getStoreTransactionManager().commit();
 

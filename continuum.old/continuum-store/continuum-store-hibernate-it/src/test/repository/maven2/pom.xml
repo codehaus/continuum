@@ -3,4 +3,11 @@
   <groupId>continuum</groupId>
   <artifactId>continuum-notifier-mail-test</artifactId>
   <version>1.0</version>
+  <name>IT Test Foo</name>
+  <ciManagement>
+    <nagEmailAddress>foo@bar</nagEmailAddress>
+  </ciManagement>
+  <scm>
+    <connection>scm:test:src/test/repository:maven2</connection>
+  </scm>
 </project>
