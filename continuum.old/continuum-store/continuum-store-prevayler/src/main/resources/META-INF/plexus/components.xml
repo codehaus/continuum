@@ -14,10 +14,6 @@
           <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
           <role-hint>prevayler</role-hint>
         </requirement>
-        <requirement>
-          <role>org.codehaus.continuum.store.tx.StoreTransactionManager</role>
-          <role-hint>hibernate</role-hint>
-        </requirement>
       </requirements>
       <configuration>
         <database-directory>${plexus.home}/prevayler-database</database-directory>

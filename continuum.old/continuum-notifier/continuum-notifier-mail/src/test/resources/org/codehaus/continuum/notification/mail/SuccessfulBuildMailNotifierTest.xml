@@ -28,9 +28,9 @@
         </requirement>
       </requirements>
       <configuration>
-        <maven-home>/home/trygvis/.m2/</maven-home>
-        <maven-home-local>/home/trygvis/.maven</maven-home-local>
-        <maven-repository>/home/trygvis/.maven/repository</maven-repository>
+        <maven-home>/home/trygvis/m2/</maven-home>
+        <maven-home-local>/home/trygvis/.m2</maven-home-local>
+        <maven-repository>/home/trygvis/.m2/repository</maven-repository>
       </configuration>
     </component>
   </components>
