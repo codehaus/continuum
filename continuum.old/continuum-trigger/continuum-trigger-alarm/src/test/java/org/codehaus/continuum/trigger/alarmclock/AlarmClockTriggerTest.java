@@ -27,12 +27,11 @@ import java.io.PrintStream;
 
 import org.codehaus.continuum.AbstractContinuumTest;
 import org.codehaus.continuum.Continuum;
-import org.codehaus.continuum.builder.test.TestContinuumBuilder;
 import org.codehaus.continuum.trigger.ContinuumTrigger;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.9 2004-10-20 20:24:21 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.10 2004-10-24 22:31:33 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends AbstractContinuumTest
@@ -47,8 +46,6 @@ public class AlarmClockTriggerTest
 
         assertEquals( 0, continuum.getBuildQueueLength() );
 
-        TestContinuumBuilder testContinuumBuilder = (TestContinuumBuilder) getContinuumBuilder( "test" );
-
         getStoreTransactionManager().begin();
 
         continuum.addProject( "Test Project 1", "scm:local:src/test/repository:simple", "foo@bar", "1.0", "test" );
@@ -58,20 +55,25 @@ public class AlarmClockTriggerTest
         getStoreTransactionManager().commit();
 
         // The lookup starts the trigger
-        AlarmClockTrigger trigger = (AlarmClockTrigger) getContinuumTrigger( "alarm-clock-test" );
+        getContinuumTrigger( "alarm-clock-test" );
 
         // before any of the builds is triggered
         assertEquals( 0, continuum.getBuildQueueLength() );
 
         // The alarm goes of every second and the builder should
         // build every 100th second
-        Thread.sleep( 2000 );
 
-        assertEquals( 0, continuum.getBuildQueueLength() );
+        long start = System.currentTimeMillis();
 
-        assertEquals( 2, testContinuumBuilder.getBuildCount() );
+        while( System.currentTimeMillis() < ( start + 5000 ) )
+        {
+            if ( continuum.getBuildQueueLength() >= 2 )
+            {
+                return;
+            }
+        }
 
-        release( trigger );
+        fail( "Timeout while waiting for the trigger to build." );
     }
 
     public void testConfigurationValues()
