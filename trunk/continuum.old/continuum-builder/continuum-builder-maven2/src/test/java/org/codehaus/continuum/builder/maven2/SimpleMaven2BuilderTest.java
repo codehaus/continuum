@@ -42,7 +42,7 @@ import org.codehaus.plexus.PlexusTestCase;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleMaven2BuilderTest.java,v 1.3 2004-10-06 13:39:15 trygvis Exp $
+ * @version $Id: SimpleMaven2BuilderTest.java,v 1.4 2004-10-08 09:59:10 trygvis Exp $
  */
 public class SimpleMaven2BuilderTest
     extends AbstractContinuumTest
@@ -64,7 +64,7 @@ public class SimpleMaven2BuilderTest
 
         StoreTransactionManager txManager = getStoreTransactionManager();
 
-        String repo = "scm:cvs:local:ignored:" + getTestFile( "src/test/repository/" ) + ":project1";
+        String repo = "scm:test:src/test/repository:project1";
 
         txManager.begin();
 
