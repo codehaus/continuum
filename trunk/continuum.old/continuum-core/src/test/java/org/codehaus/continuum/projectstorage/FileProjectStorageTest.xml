@@ -3,8 +3,8 @@
   <components>
 
     <component>
-      <role>org.codehaus.plexus.continuum.projectstorage.ProjectStorage</role>
-      <implementation>org.codehaus.plexus.continuum.projectstorage.FileProjectStorage</implementation>
+      <role>org.codehaus.continuum.projectstorage.ProjectStorage</role>
+      <implementation>org.codehaus.continuum.projectstorage.FileProjectStorage</implementation>
 
       <requirements>
         <requirement>
@@ -35,6 +35,9 @@
         <requirement>
           <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
         </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.collector.ArtifactCollector</role>
+        </requirement>
       </requirements>
 
     </component>
@@ -52,6 +55,34 @@
     <component>
       <role>org.apache.maven.artifact.factory.MavenArtifactory</role>
       <implementation>org.apache.maven.artifact.factory.DefaultMavenArtifactory</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.apache.maven.artifact.collector.ArtifactCollector</role>
+      <implementation>org.apache.maven.artifact.collector.DefaultArtifactCollector</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+      <implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.factory.MavenArtifactory</role>
+        </requirement>
+      </requirements>
     </component>
 
   </components>
