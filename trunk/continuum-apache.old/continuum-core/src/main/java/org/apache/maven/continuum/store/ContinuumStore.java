@@ -25,7 +25,7 @@ import org.apache.maven.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumStore.java,v 1.1.1.1 2005-03-29 20:42:02 trygvis Exp $
+ * @version $Id: ContinuumStore.java,v 1.2 2005-04-03 21:31:33 trygvis Exp $
  */
 public interface ContinuumStore
 {
@@ -49,6 +49,9 @@ public interface ContinuumStore
         throws ContinuumStoreException;
 
     void removeProject( String projectId )
+        throws ContinuumStoreException;
+
+    void setWorkingDirectory( String projectId, String workingDirectory )
         throws ContinuumStoreException;
 
     void updateProject( String projectId, String name, String scmUrl, String nagEmailAddress, String version )

@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.2 2005-03-31 00:01:44 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.3 2005-04-03 21:31:32 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -368,12 +368,20 @@ public class DefaultContinuum
             // Store the project
             // ----------------------------------------------------------------------
 
-            if ( StringUtils.isEmpty( project.getName() ) )
-            {
-                throw new ContinuumException( "The name of the project cannot be empty" );
-            }
+            String projectId = store.addProject( project.getName(),
+                                                 project.getScmUrl(),
+                                                 project.getNagEmailAddress(),
+                                                 project.getVersion(),
+                                                 builderType,
+                                                 null,
+                                                 project.getConfiguration() );
 
-            File projectWorkingDirectory = new File( workingDirectory, project.getName().replace( ' ', '-' ) );
+            // ----------------------------------------------------------------------
+            // Set the working directory
+            // ----------------------------------------------------------------------
+
+
+            File projectWorkingDirectory = new File( workingDirectory, projectId );
 
             if ( !projectWorkingDirectory.exists() && !projectWorkingDirectory.mkdirs() )
             {
@@ -382,15 +390,13 @@ public class DefaultContinuum
 
             project.setWorkingDirectory( projectWorkingDirectory.getAbsolutePath() );
 
-            scm.checkOutProject( project );
+            // ----------------------------------------------------------------------
+            // Check out the project
+            // ----------------------------------------------------------------------
 
-            String projectId = store.addProject( project.getName(),
-                                                 project.getScmUrl(),
-                                                 project.getNagEmailAddress(),
-                                                 project.getVersion(),
-                                                 builderType,
-                                                 projectWorkingDirectory.getPath(),
-                                                 project.getConfiguration() );
+            store.setWorkingDirectory( projectId, projectWorkingDirectory.getAbsolutePath() );
+
+            scm.checkOutProject( project );
 
             project = store.getProject( projectId );
 
