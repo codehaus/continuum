@@ -12,3 +12,5 @@ runtime=generated-runtime
 m2 plexus:runtime
 
 sh update.sh
+
+sh package.sh

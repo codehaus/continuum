@@ -4,6 +4,7 @@ runtime=generated-runtime
 
 lib=$runtime/apps/continuum/lib
 resources=$runtime/apps/continuum/resources
+bin=$runtime/bin
 
 rm -rf $runtime/application
 
@@ -23,6 +24,8 @@ fi
 # Copy the resources
 mkdir -p $resources
 cp -r src/main/resources/* $resources
+
+cp -r src/main/bash/continuum-* $bin
 
 cp src/main/configuration/plexus.conf $runtime/conf/plexus.conf
 
