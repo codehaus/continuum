@@ -1,5 +1,22 @@
-<component-set>
+<plexus>
   <components>
+    <!-- This file is not used as the CLI stuff uses the embedder -->
+<!--
+    <component>
+      <role>org.codehaus.continuum.xmlrpc.XmlRpcContinuumClient</role>
+      <implementation>org.codehaus.continuum.cli.MockXmlRpcContinuumClient</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.Continuum</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.scm.Scm</role>
+          <role-hint>cvs</role-hint>
+        </requirement>
+      </requirements>
+    </component>
+-->
+<!--
     <component>
       <role>org.codehaus.plexus.xmlrpc.XmlRpcComponent</role>
       <implementation>org.codehaus.plexus.xmlrpc.DefaultXmlRpcComponent</implementation>
@@ -12,5 +29,6 @@
         </handlers>
       </configuration>
     </component>
+-->
   </components>
-</component-set>
+</plexus>
