@@ -4,6 +4,11 @@
     <component>
       <role>org.codehaus.continuum.Continuum</role>
     </component>
+    <!--
+    <component>
+      <role>org.codehaus.continuum.web.ContinuumWeb</role>
+    </component>
+-->
   </load-on-start>
 
   <resources>
@@ -11,6 +16,7 @@
   </resources>
 
   <services>
+
     <service>
       <id>jetty</id>
       <configuration>
@@ -19,12 +25,25 @@
             <file>${plexus.home}/lib/continuum-web-1.0-alpha-1-SNAPSHOT.jar</file>
             <context>/continuum</context>
             <extractWar>true</extractWar>
+            <extractionPath>${plexus.home}/webapp</extractionPath>
           </webapp>
         </webapps>
       </configuration>
     </service>
-  </services>
-
+<!--
+    <service>
+      <id>xml-rpc</id>
+      <configuration>
+        <handlers>
+          <handler>
+            <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpc</role>
+            <name>continuum</name>
+          </handler>
+        </handlers>
+      </configuration>
+    </service>
+-->
+    </services>
   <components>
 
     <!--
@@ -190,10 +209,10 @@
       <role>org.codehaus.continuum.web.ContinuumWeb</role>
       <implementation>org.codehaus.continuum.web.DefaultContinuumWeb</implementation>
       <configuration>
-        <app-home>${plexus.home}/apps/continuumweb</app-home>
+        <app-home>${plexus.home}</app-home>
       </configuration>
     </component>
-
+<!--
     <component>
       <role>org.codehaus.plexus.summit.pull.PullService</role>
       <implementation>org.codehaus.plexus.summit.pull.DefaultPullService</implementation>
@@ -212,7 +231,7 @@
       <role>linktool</role>
       <implementation>org.codehaus.plexus.summit.pull.tools.TemplateLink</implementation>
     </component>
-
+-->
     <component>
       <role>org.codehaus.plexus.velocity.VelocityComponent</role>
       <implementation>org.codehaus.plexus.velocity.DefaultVelocityComponent</implementation>
@@ -228,7 +247,7 @@
           </property>
           <property>
             <name>file.resource.loader.path</name>
-            <value>${plexus.home}/apps/continuumweb/web/continuumweb/templates</value>
+            <value>${plexus.home}/webapp/web/continuumweb/templates</value>
           </property>
           <property>
             <name>threadContext.resource.loader.class</name>
@@ -239,6 +258,23 @@
             <value>CommonMacros.vm</value>
           </property>
         </properties>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.summit.pipeline.Pipeline</role>
+      <implementation>org.codehaus.plexus.summit.pipeline.SummitPipeline</implementation>
+      <lifecycle-handler>plexus-configurable</lifecycle-handler>
+      <configuration>
+        <valves>
+          <valve>org.codehaus.continuum.web.pipeline.valve.ContinuumViewContextValve</valve>
+          <valve>org.codehaus.continuum.web.pipeline.valve.LoginValve</valve>
+          <valve>org.codehaus.continuum.web.pipeline.valve.ActionValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.DetermineTargetValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.ResolverValve</valve>
+          <valve>org.codehaus.plexus.summit.pull.PullToolValve</valve>
+          <valve>org.codehaus.plexus.summit.pipeline.valve.DisplayValve</valve>
+        </valves>
       </configuration>
     </component>
 
@@ -255,6 +291,7 @@
       <role>org.codehaus.plexus.formica.population.Populator</role>
       <implementation>org.codehaus.plexus.formica.population.OgnlPopulator</implementation>
     </component>
+
     <component>
       <role>org.codehaus.plexus.formica.FormManager</role>
       <implementation>org.codehaus.plexus.formica.DefaultFormManager</implementation>
@@ -273,16 +310,14 @@
         <!--
         <forms-directory>${plexus.home}/apps/continuumweb/forms</forms-directory>
         -->
-        <!--
         <forms>
-          <directory-configuration-resource source="${plexus.home}/apps/continuumweb/forms"/>
+          <directory-configuration-resource source="${plexus.home}/webapp/forms"/>
         </forms>
-        -->
       </configuration>
     </component>
 
     <!--
-    | Logger manager
+     | Logger manager
      -->
     <component>
       <role>org.codehaus.plexus.logging.LoggerManager</role>
@@ -327,40 +362,30 @@
           </appender>
           <!--
           <appender>
-          <id>file</id>
-          <threshold>DEBUG</threshold>
-          <type>org.apache.log4j.FileAppender</type>
-          <conversion-pattern>%d [%t] %-5p %c - %m%n</conversion-pattern>
-          <properties>
-          <property>
-          <name>file</name>
-          <value>${plexus.home}/logs/plexus.log</value>
-          </property>
-          <property>
-          <name>append</name>
-          <value>true</value>
-          </property>
-          </properties>
+            <id>file</id>
+            <threshold>DEBUG</threshold>
+            <type>org.apache.log4j.FileAppender</type>
+            <conversion-pattern>%d [%t] %-5p %c - %m%n</conversion-pattern>
+            <properties>
+              <property>
+                <name>file</name>
+                <value>${plexus.home}/logs/plexus.log</value>
+              </property>
+              <property>
+                <name>append</name>
+                <value>true</value>
+              </property>
+            </properties>
           </appender>
           -->
         </appenders>
         <levels>
-          <level>
-            <hierarchy>net.sf.hibernate</hierarchy>
-            <level>INFO</level>
-          </level>
+<!--
           <level>
             <hierarchy>org.codehaus.plexus.velocity</hierarchy>
             <level>WARN</level>
           </level>
-          <level>
-            <hierarchy>org.codehaus.plexus.hibernate</hierarchy>
-            <level>INFO</level>
-          </level>
-          <level>
-            <hierarchy>org.codehaus.continuum.store.tx</hierarchy>
-            <level>INFO</level>
-          </level>
+-->
           <level>
             <hierarchy>JPOX</hierarchy>
             <level>INFO</level>
