@@ -73,7 +73,6 @@
       <configuration>
         <from>@mail.from@</from>
         <to>@mail.to@</to>
-        <administrator>@mail.administrator@</administrator>
       </configuration>
     </component>
 
