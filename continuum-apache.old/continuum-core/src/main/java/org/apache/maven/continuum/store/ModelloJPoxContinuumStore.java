@@ -36,7 +36,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStore.java,v 1.1.1.1 2005-03-29 20:42:03 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStore.java,v 1.2 2005-04-03 21:31:33 trygvis Exp $
  */
 public class ModelloJPoxContinuumStore
     extends AbstractContinuumStore
@@ -117,6 +117,27 @@ public class ModelloJPoxContinuumStore
         catch ( Exception e )
         {
             throw new ContinuumStoreException( "Error while removing project with id '" + projectId + "'.", e );
+        }
+    }
+
+    public void setWorkingDirectory( String projectId, String workingDirectory )
+        throws ContinuumStoreException
+    {
+        try
+        {
+            store.begin();
+
+            ContinuumProject project = store.getContinuumProject( projectId, false );
+
+            project.setWorkingDirectory( workingDirectory );
+
+            store.commit();
+        }
+        catch ( Exception e )
+        {
+            rollback( store );
+
+            throw new ContinuumStoreException( "Error while setting the working directory.", e );
         }
     }
 
