@@ -13,3 +13,5 @@ rg*
 continuum-*
 continuumdb.*
 generated-runtime
+package
+packages
