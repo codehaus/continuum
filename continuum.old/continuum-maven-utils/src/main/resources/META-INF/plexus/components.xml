@@ -11,7 +11,7 @@
       <configuration>
         <maven-home>${maven.home}</maven-home>
         <maven-home-local>${maven.home.local}</maven-home-local>
-        <maven-repository>${maven.home.repository}</maven-repository>
+        <maven-repository>${maven.repo.local}</maven-repository>
       </configuration>
     </component>
   </components>
