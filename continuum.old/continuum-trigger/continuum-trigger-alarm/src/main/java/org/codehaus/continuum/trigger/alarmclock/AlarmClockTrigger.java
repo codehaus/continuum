@@ -8,13 +8,14 @@ import org.codehaus.continuum.ContinuumException;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.continuum.trigger.AbstractContinuumTrigger;
 import org.codehaus.continuum.utils.PlexusUtils;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: AlarmClockTrigger.java,v 1.5 2004-07-14 05:30:56 trygvis Exp $
+ * @version $Id: AlarmClockTrigger.java,v 1.6 2004-07-19 16:21:27 trygvis Exp $
  */
 public class AlarmClockTrigger
     extends AbstractContinuumTrigger
@@ -35,6 +36,11 @@ public class AlarmClockTrigger
     private int delay;
 
     private Timer timer;
+
+    protected Logger getLogger()
+    {
+        return super.getLogger();
+    }
 
     // ----------------------------------------------------------------------
     // Plexus Component Implementation
@@ -61,10 +67,7 @@ public class AlarmClockTrigger
     public void start()
         throws Exception
     {
-        if ( interval == 1 )
-            getLogger().info( "Starting AlarmClockTrigger with an interval of " + interval + " second" );
-        else
-            getLogger().info( "Starting AlarmClockTrigger with an interval of " + interval + " seconds" );
+        getLogger().info( "Starting AlarmClockTrigger: Build interval " + interval + "s" );
 
         timer.schedule( new BuildTask(), delay * 1000, interval * 1000 );
     }

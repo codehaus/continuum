@@ -1,4 +1,4 @@
-<configuration>
+<plexus>
   <components>
     <component>
       <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
@@ -6,7 +6,7 @@
       <implementation>org.codehaus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
       <configuration>
         <interval>1</interval>
-        <delay>0</delay>
+        <delay>1</delay>
       </configuration>
       <requirements>
         <requirement>
@@ -73,4 +73,4 @@
       </configuration>
     </component>
   </components>
-</configuration>
+</plexus>

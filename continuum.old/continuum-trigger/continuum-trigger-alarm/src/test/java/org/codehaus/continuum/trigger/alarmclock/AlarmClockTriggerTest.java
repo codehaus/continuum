@@ -4,6 +4,9 @@ package org.codehaus.continuum.trigger.alarmclock;
  * LICENSE
  */
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.codehaus.continuum.Continuum;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.TestContinuumBuilder;
@@ -12,13 +15,13 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AlarmClockTriggerTest.java,v 1.2 2004-07-14 05:30:56 trygvis Exp $
+ * @version $Id: AlarmClockTriggerTest.java,v 1.3 2004-07-19 16:21:27 trygvis Exp $
  */
 public class AlarmClockTriggerTest
     extends PlexusTestCase
 {
     /**
-     * This test is pretty timing critical.
+     * This test is pretty timing critical so if it fails try to increase the delays.
      */
     public void testAlarmClockTrigger()
         throws Exception
@@ -32,7 +35,7 @@ public class AlarmClockTriggerTest
         continuum.addProject( "Test Project 2", "scm:foo", "test" );
 
         // The lookup starts the trigger
-        AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, "timer-test" );
+        AlarmClockTrigger trigger = (AlarmClockTrigger) lookup( ContinuumTrigger.ROLE, "alarm-clock-test" );
 
         // before any of the builds is triggered
         assertEquals( 0, continuum.getBuildQueueLength() );
@@ -52,6 +55,10 @@ public class AlarmClockTriggerTest
 
     public void testConfigurationValues()
     {
+        PrintStream out = System.out;
+
+        System.setOut( new PrintStream( new ByteArrayOutputStream() ) );
+
         assertException( "zero-interval" );
         assertException( "negative-interval" );
         assertException( "string-interval" );
@@ -59,6 +66,8 @@ public class AlarmClockTriggerTest
         assertException( "zero-delay" );
         assertException( "negative-delay" );
         assertException( "string-delay" );
+
+        System.setOut( out );
     }
 
     private void assertException( String roleHint )
