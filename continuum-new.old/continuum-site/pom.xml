@@ -7,7 +7,7 @@
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <groupId>continuum</groupId>
-  <artifactId>continuum-core</artifactId>
+  <artifactId>continuum-site</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Site</name>
 </project>

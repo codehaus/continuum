@@ -1,7 +1,7 @@
  -----
  Building Continuum
  -----
- Trygve Laugstøl
+ Trygve Laugst&oslash;l
  -----
 
 Building Continuum
@@ -10,10 +10,10 @@ Building Continuum
 
 *Check out the sources
 
-+---------------------------------------------------------------------------+
++------------------------------------------------------------------------------+
 $ export CVSROOT=:pserver:anoncvs@cvs.continuum.codehaus.org:/scm/continuum
-$ cvs co continuum
-+---------------------------------------------------------------------------+
+$ cvs co continuum-new
++------------------------------------------------------------------------------+
 
 *Build it
 
@@ -22,7 +22,7 @@ $ cd continuum
 $ make.sh
 +--------------+
 
- The make scrip will make a Continuum runtime in 
+ The make scrip will make a Continuum runtime in
 <<<continuum-web/generated-runtime>>>
 
 *Run it
@@ -31,4 +31,3 @@ $ make.sh
 $ cd continuum-web
 $ generated-runtime/bin/plexus.sh
 +--------------------------------+
-
