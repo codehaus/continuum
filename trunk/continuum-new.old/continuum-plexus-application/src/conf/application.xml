@@ -12,7 +12,6 @@
   </resources>
 
   <services>
-
     <service>
       <id>jetty</id>
       <configuration>
@@ -26,7 +25,7 @@
         </webapps>
       </configuration>
     </service>
-<!--
+
     <service>
       <id>xml-rpc</id>
       <configuration>
@@ -38,8 +37,9 @@
         </handlers>
       </configuration>
     </service>
--->
-    </services>
+
+  </services>
+
   <components>
 
     <!--
