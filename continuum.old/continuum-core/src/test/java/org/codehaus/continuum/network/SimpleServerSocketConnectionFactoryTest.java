@@ -1,7 +1,7 @@
 package org.codehaus.continuum.network;
 
 /*
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugstøl
+ * Copyright (c) 2004, Jason van Zyl and Trygve Laugstï¿½l
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -30,12 +30,12 @@ import org.codehaus.continuum.AbstractContinuumTest;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.9 2004-10-08 12:15:32 trygvis Exp $
+ * @version $Id: SimpleServerSocketConnectionFactoryTest.java,v 1.10 2004-10-30 00:05:01 jvanzyl Exp $
  */
 public class SimpleServerSocketConnectionFactoryTest
     extends AbstractContinuumTest
 {
-    private final static int PORT = 6000;
+    private final static int PORT = 54321;
 
     private byte[] rawData = {
         (byte)0xca, (byte)0xfe, (byte)0xba, (byte)0xbe,
