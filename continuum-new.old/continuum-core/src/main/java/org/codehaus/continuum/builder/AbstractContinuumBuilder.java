@@ -29,7 +29,7 @@ import java.util.Properties;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumBuilder.java,v 1.5 2005-03-28 14:10:57 trygvis Exp $
+ * @version $Id: AbstractContinuumBuilder.java,v 1.6 2005-03-28 15:35:48 trygvis Exp $
  */
 public abstract class AbstractContinuumBuilder
     extends AbstractLogEnabled
@@ -66,14 +66,7 @@ public abstract class AbstractContinuumBuilder
     {
         String value = getConfigurationString( configuration, property );
 
-        String[] array = StringUtils.split( value, separator );
-
-        for ( int i = 0; i < array.length; i++ )
-        {
-            array[ i ] = array[ i ].trim();
-        }
-
-        return array;
+        return splitAndTrimString( value, "," );
     }
 
     protected String[] getConfigurationStringArray( Properties configuration, String property, String separator, String[] defaultValue )
@@ -86,6 +79,11 @@ public abstract class AbstractContinuumBuilder
             return defaultValue;
         }
 
+        return splitAndTrimString( value, separator );
+    }
+
+    protected String[] splitAndTrimString( String value, String separator )
+    {
         String[] array = StringUtils.split( value, separator );
 
         for ( int i = 0; i < array.length; i++ )

@@ -219,6 +219,7 @@
       <implementation>org.codehaus.continuum.builder.maven.m2.MavenShellBuilder</implementation>
       <configuration>
         <executable>m2</executable>
+        <arguments>-N</arguments>
       </configuration>
       <requirements>
         <requirement>
