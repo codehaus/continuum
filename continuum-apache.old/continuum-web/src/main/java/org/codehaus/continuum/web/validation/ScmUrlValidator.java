@@ -1,4 +1,4 @@
-package org.apache.maven.continuum.web.tool;
+package org.codehaus.continuum.web.validation;
 
 /*
  * Copyright 2004-2005 The Apache Software Foundation.
@@ -16,33 +16,28 @@ package org.apache.maven.continuum.web.tool;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.summit.pull.RequestTool;
-import org.codehaus.plexus.summit.rundata.RunData;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.maven.scm.manager.ScmManager;
+
+import org.codehaus.plexus.formica.FormicaException;
+import org.codehaus.plexus.formica.validation.AbstractValidator;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: CssTool.java,v 1.2 2005-04-06 14:10:38 trygvis Exp $
+ * @version $Id: ScmUrlValidator.java,v 1.1 2005-04-06 14:10:38 trygvis Exp $
  */
-public class CssTool
+public class ScmUrlValidator
+    extends AbstractValidator
 {
-    private String[] classes = { "a", "b" };
+    /** @requirement */
+    private ScmManager scmManager;
 
-    private int classState = 0;
-
-    public String getNextClass()
+    public boolean validate( String scmUrl )
+        throws FormicaException
     {
-        if ( classState == 0 )
-        {
-            classState = 1;
-        }
-        else
-        {
-            classState = 0;
-        }
+        List messages = scmManager.validateScmRepository( scmUrl );
 
-        return classes[classState];
+        return messages.size() == 0;
     }
 }

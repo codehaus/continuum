@@ -166,5 +166,22 @@
       <implementation>org.apache.maven.continuum.web.action.Login</implementation>
     </component>
 
+    <!--
+     |
+     | Validators
+     |
+     |-->
+
+    <component>
+      <role>org.codehaus.plexus.formica.validation.Validator</role>
+      <role-hint>scm-url</role-hint>
+      <implementation>org.codehaus.continuum.web.validation.ScmUrlValidator</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.scm.manager.ScmManager</role>
+        </requirement>
+      </requirements>
+    </component>
+
   </components>
 </component-set>
