@@ -18,10 +18,10 @@
   <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10540</issueTrackingUrl>
   <siteAddress>continuum.codehaus.org</siteAddress>
   <siteDirectory>/home/projects/continuum/public_html</siteDirectory>
-  <repository>
+  <scm>
     <connection>scm:cvs:pserver:anonymous@cvs.codehaus.codehaus.org:/home/projects/continuum/scm:/</connection>
     <url>http://cvs.continuum.codehaus.org/</url>
-  </repository>
+  </scm>
 
   <mailingLists>
     <mailingList>
@@ -55,4 +55,12 @@
       <archive>http://archive.continuum.codehaus.org/</archive>
     </mailingList>
   </mailingLists>
+
+  <dependencies>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus</artifactId>
+      <version>0.16-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>
