@@ -28,7 +28,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ConsoleNotifier.java,v 1.8 2004-07-27 05:42:13 trygvis Exp $
+ * @version $Id: ConsoleNotifier.java,v 1.9 2004-10-20 19:47:39 trygvis Exp $
  */
 public class ConsoleNotifier
     extends AbstractLogEnabled
@@ -58,7 +58,7 @@ public class ConsoleNotifier
     {
         if ( build.getBuildResult() != null )
         {
-            out( build, "Goals completed. success: " + build.getBuildResult().isSuccess() );
+            out( build, "Goals completed. state: " + build.getState() );
         }
         else
         {
@@ -70,7 +70,7 @@ public class ConsoleNotifier
     {
         if ( build.getBuildResult() != null )
         {
-            out( build, "Build complete. success: " + build.getState() );
+            out( build, "Build complete. state: " + build.getState() );
         }
         else
         {
