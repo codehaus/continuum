@@ -1,11 +1,22 @@
 <plexus>
 
   <load-on-start>
-    <service role="org.codehaus.plexus.continuum.trigger.ContinuumTrigger"/>
-    <service role="org.codehaus.plexus.continuum.registration.ContinuumRegistrar"/>
+    <component>
+      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role-hint>trigger-socket</role-hint>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role-hint>registrar-socket</role-hint>
+    </component>
   </load-on-start>
 
   <components>
+    <component>
+      <role>org.codehaus.plexus.component.discovery.ComponentDiscoveryListener</role>
+      <implementation>org.codehaus.plexus.continuum.Foo</implementation>
+    </component>
+
     <component>
       <role>org.codehaus.plexus.continuum.Continuum</role>
       <implementation>org.codehaus.plexus.continuum.DefaultContinuum</implementation>
@@ -19,41 +30,48 @@
         <requirement>
           <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
         </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.projectstorage.ProjectStorage</role>
+        </requirement>
       </requirements>
       <configuration>
-        <working-directory>${plexus.home}/continuum</working-directory>
+        <checkout-directory>${plexus.home}/continuum/checkout</checkout-directory>
+        <build-directory>${plexus.home}/continuum/checkout</build-directory>
       </configuration>
     </component>
     <component>
       <role>org.codehaus.plexus.compiler.Compiler</role>
       <implementation>org.codehaus.plexus.compiler.javac.JavacCompiler</implementation>
     </component>
-      <component>
+    <component>
       <role>org.apache.maven.project.MavenProjectBuilder</role>
       <implementation>org.apache.maven.project.DefaultMavenProjectBuilder</implementation>
       <requirements>
         <requirement>
-          <role>org.apache.maven.model.ModelUnmarshaller</role>
+          <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.model.ModelMarshaller</role>
+          <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.artifact.MavenArtifactory</role>
+          <role>org.apache.maven.project.ModelInheritanceAssembler</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.factory.MavenArtifactFactory</role>
         </requirement>
       </requirements>
     </component>
     <component>
-      <role>org.apache.maven.model.ModelUnmarshaller</role>
-      <implementation>org.apache.maven.model.DefaultModelUnmarshaller</implementation>
+      <role>org.apache.maven.model.io.xpp3.MavenXpp3Reader</role>
+      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Reader</implementation>
     </component>
     <component>
-      <role>org.apache.maven.model.ModelMarshaller</role>
-      <implementation>org.apache.maven.model.DefaultModelMarshaller</implementation>
+      <role>org.apache.maven.model.io.xpp3.MavenXpp3Writer</role>
+      <implementation>org.apache.maven.model.io.xpp3.MavenXpp3Writer</implementation>
     </component>
     <component>
-      <role>org.apache.maven.artifact.MavenArtifactory</role>
-      <implementation>org.apache.maven.artifact.DefaultMavenArtifactory</implementation>
+      <role>org.apache.maven.artifact.factory.MavenArtifactory</role>
+      <implementation>org.apache.maven.artifact.factory.DefaultMavenArtifactory</implementation>
     </component>
     <!--
     <component>
@@ -71,11 +89,9 @@
     -->
     <!-- Trigger -->
     <component>
-      <role>org.codehaus.plexus.continuum.trigger.ContinuumTrigger</role>
+      <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
+      <role-hint>trigger</role-hint>
       <implementation>org.codehaus.plexus.continuum.trigger.network.SimpleNetworkTrigger</implementation>
-      <configuration>
-        <port>10000</port>
-      </configuration>
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.continuum.Continuum</role>
@@ -84,11 +100,9 @@
     </component>
     <!-- Registrar -->
     <component>
-      <role>org.codehaus.plexus.continuum.registration.ContinuumRegistrar</role>
+      <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
+      <role-hint>registrar</role-hint>
       <implementation>org.codehaus.plexus.continuum.registration.network.SimpleNetworkRegistrar</implementation>
-      <configuration>
-        <port>10001</port>
-      </configuration>
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.continuum.Continuum</role>
@@ -96,13 +110,71 @@
       </requirements>
     </component>
     <!-- Notifier -->
+<!--
     <component>
       <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
       <implementation>org.codehaus.plexus.continuum.notification.mail.DefaultEmailNotifier</implementation>
       <configuration>
         <smtp-server>mail.maven.org</smtp-server>
-        <reply-to>jason@maven.org</reply-to>
+        <reply-to>trygvis@codehaus.org</reply-to>
       </configuration>
     </component>
+-->
+    <component>
+      <role>org.codehaus.plexus.continuum.notification.ContinuumNotifier</role>
+      <implementation>org.codehaus.plexus.continuum.notification.console.ConsoleNotifier</implementation>
+    </component>
+
+    <!-- ProjectStorage -->
+    <component>
+      <role>org.codehaus.plexus.continuum.projectstorage.ProjectStorage</role>
+      <implementation>org.codehaus.plexus.continuum.projectstorage.FileProjectStorage</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.project.MavenProjectBuilder</role>
+        </requirement>
+      </requirements>
+
+      <configuration>
+        <storage-directory>${plexus.home}/continuum/storage</storage-directory>
+      </configuration>
+    </component>
+
+    <!-- Socket listeners -->
+    <component>
+      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role-hint>trigger-socket</role-hint>
+      <implementation>org.codehaus.plexus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
+          <role-hint>trigger</role-hint>
+        </requirement>
+      </requirements>
+
+      <configuration>
+        <port>10000</port>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.continuum.network.ConnectionFactory</role>
+      <role-hint>registrar-socket</role-hint>
+      <implementation>org.codehaus.plexus.continuum.network.SimpleServerSocketConnectionFactory</implementation>
+
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.network.ConnectionConsumer</role>
+          <role-hint>registrar</role-hint>
+        </requirement>
+      </requirements>
+
+      <configuration>
+        <port>10001</port>
+      </configuration>
+    </component>
+
   </components>
 </plexus>

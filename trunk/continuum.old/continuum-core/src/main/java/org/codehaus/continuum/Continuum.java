@@ -16,4 +16,3 @@ public interface Continuum
     void buildProjects()
         throws Exception;
 }
-

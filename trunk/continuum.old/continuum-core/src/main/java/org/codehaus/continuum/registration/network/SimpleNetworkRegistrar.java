@@ -1,16 +1,14 @@
 package org.codehaus.plexus.continuum.registration.network;
 
-import org.codehaus.plexus.continuum.registration.AbstractContinuumRegistrar;
-import org.codehaus.plexus.continuum.trigger.network.DefaultServerSocketFactory;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
-
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.OutputStream;
+
+import org.codehaus.plexus.continuum.network.ConnectionConsumer;
+import org.codehaus.plexus.continuum.network.NetworkUtils;
+import org.codehaus.plexus.continuum.registration.AbstractContinuumRegistrar;
 
 /**
  * This trigger listens on a specified port and takes one line
@@ -20,115 +18,35 @@ import java.net.Socket;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: SimpleNetworkRegistrar.java,v 1.3 2004-01-18 19:03:07 jvanzyl Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.4 2004-04-07 15:56:56 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
-    implements Initializable, Startable
+    implements ConnectionConsumer
 {
-    private int port;
-
-    private Thread serverThread;
-
-    private boolean serverStarted;
-
-    private ServerSocket serverSocket;
-
-    private DefaultServerSocketFactory serverSocketFactory;
-
-    private InetAddress localAddress;
-
-    private InetAddress bindAddress;
-
-    public boolean isServerStarted()
-    {
-        return serverStarted;
-    }
-
-    private void setServerStarted( boolean serverStarted )
-    {
-        this.serverStarted = serverStarted;
-    }
-
     // ----------------------------------------------------------------------
-    // Lifecylce Management
+    // ConnectionConsumer Implementation
     // ----------------------------------------------------------------------
 
-    /** @see Initializable#initialize */
-    public void initialize()
-        throws Exception
+    public void consumeConnection( InputStream input, OutputStream output )
     {
-        serverSocketFactory = new DefaultServerSocketFactory();
-
-        InetAddress[] adds = InetAddress.getAllByName( "192.168.1.103" );
-
-        bindAddress = adds[0];
-
-        serverSocket = serverSocketFactory.createServerSocket( port, 50 );
-
-        //serverSocket = serverSocketFactory.createServerSocket( port, 50, bindAddress );
-
-        localAddress = InetAddress.getLocalHost();
-    }
-
-    public void start()
-    {
-        getLogger().info( "Simple network registrar has started." );
-
-        if ( serverThread != null )
-        {
-            return;
-        }
-
-        setServerStarted( true );
-
-        serverThread = new Thread( new Runnable()
-        {
-            public void run()
-            {
-                while ( isServerStarted() )
-                {
-                    try
-                    {
-                        Socket socket = serverSocket.accept();
-
-                        BufferedReader reader = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
-
-                        String instruction = reader.readLine().trim();
-
-                        socket.close();
-
-                        getContinuum().addProject( instruction );
-                    }
-                    catch ( Exception e )
-                    {
-                        getLogger().error( "Error processing request: ", e );
-                    }
-                }
-            }
-        } );
-
-        serverThread.start();
-    }
-
-    public void stop()
-    {
-        setServerStarted( false );
-
-        serverThread = null;
+        String instruction;
 
         try
         {
-            serverSocket.close();
-        }
-        catch ( IOException e )
-        {
-            getLogger().error( "Error shutting down server." );
-        }
-    }
+            BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
 
-    public void dispose()
-    {
-        stop();
+            instruction = reader.readLine().trim();
+        }
+        catch( IOException ex )
+        {
+            getLogger().fatalError( "Exception while reading instruction.", ex );
+            return;
+        }
+
+        NetworkUtils.closeInput( input );
+        NetworkUtils.closeOutput( output );
+
+        getContinuum().addProject( instruction );
     }
 }
