@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AbstractContinuumStoreTest.java,v 1.4 2004-10-06 13:33:50 trygvis Exp $
+ * @version $Id: AbstractContinuumStoreTest.java,v 1.5 2004-10-08 12:26:43 trygvis Exp $
  */
 public abstract class AbstractContinuumStoreTest
     extends AbstractContinuumTest
@@ -360,6 +360,70 @@ public abstract class AbstractContinuumStoreTest
         txManager.commit();
     }
 
+    public void testGetLatestBuildForProject()
+        throws Exception
+    {
+        // Add a project
+        txManager.begin();
+
+        String projectId = store.addProject( "Foo Project", "scm", "maven2" );
+
+        txManager.commit();
+
+        txManager.begin();
+
+        assertNull( store.getLatestBuildForProject( projectId ) );
+
+        txManager.commit();
+
+        // make some builds
+        txManager.begin();
+
+        createBuild( projectId, 1 );
+
+        createBuild( projectId, 2 );
+
+        createBuild( projectId, 3 );
+
+        createBuild( projectId, 4 );
+
+        createBuild( projectId, 5 );
+
+        String buildId5 = createBuild( projectId, 6 );
+
+        txManager.commit();
+
+        // check the latest build
+
+        txManager.begin();
+
+        ContinuumBuild build5 = store.getLatestBuildForProject( projectId );
+
+        assertNotNull( build5 );
+
+        assertEquals( buildId5, build5.getId() );
+
+        txManager.commit();
+
+        // Add some more builds
+
+        txManager.begin();
+
+        String buildId6 = createBuild( projectId, 6 );
+
+        txManager.commit();
+
+        // check the latest build
+
+        txManager.begin();
+
+        ContinuumBuild build6 = store.getLatestBuildForProject( projectId );
+
+        assertEquals( buildId6, build6.getId() );
+
+        txManager.commit();
+    }
+
     // ----------------------------------------------------------------------
     // Assertions
     // ----------------------------------------------------------------------
@@ -401,5 +465,21 @@ public abstract class AbstractContinuumStoreTest
         assertEquals( projectId, buildResult.getProject().getId() );
 
         assertEquals( state, buildResult.getState() );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private String createBuild( String projectId, long startTime )
+        throws ContinuumStoreException, InterruptedException
+    {
+        String buildId = store.createBuild( projectId );
+
+        Thread.sleep( 10 );
+
+        store.setBuildResult( buildId, ContinuumProjectState.OK, null, null );
+
+        return buildId;
     }
 }
