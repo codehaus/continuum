@@ -6,6 +6,6 @@
   <name>Test Project</name>
 
   <scm>
-    <developerConnection>scm:test:</developerConnection>
+    <connection>scm:test:src/test/resources/:actions/addProject</connection>
   </scm>
 </project>

@@ -8,3 +8,6 @@ ret=$?; if [ $ret != 0 ]; then exit $ret; fi
 
 sh update.sh
 ret=$?; if [ $ret != 0 ]; then exit $ret; fi
+
+sh package.sh
+ret=$?; if [ $ret != 0 ]; then exit $ret; fi
