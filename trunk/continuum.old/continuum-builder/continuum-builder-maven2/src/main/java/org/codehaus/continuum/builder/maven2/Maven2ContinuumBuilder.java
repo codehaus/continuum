@@ -50,7 +50,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: Maven2ContinuumBuilder.java,v 1.4 2004-10-08 09:59:10 trygvis Exp $
+ * @version $Id: Maven2ContinuumBuilder.java,v 1.5 2004-10-14 13:59:47 trygvis Exp $
  */
 public abstract class Maven2ContinuumBuilder
     extends AbstractLogEnabled
@@ -183,11 +183,22 @@ public abstract class Maven2ContinuumBuilder
             project.setName( mavenProject.getName() );
         }
 
-        if ( mavenProject.getScm() != null && !StringUtils.isEmpty( mavenProject.getScm().getConnection() ) )
+        if ( mavenProject.getScm() != null )
         {
-            descriptor.setScmConnection( mavenProject.getScm().getConnection() );
+            // The public connection takes priority over the developer connection
+            String connection = mavenProject.getScm().getConnection();
 
-            project.setScmConnection( mavenProject.getScm().getConnection() );
+            if ( StringUtils.isEmpty( connection ) )
+            {
+                connection = mavenProject.getScm().getDeveloperConnection();
+            }
+
+            if ( !StringUtils.isEmpty( connection ) )
+            {
+                descriptor.setScmConnection( connection );
+
+                project.setScmConnection( connection );
+            }
         }
 
         return descriptor;

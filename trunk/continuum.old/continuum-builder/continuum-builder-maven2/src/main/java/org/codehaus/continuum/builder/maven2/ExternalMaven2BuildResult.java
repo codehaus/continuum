@@ -26,7 +26,7 @@ import org.codehaus.continuum.project.ContinuumBuild;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ExternalMaven2BuildResult.java,v 1.2 2004-10-06 13:39:15 trygvis Exp $
+ * @version $Id: ExternalMaven2BuildResult.java,v 1.3 2004-10-14 13:59:59 trygvis Exp $
  */
 public class ExternalMaven2BuildResult
     extends Maven2BuildResult
@@ -37,7 +37,7 @@ public class ExternalMaven2BuildResult
 
     private int exitCode;
 
-    private ExternalMaven2BuildResult()
+    protected ExternalMaven2BuildResult()
     {
     }
 
