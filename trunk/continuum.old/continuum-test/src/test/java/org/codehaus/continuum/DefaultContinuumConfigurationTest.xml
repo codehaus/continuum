@@ -1,5 +1,5 @@
 <configuration>
-
+<!--
   <lifecycle-handler-manager implementation='org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager'>
     <lifecycle-handlers>
       <lifecycle-handler implementation='org.codehaus.plexus.personality.avalon.AvalonLifecycleHandler'>
@@ -33,10 +33,6 @@
   <configurations-directory>${plexus.home}/../../src/main/org/codehaus/plexus/continuum/</configurations-directory>
 
   <load-on-start>
-    <!-- 
-     | Only the <components> part is read from the files in <configurations-directory> 
-     | so these two services needs to be loaded start.
-    -->
     <component>
       <role>org.codehaus.continuum.network.ConnectionFactory</role>
       <role-hint>trigger-socket</role-hint>
@@ -45,8 +41,6 @@
       <role>org.codehaus.continuum.network.ConnectionFactory</role>
       <role-hint>registrar-socket</role-hint>
     </component>
-
-    <!-- The SMTP server -->
     <component>
       <role>org.codehaus.plexus.synapse.acceptor.SocketAcceptor</role>
     </component>
@@ -81,6 +75,7 @@
       <implementation>org.codehaus.plexus.dns.DNSJavaResolver</implementation>
       <lifecycle-handler>avalon</lifecycle-handler>
     </component>
+-->
     <!--
     <component>
       <role>org.codehaus.plexus.smtp.queue.Queue</role>
@@ -88,6 +83,7 @@
       <lifecycle-handler>avalon</lifecycle-handler>
     </component>
     -->
+<!--
     <component>
       <role>org.codehaus.plexus.smtp.queue.Queue</role>
       <implementation>org.codehaus.plexus.smtp.queue.FileQueue</implementation>
@@ -105,4 +101,5 @@
       </configuration>
     </component>
   </components>
+-->
 </configuration>
