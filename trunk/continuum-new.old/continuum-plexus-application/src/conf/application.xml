@@ -4,6 +4,19 @@
     <component>
       <role>org.codehaus.continuum.Continuum</role>
     </component>
+    <!-- These components should be controlled by a application component -->
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>simple-socket-trigger-server</role-hint>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.network.ConnectionFactory</role>
+      <role-hint>url-registrar-server</role-hint>
+    </component>
+    <component>
+      <role>org.codehaus.continuum.trigger.ContinuumTrigger</role>
+      <role-hint>alarm-clock</role-hint>
+    </component>
   </load-on-start>
 
   <resources>
@@ -198,14 +211,6 @@
             <value></value>
           </property>
         </properties>
-      </configuration>
-    </component>
-
-    <component>
-      <role>org.codehaus.continuum.web.ContinuumWeb</role>
-      <implementation>org.codehaus.continuum.web.DefaultContinuumWeb</implementation>
-      <configuration>
-        <app-home>${plexus.home}</app-home>
       </configuration>
     </component>
 
