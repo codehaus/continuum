@@ -29,17 +29,14 @@ import org.apache.maven.continuum.project.ContinuumProject;
 import org.apache.maven.continuum.project.ContinuumProjectState;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.mailsender.test.SmtpServer;
-import org.codehaus.plexus.mailsender.test.MockMailSender;
 import org.codehaus.plexus.mailsender.MailMessage;
+import org.codehaus.plexus.mailsender.test.MockMailSender;
 import org.codehaus.plexus.notification.notifier.Notifier;
 import org.codehaus.plexus.util.CollectionUtils;
 
-import com.dumbster.smtp.SmtpMessage;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MailContinuumNotifierTest.java,v 1.2 2005-04-01 22:55:53 trygvis Exp $
+ * @version $Id: MailContinuumNotifierTest.java,v 1.3 2005-04-06 13:57:20 trygvis Exp $
  */
 public class MailContinuumNotifierTest
     extends PlexusTestCase

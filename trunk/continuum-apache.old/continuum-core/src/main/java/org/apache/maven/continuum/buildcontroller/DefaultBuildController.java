@@ -17,9 +17,9 @@ package org.apache.maven.continuum.buildcontroller;
  */
 
 import java.io.File;
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.maven.continuum.ContinuumException;
 import org.apache.maven.continuum.builder.ContinuumBuilder;
@@ -32,14 +32,14 @@ import org.apache.maven.continuum.project.ContinuumProjectState;
 import org.apache.maven.continuum.scm.ContinuumScm;
 import org.apache.maven.continuum.store.ContinuumStore;
 import org.apache.maven.continuum.store.ContinuumStoreException;
-import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.ScmFile;
+import org.apache.maven.scm.command.update.UpdateScmResult;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.2 2005-03-31 00:01:44 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.3 2005-04-06 13:57:20 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
