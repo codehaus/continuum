@@ -7,12 +7,15 @@ package org.codehaus.continuum.store.memory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.codehaus.continuum.project.ContinuumBuild;
 import org.codehaus.continuum.project.ContinuumBuildResult;
@@ -27,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumDatabase.java,v 1.3 2004-10-15 13:01:03 trygvis Exp $
+ * @version $Id: ContinuumDatabase.java,v 1.4 2004-10-20 19:48:23 trygvis Exp $
  */
 public class ContinuumDatabase
     implements ContinuumStore, Serializable
@@ -49,7 +52,7 @@ public class ContinuumDatabase
     // ----------------------------------------------------------------------
 
     private static class NotNullIterator
-        implements Iterator
+        implements Iterator, Serializable
     {
         private Iterator it;
 
@@ -109,6 +112,29 @@ public class ContinuumDatabase
             }
 
             return false;
+        }
+    }
+
+    private static class BuildStartTimeComparator
+    	implements Comparator, Serializable
+    {
+        public int compare( Object object1, Object object2 )
+        {
+            if ( !(object1 instanceof ContinuumBuild) )
+            {
+                throw new IllegalArgumentException( "object 1 must be a " + ContinuumBuild.class );
+            }
+
+            if ( !(object2 instanceof ContinuumBuild) )
+            {
+                throw new IllegalArgumentException( "object 2 must be a " + ContinuumBuild.class );
+            }
+
+            ContinuumBuild build1 = (ContinuumBuild) object1;
+
+            ContinuumBuild build2 = (ContinuumBuild) object2;
+
+            return (int) (build2.getStartTime() - build1.getStartTime());
         }
     }
 
@@ -421,8 +447,8 @@ public class ContinuumDatabase
     public ContinuumBuild getLatestBuildForProject( String projectId )
         throws ContinuumStoreException
     {
-        List builds = getBuildsForProjectAsList( projectId, 0, 0);
-
+        Iterator builds = getBuildsForProjectAsSet( projectId, 0, 0 ).iterator();
+/*
         Iterator it = builds.iterator();
 
         if ( !it.hasNext() )
@@ -441,18 +467,27 @@ public class ContinuumDatabase
                 max = current;
             }
         }
+*/
+        if ( builds.hasNext() )
+        {
+            return (ContinuumBuild) builds.next();
+        }
 
-        return max;
+        return null;
     }
 
     public Iterator getBuildsForProject( String projectId, int start, int end )
         throws ContinuumStoreException
     {
-        return getBuildsForProjectAsList( projectId, start, end ).iterator();
+        return getBuildsForProjectAsSet( projectId, start, end ).iterator();
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     // TODO: Implement start and end
-    public List getBuildsForProjectAsList( String projectId, int start, int end )
+    protected SortedSet getBuildsForProjectAsSet( String projectId, int start, int end )
         throws ContinuumStoreException
     {
         ContinuumProject project = getProject( projectId );
@@ -461,20 +496,20 @@ public class ContinuumDatabase
 
         for ( Iterator it = buildList.iterator(); it.hasNext(); )
         {
-            ContinuumBuild buildResult = (ContinuumBuild) it.next();
+            ContinuumBuild build = (ContinuumBuild) it.next();
 
-            if ( buildResult.getProject() == project )
+            if ( build.getProject() == project )
             {
-                result.add( buildResult );
+                result.add( build );
             }
         }
 
-        return result;
-    }
+        SortedSet sorted = new TreeSet( new BuildStartTimeComparator() );
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
+        sorted.addAll( result );
+
+        return sorted;
+    }
 
     public void dump()
         throws ContinuumStoreException
