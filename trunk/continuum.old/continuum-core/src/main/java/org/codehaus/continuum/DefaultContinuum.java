@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuum.java,v 1.42 2004-10-07 11:49:57 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.43 2004-10-08 09:13:46 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -212,11 +212,13 @@ public class DefaultContinuum
 
                 ProjectDescriptor descriptor = builder.createDescriptor( project );
 
+                store.updateProject( projectId, project.getName(), project.getScmConnection() );
+
                 store.setProjectDescriptor( projectId, descriptor );
 
                 txManager.leave();
 
-                getLogger().info( "Added project: " + name );
+                getLogger().info( "Added project: " + project.getName() );
 
                 return projectId;
             }
