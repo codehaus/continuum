@@ -14,7 +14,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumConfigurationTest.java,v 1.2 2004-04-24 23:54:13 trygvis Exp $
+ * @version $Id: DefaultContinuumConfigurationTest.java,v 1.3 2004-04-26 00:22:23 trygvis Exp $
  */
 public class DefaultContinuumConfigurationTest
     extends PlexusTestCase
@@ -60,9 +60,11 @@ public class DefaultContinuumConfigurationTest
         int waitTime = 10000;
         int waitInterval = 1000;
 
+        Collection messages = null;
+
         while ( waitTime > 0 )
         {
-            Collection messages = queue.getMessagesForDelivery();
+            messages = queue.getMessagesForDelivery();
 
             if ( messages.size() > 0 )
                 break;
@@ -74,7 +76,9 @@ public class DefaultContinuumConfigurationTest
         if ( waitTime <= 0 )
             fail( "Timeout while waiting for build message." );
 
-//        assertEquals( 1, messages.size() );
+        assertNotNull( messages );
+
+        assertEquals( 1, messages.size() );
 
         // TODO: assert successful build
 
