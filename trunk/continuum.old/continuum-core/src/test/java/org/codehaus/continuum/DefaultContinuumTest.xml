@@ -9,8 +9,12 @@
       <role>org.codehaus.plexus.continuum.Continuum</role>
       <implementation>org.codehaus.plexus.continuum.DefaultContinuum</implementation>
       <requirements>
-        <requirement>org.codehaus.plexus.compiler.Compiler</requirement>
-        <requirement>org.apache.maven.project.ProjectBuilder</requirement>
+        <requirement>
+          <role>org.codehaus.plexus.compiler.Compiler</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.project.ProjectBuilder</role>
+        </requirement>
       </requirements>
       <configuration>
         <working-directory>${plexus.home}/continuum</working-directory>
@@ -26,9 +30,15 @@
       <role>org.apache.maven.project.ProjectBuilder</role>
       <implementation>org.apache.maven.project.DefaultProjectBuilder</implementation>
       <requirements>
-        <requirement>org.apache.maven.model.ModelUnmarshaller</requirement>
-        <requirement>org.apache.maven.model.ModelMarshaller</requirement>
-        <requirement>org.apache.maven.artifact.Artifactory</requirement>
+        <requirement>
+          <role>org.apache.maven.model.ModelUnmarshaller</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.model.ModelMarshaller</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.Artifactory</role>
+        </requirement>
       </requirements>
     </component>
     <component>
@@ -45,12 +55,14 @@
     </component>
     <component>
       <role>org.codehaus.plexus.continuum.trigger.ContinuumTrigger</role>
-      <implementation>org.codehaus.plexus.continuum.trigger.AlarmClockTrigger</implementation>
+      <implementation>org.codehaus.plexus.continuum.trigger.alarmclock.AlarmClockTrigger</implementation>
       <configuration>
         <interval>1</interval>
       </configuration>
       <requirements>
-        <requirement>org.codehaus.plexus.continuum.Continuum</requirement>
+        <requirement>
+          <role>org.codehaus.plexus.continuum.Continuum</role>
+        </requirement>
       </requirements>
     </component>
   </components>
