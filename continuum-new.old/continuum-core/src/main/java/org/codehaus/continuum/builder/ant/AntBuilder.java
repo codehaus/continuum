@@ -21,20 +21,19 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.builder.ContinuumBuilder;
 import org.codehaus.continuum.builder.shell.ExecutionResult;
 import org.codehaus.continuum.builder.shell.ShellCommandHelper;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: AntBuilder.java,v 1.5 2005-03-23 16:24:20 trygvis Exp $
+ * @version $Id: AntBuilder.java,v 1.6 2005-03-28 12:11:43 trygvis Exp $
  */
 public class AntBuilder
-    extends AbstractLogEnabled
+    extends AbstractContinuumBuilder
     implements ContinuumBuilder
 {
     public static final String CONFIGURATION_EXECUTABLE = "executable";
@@ -55,20 +54,15 @@ public class AntBuilder
 
         File workingDirectory = new File( project.getWorkingDirectory() );
 
-        String executable = configuration.getProperty( CONFIGURATION_EXECUTABLE );
+        String executable = getConfigurationString( configuration, CONFIGURATION_EXECUTABLE );
 
-        String[] goals = StringUtils.split( configuration.getProperty( CONFIGURATION_TARGETS ), "," );
-
-        for ( int i = 0; i < goals.length; i++ )
-        {
-            goals[ i ] = goals[ i ].trim();
-        }
+        String[] targets = getConfigurationStringArray( configuration, CONFIGURATION_TARGETS );
 
         ExecutionResult executionResult;
 
         try
         {
-            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, executable, goals );
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, executable, targets );
         }
         catch ( Exception e )
         {

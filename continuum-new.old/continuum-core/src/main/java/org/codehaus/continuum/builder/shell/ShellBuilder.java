@@ -26,7 +26,7 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.7 2005-03-23 16:24:21 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.8 2005-03-28 12:11:43 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder
@@ -45,6 +45,7 @@ public abstract class ShellBuilder
     // ----------------------------------------------------------------------
 
     protected String[] getArguments( ContinuumProject project )
+        throws ContinuumException
     {
         if ( arguments == null )
         {
