@@ -33,7 +33,7 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ActionValve.java,v 1.5 2005-03-20 07:19:13 jvanzyl Exp $
+ * @version $Id: ActionValve.java,v 1.6 2005-03-20 19:36:29 jvanzyl Exp $
  */
 public class ActionValve
     extends AbstractValve
@@ -47,8 +47,6 @@ public class ActionValve
 
         String target = data.getRequest().getParameter( "target" );
 
-        System.out.println( "target = " + target );
-
         if ( actionId != null )
         {
             Action action = null;
@@ -61,6 +59,8 @@ public class ActionValve
             }
             catch ( Exception ex )
             {
+                ex.printStackTrace();
+
                 handleException( request, actionId, ex );
 
                 return;
@@ -125,7 +125,9 @@ public class ActionValve
         PrintWriter output = new PrintWriter( msg );
 
         output.println();
+
         output.println( "-------------------------------------------------------------------------------" );
+
         output.println( "Exception while executing the action: '" + actionId + "'." );
 
         while ( t != null )
@@ -136,9 +138,12 @@ public class ActionValve
         }
 
         output.println( "-------------------------------------------------------------------------------" );
+
         output.println();
 
         output.flush();
+
+        System.out.println( msg );
 
         getLogger().error( msg.toString() );
     }

@@ -25,13 +25,11 @@ import org.codehaus.plexus.summit.view.ViewContext;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumViewContextValve.java,v 1.5 2005-03-20 16:25:02 jvanzyl Exp $
+ * @version $Id: ContinuumViewContextValve.java,v 1.6 2005-03-20 19:36:29 jvanzyl Exp $
  */
 public class ContinuumViewContextValve
     extends CreateViewContextValve
 {
-    private CssTool css = new CssTool();
-
     private ContinuumWeb continuum;
 
     private I18N i18n;
@@ -39,8 +37,6 @@ public class ContinuumViewContextValve
     protected void populateViewContext( RunData data, ViewContext context )
     {
         context.put( "continuum", continuum );
-
-        context.put( "css", css );
 
         context.put( "i18n", i18n );
 

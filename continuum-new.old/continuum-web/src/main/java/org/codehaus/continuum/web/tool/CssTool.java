@@ -16,14 +16,18 @@ package org.codehaus.continuum.web.tool;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.summit.pull.RequestTool;
+import org.codehaus.plexus.summit.rundata.RunData;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: CssTool.java,v 1.3 2005-03-20 07:19:13 jvanzyl Exp $
+ * @version $Id: CssTool.java,v 1.4 2005-03-20 19:36:46 jvanzyl Exp $
  */
 public class CssTool
+    implements RequestTool
 {
     private String[] classes = { "a", "b" };
 
@@ -42,4 +46,13 @@ public class CssTool
 
         return classes[classState];
     }
+
+    public void setRunData( RunData data )
+    {
+    }
+
+    public void refresh()
+    {
+    }
 }
+
