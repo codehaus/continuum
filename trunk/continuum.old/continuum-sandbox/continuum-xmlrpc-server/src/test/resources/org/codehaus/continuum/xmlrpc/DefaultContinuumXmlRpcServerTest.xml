@@ -7,7 +7,7 @@
         <handlers>
           <handler>
             <name>continuum</name>
-            <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcInterface</role>
+            <role>org.codehaus.continuum.xmlrpc.ContinuumXmlRpcServer</role>
           </handler>
         </handlers>
       </configuration>

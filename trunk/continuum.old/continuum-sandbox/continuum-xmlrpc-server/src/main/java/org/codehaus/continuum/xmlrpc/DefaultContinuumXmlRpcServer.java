@@ -11,10 +11,10 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpcInterface.java,v 1.2 2004-07-07 02:34:42 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpcServer.java,v 1.1 2004-07-07 03:21:48 trygvis Exp $
  */
-public class DefaultContinuumXmlRpcInterface
-    implements ContinuumXmlRpcInterface, Initializable
+public class DefaultContinuumXmlRpcServer
+    implements ContinuumXmlRpcServer, Initializable
 {
     private Continuum continuum;
 
@@ -49,23 +49,4 @@ public class DefaultContinuumXmlRpcInterface
     {
         return continuum.getBuildQueueLength();
     }
-
-    // ----------------------------------------------------------------------
-    // ContinuumXmlRpcInterface Implementation
-    // ----------------------------------------------------------------------
-/*
-    public String registerProject( String name, String scmConnection, String type )
-    {
-        try
-        {
-            continuum.addProject( name, scmConnection, type );
-
-            return "OK";
-        }
-        catch( Exception ex )
-        {
-            return "FAILURE";
-        }
-    }
-*/
 }
