@@ -28,22 +28,14 @@ import org.codehaus.continuum.notification.ContinuumNotifier;
 import org.codehaus.continuum.scm.ContinuumScm;
 import org.codehaus.continuum.store.ContinuumStore;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: AbstractContinuumTest.java,v 1.3 2004-07-29 04:27:41 trygvis Exp $
+ * @version $Id: AbstractContinuumTest.java,v 1.4 2004-08-29 21:08:18 trygvis Exp $
  */
 public abstract class AbstractContinuumTest
     extends PlexusTestCase
 {
-    protected void customizeContext()
-    {
-        Context context = getContainer().getContext();
-
-        context.put( "maven.home", System.getProperty( "user.home" ) + "/.m2" );
-    }
-
     protected Continuum getContinuum()
         throws Exception
     {
