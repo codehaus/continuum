@@ -1,4 +1,4 @@
-/* $Id: tigris.css,v 1.1 2004-07-27 05:16:14 trygvis Exp $
+/* $Id: tigris.css,v 1.2 2004-10-27 18:41:58 jvanzyl Exp $
 	
 	This file defines basic default formatting for HTML conforming to Tigris application style. To extend or override these rules for your instance, edit inst.css instead of this file. */
 
@@ -89,6 +89,10 @@ a:active, a:hover, #leftcol a:active, #leftcol a:hover {
 .b td {
 	background: #efefef;
 }
+
+.warning td {
+	background: #cc0000;
+}	
 
 table, th, td {
 	border: none;
