@@ -1,4 +1,4 @@
-package org.codehaus.continuum.network;
+ package org.codehaus.continuum.network;
 
 /*
  * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
@@ -30,7 +30,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $1Id: EchoingConnectionConsumer.java,v 1.5 2004/10/06 13:37:14 trygvis Exp $
+ * @version $Id: EchoingConnectionConsumer.java,v 1.7 2004-10-30 11:41:53 trygvis Exp $
  */
 public class EchoingConnectionConsumer
     extends AbstractLogEnabled
