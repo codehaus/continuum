@@ -26,7 +26,7 @@ import xmlrpclib
 class TamboraXmlRpcClient(cli.cli):
     def __init__(self):
         cli.cli.__init__(self)
-        self.server = xmlrpclib.Server("http://localhost:9081")
+        self.server = xmlrpclib.Server("http://localhost:8000")
 
     def do_quit(self, args):
         """Exit the command interpreter.
@@ -41,17 +41,17 @@ class TamboraXmlRpcClient(cli.cli):
         print "Version 1.0"
         return None
 
-    def do_viewTpi(self, args):
-        """Display trading partner information.
-        Use this command to display trading partner information."""
+    def do_addProject(self, args):
+        """Add a Continuum project.
+        Use this command to add a project to Continuum."""
 
         print self.server.tambora.viewTpi( args[0] )
 
         return None
 
-    def do_executeActivity(self, args):
-        """ Send an RFQ.
-        Use this command to send a message."""
+    def do_buildProject(self, args):
+        """Build a Continuum project.
+        Use this command to signal a build for a Continuum project."""
 
         activityId = args[0]
         entity = open( args[1], "r" ).read()
