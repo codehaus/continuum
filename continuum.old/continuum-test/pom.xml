@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <extend>${maven.repo.local}/continuum/poms/continuum-parent-0.1.pom</extend>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>continuum</groupId>
+    <artifactId>continuum-parent</artifactId>
+    <version>0.1</version>
+  </parent>
   <artifactId>continuum-test</artifactId>
   <groupId>continuum</groupId>
+  <version>0.1-SNAPSHOT</version>
   <name>Continuum Test Utils</name>
-  <currentVersion>0.1-SNAPSHOT</currentVersion>
-
   <dependencies>
-
     <dependency>
       <groupId>continuum</groupId>
       <artifactId>continuum-core</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
-
   </dependencies>
-
 </project>
