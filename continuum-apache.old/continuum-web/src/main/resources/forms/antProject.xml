@@ -1,14 +1,15 @@
 <form>
   <extend>shellProject</extend>
   <id>antProject</id>
-  <target-class></target-class>
+  <target-class>org.apache.maven.continuum.project.AntProject</target-class>
   <elements>
     <element>
       <id>project.targets</id>
-      <validator>default</validator>
+      <validator>required</validator>
       <message-key>project.targets.message</message-key>
       <label-key>project.targets.label</label-key>
       <error-message-key>project.targets.error</error-message-key>
+      <expression>targets</expression>
       <type>text</type>
     </element>
   </elements>
