@@ -46,7 +46,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultMavenTool.java,v 1.8 2004-10-29 17:07:10 trygvis Exp $
+ * @version $Id: DefaultMavenTool.java,v 1.9 2004-10-30 00:00:49 jvanzyl Exp $
  */
 public class DefaultMavenTool
     extends AbstractLogEnabled
@@ -118,17 +118,6 @@ public class DefaultMavenTool
 //        getLogger().info( "Using " + mavenRepository + " as maven.repo.local" );
 
         getLogger().info( "Using '" + mavenBin + "' as the maven 2 executable" );
-
-        // ----------------------------------------------------------------------
-        // Component Lifecycle
-        // ----------------------------------------------------------------------
-
-        classWorldsJar = new File( maven.getMavenHome(), "/core/boot/classworlds-1.1-SNAPSHOT.jar" );
-
-        if ( !classWorldsJar.exists() )
-        {
-            throw new ContinuumException( "Maven isn't installed correctly, could not find the classworlds jar (" + classWorldsJar.getAbsolutePath() + ")." );
-        }
     }
 
     // ----------------------------------------------------------------------
