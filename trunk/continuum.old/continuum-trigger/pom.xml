@@ -10,4 +10,17 @@
   <groupId>continuum</groupId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Trigger</name>
+  <dependencies>
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-test</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+    <!-- testing -->
+    <dependency>
+      <groupId>continuum</groupId>
+      <artifactId>continuum-core</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>
