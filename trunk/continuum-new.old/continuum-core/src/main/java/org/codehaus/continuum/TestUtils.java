@@ -16,78 +16,51 @@ package org.codehaus.continuum;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
-
-import org.codehaus.continuum.project.ContinuumProjectState;
-import org.codehaus.continuum.project.ContinuumBuild;
-import org.codehaus.continuum.store.ContinuumStore;
-import org.codehaus.plexus.DefaultArtifactEnabledContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.logging.AbstractLogger;
-import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.util.Locale;
+
+import org.codehaus.continuum.project.ContinuumBuild;
+import org.codehaus.continuum.project.ContinuumProjectState;
+import org.codehaus.continuum.store.ContinuumStore;
+import org.codehaus.plexus.PlexusTestCase;
+
+import junit.framework.Assert;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: TestUtils.java,v 1.3 2005-03-10 00:05:26 trygvis Exp $
+ * @version $Id: TestUtils.java,v 1.4 2005-03-15 22:27:11 trygvis Exp $
  */
 public class TestUtils
 {
-    private static PlexusContainer container;
-
     private static int buildTimeout = 30 * 1000;
-
-    public static void setContainer( PlexusContainer container )
-    {
-        TestUtils.container = container;
-    }
-
-    protected final static PlexusContainer getContainer()
-    {
-        if ( TestUtils.container != null )
-        {
-            return TestUtils.container;
-        }
-
-        PlexusContainer container = AbstractContinuumTest.getPlexusContainer();
-
-        Assert.assertNotNull( "This method can only be used when the test case is a subclass of AbstractContinuumTest or a container has been set explicitly.", container );
-
-        return container;
-    }
 
     // ----------------------------------------------------------------------
     // Wait for build
     // ----------------------------------------------------------------------
 
-    public final static ContinuumBuild waitForSuccessfulBuild( String buildId )
+    public final static ContinuumBuild waitForSuccessfulBuild( ContinuumStore continuumStore, String buildId )
         throws Exception
     {
-        ContinuumBuild build = waitForBuild( buildId );
+        ContinuumBuild build = waitForBuild( continuumStore, buildId );
 
         Assert.assertEquals( ContinuumProjectState.OK, build.getState() );
 
         return build;
     }
 
-    public final static ContinuumBuild waitForFailedBuild( String buildId )
+    public final static ContinuumBuild waitForFailedBuild( ContinuumStore continuumStore, String buildId )
         throws Exception
     {
-        ContinuumBuild build = waitForBuild( buildId );
+        ContinuumBuild build = waitForBuild( continuumStore, buildId );
 
         Assert.assertEquals( ContinuumProjectState.FAILED, build.getState() );
 
         return build;
     }
 
-    public final static ContinuumBuild waitForBuild( String buildId )
+    public final static ContinuumBuild waitForBuild( ContinuumStore continuumStore, String buildId )
         throws Exception
     {
         int time = buildTimeout;
@@ -102,7 +75,7 @@ public class TestUtils
 
             time -= interval;
 
-            result = getContinuumStore().getBuild( buildId );
+            result = continuumStore.getBuild( buildId );
 
             Assert.assertNotNull( result );
 
@@ -128,25 +101,9 @@ public class TestUtils
     }
 
     // ----------------------------------------------------------------------
-    // Lookups
-    // ----------------------------------------------------------------------
-
-    public static ContinuumStore getContinuumStore()
-        throws Exception
-    {
-        return (ContinuumStore) getContainer().lookup( ContinuumStore.ROLE );
-    }
-
-    public static ContinuumStore getContinuumStore( String role )
-        throws Exception
-    {
-        return (ContinuumStore) getContainer().lookup( ContinuumStore.ROLE, role );
-    }
-
-    // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
-
+/*
     public static PlexusContainer setUpPlexus()
         throws Exception
     {
@@ -255,7 +212,7 @@ public class TestUtils
 
         return container;
     }
-
+*/
     private static void deleteFile( String fileName )
         throws Exception
     {
