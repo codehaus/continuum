@@ -13,6 +13,7 @@
 
   <resources>
     <jar-repository>${plexus.home}/lib</jar-repository>
+    <directory>${plexus.home}/webapp/localization</directory>
   </resources>
 
   <services>
