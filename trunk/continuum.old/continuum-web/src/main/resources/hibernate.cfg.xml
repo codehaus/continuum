@@ -4,6 +4,13 @@
     PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-configuration-2.0.dtd">
 
+<!--
+ This is a normal hibernate configuration file.
+
+ Refer http://www.hibernate.org/hib_docs/reference/en/html/ for configuration
+ options.
+-->
+
 <hibernate-configuration>
     <session-factory>
         <property name="show_sql">false</property>
