@@ -2,7 +2,7 @@
  Continuum FAQ
  -----
  Jason van Zyl
- Trygve Laugstøl
+ Trygve Laugst&oslash;l
  -----
 
 Continuum FAQ
@@ -10,7 +10,7 @@ Continuum FAQ
 * I have added my POM to Continuum and then I subsequently changed my POM
  in CVS. How does Continuum handle that?
 
- Continuum will update the project information before each build to ensure 
+ Continuum will update the project information before each build to ensure
 that the information is always reflecting the version in CVS.
 
  This means that if the POM is changed in CVS you should trigger a build to
