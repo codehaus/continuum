@@ -35,7 +35,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumXmlRpc.java,v 1.2 2005-03-23 12:50:48 trygvis Exp $
+ * @version $Id: DefaultContinuumXmlRpc.java,v 1.3 2005-03-28 11:45:11 trygvis Exp $
  */
 public class DefaultContinuumXmlRpc
     extends AbstractLogEnabled
@@ -101,13 +101,55 @@ public class DefaultContinuumXmlRpc
     {
         try
         {
-            Hashtable project = xmlRpcHelper.objectToHashtable( store.getProject( projectId ) );
+            Set excludedProperties = new HashSet();
 
-            return makeHashtable( "project", project );
+            excludedProperties.add( "configuration" );
+
+            ContinuumProject project = store.getProject( projectId );
+
+            Hashtable hashtable = xmlRpcHelper.objectToHashtable( project, excludedProperties );
+
+            Properties configuration = project.getConfiguration();
+
+            Hashtable configurationHashtable = new Hashtable();
+
+            for ( Iterator it = configuration.entrySet().iterator(); it.hasNext(); )
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                configurationHashtable.put( entry.getKey().toString(), entry.getValue().toString() );
+            }
+
+            hashtable.put( "configuration", configurationHashtable );
+
+            return makeHashtable( "project", hashtable );
         }
         catch ( Throwable e )
         {
             return handleException( "ContinuumXmlRpc.getProject(): project id: '" + projectId + "'.", e );
+        }
+    }
+
+    public Hashtable updateProjectConfiguration( String projectId, Hashtable configuration )
+    {
+        try
+        {
+            Properties configurationProperties = new Properties();
+
+            for ( Iterator it = configuration.entrySet().iterator(); it.hasNext(); )
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                configurationProperties.put( entry.getKey().toString(), entry.getValue().toString() );
+            }
+
+            continuum.updateProjectConfiguration( projectId, configurationProperties );
+
+            return makeHashtable();
+        }
+        catch ( Throwable e )
+        {
+            return handleException( "ContinuumXmlRpc.updateProjectConfiguration(): Project id: '" + projectId + "'.", e );
         }
     }
 
@@ -217,13 +259,20 @@ public class DefaultContinuumXmlRpc
     //
     // ----------------------------------------------------------------------
 
-    private Hashtable makeHashtable( String property, Object object )
+    private Hashtable makeHashtable()
     {
         Hashtable hashtable = new Hashtable();
 
-        hashtable.put( property, object );
-
         hashtable.put( "result", "ok" );
+
+        return hashtable;
+    }
+
+    private Hashtable makeHashtable( String property, Object object )
+    {
+        Hashtable hashtable = makeHashtable();
+
+        hashtable.put( property, object );
 
         return hashtable;
     }
