@@ -31,10 +31,11 @@ import org.codehaus.continuum.network.ConnectionConsumer;
 import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
 import org.codehaus.continuum.socket.SimpleSocket;
 import org.codehaus.continuum.store.tx.StoreTransactionManager;
+import org.codehaus.continuum.utils.ContinuumUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.12 2004-10-07 11:49:57 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.13 2004-10-07 12:09:39 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
@@ -74,9 +75,15 @@ public class SimpleNetworkRegistrar
         }
         catch( Exception ex )
         {
+            txManager.rollback();
+
             socket.writeLine( "ERROR" );
 
+            String stackTrace = ContinuumUtils.getExceptionStackTrace( ex );
+
             socket.writeLine( "Exception while adding the project." );
+
+            socket.writeLine( stackTrace );
         }
     }
 
