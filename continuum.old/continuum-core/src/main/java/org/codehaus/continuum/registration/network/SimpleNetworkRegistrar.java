@@ -22,23 +22,27 @@ package org.codehaus.continuum.registration.network;
  * SOFTWARE.
  */
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.codehaus.continuum.network.ConnectionConsumer;
 import org.codehaus.continuum.registration.AbstractContinuumRegistrar;
+import org.codehaus.continuum.socket.SimpleSocket;
+import org.codehaus.continuum.store.tx.StoreTransactionManager;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: SimpleNetworkRegistrar.java,v 1.11 2004-07-27 05:42:13 trygvis Exp $
+ * @version $Id: SimpleNetworkRegistrar.java,v 1.12 2004-10-07 11:49:57 trygvis Exp $
  */
 public class SimpleNetworkRegistrar
     extends AbstractContinuumRegistrar
     implements ConnectionConsumer
 {
+    /** @requirement */
+    private StoreTransactionManager txManager;
+
     /** @default ${maven.home}/repository */
     private String localRepository;
 
@@ -46,39 +50,55 @@ public class SimpleNetworkRegistrar
     // ConnectionConsumer Implementation
 
     public void consumeConnection( InputStream input, OutputStream output )
+        throws IOException
     {
-        PrintWriter printer = new PrintWriter( output );
+        SimpleSocket socket = new SimpleSocket( input, output );
 
         try
         {
-            BufferedReader reader = new BufferedReader( new InputStreamReader( input ) );
+            String name = socket.readLine();
 
-            String name = reader.readLine();
+            String scmConnection = socket.readLine();
 
-            String scmConnection = reader.readLine();
+            String type = socket.readLine();
 
-            String type = reader.readLine();
+            txManager.begin();
 
             String id = getContinuum().addProject( name, scmConnection, type );
 
-            printer.println( "OK" );
+            txManager.commit();
 
-            printer.println( "id=" + id );
+            socket.writeLine( "OK" );
+
+            socket.writeLine( "id=" + id );
         }
         catch( Exception ex )
         {
-            error( printer, "Exception while creating the project.", ex );
-        }
-        finally
-        {
-            printer.flush();
+            socket.writeLine( "ERROR" );
+
+            socket.writeLine( "Exception while adding the project." );
         }
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     private void error( PrintWriter printer, String message, Throwable ex )
     {
-        printer.println( "ERROR" );
-        printer.println( "Error adding project: " + ex.getMessage() );
+        out( printer, "ERROR" );
+
+        out( printer, message );
+
         ex.printStackTrace( printer );
+
+        printer.flush();
+    }
+
+    private void out( PrintWriter writer, String line )
+    {
+        writer.println( line );
+
+        writer.flush();
     }
 }
