@@ -3,7 +3,7 @@ package org.codehaus.continuum.builder.maven.m1;
 /*
  * The MIT License
  *
- * Copyright (c) 2004, Jason van Zyl and Trygve Laugst�l
+ * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -27,21 +27,72 @@ package org.codehaus.continuum.builder.maven.m1;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+import java.util.Properties;
 
 import org.codehaus.continuum.ContinuumException;
-import org.codehaus.continuum.builder.shell.ShellBuilder;
+import org.codehaus.continuum.builder.AbstractContinuumBuilder;
+import org.codehaus.continuum.builder.ContinuumBuilder;
+import org.codehaus.continuum.builder.shell.ExecutionResult;
+import org.codehaus.continuum.builder.shell.ShellCommandHelper;
+import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: MavenShellBuilder.java,v 1.3 2005-03-07 18:30:47 trygvis Exp $
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @version $Id: Maven1Builder.java,v 1.1 2005-03-07 18:30:47 trygvis Exp $
  */
-public class MavenShellBuilder
-    extends ShellBuilder
+public class Maven1Builder
+    extends AbstractContinuumBuilder
+    implements ContinuumBuilder
 {
+    public final static String PROPERTY_GOALS = "goals";
+
+    /** @requirement */
+    private ShellCommandHelper shellCommandHelper;
+
+    /** @configuration */
+    private String mavenCommand;
+
+    // ----------------------------------------------------------------------
+    // Builder Implementation
+    // ----------------------------------------------------------------------
+
+    public ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
+        throws ContinuumException
+    {
+        ExecutionResult executionResult;
+
+        Properties configuration = project.getConfiguration();
+
+        String[] goals = StringUtils.split( configuration.getProperty( PROPERTY_GOALS ), "," );
+
+        try
+        {
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, mavenCommand, goals );
+        }
+        catch ( Exception e )
+        {
+            throw new ContinuumException( "Error while executing shell command.", e );
+        }
+
+        boolean success = executionResult.getExitCode() == 0;
+
+        Maven1BuildResult result = new Maven1BuildResult();
+
+        result.setSuccess( success );
+
+        result.setStandardOutput( executionResult.getStandardOutput() );
+
+        result.setStandardError( executionResult.getStandardError() );
+
+        result.setExitCode( executionResult.getExitCode() );
+
+        return result;
+    }
+
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
     {
@@ -57,9 +108,9 @@ public class MavenShellBuilder
     public void updateProjectFromMetadata( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
-        File pomFile = getPomFile( workingDirectory );
+        File projectXmlFile = getProjectXmlFile( workingDirectory );
 
-        mapMetadata( pomFile, project );
+        mapMetadata( projectXmlFile, project );
     }
 
     // ----------------------------------------------------------------------
@@ -77,17 +128,12 @@ public class MavenShellBuilder
         }
         catch ( Exception e )
         {
-            throw new ContinuumException( "Error while reading maven POM: ", e );
+            throw new ContinuumException( "Error while reading maven POM.", e );
         }
 
         // ----------------------------------------------------------------------
         // Populating the descriptor
         // ----------------------------------------------------------------------
-
-        if ( mavenProject.getChild( "repository" ) == null )
-        {
-            throw new ContinuumException( "The project descriptor is missing the SCM information." );
-        }
 
         // Name
         String name = mavenProject.getChild( "name" ).getValue();
@@ -99,6 +145,11 @@ public class MavenShellBuilder
 
         // Scm
         Xpp3Dom scm = mavenProject.getChild( "repository" );
+
+        if ( scm == null )
+        {
+            throw new ContinuumException( "The project descriptor is missing the SCM information." );
+        }
 
         String scmConnection = scm.getChild( "connection" ).getValue();
 
@@ -130,6 +181,11 @@ public class MavenShellBuilder
             throw new ContinuumException( "Missing version from the project descriptor." );
         }
 
+        // Goals
+        Properties configuration = new Properties();
+
+        configuration.setProperty( PROPERTY_GOALS, "clean:clean,jar:install" );
+
         // ----------------------------------------------------------------------
         // Make the project
         // ----------------------------------------------------------------------
@@ -141,18 +197,22 @@ public class MavenShellBuilder
         project.setNagEmailAddress( nagEmailAddress );
 
         project.setVersion( version );
+
+        project.setConfiguration( configuration );
     }
 
-    private File getPomFile( File basedir )
+    private File getProjectXmlFile( File basedir )
         throws ContinuumException
     {
-        File pomFile = new File( basedir, "project.xml" );
+        System.err.println( "basedir: " + basedir );
 
-        if ( !pomFile.isFile() )
+        File projectXmlFile = new File( basedir, "project.xml" );
+
+        if ( !projectXmlFile.isFile() )
         {
             throw new ContinuumException( "Could not find Maven project descriptor." );
         }
 
-        return pomFile;
+        return projectXmlFile;
     }
 }

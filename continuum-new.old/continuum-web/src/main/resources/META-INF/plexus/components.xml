@@ -99,6 +99,13 @@
       <implementation>org.codehaus.continuum.web.action.AddProjectPomUrl</implementation>
     </component>
 
+    <!-- addProjectPomUrl -->
+    <component>
+      <role>org.codehaus.continuum.web.action.Action</role>
+      <role-hint>addMaven1ProjectPomUrl</role-hint>
+      <implementation>org.codehaus.continuum.web.action.AddMaven1ProjectPomUrl</implementation>
+    </component>
+
     <!-- showProjects -->
     <component>
       <role>org.codehaus.continuum.web.action.Action</role>

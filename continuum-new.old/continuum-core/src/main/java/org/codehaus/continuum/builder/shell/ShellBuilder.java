@@ -24,24 +24,27 @@ package org.codehaus.continuum.builder.shell;
  * SOFTWARE.
  */
 
+import java.io.File;
+
 import org.codehaus.continuum.ContinuumException;
+import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.continuum.project.ContinuumBuildResult;
 import org.codehaus.continuum.project.ContinuumProject;
-import org.codehaus.continuum.builder.AbstractContinuumBuilder;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
-
-import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.3 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.4 2005-03-07 18:30:48 trygvis Exp $
  */
 public abstract class ShellBuilder
     extends AbstractContinuumBuilder
 {
-    protected String shellCommand;
+    /** @requirement */
+    private ShellCommandHelper shellCommandHelper;
+
+    /** @configuration */
+    private String shellCommand;
 
     // ----------------------------------------------------------------------
     // ContinuumBuilder implementation
@@ -50,49 +53,30 @@ public abstract class ShellBuilder
     public synchronized ContinuumBuildResult build( File workingDirectory, ContinuumProject project )
         throws ContinuumException
     {
-        Commandline cl = createCommandline( workingDirectory, project );
-
-        CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
-
-        CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
-
-        int exitCode;
-
-        getLogger().info( "executing: " + cl );
+        ExecutionResult executionResult;
 
         try
         {
-            exitCode = CommandLineUtils.executeCommandLine( cl, stdout, stderr );
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, shellCommand, new String[ 0 ] );
         }
-        catch ( Exception ex )
+        catch ( Exception e )
         {
-            throw new ContinuumException( "Error while executing command.", ex );
+            throw new ContinuumException( "Error while executing shell command.", e );
         }
 
-        String out = stdout.getOutput();
+        boolean success = executionResult.getExitCode() == 0;
 
-        String err = stderr.getOutput();
+        ShellBuildResult result = new ShellBuildResult();
 
-        boolean success = exitCode == 0;
+        result.setSuccess( success );
 
-        if ( project != null )
-        {
-            ShellBuildResult result = new ShellBuildResult();
+        result.setStandardOutput( executionResult.getStandardOutput() );
 
-            result.setSuccess( success );
+        result.setStandardError( executionResult.getStandardError() );
 
-            result.setStandardOutput( out );
+        result.setExitCode( executionResult.getExitCode() );
 
-            result.setStandardError( err );
-
-            result.setExitCode( exitCode );
-
-            return result;
-        }
-        else
-        {
-            return null;
-        }
+        return result;
     }
 
     protected Commandline createCommandline( File workingDirectory, ContinuumProject project )
@@ -110,9 +94,9 @@ public abstract class ShellBuilder
             cl.createArgument().setValue( s[i] );
         }
 
-        getLogger().warn( "Executing external maven. Commandline: " + shellCommand );
+        getLogger().warn( "Executing external command '" + shellCommand + "'." );
 
-        getLogger().warn( "Executing external maven. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
+        getLogger().warn( "Executing external command. Working directory: " + cl.getWorkingDirectory().getAbsolutePath() );
 
         return cl;
     }

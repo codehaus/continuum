@@ -41,15 +41,13 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultContinuumScm.java,v 1.2 2005-02-21 14:58:10 trygvis Exp $
+ * @version $Id: DefaultContinuumScm.java,v 1.3 2005-03-07 18:30:48 trygvis Exp $
  */
 public class DefaultContinuumScm
     extends AbstractLogEnabled
     implements ContinuumScm, Initializable
 {
-    /**
-     * @requirement
-     */
+    /** @requirement */
     private ScmManager scmManager;
 
     // ----------------------------------------------------------------------
@@ -94,6 +92,12 @@ public class DefaultContinuumScm
 
             if ( !result.isSuccess() )
             {
+                getLogger().warn( "Error while executing SCM command." );
+
+                getLogger().warn( "Command output: " + result.getCommandOutput() );
+
+                getLogger().warn( "Provider message: " + result.getProviderMessage());
+
                 throw new ContinuumScmException( "Error while checking out the project.", result );
             }
         }

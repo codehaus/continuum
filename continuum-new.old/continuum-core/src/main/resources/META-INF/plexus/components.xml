@@ -208,6 +208,9 @@
       </configuration>
       <requirements>
         <requirement>
+          <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
+        </requirement>
+        <requirement>
           <role>org.codehaus.continuum.builder.maven.m2.MavenBuilderHelper</role>
         </requirement>
       </requirements>
@@ -221,6 +224,25 @@
           <role>org.apache.maven.project.MavenProjectBuilder</role>
         </requirement>
       </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.builder.ContinuumBuilder</role>
+      <role-hint>maven-1</role-hint>
+      <implementation>org.codehaus.continuum.builder.maven.m1.Maven1Builder</implementation>
+      <configuration>
+        <maven-command>maven</maven-command>
+      </configuration>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.continuum.builder.shell.ShellCommandHelper</role>
+      <implementation>org.codehaus.continuum.builder.shell.DefaultShellCommandHelper</implementation>
     </component>
 
     <!-- Store -->

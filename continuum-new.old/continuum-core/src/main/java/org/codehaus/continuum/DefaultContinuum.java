@@ -50,7 +50,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.4 2005-02-28 17:04:45 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.5 2005-03-07 18:30:47 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -124,51 +124,9 @@ public class DefaultContinuum
 
         getLogger().info( "done creating continuum project" );
 
-        return setupProject( addProject( project, builderType ) );
-    }
+        project = addProject( project, builderType );
 
-    // ----------------------------------------------------------------------
-    // o take the metadata
-    // o create a continuum project
-    // o setup/initialize the project
-    //   -> check it out
-    //   -> update project metadata if necessary
-    // ----------------------------------------------------------------------
-
-    public String setupProject( ContinuumProject project )
-        throws ContinuumException
-    {
-        File checkoutDirectory = new File( workingDirectory, "temp-project" );
-
-        if ( checkoutDirectory.exists() )
-        {
-            try
-            {
-                FileUtils.cleanDirectory( checkoutDirectory );
-            }
-            catch ( IOException ex )
-            {
-                throw new ContinuumException( "Error while cleaning out " + checkoutDirectory.getAbsolutePath() );
-            }
-        }
-        else
-        {
-            if ( !checkoutDirectory.mkdirs() )
-            {
-                throw new ContinuumException( "Could not make the check out directory (" + checkoutDirectory.getAbsolutePath() + ")." );
-            }
-        }
-
-        try
-        {
-            scm.checkOut( checkoutDirectory, project.getScmUrl() );
-        }
-        catch ( ContinuumScmException ex )
-        {
-            throw new ContinuumException( "Error while checking out the project.", ex );
-        }
-
-        updateProject( project.getId() );
+        setupProject( project );
 
         return project.getId();
     }
@@ -179,12 +137,6 @@ public class DefaultContinuum
         try
         {
             ContinuumProject project = store.getProject( projectId );
-
-            ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
-
-            // ----------------------------------------------------------------------
-            // Update the check out
-            // ----------------------------------------------------------------------
 
             File workingDirectory = new File( project.getWorkingDirectory() );
 
@@ -198,32 +150,7 @@ public class DefaultContinuum
                 }
             }
 
-            scm.updateProject( project );
-
-            // ----------------------------------------------------------------------
-            // Make a new descriptor
-            // ----------------------------------------------------------------------
-
-            builder.updateProjectFromMetadata( new File( project.getWorkingDirectory() ), project );
-
-            // ----------------------------------------------------------------------
-            // Store the new descriptor
-            // ----------------------------------------------------------------------
-
-            store.updateProject( projectId,
-                                 project.getName(),
-                                 project.getScmUrl(),
-                                 project.getNagEmailAddress(),
-                                 project.getVersion(),
-                                 project.getConfiguration() );
-
-            getLogger().info( "Updated project: " + project.getName() );
-        }
-        catch ( ContinuumScmException ex )
-        {
-            getLogger().error( "Error while updating project.", ex );
-
-            throw new ContinuumException( "Error while updating project.", ex );
+            updateProjectFromDirectory( project, workingDirectory );
         }
         catch ( ContinuumStoreException ex )
         {
@@ -373,22 +300,113 @@ public class DefaultContinuum
 
             project = store.getProject( projectId );
 
-            scm.checkOutProject( project );
+//            scm.checkOutProject( project );
 
             return project;
         }
-        catch ( ContinuumScmException ex )
-        {
-            getLogger().error( "Exception while checking out the project.", ex );
-
-            throw new ContinuumException( "Exception while checking out the project.", ex );
-        }
+//        catch ( ContinuumScmException ex )
+//        {
+//            getLogger().error( "Exception while checking out the project.", ex );
+//
+//            throw new ContinuumException( "Exception while checking out the project.", ex );
+//        }
         catch ( ContinuumStoreException ex )
         {
             getLogger().error( "Exception while adding project.", ex );
 
             throw new ContinuumException( "Exception while adding project.", ex );
         }
+    }
+
+    // ----------------------------------------------------------------------
+    // o take the metadata
+    // o create a continuum project
+    // o setup/initialize the project
+    //   -> check it out
+    //   -> update project metadata if necessary
+    // ----------------------------------------------------------------------
+
+    private void setupProject( ContinuumProject project )
+        throws ContinuumException
+    {
+        File checkoutDirectory = new File( workingDirectory, "temp-project" );
+
+        project.setWorkingDirectory( checkoutDirectory.getAbsolutePath() );
+
+        if ( checkoutDirectory.exists() )
+        {
+            try
+            {
+                FileUtils.cleanDirectory( checkoutDirectory );
+            }
+            catch ( IOException ex )
+            {
+                throw new ContinuumException( "Error while cleaning out " + checkoutDirectory.getAbsolutePath() );
+            }
+        }
+        else
+        {
+            if ( !checkoutDirectory.mkdirs() )
+            {
+                throw new ContinuumException( "Could not make the check out directory (" + checkoutDirectory.getAbsolutePath() + ")." );
+            }
+        }
+
+        try
+        {
+            scm.checkOut( checkoutDirectory, project.getScmUrl() );
+        }
+        catch ( ContinuumScmException ex )
+        {
+            throw new ContinuumException( "Error while checking out the project.", ex );
+        }
+
+        updateProjectFromDirectory( project, checkoutDirectory );
+    }
+
+    private void updateProjectFromDirectory( ContinuumProject project, File workingDirectory )
+        throws ContinuumException
+    {
+        ContinuumBuilder builder = builderManager.getBuilder( project.getBuilderId() );
+
+        // ----------------------------------------------------------------------
+        // Update the check out
+        // ----------------------------------------------------------------------
+
+        try
+        {
+            scm.updateProject( project );
+        }
+        catch ( ContinuumScmException e )
+        {
+            throw new ContinuumException( "Error while updating project.", e );
+        }
+
+        // ----------------------------------------------------------------------
+        // Make a new descriptor
+        // ----------------------------------------------------------------------
+
+        builder.updateProjectFromMetadata( workingDirectory, project );
+
+        // ----------------------------------------------------------------------
+        // Store the new descriptor
+        // ----------------------------------------------------------------------
+
+        try
+        {
+            store.updateProject( project.getId(),
+                                 project.getName(),
+                                 project.getScmUrl(),
+                                 project.getNagEmailAddress(),
+                                 project.getVersion(),
+                                 project.getConfiguration() );
+        }
+        catch ( ContinuumStoreException e )
+        {
+            throw new ContinuumException( "Error while storing the updated project.", e );
+        }
+
+        getLogger().info( "Updated project: " + project.getName() );
     }
 
     // ----------------------------------------------------------------------
