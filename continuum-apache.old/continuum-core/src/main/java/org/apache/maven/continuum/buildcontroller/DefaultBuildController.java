@@ -39,7 +39,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: DefaultBuildController.java,v 1.3 2005-04-06 13:57:20 trygvis Exp $
+ * @version $Id: DefaultBuildController.java,v 1.4 2005-04-07 23:27:38 trygvis Exp $
  */
 public class DefaultBuildController
     extends AbstractLogEnabled
@@ -231,7 +231,7 @@ public class DefaultBuildController
                                  project.getNagEmailAddress(),
                                  project.getVersion() );
 
-            store.updateProjectConfiguration( id, project.getConfiguration() );
+//            store.updateProjectConfiguration( id, project.getConfiguration() );
 
             try
             {

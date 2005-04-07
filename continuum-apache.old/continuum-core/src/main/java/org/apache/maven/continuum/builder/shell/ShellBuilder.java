@@ -28,12 +28,12 @@ import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ShellBuilder.java,v 1.1.1.1 2005-03-29 20:42:00 trygvis Exp $
+ * @version $Id: ShellBuilder.java,v 1.2 2005-04-07 23:27:40 trygvis Exp $
  */
 public class ShellBuilder
     extends AbstractContinuumBuilder
 {
-    private static final String CONFIGURATION_SCRIPT = "script";
+    public static final String CONFIGURATION_EXECUTABLE = "executable";
 
     public final static String CONFIGURATION_ARGUMENTS = "arguments";
 
@@ -44,10 +44,15 @@ public class ShellBuilder
     //
     // ----------------------------------------------------------------------
 
+    protected boolean prependWorkingDirectoryIfMissing()
+    {
+        return true;
+    }
+
     protected String getExecutable( ContinuumProject project )
         throws ContinuumException
     {
-        return getConfigurationString( project.getConfiguration(), CONFIGURATION_SCRIPT );
+        return getConfigurationString( project.getConfiguration(), CONFIGURATION_EXECUTABLE );
     }
 
     protected String[] getArguments( ContinuumProject project )
@@ -71,9 +76,18 @@ public class ShellBuilder
 
         String[] arguments = getArguments( project );
 
+        if ( !executable.startsWith( "/" ) &&
+             !executable.startsWith( "\\" ) &&
+             prependWorkingDirectoryIfMissing() )
+        {
+            executable = workingDirectory + File.separator + executable;
+        }
+
         try
         {
-            executionResult = shellCommandHelper.executeShellCommand( workingDirectory, executable, arguments );
+            executionResult = shellCommandHelper.executeShellCommand( workingDirectory,
+                                                                      executable,
+                                                                      arguments );
         }
         catch ( Exception e )
         {

@@ -26,7 +26,7 @@ import org.apache.maven.continuum.project.ContinuumProject;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: MavenShellBuilder.java,v 1.1.1.1 2005-03-29 20:42:00 trygvis Exp $
+ * @version $Id: MavenShellBuilder.java,v 1.2 2005-04-07 23:27:39 trygvis Exp $
  */
 public class MavenShellBuilder
     extends ShellBuilder
@@ -42,6 +42,10 @@ public class MavenShellBuilder
     /** @configuration */
     private String arguments;
 
+    // ----------------------------------------------------------------------
+    // ContinuumBuilder Implementation
+    // ----------------------------------------------------------------------
+
     public ContinuumProject createProjectFromMetadata( URL metadata )
         throws ContinuumException
     {
@@ -52,6 +56,15 @@ public class MavenShellBuilder
         throws ContinuumException
     {
         builderHelper.updateProjectFromMetadata( workingDirectory, project );
+    }
+
+    // ----------------------------------------------------------------------
+    // ShellBuilder Implementation
+    // ----------------------------------------------------------------------
+
+    protected boolean prependWorkingDirectoryIfMissing()
+    {
+        return false;
     }
 
     protected String getExecutable( ContinuumProject project )
