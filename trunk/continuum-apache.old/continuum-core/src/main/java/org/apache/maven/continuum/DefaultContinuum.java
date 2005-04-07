@@ -26,6 +26,9 @@ import java.util.Properties;
 
 import org.apache.maven.continuum.buildcontroller.BuildController;
 import org.apache.maven.continuum.builder.ContinuumBuilder;
+import org.apache.maven.continuum.builder.maven.m1.Maven1Builder;
+import org.apache.maven.continuum.builder.maven.m2.MavenShellBuilder;
+import org.apache.maven.continuum.builder.shell.ShellBuilder;
 import org.apache.maven.continuum.builder.ant.AntBuilder;
 import org.apache.maven.continuum.builder.manager.BuilderManager;
 import org.apache.maven.continuum.buildqueue.BuildQueue;
@@ -33,6 +36,9 @@ import org.apache.maven.continuum.buildqueue.BuildQueueException;
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.project.ContinuumProject;
 import org.apache.maven.continuum.project.AntProject;
+import org.apache.maven.continuum.project.MavenOneProject;
+import org.apache.maven.continuum.project.MavenTwoProject;
+import org.apache.maven.continuum.project.ShellProject;
 import org.apache.maven.continuum.scm.ContinuumScm;
 import org.apache.maven.continuum.scm.ContinuumScmException;
 import org.apache.maven.continuum.store.ContinuumStore;
@@ -48,7 +54,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.4 2005-04-05 06:09:39 jvanzyl Exp $
+ * @version $Id: DefaultContinuum.java,v 1.5 2005-04-07 23:27:38 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -358,6 +364,173 @@ public class DefaultContinuum
     }
 
     // ----------------------------------------------------------------------
+    // Ant Projects
+    // ----------------------------------------------------------------------
+
+    public void addAntProject( AntProject project )
+        throws ContinuumException
+    {
+        Properties configuration = new Properties();
+
+        configuration.setProperty( AntBuilder.CONFIGURATION_EXECUTABLE, project.getExecutable() );
+
+        configuration.setProperty( AntBuilder.CONFIGURATION_TARGETS, project.getTargets() );
+
+        addProjectFromScm( project.getScmUrl(),
+                           "ant",
+                           project.getName(),
+                           project.getNagEmailAddress(),
+                           project.getVersion(),
+                           configuration );
+    }
+
+    public AntProject getAntProject( String id )
+        throws ContinuumException
+    {
+        ContinuumProject p = getProject( id );
+
+        AntProject ap = new AntProject();
+
+        copyProject( p, ap );
+
+        ap.setTargets( p.getConfiguration().getProperty( AntBuilder.CONFIGURATION_TARGETS ) );
+
+        ap.setExecutable( p.getConfiguration().getProperty( AntBuilder.CONFIGURATION_EXECUTABLE ) );
+
+        return ap;
+    }
+
+    public void updateAntProject( AntProject project )
+        throws ContinuumException
+    {
+        updateProjectConfiguration( project.getId(), project.getConfiguration() );
+    }
+
+    public void addMavenOneProject( MavenOneProject project )
+        throws ContinuumException
+    {
+        Properties configuration = new Properties();
+
+        configuration.setProperty( Maven1Builder.CONFIGURATION_GOALS, project.getGoals() );
+
+        addProjectFromScm( project.getScmUrl(),
+                           "maven-1",
+                           project.getName(),
+                           project.getNagEmailAddress(),
+                           project.getVersion(),
+                           configuration );
+    }
+
+    public MavenOneProject getMavenOneProject( String id )
+        throws ContinuumException
+    {
+        ContinuumProject p = getProject( id );
+
+        MavenOneProject mp = new MavenOneProject();
+
+        copyProject( p, mp );
+
+        mp.setGoals( p.getConfiguration().getProperty( Maven1Builder.CONFIGURATION_GOALS ) );
+
+        return mp;
+    }
+
+    public void updateMavenOneProject( MavenOneProject project )
+        throws ContinuumException
+    {
+        updateProjectConfiguration( project.getId(), project.getConfiguration() );
+    }
+
+    public void addMavenTwoProject( MavenTwoProject project )
+        throws ContinuumException
+    {
+        Properties configuration = new Properties();
+
+        configuration.setProperty( MavenShellBuilder.CONFIGURATION_GOALS, project.getGoals() );
+
+        addProjectFromScm( project.getScmUrl(),
+                           "maven2",
+                           project.getName(),
+                           project.getNagEmailAddress(),
+                           project.getVersion(),
+                           configuration );
+    }
+
+    public MavenTwoProject getMavenTwoProject( String id )
+        throws ContinuumException
+    {
+        ContinuumProject p = getProject( id );
+
+        MavenTwoProject mp = new MavenTwoProject();
+
+        copyProject( p, mp );
+
+        mp.setGoals( p.getConfiguration().getProperty( MavenShellBuilder.CONFIGURATION_GOALS ) );
+
+        return mp;
+    }
+
+    public void updateMavenTwoProject( MavenTwoProject project )
+        throws ContinuumException
+    {
+        updateProjectConfiguration( project.getId(), project.getConfiguration() );
+    }
+
+    public void addShellProject( ShellProject project )
+        throws ContinuumException
+    {
+        Properties configuration = new Properties();
+
+        configuration.setProperty( ShellBuilder.CONFIGURATION_EXECUTABLE, project.getExecutable() );
+
+        configuration.setProperty( ShellBuilder.CONFIGURATION_ARGUMENTS, project.getArguments() );
+
+        addProjectFromScm( project.getScmUrl(),
+                           "maven2",
+                           project.getName(),
+                           project.getNagEmailAddress(),
+                           project.getVersion(),
+                           configuration );
+    }
+
+    public ShellProject getShellProject( String id )
+        throws ContinuumException
+    {
+        ContinuumProject p = getProject( id );
+
+        ShellProject sp = new ShellProject();
+
+        copyProject( p, sp );
+
+        sp.setExecutable( p.getConfiguration().getProperty( ShellBuilder.CONFIGURATION_EXECUTABLE ) );
+
+        sp.setArguments( p.getConfiguration().getProperty( ShellBuilder.CONFIGURATION_ARGUMENTS ) );
+
+        return sp;
+    }
+
+    public void updateShellProject( ShellProject project )
+        throws ContinuumException
+    {
+        updateProjectConfiguration( project.getId(), project.getConfiguration() );
+    }
+
+    private void copyProject( ContinuumProject p1, ContinuumProject p2 )
+    {
+        p2.setId( p1.getId() );
+
+        p2.setName( p1.getName() );
+
+        p2.setScmUrl( p1.getScmUrl() );
+
+        p2.setNagEmailAddress( p1.getNagEmailAddress() );
+
+        p2.setVersion( p1.getVersion() );
+
+        p2.setBuilderId( p1.getBuilderId() );
+    }
+
+    // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
 
@@ -488,53 +661,6 @@ public class DefaultContinuum
         }
 
         getLogger().info( "Updated project: " + project.getName() );
-    }
-
-    // ----------------------------------------------------------------------
-    // Ant Projects
-    // ----------------------------------------------------------------------
-
-    public void addAntProject( AntProject project )
-        throws ContinuumException
-    {
-        Properties configuration = new Properties();
-
-        configuration.setProperty( AntBuilder.CONFIGURATION_EXECUTABLE, project.getExecutable() );
-
-        configuration.setProperty( AntBuilder.CONFIGURATION_TARGETS, project.getTargets() );
-
-        addProjectFromScm( project.getScmUrl(),
-                           "ant",
-                           project.getName(),
-                           project.getNagEmailAddress(),
-                           project.getVersion(),
-                           configuration );
-    }
-
-    public AntProject getAntProject( String id )
-        throws ContinuumException
-    {
-        ContinuumProject p = getProject( id );
-
-        AntProject ap = new AntProject();
-
-        ap.setId( id );
-
-        ap.setName( p.getName() );
-
-        ap.setScmUrl( p.getScmUrl() );
-
-        ap.setNagEmailAddress( p.getNagEmailAddress() );
-
-        ap.setVersion( p.getVersion() );
-
-        ap.setBuilderId( p.getBuilderId() );
-
-        ap.setTargets( p.getConfiguration().getProperty( AntBuilder.CONFIGURATION_TARGETS ) );
-
-        ap.setExecutable( p.getConfiguration().getProperty( AntBuilder.CONFIGURATION_EXECUTABLE ) );
-
-        return ap;
     }
 
     // ----------------------------------------------------------------------

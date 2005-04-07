@@ -380,9 +380,8 @@ if 1:
     cvsImport( shellProject, cvsroot, "shell" )
 
     progress( "Adding CVS Shell project" )
-    prefix = os.getcwd() + "/../continuum-plexus-application/target/plexus-test-runtime/apps/continuum/temp/Shell-Project/"
     shellId = continuum.addProjectFromScm( "scm:cvs:local:" + basedir + "/cvsroot:shell", "shell", "Shell Project", email, "3.0", 
-                                           { "script": prefix + "script.sh", "arguments" : ""} )
+                                           { "executable": "script.sh", "arguments" : ""} )
 
     shell = continuum.getProject( shellId )
     assertProject( shellId, "Shell Project", email, continuum.STATE_NEW, "3.0", "shell", shell )

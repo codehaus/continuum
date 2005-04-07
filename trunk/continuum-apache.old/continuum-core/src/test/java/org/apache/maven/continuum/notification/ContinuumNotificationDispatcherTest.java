@@ -18,6 +18,7 @@ package org.apache.maven.continuum.notification;
 
 import java.util.Properties;
 
+import org.apache.maven.continuum.project.AntProject;
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.store.ContinuumStore;
 
@@ -25,12 +26,12 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumNotificationDispatcherTest.java,v 1.1.1.1 2005-03-29 20:42:04 trygvis Exp $
+ * @version $Id: ContinuumNotificationDispatcherTest.java,v 1.2 2005-04-07 23:27:40 trygvis Exp $
  */
 public class ContinuumNotificationDispatcherTest
     extends PlexusTestCase
 {
-    public void testConfiguration()
+    public void testNotificationDispatcher()
         throws Exception
     {
         ContinuumNotificationDispatcher notificationDispatcher =

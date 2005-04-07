@@ -23,6 +23,9 @@ import java.util.Properties;
 import org.apache.maven.continuum.project.ContinuumBuild;
 import org.apache.maven.continuum.project.ContinuumProject;
 import org.apache.maven.continuum.project.AntProject;
+import org.apache.maven.continuum.project.MavenOneProject;
+import org.apache.maven.continuum.project.MavenTwoProject;
+import org.apache.maven.continuum.project.ShellProject;
 import org.apache.maven.continuum.store.ContinuumStoreException;
 
 /**
@@ -80,5 +83,44 @@ public interface Continuum
     // ----------------------------------------------------------------------
 
     void addAntProject( AntProject project )
+        throws ContinuumException;
+
+    AntProject getAntProject( String id )
+        throws ContinuumException;
+
+    void updateAntProject( AntProject project )
+        throws ContinuumException;
+
+    // Maven 1
+
+    void addMavenOneProject( MavenOneProject project )
+        throws ContinuumException;
+
+    MavenOneProject getMavenOneProject( String id )
+        throws ContinuumException;
+
+    void updateMavenOneProject( MavenOneProject project )
+        throws ContinuumException;
+
+    // Maven 2
+
+    void addMavenTwoProject( MavenTwoProject project )
+        throws ContinuumException;
+
+    MavenTwoProject getMavenTwoProject( String id )
+        throws ContinuumException;
+
+    void updateMavenTwoProject( MavenTwoProject project )
+        throws ContinuumException;
+
+    // Shell
+
+    void addShellProject( ShellProject project )
+        throws ContinuumException;
+
+    ShellProject getShellProject( String id )
+        throws ContinuumException;
+
+    void updateShellProject( ShellProject project )
         throws ContinuumException;
 }

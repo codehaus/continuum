@@ -37,7 +37,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.1.1.1 2005-03-29 20:42:04 trygvis Exp $
+ * @version $Id: ModelloJPoxContinuumStoreTest.java,v 1.2 2005-04-07 23:27:41 trygvis Exp $
  */
 public class ModelloJPoxContinuumStoreTest
     extends PlexusTestCase
@@ -235,7 +235,8 @@ public class ModelloJPoxContinuumStoreTest
 
         ContinuumProject project = store.getProject( projectId );
 
-        assertProjectEquals( projectId, name2, scmUrl2, nagEmailAddress2, version2, builderId, workingDirectory, properties2, project );
+        assertProjectEquals( projectId, name2, scmUrl2, nagEmailAddress2, version2, builderId, workingDirectory,
+                             properties2, project );
 
         // ----------------------------------------------------------------------
         //
@@ -272,8 +273,7 @@ public class ModelloJPoxContinuumStoreTest
         String workingDirectory1 = "/tmp";
         Properties configuration1 = new Properties();
 
-        String id1 = store.addProject( name1, scmUrl1, nagEmailAddress1, version1, builderId1, workingDirectory1,
-                                       configuration1 );
+        String id1 = store.addProject( name1, scmUrl1, nagEmailAddress1, version1, builderId1, workingDirectory1, configuration1 );
 
         ContinuumProject a = store.getProject( id1 );
         System.err.println( "a.name: " + a.getName() );
@@ -286,8 +286,7 @@ public class ModelloJPoxContinuumStoreTest
         String workingDirectory2 = "/tmp";
         Properties configuration2 = new Properties();
 
-        String id2 = store.addProject( name2, scmUrl2, nagEmailAddress2, version2, builderId2, workingDirectory2,
-                                       configuration2 );
+        String id2 = store.addProject( name2, scmUrl2, nagEmailAddress2, version2, builderId2, workingDirectory2, configuration2 );
 
         Map projects = new HashMap();
 

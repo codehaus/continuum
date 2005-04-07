@@ -77,8 +77,9 @@
   </organization>
   <distributionManagement>
     <repository>
-      <id>trygvis</id>
-      <url>scp://beaver.codehaus.org//home/users/trygvis/public_html</url>
+      <id>repo1</id>
+      <name>Maven Repository</name>
+      <url>scp://beaver.codehaus.org/home/projects/maven/repository-staging/to-ibiblio/maven2</url>
     </repository>
   </distributionManagement>
   <modules>

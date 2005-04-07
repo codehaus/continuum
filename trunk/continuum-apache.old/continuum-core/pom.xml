@@ -73,7 +73,7 @@
       <version>1.0-alpha-2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>maven</groupId>
+      <groupId>org.apache.maven.scm</groupId>
       <artifactId>maven-scm-api</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
@@ -100,7 +100,7 @@
      |
      |-->
     <dependency>
-      <groupId>maven</groupId>
+      <groupId>org.apache.maven.scm</groupId>
       <artifactId>maven-scm-provider-local</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
       <scope>test</scope>
@@ -130,11 +130,13 @@
       <version>1.7.3.0</version>
       <scope>test</scope>
     </dependency>
+    <!--
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>7.4.1-jdbc3</version>
       <scope>test</scope>
     </dependency>
+    -->
   </dependencies>
 </project>
