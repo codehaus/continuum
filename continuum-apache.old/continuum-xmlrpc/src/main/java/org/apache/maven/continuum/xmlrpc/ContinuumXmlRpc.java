@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ContinuumXmlRpc.java,v 1.2 2005-04-03 21:18:40 trygvis Exp $
+ * @version $Id: ContinuumXmlRpc.java,v 1.3 2005-04-07 23:16:27 trygvis Exp $
  */
 public interface ContinuumXmlRpc
 {
@@ -33,7 +33,7 @@ public interface ContinuumXmlRpc
     Hashtable addProjectFromUrl( String url, String builderType );
 
     Hashtable addProjectFromScm( String scmUrl, String builderType, String projectName, String nagEmailAddress,
-                              String version, Hashtable configuration );
+                                 String version, Hashtable configuration );
 
     Hashtable getProject( String projectId );
 
