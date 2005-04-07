@@ -54,7 +54,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
- * @version $Id: DefaultContinuum.java,v 1.5 2005-04-07 23:27:38 trygvis Exp $
+ * @version $Id: DefaultContinuum.java,v 1.6 2005-04-07 23:32:04 trygvis Exp $
  */
 public class DefaultContinuum
     extends AbstractLogEnabled
@@ -403,6 +403,8 @@ public class DefaultContinuum
     public void updateAntProject( AntProject project )
         throws ContinuumException
     {
+        updateProject( project );
+
         updateProjectConfiguration( project.getId(), project.getConfiguration() );
     }
 
@@ -438,6 +440,8 @@ public class DefaultContinuum
     public void updateMavenOneProject( MavenOneProject project )
         throws ContinuumException
     {
+        updateProject( project );
+
         updateProjectConfiguration( project.getId(), project.getConfiguration() );
     }
 
@@ -473,6 +477,8 @@ public class DefaultContinuum
     public void updateMavenTwoProject( MavenTwoProject project )
         throws ContinuumException
     {
+        updateProject( project );
+
         updateProjectConfiguration( project.getId(), project.getConfiguration() );
     }
 
@@ -512,7 +518,26 @@ public class DefaultContinuum
     public void updateShellProject( ShellProject project )
         throws ContinuumException
     {
+        updateProject( project );
+
         updateProjectConfiguration( project.getId(), project.getConfiguration() );
+    }
+
+    private void updateProject( ContinuumProject project )
+        throws ContinuumException
+    {
+        try
+        {
+            store.updateProject( project.getId(),
+                                 project.getName(),
+                                 project.getScmUrl(),
+                                 project.getNagEmailAddress(),
+                                 project.getVersion() );
+        }
+        catch ( ContinuumStoreException e )
+        {
+            throw new ContinuumException( "Error while updating the project.", ex );
+        }
     }
 
     private void copyProject( ContinuumProject p1, ContinuumProject p2 )
