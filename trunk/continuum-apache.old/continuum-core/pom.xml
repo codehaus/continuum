@@ -2,16 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>continuum-parent</artifactId>
-    <groupId>continuum</groupId>
+    <groupId>org.apache.maven.continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <groupId>continuum</groupId>
   <artifactId>continuum-core</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum Core</name>
   <dependencies>
     <dependency>
-      <groupId>continuum</groupId>
+      <groupId>org.apache.maven.continuum</groupId>
       <artifactId>continuum-model</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>

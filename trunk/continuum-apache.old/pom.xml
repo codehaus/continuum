@@ -1,6 +1,6 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>continuum</groupId>
+  <groupId>org.apache.maven.continuum</groupId>
   <artifactId>continuum-parent</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -86,7 +86,6 @@
     <module>continuum-core</module>
     <module>continuum-model</module>
     <module>continuum-plexus-application</module>
-    <module>continuum-runtime</module>
     <module>continuum-xmlrpc</module>
   </modules>
 </project>

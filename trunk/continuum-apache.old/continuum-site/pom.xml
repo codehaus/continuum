@@ -1,13 +1,11 @@
-<model>
+<project>
   <parent>
     <artifactId>continuum-parent</artifactId>
-    <groupId>continuum</groupId>
+    <groupId>org.apache.maven.continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>continuum</groupId>
   <artifactId>continuum-site</artifactId>
   <packaging>jar</packaging>
   <name>Continuum Site</name>
-  <version>1.0-alpha-1-SNAPSHOT</version>
-</model>
+</project>

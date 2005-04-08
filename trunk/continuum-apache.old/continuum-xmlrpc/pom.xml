@@ -1,22 +1,20 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>continuum</groupId>
+    <groupId>org.apache.maven.continuum</groupId>
     <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <groupId>continuum</groupId>
   <artifactId>continuum-xmlrpc</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Continuum XMLRPC Interface</name>
   <dependencies>
     <dependency>
-      <groupId>continuum</groupId>
+      <groupId>org.apache.maven.continuum</groupId>
       <artifactId>continuum-model</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>continuum</groupId>
+      <groupId>org.apache.maven.continuum</groupId>
       <artifactId>continuum-core</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
