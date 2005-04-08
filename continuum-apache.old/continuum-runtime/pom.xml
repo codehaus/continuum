@@ -1,21 +1,16 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>continuum</groupId>
+    <groupId>org.apache.maven.continuum</groupId>
     <artifactId>continuum-parent</artifactId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
-  <groupId>continuum</groupId>
   <artifactId>continuum-runtime</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
-  <!--
-  <packaging>plexus-runtime</packaging>
-  -->
   <name>Continuum Runtime</name>
   <dependencies>
     <!--
     <dependency>
-      <groupId>continuum</groupId>
+      <groupId>org.apache.maven.continuum</groupId>
       <artifactId>continuum-plexus-application</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
       <type>plexus-application</type>

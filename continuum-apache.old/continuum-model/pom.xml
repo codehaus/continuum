@@ -1,15 +1,12 @@
-<model>
+<project>
   <parent>
     <artifactId>continuum-parent</artifactId>
-    <groupId>continuum</groupId>
+    <groupId>org.apache.maven.continuum</groupId>
     <version>1.0-alpha-1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>continuum</groupId>
   <artifactId>continuum-model</artifactId>
-  <packaging>jar</packaging>
   <name>Continuum Model</name>
-  <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>jdo</groupId>
@@ -50,4 +47,4 @@
       </plugin>
     </plugins>
   </build>
-</model>
+</project>
