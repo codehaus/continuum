@@ -2,14 +2,18 @@
 
 <html>
 <head>
-  <title>Continuum $name</title>
+#if( $project.name )
+  <title>Continuum - $project.name</title>
+#else
+  <title>Continuum</title>
+#end
 
   <link rel="stylesheet" type="text/css" href="$data.getLink("css/tigris.css")" media="screen" />
   <link rel="stylesheet" type="text/css" href="$data.getLink("css/print.css")" media="print" />
 
   <script type="text/javascript">
-  if (document.layers) 
-  { 
+  if (document.layers)
+  {
     document.write('<link rel="stylesheet" type="text/css" href="$data.getLink("css/ns4_only.css")" media="screen" />')
   }
   </script>
